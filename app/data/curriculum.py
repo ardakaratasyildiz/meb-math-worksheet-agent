@@ -49,6 +49,8 @@ TOPIC_NAMES: dict[str, str] = {
     TopicId.GEOMETRI.value: "Geometri",
     TopicId.OLCME.value: "Ölçme",
     TopicId.CEBIR.value: "Cebir ve Denklemler",
+    TopicId.VERI_ISLEME.value: "Veri İşleme ve İstatistik",
+    TopicId.OLASILIK.value: "Olasılık",
 }
 
 
@@ -767,12 +769,21 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "Toplama + çıkarmanın birleşik olduğu problem.",
                     ),
                 },
+                {
+                    "kod": "M.5.2.5",
+                    "metin": "Yüzdeyi tanır, yüzde sembolünü kullanarak basit yüzde hesapları yapar.",
+                    "difficulty_hints": _hints(
+                        "Bir bütünün %25/%50/%75'ini bulma; yüzdelik kesir karşılığı.",
+                        "Verilen sayının verilen yüzdesini hesaplama (160'ın %20'si).",
+                        "Yüzdeyi günlük hayat bağlamında uygulama (indirim, KDV, tasarruf).",
+                    ),
+                },
             ],
         },
         TopicId.GEOMETRI.value: {
             "topic_id": TopicId.GEOMETRI.value,
             "name": TOPIC_NAMES[TopicId.GEOMETRI.value],
-            "description": "Üçgen ve dörtgenlerin çevre-alan hesabı",
+            "description": "Üçgen ve dörtgenlerin çevre-alan hesabı, temel geometrik kavramlar",
             "kazanimlar": [
                 {
                     "kod": "M.5.3.1",
@@ -808,6 +819,15 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "Kenarları verilen dikdörtgen/karenin alanı.",
                         "Alan verilip bir kenarı bulma.",
                         "Birleşik şeklin alanını iki dikdörtgen olarak hesaplama.",
+                    ),
+                },
+                {
+                    "kod": "M.5.3.5",
+                    "metin": "Temel geometrik kavramları (nokta, doğru, ışın, doğru parçası, paralel ve dik doğrular) tanır ve sembolle gösterir.",
+                    "difficulty_hints": _hints(
+                        "Şekil verilince doğru/ışın/doğru parçasını ayırt etme; sembol yazma.",
+                        "Verilen kavramları sembolle ifade etme; paralel/dik durumu belirleme.",
+                        "Birden fazla doğru içeren konfigürasyonda paralellik ve diklik ilişkilerini muhakeme.",
                     ),
                 },
             ],
@@ -871,6 +891,22 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                 },
             ],
         },
+        TopicId.VERI_ISLEME.value: {
+            "topic_id": TopicId.VERI_ISLEME.value,
+            "name": TOPIC_NAMES[TopicId.VERI_ISLEME.value],
+            "description": "Sıklık tablosu, sütun ve şekil grafiği",
+            "kazanimlar": [
+                {
+                    "kod": "M.5.6.1",
+                    "metin": "Veri toplar; sıklık tablosu ve sütun grafiği oluşturup yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Verilen sıklık tablosundaki bir değeri okuma.",
+                        "Sütun grafiğinden iki kategoriyi karşılaştıran soru.",
+                        "Sıklık tablosu + sütun grafiği üzerinden çok adımlı yorum (toplam, fark, oran).",
+                    ),
+                },
+            ],
+        },
     },
     6: {
         TopicId.DOGAL_SAYILAR.value: {
@@ -914,12 +950,39 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "Sıralamadan eşitsizlik koşulu oluşturma.",
                     ),
                 },
+                {
+                    "kod": "M.6.1.5",
+                    "metin": "Çarpan, kat ve asal sayı kavramlarını açıklar; bir sayının çarpanlarını ve katlarını listeler.",
+                    "difficulty_hints": _hints(
+                        "Verilen sayının çarpanlarını listeleme; ilk birkaç katını yazma.",
+                        "Bir sayının asal olup olmadığını belirleme; asal çarpanlara ayırma.",
+                        "Bir sayının çarpan/kat ilişkisini başka bir sayıyla karşılaştıran muhakeme problemi.",
+                    ),
+                },
+                {
+                    "kod": "M.6.1.6",
+                    "metin": "İki sayının ortak bölenlerini ve katlarını bulur; OBEB ve OKEK kavramlarını uygular.",
+                    "difficulty_hints": _hints(
+                        "İki küçük sayının OBEB veya OKEK'ini liste yöntemiyle bulma.",
+                        "Asal çarpanlara ayırarak OBEB veya OKEK hesaplama.",
+                        "Günlük hayat problemi (örüntü çakışması, paylaştırma) ile OBEB/OKEK kullanımı.",
+                    ),
+                },
+                {
+                    "kod": "M.6.1.7",
+                    "metin": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile bölünebilme kurallarını uygular.",
+                    "difficulty_hints": _hints(
+                        "Verilen sayının bir bölene tam bölünüp bölünmediğini söyleme.",
+                        "Birden çok bölünebilme kuralını birleştirip ortak özellik bulma.",
+                        "Eksik basamaklı sayıyı belirli bir sayıya bölünebilir yapacak rakamı bulma.",
+                    ),
+                },
             ],
         },
         TopicId.KESIRLER.value: {
             "topic_id": TopicId.KESIRLER.value,
             "name": TOPIC_NAMES[TopicId.KESIRLER.value],
-            "description": "Kesirlerle dört işlem",
+            "description": "Kesirlerle dört işlem, ondalık gösterim, yüzdeler",
             "kazanimlar": [
                 {
                     "kod": "M.6.2.1",
@@ -957,12 +1020,21 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "İki adımlı problem ile dört işlemin birleşimi.",
                     ),
                 },
+                {
+                    "kod": "M.6.2.5",
+                    "metin": "Yüzde ile ilgili problemleri çözer; yüzdeyi kesir ve ondalık gösterimle ilişkilendirir.",
+                    "difficulty_hints": _hints(
+                        "Bir sayının verilen yüzdesini bulma (320'nin %15'i).",
+                        "İndirim/zam problemleri (KDV, kâr-zarar tek adım).",
+                        "Çift aşamalı yüzde problemleri (önce indirim sonra zam veya tasarruf hesabı).",
+                    ),
+                },
             ],
         },
         TopicId.GEOMETRI.value: {
             "topic_id": TopicId.GEOMETRI.value,
             "name": TOPIC_NAMES[TopicId.GEOMETRI.value],
-            "description": "Alan hesaplamaları (paralelkenar, üçgen, yamuk)",
+            "description": "Alan hesaplamaları (paralelkenar, üçgen, yamuk), açılar, çember",
             "kazanimlar": [
                 {
                     "kod": "M.6.3.1",
@@ -989,6 +1061,24 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "Paralel kenarlar ve yükseklikten yamuk alanı.",
                         "Yamuğun alanı verilip bir paralel kenarı bulma.",
                         "Birleşik alanı (yamuk + dikdörtgen) bulma.",
+                    ),
+                },
+                {
+                    "kod": "M.6.3.4",
+                    "metin": "Açıları çeşitlerine göre tanır; tümler, bütünler, komşu ve ters açıları kullanır.",
+                    "difficulty_hints": _hints(
+                        "Verilen bir açının tümlerini veya bütünlerini bulma.",
+                        "Komşu veya ters açı ilişkisi içeren konfigürasyonda bilinmeyen açıyı hesaplama.",
+                        "Birden fazla doğrunun kesişiminde tüm açıları muhakemeyle belirleme.",
+                    ),
+                },
+                {
+                    "kod": "M.6.3.5",
+                    "metin": "Çember ve dairenin temel elemanlarını (merkez, yarıçap, çap) tanır; çember uzunluğunu yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Yarıçap-çap ilişkisini kullanarak verilenden diğerini bulma.",
+                        "Çember içindeki kiriş veya yay elemanlarını adlandırma; basit hesap.",
+                        "Birleşik çember/daire konfigürasyonunda elemanları muhakeme eden problem.",
                     ),
                 },
             ],
@@ -1048,6 +1138,56 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "ax = b veya x + a = b türü çözüm.",
                         "ax + b = c çözümü.",
                         "Her iki tarafta değişken içeren denklem çözümü.",
+                    ),
+                },
+                {
+                    "kod": "M.6.5.4",
+                    "metin": "Bir günlük hayat veya matematik problemini adımlara ayırarak algoritma veya akış şeması ile ifade eder.",
+                    "difficulty_hints": _hints(
+                        "Verilen 3-4 adımlı işlemi sırasıyla yazma.",
+                        "Bir problemin çözümünü adımlar halinde yazıp koşullu (eğer-ise) ifade ekleme.",
+                        "Tekrarlayan bir adım veya birden fazla koşul içeren akış şeması üretme.",
+                    ),
+                },
+            ],
+        },
+        TopicId.VERI_ISLEME.value: {
+            "topic_id": TopicId.VERI_ISLEME.value,
+            "name": TOPIC_NAMES[TopicId.VERI_ISLEME.value],
+            "description": "Veri analizi, sütun/çizgi grafiği, merkezi eğilim ölçüleri",
+            "kazanimlar": [
+                {
+                    "kod": "M.6.6.1",
+                    "metin": "Sütun ve çizgi grafiklerini oluşturur, okur ve yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Verilen sütun grafiğinden tek bir değer okuma.",
+                        "Sütun veya çizgi grafiğinden iki kategoriyi karşılaştırma; toplam veya fark hesaplama.",
+                        "Grafikten elde edilen veriden çıkarım yapma; örüntü yorumlama.",
+                    ),
+                },
+                {
+                    "kod": "M.6.6.2",
+                    "metin": "Bir veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplar ve yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Verilen sayı dizisi için aritmetik ortalama veya tepe değer bulma.",
+                        "Aynı veri için ortalama, ortanca ve tepe değerini birlikte yorumlama.",
+                        "Eksik veriyi bulmak için ortalama ya da ortancayı tersine kullanma.",
+                    ),
+                },
+            ],
+        },
+        TopicId.OLASILIK.value: {
+            "topic_id": TopicId.OLASILIK.value,
+            "name": TOPIC_NAMES[TopicId.OLASILIK.value],
+            "description": "Bir olayın olasılığını basit yollarla yorumlama",
+            "kazanimlar": [
+                {
+                    "kod": "M.6.7.1",
+                    "metin": "Bir olayın olası, kesin, imkansız ve eş olası durumlarını ayırt eder; basit olasılığı kesir olarak ifade eder.",
+                    "difficulty_hints": _hints(
+                        "Bir olayın kesin/imkansız/olası olduğunu sözel olarak belirleme.",
+                        "Eş olası durumlardan oluşan deneyde basit olasılığı kesir olarak yazma.",
+                        "Birden fazla olası sonucu olan deneyde belirli bir olayın olasılığını karşılaştırarak yorumlama.",
                     ),
                 },
             ],
@@ -1256,6 +1396,47 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "Doğru orantı tek adım (ikili oran).",
                         "Doğru veya ters orantı problemi.",
                         "Birden fazla oranı birleştiren problem (dört terimli orantı).",
+                    ),
+                },
+            ],
+        },
+        TopicId.VERI_ISLEME.value: {
+            "topic_id": TopicId.VERI_ISLEME.value,
+            "name": TOPIC_NAMES[TopicId.VERI_ISLEME.value],
+            "description": "Veri analizi, daire grafiği, merkezi eğilim",
+            "kazanimlar": [
+                {
+                    "kod": "M.7.6.1",
+                    "metin": "Veri gruplarını grafiklerle gösterir; daire grafiğini oluşturur, okur ve yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Verilen daire grafiğinden tek bir kategoriyi yüzde olarak okuma.",
+                        "İki grafiği karşılaştırma; eksik kategoriyi yüzde toplamından bulma.",
+                        "Daire grafiği + tablo birlikte kullanılarak nicel sonuçlar (toplam veri, kategori sayısı) çıkarma.",
+                    ),
+                },
+                {
+                    "kod": "M.7.6.2",
+                    "metin": "Bir veri grubunun aritmetik ortalama, ortanca ve tepe değerini ileri düzeyde yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Sayı dizisinden ortalama veya ortanca bulma.",
+                        "Eksik veriyi ortalama veya ortancadan tersine bulma.",
+                        "Aynı veri grubunda iki merkezi eğilim ölçüsünü karşılaştırarak çıkarım yapma.",
+                    ),
+                },
+            ],
+        },
+        TopicId.OLASILIK.value: {
+            "topic_id": TopicId.OLASILIK.value,
+            "name": TOPIC_NAMES[TopicId.OLASILIK.value],
+            "description": "Olası durumlar, basit olasılık hesabı",
+            "kazanimlar": [
+                {
+                    "kod": "M.7.7.1",
+                    "metin": "Bir rastlantı olayının olasılığını kesir, ondalık veya yüzde olarak hesaplar; sonucu yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Eş olası örnek uzayda istenen olayın olasılığı (zar, madeni para, top torbası).",
+                        "Olasılığı kesir, ondalık ve yüzde gösterimleriyle ifade etme.",
+                        "Birleşik veya ayrık olayların olasılığını karşılaştırarak yorum yapma.",
                     ),
                 },
             ],

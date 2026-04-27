@@ -1,0 +1,438 @@
+09:44:59 INFO Toplam input: 453 | mevcut etiketli: 0
+09:44:59 INFO Etiketlenecek: 453 chunk | grade=6 | model=gemini-2.5-flash | batch=5
+09:45:01 INFO Batch 0-5 / 453 ...
+09:45:01 INFO AFC is enabled with max remote calls: 10.
+09:45:18 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:45:18 INFO Batch 5-10 / 453 ...
+09:45:18 INFO AFC is enabled with max remote calls: 10.
+09:45:26 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:45:26 INFO   → ara kayıt yapıldı
+09:45:26 INFO Batch 10-15 / 453 ...
+09:45:26 INFO AFC is enabled with max remote calls: 10.
+09:45:35 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:45:35 INFO Batch 15-20 / 453 ...
+09:45:35 INFO AFC is enabled with max remote calls: 10.
+09:45:47 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:45:47 INFO   → ara kayıt yapıldı
+09:45:47 INFO Batch 20-25 / 453 ...
+09:45:47 INFO AFC is enabled with max remote calls: 10.
+09:46:00 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:46:00 INFO Batch 25-30 / 453 ...
+09:46:00 INFO AFC is enabled with max remote calls: 10.
+09:46:14 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:46:14 INFO   → ara kayıt yapıldı
+09:46:14 INFO Batch 30-35 / 453 ...
+09:46:14 INFO AFC is enabled with max remote calls: 10.
+09:46:26 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:46:26 INFO Batch 35-40 / 453 ...
+09:46:26 INFO AFC is enabled with max remote calls: 10.
+09:46:40 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:46:40 INFO   → ara kayıt yapıldı
+09:46:40 INFO Batch 40-45 / 453 ...
+09:46:40 INFO AFC is enabled with max remote calls: 10.
+09:46:53 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:46:53 INFO Batch 45-50 / 453 ...
+09:46:53 INFO AFC is enabled with max remote calls: 10.
+09:47:05 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:47:06 INFO   → ara kayıt yapıldı
+09:47:06 INFO Batch 50-55 / 453 ...
+09:47:06 INFO AFC is enabled with max remote calls: 10.
+09:47:16 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:47:16 INFO Batch 55-60 / 453 ...
+09:47:16 INFO AFC is enabled with max remote calls: 10.
+09:47:25 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:47:25 INFO   → ara kayıt yapıldı
+09:47:25 INFO Batch 60-65 / 453 ...
+09:47:25 INFO AFC is enabled with max remote calls: 10.
+09:47:39 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:47:39 INFO Batch 65-70 / 453 ...
+09:47:39 INFO AFC is enabled with max remote calls: 10.
+09:47:51 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:47:51 INFO   → ara kayıt yapıldı
+09:47:51 INFO Batch 70-75 / 453 ...
+09:47:51 INFO AFC is enabled with max remote calls: 10.
+09:48:01 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:48:01 INFO Batch 75-80 / 453 ...
+09:48:01 INFO AFC is enabled with max remote calls: 10.
+09:48:13 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:48:13 INFO   → ara kayıt yapıldı
+09:48:13 INFO Batch 80-85 / 453 ...
+09:48:13 INFO AFC is enabled with max remote calls: 10.
+09:48:26 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:48:26 INFO Batch 85-90 / 453 ...
+09:48:26 INFO AFC is enabled with max remote calls: 10.
+09:48:36 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:48:36 INFO   → ara kayıt yapıldı
+09:48:36 INFO Batch 90-95 / 453 ...
+09:48:36 INFO AFC is enabled with max remote calls: 10.
+09:48:48 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:48:48 INFO Batch 95-100 / 453 ...
+09:48:48 INFO AFC is enabled with max remote calls: 10.
+09:49:06 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:49:06 INFO   → ara kayıt yapıldı
+09:49:06 INFO Batch 100-105 / 453 ...
+09:49:06 INFO AFC is enabled with max remote calls: 10.
+09:49:18 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:49:18 INFO Batch 105-110 / 453 ...
+09:49:18 INFO AFC is enabled with max remote calls: 10.
+09:49:33 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:49:33 INFO   → ara kayıt yapıldı
+09:49:33 INFO Batch 110-115 / 453 ...
+09:49:33 INFO AFC is enabled with max remote calls: 10.
+09:49:49 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:49:49 INFO Batch 115-120 / 453 ...
+09:49:49 INFO AFC is enabled with max remote calls: 10.
+09:50:00 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:50:00 INFO   → ara kayıt yapıldı
+09:50:00 INFO Batch 120-125 / 453 ...
+09:50:00 INFO AFC is enabled with max remote calls: 10.
+09:50:14 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:50:14 INFO Batch 125-130 / 453 ...
+09:50:14 INFO AFC is enabled with max remote calls: 10.
+09:50:28 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:50:28 INFO   → ara kayıt yapıldı
+09:50:28 INFO Batch 130-135 / 453 ...
+09:50:28 INFO AFC is enabled with max remote calls: 10.
+09:50:41 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:50:41 INFO Batch 135-140 / 453 ...
+09:50:41 INFO AFC is enabled with max remote calls: 10.
+09:50:56 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:50:56 INFO   → ara kayıt yapıldı
+09:50:56 INFO Batch 140-145 / 453 ...
+09:50:56 INFO AFC is enabled with max remote calls: 10.
+09:51:07 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:51:07 INFO Batch 145-150 / 453 ...
+09:51:07 INFO AFC is enabled with max remote calls: 10.
+09:51:15 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:51:15 INFO   → ara kayıt yapıldı
+09:51:15 INFO Batch 150-155 / 453 ...
+09:51:15 INFO AFC is enabled with max remote calls: 10.
+09:51:26 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:51:26 INFO Batch 155-160 / 453 ...
+09:51:26 INFO AFC is enabled with max remote calls: 10.
+09:51:36 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:51:36 INFO   → ara kayıt yapıldı
+09:51:36 INFO Batch 160-165 / 453 ...
+09:51:36 INFO AFC is enabled with max remote calls: 10.
+09:51:45 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:51:45 INFO Batch 165-170 / 453 ...
+09:51:45 INFO AFC is enabled with max remote calls: 10.
+09:52:01 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:52:01 INFO   → ara kayıt yapıldı
+09:52:01 INFO Batch 170-175 / 453 ...
+09:52:01 INFO AFC is enabled with max remote calls: 10.
+09:52:12 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:52:12 INFO Batch 175-180 / 453 ...
+09:52:12 INFO AFC is enabled with max remote calls: 10.
+09:52:21 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:52:21 WARNING LLM bu chunk'a yanıt vermedi: tb_81e66814bfa350
+09:52:21 INFO   → ara kayıt yapıldı
+09:52:21 INFO Batch 180-185 / 453 ...
+09:52:21 INFO AFC is enabled with max remote calls: 10.
+09:52:33 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:52:33 INFO Batch 185-190 / 453 ...
+09:52:33 INFO AFC is enabled with max remote calls: 10.
+09:52:45 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:52:45 INFO   → ara kayıt yapıldı
+09:52:45 INFO Batch 190-195 / 453 ...
+09:52:45 INFO AFC is enabled with max remote calls: 10.
+09:52:55 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:52:55 INFO Batch 195-200 / 453 ...
+09:52:55 INFO AFC is enabled with max remote calls: 10.
+09:53:05 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:53:05 INFO   → ara kayıt yapıldı
+09:53:05 INFO Batch 200-205 / 453 ...
+09:53:05 INFO AFC is enabled with max remote calls: 10.
+09:53:18 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:53:18 WARNING LLM bu chunk'a yanıt vermedi: tb_290951ff2bba29
+09:53:18 INFO Batch 205-210 / 453 ...
+09:53:18 INFO AFC is enabled with max remote calls: 10.
+09:53:28 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:53:28 INFO   → ara kayıt yapıldı
+09:53:28 INFO Batch 210-215 / 453 ...
+09:53:28 INFO AFC is enabled with max remote calls: 10.
+09:53:48 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:53:48 INFO Batch 215-220 / 453 ...
+09:53:48 INFO AFC is enabled with max remote calls: 10.
+09:53:55 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:53:55 INFO   → ara kayıt yapıldı
+09:53:55 INFO Batch 220-225 / 453 ...
+09:53:55 INFO AFC is enabled with max remote calls: 10.
+09:54:05 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:54:05 INFO Batch 225-230 / 453 ...
+09:54:05 INFO AFC is enabled with max remote calls: 10.
+09:54:19 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:54:19 INFO   → ara kayıt yapıldı
+09:54:19 INFO Batch 230-235 / 453 ...
+09:54:19 INFO AFC is enabled with max remote calls: 10.
+09:54:39 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:54:39 INFO Batch 235-240 / 453 ...
+09:54:39 INFO AFC is enabled with max remote calls: 10.
+09:54:53 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:54:53 INFO   → ara kayıt yapıldı
+09:54:53 INFO Batch 240-245 / 453 ...
+09:54:53 INFO AFC is enabled with max remote calls: 10.
+09:55:02 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:55:02 INFO Batch 245-250 / 453 ...
+09:55:02 INFO AFC is enabled with max remote calls: 10.
+09:55:13 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:55:13 INFO   → ara kayıt yapıldı
+09:55:13 INFO Batch 250-255 / 453 ...
+09:55:13 INFO AFC is enabled with max remote calls: 10.
+09:55:21 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:55:21 INFO Batch 255-260 / 453 ...
+09:55:21 INFO AFC is enabled with max remote calls: 10.
+09:55:43 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:55:43 WARNING LLM bu chunk'a yanıt vermedi: tb_c70658971f6bc1
+09:55:43 INFO   → ara kayıt yapıldı
+09:55:43 INFO Batch 260-265 / 453 ...
+09:55:43 INFO AFC is enabled with max remote calls: 10.
+09:55:54 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:55:54 INFO Batch 265-270 / 453 ...
+09:55:54 INFO AFC is enabled with max remote calls: 10.
+09:56:03 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:56:03 WARNING LLM bu chunk'a yanıt vermedi: tb_c7a9722fa01e57
+09:56:03 INFO   → ara kayıt yapıldı
+09:56:03 INFO Batch 270-275 / 453 ...
+09:56:03 INFO AFC is enabled with max remote calls: 10.
+09:56:12 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:56:12 INFO Batch 275-280 / 453 ...
+09:56:12 INFO AFC is enabled with max remote calls: 10.
+09:56:23 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:56:23 INFO   → ara kayıt yapıldı
+09:56:23 INFO Batch 280-285 / 453 ...
+09:56:23 INFO AFC is enabled with max remote calls: 10.
+09:56:44 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:56:44 INFO Batch 285-290 / 453 ...
+09:56:44 INFO AFC is enabled with max remote calls: 10.
+09:56:56 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:56:56 INFO   → ara kayıt yapıldı
+09:56:56 INFO Batch 290-295 / 453 ...
+09:56:56 INFO AFC is enabled with max remote calls: 10.
+09:57:12 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:57:12 INFO Batch 295-300 / 453 ...
+09:57:12 INFO AFC is enabled with max remote calls: 10.
+09:57:34 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:57:34 INFO   → ara kayıt yapıldı
+09:57:34 INFO Batch 300-305 / 453 ...
+09:57:34 INFO AFC is enabled with max remote calls: 10.
+09:57:47 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:57:47 WARNING LLM bu chunk'a yanıt vermedi: tb_a2364cde1b8ffc
+09:57:47 INFO Batch 305-310 / 453 ...
+09:57:47 INFO AFC is enabled with max remote calls: 10.
+09:57:59 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:57:59 INFO   → ara kayıt yapıldı
+09:57:59 INFO Batch 310-315 / 453 ...
+09:57:59 INFO AFC is enabled with max remote calls: 10.
+09:58:13 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:58:13 WARNING LLM bu chunk'a yanıt vermedi: tb_0fc017919bbb7f
+09:58:13 INFO Batch 315-320 / 453 ...
+09:58:13 INFO AFC is enabled with max remote calls: 10.
+09:58:21 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:58:21 INFO   → ara kayıt yapıldı
+09:58:21 INFO Batch 320-325 / 453 ...
+09:58:21 INFO AFC is enabled with max remote calls: 10.
+09:58:33 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:58:33 INFO Batch 325-330 / 453 ...
+09:58:33 INFO AFC is enabled with max remote calls: 10.
+09:58:46 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:58:46 INFO   → ara kayıt yapıldı
+09:58:46 INFO Batch 330-335 / 453 ...
+09:58:46 INFO AFC is enabled with max remote calls: 10.
+09:58:58 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:58:58 INFO Batch 335-340 / 453 ...
+09:58:58 INFO AFC is enabled with max remote calls: 10.
+09:59:12 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:59:12 INFO   → ara kayıt yapıldı
+09:59:12 INFO Batch 340-345 / 453 ...
+09:59:12 INFO AFC is enabled with max remote calls: 10.
+09:59:25 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:59:25 INFO Batch 345-350 / 453 ...
+09:59:25 INFO AFC is enabled with max remote calls: 10.
+09:59:39 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:59:39 INFO   → ara kayıt yapıldı
+09:59:39 INFO Batch 350-355 / 453 ...
+09:59:39 INFO AFC is enabled with max remote calls: 10.
+09:59:54 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+09:59:54 INFO Batch 355-360 / 453 ...
+09:59:54 INFO AFC is enabled with max remote calls: 10.
+10:00:08 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:00:08 INFO   → ara kayıt yapıldı
+10:00:08 INFO Batch 360-365 / 453 ...
+10:00:08 INFO AFC is enabled with max remote calls: 10.
+10:00:21 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:00:21 INFO Batch 365-370 / 453 ...
+10:00:21 INFO AFC is enabled with max remote calls: 10.
+10:00:33 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:00:33 INFO   → ara kayıt yapıldı
+10:00:33 INFO Batch 370-375 / 453 ...
+10:00:33 INFO AFC is enabled with max remote calls: 10.
+10:00:48 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:00:48 INFO Batch 375-380 / 453 ...
+10:00:48 INFO AFC is enabled with max remote calls: 10.
+10:01:16 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:01:16 INFO   → ara kayıt yapıldı
+10:01:16 INFO Batch 380-385 / 453 ...
+10:01:16 INFO AFC is enabled with max remote calls: 10.
+10:01:36 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:01:36 INFO Batch 385-390 / 453 ...
+10:01:36 INFO AFC is enabled with max remote calls: 10.
+10:01:49 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:01:49 INFO   → ara kayıt yapıldı
+10:01:49 INFO Batch 390-395 / 453 ...
+10:01:49 INFO AFC is enabled with max remote calls: 10.
+10:02:00 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:02:00 INFO Batch 395-400 / 453 ...
+10:02:00 INFO AFC is enabled with max remote calls: 10.
+10:02:14 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:02:14 INFO   → ara kayıt yapıldı
+10:02:14 INFO Batch 400-405 / 453 ...
+10:02:14 INFO AFC is enabled with max remote calls: 10.
+10:02:32 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:02:32 INFO Batch 405-410 / 453 ...
+10:02:32 INFO AFC is enabled with max remote calls: 10.
+10:02:46 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:02:46 INFO   → ara kayıt yapıldı
+10:02:46 INFO Batch 410-415 / 453 ...
+10:02:46 INFO AFC is enabled with max remote calls: 10.
+10:03:02 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:03:02 INFO Batch 415-420 / 453 ...
+10:03:02 INFO AFC is enabled with max remote calls: 10.
+10:03:20 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:03:20 INFO   → ara kayıt yapıldı
+10:03:20 INFO Batch 420-425 / 453 ...
+10:03:20 INFO AFC is enabled with max remote calls: 10.
+10:03:33 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:03:33 INFO Batch 425-430 / 453 ...
+10:03:33 INFO AFC is enabled with max remote calls: 10.
+10:03:42 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:03:42 INFO   → ara kayıt yapıldı
+10:03:42 INFO Batch 430-435 / 453 ...
+10:03:42 INFO AFC is enabled with max remote calls: 10.
+10:04:01 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:04:01 INFO Batch 435-440 / 453 ...
+10:04:01 INFO AFC is enabled with max remote calls: 10.
+10:04:16 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:04:16 WARNING LLM bu chunk'a yanıt vermedi: tb_edd93bb497cd7f
+10:04:16 INFO   → ara kayıt yapıldı
+10:04:16 INFO Batch 440-445 / 453 ...
+10:04:16 INFO AFC is enabled with max remote calls: 10.
+10:04:34 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:04:34 INFO Batch 445-450 / 453 ...
+10:04:34 INFO AFC is enabled with max remote calls: 10.
+10:04:47 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:04:47 INFO   → ara kayıt yapıldı
+10:04:47 INFO Batch 450-453 / 453 ...
+10:04:47 INFO AFC is enabled with max remote calls: 10.
+10:04:55 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+10:04:55 INFO Tamamlandı: C:\Users\arda.karatas\Desktop\Projects\Claude\GenAgent\knowledge_base\processed\textbook_chunks_grade6_tagged.json
+
+=== ÖZET ===
+
+Kazanım dağılımı:
+  M.6.2.1: 10
+  M.6.2.2: 8
+  M.6.2.3: 10
+  M.6.2.4: 33
+  M.6.3.1: 27
+  M.6.3.2: 10
+  M.6.5.1: 41
+  M.6.5.3: 1
+  __UNMAPPED__: 306
+
+İçerik kalitesi:
+  noisy: 3
+  usable: 443
+
+Güven dağılımı:
+  high: 209
+  low: 208
+  medium: 29
+
+Müfredat dışı konu ipuçları (curriculum_expansion):
+  İstatistik: 57
+  Diğer: 35
+  Olasılık / İstatistik: 14
+  Olasılık: 13
+  Çarpanlar / Asal sayılar: 12
+  Yüzdeler: 9
+  Dörtgenlerin Özellikleri: 8
+  Ondalık Gösterimler: 7
+  Uzunluk Ölçme Birimleri: 7
+  Doğrular ve Açılar: 7
+  Çarpanlar: 6
+  Çarpanlar / Katlar: 6
+  Çarpanlar / Bölünebilme Kuralları: 6
+  Alan Ölçme Birimleri Dönüşümleri: 6
+  Bölünebilme Kuralları: 5
+  Geometri - Çokgenler ve Özellikleri: 5
+  Çember ve Yay Uzunluğu: 5
+  İstatistik (Merkezî Eğilim Ölçüleri): 4
+  Çokgenler: 4
+  Çember ve Çember Uzunluğu: 4
+  Ondalık Sayılar: 3
+  Açılar ve Doğrular: 3
+  Çember ve Çevre / Problem Çözme: 3
+  Çarpanlar / Asal sayılar / Katlar: 2
+  Geometri (Açılar): 2
+  Katlar: 2
+  Asal Sayılar: 2
+  Ortak Bölenler: 2
+  İstatistik (veri toplama ve değerlendirme, anket tasarımı, yanlılık): 2
+  Devirli Ondalık Gösterimler: 2
+  Bölünebilme Kriterleri: 2
+  Üçgenin açıları / Paralel doğrular ve kesenler: 2
+  Algoritma: 2
+  Geometrik Şekillerin Yüksekliği: 2
+  Çemberin Çevresi / Gerçek Yaşam Problemleri: 2
+  Geometri: 2
+  Harita / Genel Bilgiler: 2
+  Çarpanlar / Asal sayılar / Katlar / Bölünebilme: 1
+  Katlar / Çarpanlar: 1
+  Çarpanlar / Katlar / Bölünebilme Kuralları: 1
+  Çarpanlar / Asal Sayılar: 1
+  Ortak Katlar / EKOK: 1
+  Çarpanlar / Bölenler: 1
+  Çarpanlar / Ortak Bölenler: 1
+  Çarpanlar / Ortak Bölenler / Aralarında Asal Sayılar: 1
+  Çarpanlar / Ortak Bölenler / Ortak Katlar / Aralarında Asal Sayılar: 1
+  İstatistik (Merkezî Eğilim ve Yayılım Ölçüleri): 1
+  İstatistik (veri toplama, sıklık tablosu oluşturma, veri yorumlama): 1
+  İstatistik (veri yorumlama, sıklık tablosu ve daire grafiği okuma): 1
+  İstatistik (veri toplama, anket tasarımı, yanlılık): 1
+  Ondalık Sayılar (Kavram ve Basamak Değeri): 1
+  Ondalık Sayılar / Yuvarlama: 1
+  Ondalık Sayılar / Karşılaştırma ve Sıralama / Yuvarlama: 1
+  Kesirler ve Ondalık Sayılar Arasındaki İlişki: 1
+  Kesirler ve Ondalık Sayılar (Kavram ve Tarihsel Gelişim): 1
+  Algoritma / İstatistik / Diğer: 1
+  Çarpanlar / Asal sayılar / Bölünebilme: 1
+  Asal sayılar: 1
+  Çarpanlar / Katlar / EBOB / EKOK: 1
+  Doğal Sayılarla İşlemler / Problem Çözme: 1
+  Çarpanlar / Katlar / Asal Sayılar: 1
+  Asal Sayılar / Asal Çarpanlar: 1
+  EBOB / Ortak Bölenler: 1
+  İstatistiksel Araştırma Süreci / İstatistik: 1
+  Doğal Sayılar ve Basamak Değeri: 1
+  Açılar ve Çokgenlerin Özellikleri: 1
+  Paralel doğrular ve kesenler / Çokgenler: 1
+  Paralel doğrular ve kesenler / Açılar / Çokgenler: 1
+  Yamuğun özellikleri / Dörtgenler / Paralel doğrular ve kesenler: 1
+  Çemberin Çevresi / Çemberde Uzunluk: 1
+  Çemberin Çevresi: 1
+  Çemberin Çevresi / Proje Çalışması: 1
+  Çemberin Çevresi / Geometri Problemleri: 1
+  Çember, Merkez Açı ve Yay Uzunluğu: 1
+  Açılar: 1
+  Doğrular, Açılar ve Çokgenler: 1
+  Üçgen ve Dörtgenlerin Özellikleri: 1
+  Üçgen ve Dörtgenlerin Açıları: 1
+  Algoritma ve Örüntüler: 1
+  Proje Değerlendirme Kriterleri / Diğer: 1
+  Uzunluk ve Alan Ölçme Birimleri: 1
+  Alan Ölçme Birimleri: 1
+  Alan Hesaplamaları / Problem Çözme: 1
+  Çember ve Çevre: 1
+  Çevre ve Alan: 1
+  Sözlük / Kaynakça / Genel Bilgiler: 1

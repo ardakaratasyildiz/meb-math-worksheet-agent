@@ -27,3 +27,5 @@ class TopicId(str, Enum):
     GEOMETRI = "geometri"
     OLCME = "olcme"
     CEBIR = "cebir"
+    VERI_ISLEME = "veri_isleme"
+    OLASILIK = "olasilik"

@@ -1,0 +1,353 @@
+{
+  "reports": [
+    {
+      "filename": "3.Sinif-Matematik-Ders-Kitabi-MEB-pdf.pdf",
+      "file_size_mb": 19.9,
+      "total_pages": 288,
+      "assumed_grade": 3,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 155.0,
+      "avg_images_per_page": 0.9,
+      "math_symbols_in_sample": 1,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 0,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [],
+      "sample_text_excerpt": ""
+    },
+    {
+      "filename": "4.Sinif-Matematik-Ders-Kitabi-MEB-pdf.pdf",
+      "file_size_mb": 10.0,
+      "total_pages": 303,
+      "assumed_grade": 4,
+      "extraction_status": "scanned_ocr_required",
+      "avg_text_chars_per_page": 0.0,
+      "avg_images_per_page": 1.0,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 0,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        6,
+        7,
+        8
+      ],
+      "sample_text_excerpt": ""
+    },
+    {
+      "filename": "Matematik Ders Kitabı-MEB.pdf",
+      "file_size_mb": 73.0,
+      "total_pages": 270,
+      "assumed_grade": 7,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 1351.0,
+      "avg_images_per_page": 0.3,
+      "math_symbols_in_sample": 18,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 1,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 0,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        6,
+        7,
+        11,
+        16,
+        18
+      ],
+      "sample_text_excerpt": "[sayfa 12] DAĞCI OSMAN VE DALGIÇ DEFNE\nOsman dağcılık, Defne ise dalgıçlık sporuyla uğraşan iki arkadaştır. Osman dağcılık yaptığı yerlerin \nbitki örtüsüyle ilgili araştırmalar yapmayı, Defne ise dalgıçlık yaptığı denizlerde resifleri ve resiflerdeki \ncanlıları incelemeyi çok sevmektedir. \nOsman, 2571 rakımlı \n---\n[sayfa 16] MATEMATİK  7\n17\n1.\t Aşağıda verilen işlemleri yapınız.\na.\t (-8) + (-7) = ......................................\nb.\t (+15) + (+22) = ................................\nc.\t (-27) + (+19) = .................................\n       ç.    (+47) + (-24) = .....................................\nd.\t (-8) + (+1\n---\n[sayfa 44] MATEMATİK  7\n45\n13\n4\n−\n rasyonel sayısını sayı doğrusunda gösterelim.\nÇÖZÜM: \n \n13\n4\n4\n4\n1\n(\n)\n(\n)\n(\n)\n(\n)\n4\n4\n4\n4\n4\n−\n−\n−\n−\n−\n=\n+\n+\n+\n\t\n\t\n  \n1\n1\n( 1)\n( 1)\n("
+    },
+    {
+      "filename": "matematik_1_1.pdf",
+      "file_size_mb": 130.4,
+      "total_pages": 193,
+      "assumed_grade": 1,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 226.0,
+      "avg_images_per_page": 5.9,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 1,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 0,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        7,
+        8
+      ],
+      "sample_text_excerpt": "[sayfa 26] 26\nDerenin \niçinde \nne var? \nTavşanın \netrafında \nneler var?\nÇukurda \nne var?\nÇocukların \narasında \nne var?\nAşağıdaki soruları cevaplayalım. Doğru \ncevaplara ait yuvarlağı boyayalım. \n14\n---\n[sayfa 28] 28\n2.\nBÖLÜM\nEş Nesneler\nAşağıdaki nesneleri görselden bularak yuvarlak \niçine alalım.\n1\nDÜŞÜNELİM\n---\n"
+    },
+    {
+      "filename": "matematik_1_2.pdf",
+      "file_size_mb": 113.2,
+      "total_pages": 161,
+      "assumed_grade": 1,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 388.0,
+      "avg_images_per_page": 14.3,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 1,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 0,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        7,
+        8,
+        22
+      ],
+      "sample_text_excerpt": "[sayfa 22] 22\nAşağıdaki toplama işlemlerini yapalım. \nToplama işlemlerine ait cümleleri örnekteki \ngibi yazalım. Yazdığımız cümleleri okuyalım.\nİki artı iki eşittir dört eder.\n2\n+\n+\n=\n2\n........\n........\n........\n+\n+\n+\n+\n+\n+\n=\n=\n=\n........\n........\n........\n........\n........\n........\n........\n........\n........\n---\n[sayfa 26] 26\nAşağıda yan yana ve alt alta verilen toplama \nişlemlerini örnekteki gibi yapalım.\n1.\n3.\n5.\n7.\n2.\n4.\n6.\n8.\n8+1=\n8\n1\n+\n3+3=\n3\n3\n+\n4+3=\n 4\n 3\n+\n9+3=\n9\n3\n+\n7+4=11\n7\n4\n11\n+\n5+2=\n5\n2\n+\n8+2=\n9+7=\n8\n2\n9\n7\n+\n+\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n....\n9\n---\n"
+    },
+    {
+      "filename": "matematik_2_1.pdf",
+      "file_size_mb": 16.5,
+      "total_pages": 182,
+      "assumed_grade": 2,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 487.0,
+      "avg_images_per_page": 2.6,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 1,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        7
+      ],
+      "sample_text_excerpt": "[sayfa 6] 6\n---\n[sayfa 26] 26\n26\nYAPALIM ÖĞRENELİM\n1 ders saati\nMalzemeler: Oyun küpü, tenis topu, ilaç kutuları, hediye kutuları gibi \nfarklı geometrik cisimler, göz bandı veya tülbent.\nEtkinlik Alanı: Sınıf.\nEtkinliğe Hazırlık\nGerçekleştirdiğimiz aşamaları işaretleyelim. \n\t••\t\nSınıfımızı dört gruba ayıralım. Her grup bir ta\n---\n[sayfa 28] 28\n28\n\t••\t\nGörseldeki köprünün yapımında genellikle ......................................... şekli \nkullanılmıştır. Nedenini araştıralım.\n1 Fotoğraflardaki geometrik şekillere benzeyen kısımları incele­\nyelim. Noktalı yerlere uygun ifadeleri yazalım.\n\t••\t\nGörseldeki güneş panelinde genellikle .....\n---\n"
+    },
+    {
+      "filename": "matematik_2_2.pdf",
+      "file_size_mb": 13.5,
+      "total_pages": 203,
+      "assumed_grade": 2,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 1055.0,
+      "avg_images_per_page": 4.2,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 0,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        6,
+        12,
+        15,
+        18,
+        20
+      ],
+      "sample_text_excerpt": "[sayfa 6] 7\nİÇİNDEKİLER\n7\n6. TEMA: VERİYE DAYALI ARAŞTIRMA .................................................160 \nVeri Toplama ve Değerlendirme .......................................................................................162\n6. Tema Değerlendirme  .....................................................\n---\n[sayfa 26] 27\n27\n3\nAsağıdaki bölme işlemlerinin sonuçlarını ardışık çıkarma ve \nbölme işlemi yaparak bulalım. Noktalı yerlere uygun sayıları \nyazalım.\n10 Antep fıstığını\n2 kişiye eşit olarak \npaylaştıralım.\nBir kişiye kaç Antep \nfıstığı düşer?\n10 - 2 = 8\n 8 - 2 = .......\n....... - 2 = .......\n....... - 2 = ...\n---\n[sayfa 28] 29\n29\n5\nVerilen problemleri defterimize çözelim.\nBerfin, 20 tane çıkartmayı defterinin 5 sayfasına eşit olarak \nyapıştırdı. Berfin her bir sayfaya kaç tane çı"
+    },
+    {
+      "filename": "matematik_5_1.pdf",
+      "file_size_mb": 56.2,
+      "total_pages": 171,
+      "assumed_grade": 5,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 1001.0,
+      "avg_images_per_page": 0.8,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 8,
+        "etkinlik": 6,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        6,
+        7,
+        8,
+        17
+      ],
+      "sample_text_excerpt": "[sayfa 6] İÇİNDEKİLER\n  1.TEMA:GEOMETRİK ŞEKİLLER\nHAZIR MIYIZ?.......................................................................................................... 14\nBAŞLAYALIM........................................................................................................... 15\nTEMEL GEOMETRİK Ş\n---\n[sayfa 22] 1. TEMA\n23\nAşağıdaki her bir görselde birer doğru parçası modeli belirleyiniz. Belirlediğiniz doğru par­\nçası modellerini isimlendirerek sembolle gösteriniz. Bu doğru parçalarının uzunluklarını cet­\nvel ile ölçüp ölçüm sonuçlarını doğru parçalarının altına santimetre cinsinden yazınız.\nAşağıdaki nok\n---\n[sayfa 26] 1. TEMA\n27\nEtkinlik 8\nEtkinlik 8\nPergel Kullanımı\nCanan öğretmenin öğrencileri ile oluştur­\nmaya çalıştığı geometrik şekli aşağıdaki \nkutuya çizmeye çalışınız"
+    },
+    {
+      "filename": "matematik_5_2.pdf",
+      "file_size_mb": 123.5,
+      "total_pages": 189,
+      "assumed_grade": 5,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 1416.0,
+      "avg_images_per_page": 3.5,
+      "math_symbols_in_sample": 38,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 3,
+        "etkinlik": 8,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        6,
+        7,
+        8,
+        20,
+        24
+      ],
+      "sample_text_excerpt": "[sayfa 6] İÇİNDEKİLER\nHAZIR MIYIZ?.......................................................................................................... 14\nBAŞLAYALIM........................................................................................................... 15\nKESİRLER.....................................\n---\n[sayfa 26] 27\n4.TEMA\nEtkinlik 6\nEtkinlik 6\nBir Aracın Yakıt Tüketimi\nBirinci hafta tükettiği \nyakıt miktarı\nHer 20 karenin \n13 tanesini boyayınız.\nİkinci hafta tükettiği \nyakıt miktarı\nHer 4 karenin \n3 tanesini boyayınız.\nÜçüncü hafta tükettiği \nyakıt miktarı\n100’lük tablonun bir tanesinin \ntamamını, diğerinin\n---\n[sayfa 28] 29\n4.TEMA\nÖrnek 6\nBuna göre aşağıdaki ifadelerde boş bırakılan yerlere yazılması gereken sayıları bulunuz.\nAşağıdaki modellemeyi ve modellemeyle ilişkili işle"
+    },
+    {
+      "filename": "matematik_6_1.pdf",
+      "file_size_mb": 8.2,
+      "total_pages": 222,
+      "assumed_grade": 6,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 1180.0,
+      "avg_images_per_page": 3.3,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 2,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 27,
+      "pymupdf_outline_sample": [
+        [
+          1,
+          "ÇARPANLAR",
+          16
+        ],
+        [
+          1,
+          "KATLAR",
+          21
+        ],
+        [
+          1,
+          "İZLEME TESTİ",
+          26
+        ],
+        [
+          1,
+          "KALANSIZ BÖLÜNEBİLME",
+          27
+        ],
+        [
+          1,
+          "İZLEME TESTİ",
+          37
+        ]
+      ],
+      "toc_candidate_pages": [
+        1,
+        6,
+        7
+      ],
+      "sample_text_excerpt": "[sayfa 6] İÇİNDEKİLER\n1. TEMA: SAYILAR VE NİCELİKLER (1)\n2. TEMA: İSTATİKSEL ARAŞTIRMA SÜRECİ\nHAZIR MIYIZ?.............................................................................................................14\nBAŞLAYALIM..................................................................................\n---\n[sayfa 26] 27\nEtkinlik 1\nZeynep Öğretmen, sınıfındaki öğrencilerle tek tek yarışacağı bir oyun tasarlamıştır. Bu \noyunun nasıl oynanacağına dair adımlar aşağıda verilmiştir. \n1. Adım: Öğretmen ve öğrenciler, üzerinde iki basamaklı doğal sayıların yazılı olduğu \nözdeş kartları birlikte hazırlar. Kartlar sayı ya\n---\n[sayfa 28] 29\nç) Farklı sayılar kullanarak yaptığınız genellemenin yönteminizi karşılayıp karşılamadı-\nğını kontrol ediniz.\nc) Topladığı fındık miktarının alabileceği bu"
+    },
+    {
+      "filename": "matematik_6_2.pdf",
+      "file_size_mb": 7.9,
+      "total_pages": 166,
+      "assumed_grade": 6,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 1120.0,
+      "avg_images_per_page": 2.6,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 1,
+        "etkinlik": 4,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 19,
+      "pymupdf_outline_sample": [
+        [
+          1,
+          "İKİ PARALEL DOĞRU VE İKİ KESEN",
+          21
+        ],
+        [
+          1,
+          "ÜÇGENİN AÇILARI",
+          24
+        ],
+        [
+          1,
+          "DÖRTGENLERİN ÖZELLİKLERİ",
+          26
+        ],
+        [
+          1,
+          "GERÇEK YAŞAM PROBLEMLERİ",
+          48
+        ],
+        [
+          1,
+          "İZLEME TESTİ",
+          51
+        ]
+      ],
+      "toc_candidate_pages": [
+        1,
+        6,
+        7
+      ],
+      "sample_text_excerpt": "[sayfa 6] İÇİNDEKİLER\n5. TEMA: GEOMETRİK ŞEKİLLER\n6. TEMA: İŞLEMLERLE CEBİRSEL DÜŞÜNME VE DEĞİŞİMLER\n7\nHAZIR MIYIZ?....................................................................................................... 14\nBAŞLAYALIM..............................................................................\n---\n[sayfa 22] 23\nEtkinlik 2 \nParalel Doğruların\nArasındaki Bölgede\nKesişen İki Kesen\nMalzemeler: boya kalemleri\nG\nC\nJ\nE\nD\nB\nM\nL\nA\nF\nH\nK\nO\nAşağıda iki paralel doğru ve bu doğruların arasındaki \nbölgede kesişen iki kesenle oluşturulmuş şekil veril-\nmiştir. Bu şekilde OJL ile BLJ iç ters açı çiftleri yeşile \nboyanmı\n---\n[sayfa 26] 27\nÖrnek 1\nİzometrik kâgıtta çizilen doğrulardan AB // DF'dir.\na) Bu şekilde oluşan farklı yamukların adlarını yazınız.\nc) Belirlediğiniz yamukların her biri "
+    }
+  ]
+}

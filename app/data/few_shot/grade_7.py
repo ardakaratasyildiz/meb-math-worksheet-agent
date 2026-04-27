@@ -306,4 +306,52 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Doğru orantı: 4/320 = 7/x → x = (7 × 320)/4 = 560.",
         },
     ],
+    "M.7.6.1": [
+        {
+            "type": QuestionType.SOZEL_PROBLEM,
+            "difficulty": "orta",
+            "question": "200 kişiyle yapılan bir ankette daire grafiğinde elma %35, armut %25, üzüm %30 olarak gösterilmiştir. Geri kalan kategori 'diğer'dir. Daire grafiğinde 'diğer' kaç kişiye karşılık gelir ve dilim kaç derece olmalıdır?",
+            "answer": "20 kişi; 36°",
+            "solution": "Diğer yüzdesi: 100 − (35 + 25 + 30) = 10. Kişi sayısı: 200 × 10/100 = 20. Dilim açısı: 360 × 10/100 = 36°.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "zor",
+            "question": "Bir okuldaki spor tercihi anketi daire grafiğinde basketbol 108°, futbol 144°, voleybol 72° dilime karşılık geliyor. Toplam 60 öğrenci ankete katıldıysa kalan kategoride kaç öğrenci vardır?",
+            "answer": "6 öğrenci",
+            "solution": "Kalan açı: 360 − (108 + 144 + 72) = 36°. Öğrenci sayısı: 60 × 36/360 = 6.",
+        },
+    ],
+    "M.7.6.2": [
+        {
+            "type": QuestionType.ISLEM,
+            "difficulty": "orta",
+            "question": "Bir öğrencinin haftalık deneme sınavı netleri 12, 14, 11, 16, 14, 18, 13'tür. Bu verilerin ortancası ve tepe değeri nedir?",
+            "answer": "Ortanca 14, tepe değer 14.",
+            "solution": "Sıralı: 11, 12, 13, 14, 14, 16, 18 → orta değer (4. sıra) = 14. En çok tekrar eden değer = 14.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "zor",
+            "question": "8 öğrencinin matematik notlarının aritmetik ortalaması 75'tir. En düşük notu çıkardıktan sonra ortalama 78'e yükselmiştir. Çıkarılan notun değeri kaçtır?",
+            "answer": "54",
+            "solution": "İlk toplam: 75 × 8 = 600. Yeni toplam: 78 × 7 = 546. Çıkan not: 600 − 546 = 54.",
+        },
+    ],
+    "M.7.7.1": [
+        {
+            "type": QuestionType.ISLEM,
+            "difficulty": "orta",
+            "question": "Bir zar atıldığında üst yüzüne 4'ten büyük bir sayı gelme olasılığını kesir, ondalık ve yüzde olarak ifade ediniz.",
+            "answer": "2/6 = 1/3 ≈ 0,33 ≈ %33,33",
+            "solution": "4'ten büyük sayılar: 5 ve 6. Toplam sonuç: 6. P = 2/6 = 1/3 ≈ 0,33 ≈ %33,33.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "zor",
+            "question": "Bir torbada 5 mavi, 4 kırmızı ve 3 yeşil top vardır. Torbadan rastgele çekilen bir topun mavi VEYA kırmızı olma olasılığı nedir? Sonucu yüzde olarak ifade ediniz.",
+            "answer": "9/12 = %75",
+            "solution": "Toplam top: 5+4+3 = 12. İstenen olay: 5+4 = 9. P = 9/12 = 0,75 = %75.",
+        },
+    ],
 }

@@ -146,6 +146,22 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Ortak payda 20: 15/20 − 8/20 = 7/20.",
         },
     ],
+    "M.5.2.5": [
+        {
+            "type": QuestionType.ISLEM,
+            "difficulty": "kolay",
+            "question": "200 sayısının %25'i kaçtır?",
+            "answer": "50",
+            "solution": "200 × 25/100 = 50.",
+        },
+        {
+            "type": QuestionType.SOZEL_PROBLEM,
+            "difficulty": "orta",
+            "question": "Bir kazak 480 TL'dir. Mağaza %20 indirim uyguladığında kazağın yeni fiyatı kaç TL olur?",
+            "answer": "384 TL",
+            "solution": "İndirim miktarı: 480 × 20/100 = 96 TL. Yeni fiyat: 480 − 96 = 384 TL.",
+        },
+    ],
     "M.5.3.1": [
         {
             "type": QuestionType.KAVRAM_SORUSU,
@@ -208,6 +224,22 @@ EXAMPLES: dict[str, list[dict]] = {
             "question": "Eni 5 m, boyu 8 m olan bir odanın zeminine halı serilecektir. Kaç m² halı gerekir?",
             "answer": "40 m²",
             "solution": "Dikdörtgenin alanı = en × boy = 5 × 8 = 40 m².",
+        },
+    ],
+    "M.5.3.5": [
+        {
+            "type": QuestionType.KAVRAM_SORUSU,
+            "difficulty": "kolay",
+            "question": "İki ucu belli olan, sınırlı ve uzunluğu ölçülebilen geometrik şekle ne ad verilir? Sembolünü açıklayınız.",
+            "answer": "Doğru parçası; AB doğru parçası [AB] sembolüyle gösterilir.",
+            "solution": "Doğru parçası iki ucu belli, sınırlı ve uzunluğu ölçülebilen şekildir. AB doğru parçası, A ve B noktaları arasındadır ve [AB] biçiminde yazılır.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "orta",
+            "question": "AB ve CD doğruları paralel ve EF doğrusu AB doğrusuna diktir. EF doğrusunun CD doğrusu ile ilişkisi nasıldır? Açıklayınız.",
+            "answer": "EF doğrusu CD doğrusuna da diktir.",
+            "solution": "AB // CD ve EF ⊥ AB ise, paralel doğrulara çizilen aynı dikme her iki doğruyla da aynı açıyı oluşturur. Bu nedenle EF ⊥ CD olur.",
         },
     ],
     "M.5.4.1": [
@@ -288,6 +320,22 @@ EXAMPLES: dict[str, list[dict]] = {
             "question": "Bir sayının 8 eksiği 14 ediyor. Bu sayıyı bulunuz.",
             "answer": "22",
             "solution": "x − 8 = 14. Buradan x = 14 + 8 = 22.",
+        },
+    ],
+    "M.5.6.1": [
+        {
+            "type": QuestionType.SOZEL_PROBLEM,
+            "difficulty": "kolay",
+            "question": "Bir sınıftaki 25 öğrencinin en sevdiği meyve sayıları şöyledir: elma 8, muz 6, çilek 7, üzüm 4. Bu veriyi sıklık tablosuna aktardığınızda en yüksek sıklığa sahip meyve hangisidir?",
+            "answer": "Elma (8)",
+            "solution": "Sıklıklar karşılaştırılır: elma=8, çilek=7, muz=6, üzüm=4. En yüksek sıklık 8 ile elmaya aittir.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "orta",
+            "question": "Bir sütun grafiğinde 3. sınıf 18 kitap, 4. sınıf 22 kitap, 5. sınıf 30 kitap okumuştur. 5. sınıfın okuduğu kitap sayısı, 3. sınıftan kaç fazladır ve toplam kaç kitap okunmuştur?",
+            "answer": "5. sınıf 12 kitap fazla okumuştur; toplam 70 kitap okunmuştur.",
+            "solution": "Fark: 30 − 18 = 12. Toplam: 18 + 22 + 30 = 70.",
         },
     ],
 }

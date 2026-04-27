@@ -66,6 +66,54 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Aradaki tam sayılar: −4, −3, −2, −1, 0, +1, +2, +3 → 8 adet.",
         },
     ],
+    "M.6.1.5": [
+        {
+            "type": QuestionType.KAVRAM_SORUSU,
+            "difficulty": "kolay",
+            "question": "36 sayısının tüm çarpanlarını yazınız ve bu sayının asal olup olmadığını belirtiniz.",
+            "answer": "Çarpanları: 1, 2, 3, 4, 6, 9, 12, 18, 36. Asal değildir.",
+            "solution": "36'yı bölen sayılar: 1, 2, 3, 4, 6, 9, 12, 18, 36. İkiden fazla çarpanı olduğu için asal değildir.",
+        },
+        {
+            "type": QuestionType.ISLEM,
+            "difficulty": "orta",
+            "question": "60 sayısını asal çarpanlarına ayırınız.",
+            "answer": "60 = 2² × 3 × 5",
+            "solution": "60 = 2 × 30 = 2 × 2 × 15 = 2 × 2 × 3 × 5. Yani 60 = 2² × 3 × 5.",
+        },
+    ],
+    "M.6.1.6": [
+        {
+            "type": QuestionType.ISLEM,
+            "difficulty": "orta",
+            "question": "12 ve 18 sayılarının OBEB ve OKEK değerlerini bulunuz.",
+            "answer": "OBEB(12,18) = 6, OKEK(12,18) = 36",
+            "solution": "12 = 2² × 3, 18 = 2 × 3². Ortak çarpanların en küçük üsleri: OBEB = 2 × 3 = 6. Tüm çarpanların en büyük üsleri: OKEK = 2² × 3² = 36.",
+        },
+        {
+            "type": QuestionType.SOZEL_PROBLEM,
+            "difficulty": "orta",
+            "question": "Bir minibüs her 15 dakikada bir, başka bir minibüs her 20 dakikada bir kalkıyor. İkisi aynı anda kalktıktan kaç dakika sonra ilk kez aynı anda tekrar kalkar?",
+            "answer": "60 dakika",
+            "solution": "İlk birlikte kalkış zamanı OKEK(15, 20) = 60 dakika sonra olur.",
+        },
+    ],
+    "M.6.1.7": [
+        {
+            "type": QuestionType.KAVRAM_SORUSU,
+            "difficulty": "kolay",
+            "question": "456 sayısı 2, 3, 4, 5, 6, 9 ve 10 sayılarından hangilerine kalansız bölünür?",
+            "answer": "2, 3, 4 ve 6",
+            "solution": "Birler basamağı 6 → çift, 2'ye bölünür. 4+5+6=15, 3'ün katı → 3'e bölünür; ve 2 ile 3 birlikte → 6. Son iki basamak 56 → 4'e bölünür. Birler 0/5 değil → 5 ve 10 hayır. 1+5=6 ≠ 9'un katı → 9 hayır.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "orta",
+            "question": "Üç basamaklı 5_2 sayısı 3'e tam bölünür. Boş basamağa hangi rakamlar yazılabilir?",
+            "answer": "{2, 5, 8}",
+            "solution": "Sayının rakam toplamı 3'ün katı olmalı. 5 + ? + 2 = 7 + ?. 7 + ? ∈ {9, 12, 15} → ? ∈ {2, 5, 8}.",
+        },
+    ],
     "M.6.2.1": [
         {
             "type": QuestionType.ISLEM,
@@ -130,6 +178,22 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "24,50 × 3 = 73,50 TL.",
         },
     ],
+    "M.6.2.5": [
+        {
+            "type": QuestionType.SOZEL_PROBLEM,
+            "difficulty": "orta",
+            "question": "Bir telefonun fiyatı 8.000 TL'dir. Etikete %15 indirim sonrasında %20 KDV eklenecektir. Telefonun son fiyatı kaç TL olur?",
+            "answer": "8.160 TL",
+            "solution": "İndirimli fiyat: 8.000 × 0,85 = 6.800 TL. KDV ekli fiyat: 6.800 × 1,20 = 8.160 TL.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "zor",
+            "question": "Bir öğrencinin not ortalaması 80 olup, sınav sayısı 5'tir. Bir sınav daha yapılırsa ortalamanın 82 olabilmesi için son sınavdan kaç almalıdır?",
+            "answer": "92",
+            "solution": "Mevcut toplam: 80 × 5 = 400. Yeni toplam 82 × 6 = 492. Son not: 492 − 400 = 92.",
+        },
+    ],
     "M.6.3.1": [
         {
             "type": QuestionType.ISLEM,
@@ -176,6 +240,38 @@ EXAMPLES: dict[str, list[dict]] = {
             "question": "Yamuk şeklinde bir bahçenin paralel kenarları 12 m ve 18 m, yüksekliği 10 m'dir. Alanı kaç m²'dir?",
             "answer": "150 m²",
             "solution": "(12 + 18) × 10 / 2 = 300 / 2 = 150.",
+        },
+    ],
+    "M.6.3.4": [
+        {
+            "type": QuestionType.KAVRAM_SORUSU,
+            "difficulty": "kolay",
+            "question": "Bir açının ölçüsü 35°'dir. Bu açının tümler ve bütünler açılarının ölçülerini bulunuz.",
+            "answer": "Tümleri 55°, bütünleri 145°.",
+            "solution": "Tümler açılar toplamı 90°: 90 − 35 = 55. Bütünler açılar toplamı 180°: 180 − 35 = 145.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "orta",
+            "question": "İki doğrunun kesişiminde oluşan komşu açılardan biri 110°'dir. Bu doğrunun ters açısı ile diğer komşu açının ölçülerini bulunuz.",
+            "answer": "Ters açı 110°, diğer komşu açı 70°.",
+            "solution": "Ters açılar eşittir → ters açı 110°. Komşu açılar bütünlerdir → 180 − 110 = 70°.",
+        },
+    ],
+    "M.6.3.5": [
+        {
+            "type": QuestionType.ISLEM,
+            "difficulty": "kolay",
+            "question": "Bir çemberin yarıçapı 7 cm'dir. Çapı kaç cm'dir?",
+            "answer": "14 cm",
+            "solution": "Çap = 2 × yarıçap = 2 × 7 = 14 cm.",
+        },
+        {
+            "type": QuestionType.KAVRAM_SORUSU,
+            "difficulty": "orta",
+            "question": "Bir çember üzerinde A ve B noktaları işaretlenmiştir. [AB] doğru parçası çemberin merkezinden geçmiyorsa bu doğru parçasına ne ad verilir?",
+            "answer": "Kiriş",
+            "solution": "Çember üzerindeki iki noktayı birleştiren ve merkezden geçmeyen doğru parçasına kiriş denir. Merkezden geçen kirişe ise çap denir.",
         },
     ],
     "M.6.4.1": [
@@ -256,6 +352,70 @@ EXAMPLES: dict[str, list[dict]] = {
             "question": "2x − 9 = 11 denkleminin çözümünü yapınız.",
             "answer": "x = 10",
             "solution": "2x = 20 → x = 10.",
+        },
+    ],
+    "M.6.5.4": [
+        {
+            "type": QuestionType.KAVRAM_SORUSU,
+            "difficulty": "kolay",
+            "question": "Bir kapının açılma sürecini adım adım yazınız (ilk adım: kapının önüne git).",
+            "answer": "1) Kapının önüne git. 2) Kapı koluna uzan. 3) Kapı kolunu aşağı bastır. 4) Kapıyı it veya çek. 5) İçeri/dışarı geç. 6) Kapı kolunu bırak.",
+            "solution": "Algoritma, bir işi gerçekleştirmek için sırasıyla uygulanan adımlar dizisidir. Her adım net ve sıralı yazılır.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "orta",
+            "question": "Bir sayının çift mi tek mi olduğunu belirleyen algoritmayı yazınız (giriş: sayı; çıkış: 'Çift' veya 'Tek').",
+            "answer": "1) Sayıyı al. 2) Sayıyı 2'ye böl. 3) Eğer kalan 0 ise 'Çift' yaz, değilse 'Tek' yaz. 4) Bitir.",
+            "solution": "Akış şemasında 'Eğer kalan = 0 mı?' karar adımı kullanılır; doğru ise 'Çift', yanlış ise 'Tek' çıktısı verir.",
+        },
+    ],
+    "M.6.6.1": [
+        {
+            "type": QuestionType.SOZEL_PROBLEM,
+            "difficulty": "orta",
+            "question": "Bir sınıfın aylık okuduğu kitap sayıları sütun grafiğinde Eylül 18, Ekim 24, Kasım 30, Aralık 22 olarak gösterilmiştir. Eylül ve Aralık ayları toplamı, Kasım ayından kaç fazladır?",
+            "answer": "10 kitap fazladır",
+            "solution": "Eylül + Aralık = 18 + 22 = 40. Fark: 40 − 30 = 10.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "orta",
+            "question": "Bir çizgi grafiğinde bir çiçeğin haftalık boy uzunluğu (cm) sırasıyla 4, 7, 11, 16, 22 olarak verilmiştir. Çiçeğin boy artış miktarı hangi haftadan sonra giderek artmıştır?",
+            "answer": "Her haftadan sonra artış miktarı artmıştır (3, 4, 5, 6).",
+            "solution": "Hafta farkları: 7−4=3, 11−7=4, 16−11=5, 22−16=6. Artış miktarı her hafta 1 cm fazlalaşıyor.",
+        },
+    ],
+    "M.6.6.2": [
+        {
+            "type": QuestionType.ISLEM,
+            "difficulty": "orta",
+            "question": "5, 8, 8, 10, 12, 15 sayılarının aritmetik ortalama, ortanca ve tepe değerini bulunuz.",
+            "answer": "Ortalama 9,67 (≈9,7), ortanca 9, tepe değer 8.",
+            "solution": "Toplam = 58, ortalama = 58/6 ≈ 9,67. Sıralı veride orta iki değer 8 ve 10 → ortanca = (8+10)/2 = 9. En sık tekrar eden değer 8.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "zor",
+            "question": "5 öğrencinin matematik notlarının ortalaması 80'dir. 6. öğrenci dahil edildiğinde ortalama 78'e düşmektedir. 6. öğrencinin notu kaçtır?",
+            "answer": "68",
+            "solution": "İlk toplam = 80 × 5 = 400. Yeni toplam = 78 × 6 = 468. 6. notun değeri = 468 − 400 = 68.",
+        },
+    ],
+    "M.6.7.1": [
+        {
+            "type": QuestionType.KAVRAM_SORUSU,
+            "difficulty": "kolay",
+            "question": "Adil bir madeni para havaya atıldığında 'tura' gelmesi olayının olasılığı nedir?",
+            "answer": "1/2",
+            "solution": "Madeni paranın iki yüzünden biri tura. Eş olası iki sonuç: P(tura) = 1/2.",
+        },
+        {
+            "type": QuestionType.AKIL_YURUTME,
+            "difficulty": "orta",
+            "question": "Bir torbada 4 mavi, 3 kırmızı ve 5 yeşil top vardır. Torbadan rastgele çekilen bir topun yeşil olma olasılığını kesir olarak yazınız.",
+            "answer": "5/12",
+            "solution": "Toplam top sayısı 4+3+5 = 12. Yeşil top sayısı 5. P(yeşil) = 5/12.",
         },
     ],
 }

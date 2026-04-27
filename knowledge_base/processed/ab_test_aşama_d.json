@@ -1,0 +1,964 @@
+{
+  "results": [
+    {
+      "grade": 5,
+      "kazanim_kod": "M.5.2.5",
+      "topic_id": "kesirler",
+      "difficulty": "orta",
+      "include_textbook": false,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 0,
+      "elapsed_sec": 13.8,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.119,
+      "unique_context_tokens": 24,
+      "sample_contexts": [
+        "bütünün",
+        "eder",
+        "ekmek",
+        "ekmektir",
+        "ekmeğin",
+        "elbise",
+        "elbisenin",
+        "fiyatı",
+        "fırında",
+        "günlük",
+        "ifadesi",
+        "ifadeyi",
+        "indirimle",
+        "indirimli",
+        "kepekli"
+      ],
+      "avg_question_chars": 74.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.5.2.5",
+          "question": "240 sayısının %30'u kaçtır?",
+          "answer": "72",
+          "solution_excerpt": "240 sayısının %30'unu bulmak için, 240 ile 30/100 kesrini çarparız. Yani 240 × (30/100) = 240 × 0.30 = 72."
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.5.2.5",
+          "question": "500 sayısının %15'i kaçtır?",
+          "answer": "75",
+          "solution_excerpt": "500 sayısının %15'ini bulmak için, 500 ile 15/100 kesrini çarparız. Yani 500 × (15/100) = 500 × 0.15 = 75."
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.5.2.5",
+          "question": "Bir fırında günlük üretilen 300 ekmeğin %10'u kepekli ekmektir. Bu fırında kaç adet kepekli ekmek üretilmektedir?",
+          "answer": "30",
+          "solution_excerpt": "Toplam ekmek sayısı 300'dür. Kepekli ekmek oranı %10'dur. Kepekli ekmek sayısını bulmak için 300 sayısının %10'unu hesaplarız. 300 × (10/100) = 300 × 0.10 = 30."
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.5.2.5",
+          "question": "Bir mağazada 600 TL'ye satılan bir elbise, sezonda %25 indirimle satılmaktadır. Elbisenin indirimli fiyatı kaç TL olur?",
+          "answer": "450 TL",
+          "solution_excerpt": "Elbisenin fiyatı 600 TL'dir. Uygulanan indirim oranı %25'tir. İlk olarak indirim miktarını buluruz: 600 × (25/100) = 600 × 0.25 = 150 TL. Elbisenin indirimli fiyatını bulmak için ana fiyattan indirim "
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.5.2.5",
+          "question": "%45 ifadesi, bir bütünün kaçta kaçını temsil eder? Bu ifadeyi kesir olarak yazınız.",
+          "answer": "45/100",
+          "solution_excerpt": "Yüzde sembolü (% ) bir sayının 100'e bölünmüş halini ifade eder. Bu nedenle %45 ifadesi, 45 sayısının 100'e bölünmesi anlamına gelir ve kesir olarak 45/100 şeklinde yazılır."
+        }
+      ]
+    },
+    {
+      "grade": 5,
+      "kazanim_kod": "M.5.2.5",
+      "topic_id": "kesirler",
+      "difficulty": "orta",
+      "include_textbook": true,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 3,
+      "elapsed_sec": 8.8,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.118,
+      "unique_context_tokens": 19,
+      "sample_contexts": [
+        "açıklayınız",
+        "bulunan",
+        "bulunmaktadır",
+        "eden",
+        "eder",
+        "hayvanın",
+        "ifade",
+        "koyun",
+        "koyundur",
+        "neyi",
+        "otobüste",
+        "sembolü",
+        "seyahat",
+        "yolcu",
+        "yolcunun"
+      ],
+      "avg_question_chars": 58.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.5.2.5",
+          "question": "320 sayısının %25'i kaçtır?",
+          "answer": "80",
+          "solution_excerpt": "Bir sayının %25'ini bulmak için sayıyı 100'e bölüp 25 ile çarparız veya sayıyı 4'e böleriz. 320 ÷ 4 = 80."
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.5.2.5",
+          "question": "540 sayısının %10'u kaçtır?",
+          "answer": "54",
+          "solution_excerpt": "Bir sayının %10'unu bulmak için sayıyı 100'e bölüp 10 ile çarparız veya sayıyı 10'a böleriz. 540 ÷ 10 = 54."
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.5.2.5",
+          "question": "Bir otobüste seyahat eden 80 yolcunun %40'ı çocuktur. Bu otobüste kaç tane çocuk yolcu bulunmaktadır?",
+          "answer": "32 çocuk yolcu",
+          "solution_excerpt": "Çocuk yolcu sayısını bulmak için toplam yolcu sayısının %40'ını hesaplarız. 80 × (40/100) = 80 × 0,40 = 32. Yani 32 çocuk yolcu vardır."
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.5.2.5",
+          "question": "Bir çiftlikte bulunan 450 hayvanın %20'si koyundur. Bu çiftlikte kaç tane koyun vardır?",
+          "answer": "90 koyun",
+          "solution_excerpt": "Koyun sayısını bulmak için toplam hayvan sayısının %20'sini hesaplarız. 450 × (20/100) = 450 × 0,20 = 90. Yani çiftlikte 90 tane koyun vardır."
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.5.2.5",
+          "question": "Yüzde sembolü (%) neyi ifade eder? Açıklayınız.",
+          "answer": "Yüzde sembolü (%), bir bütünün 100 eşit parçaya bölündüğünde, bu parçalardan kaç tanesinin alındığını gösteren bir ifade biçimidir.",
+          "solution_excerpt": "Yüzde sembolünün tanımı yapılır."
+        }
+      ]
+    },
+    {
+      "grade": 5,
+      "kazanim_kod": "M.5.6.1",
+      "topic_id": "veri_isleme",
+      "difficulty": "orta",
+      "include_textbook": false,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "static",
+      "textbook_chunks_used": 0,
+      "elapsed_sec": 12.9,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.106,
+      "unique_context_tokens": 59,
+      "sample_contexts": [
+        "ayran",
+        "azdır",
+        "bardak",
+        "barınakta",
+        "barınağında",
+        "belirleriz",
+        "biber",
+        "bilgileri",
+        "boyunca",
+        "bulunan",
+        "bulunmaktadır",
+        "domates",
+        "fazladır",
+        "gösteren",
+        "günü"
+      ],
+      "avg_question_chars": 234,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir okuldaki satranç kulübüne 35 öğrenci, resim kulübüne 28 öğrenci, müzik kulübüne 42 öğrenci katılmıştır. Satranç kulübüne katılan öğrenci sayısı, resim kulübüne katılan öğrenci sayısından kaç fazladır? Müzik kulübüne katılan öğrenci sayısı ile satranç kulübüne katılan öğrenci sayısının toplamı kaçtır?",
+          "answer": "Satranç kulübü 7 öğrenci fazladır; toplam 77 öğrenci.",
+          "solution_excerpt": "1. Satranç kulübüne katılan öğrenci sayısı ile resim kulübüne katılan öğrenci sayısı arasındaki fark bulunur: 35 - 28 = 7 öğrenci.\n2. Müzik kulübüne katılan öğrenci sayısı ile satranç kulübüne katılan"
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir manavda pazartesi 48 kg domates, salı 35 kg salatalık, çarşamba 52 kg biber satılmıştır. Pazartesi ve salı günü satılan toplam sebze miktarı kaç kg'dır? Çarşamba günü satılan biber miktarı, salı günü satılan salatalık miktarından kaç kg fazladır?",
+          "answer": "Pazartesi ve salı günü satılan toplam sebze miktarı 83 kg'dır; çarşamba günü 17 kg fazla biber satılmıştır.",
+          "solution_excerpt": "1. Pazartesi ve salı günü satılan toplam sebze miktarı bulunur: 48 kg + 35 kg = 83 kg.\n2. Çarşamba günü satılan biber miktarı ile salı günü satılan salatalık miktarı arasındaki fark bulunur: 52 kg - 3"
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir hayvan barınağında 24 kedi, 18 köpek ve 12 kuş bulunmaktadır. Bu barınakta bulunan kedi sayısı, köpek sayısından kaç fazladır? Kuşların sayısı, kedilerin ve köpeklerin toplam sayısından ne kadar azdır?",
+          "answer": "Kedi sayısı köpek sayısından 6 fazladır; kuş sayısı kedilerin ve köpeklerin toplam sayısından 30 azdır.",
+          "solution_excerpt": "1. Kedi sayısı ile köpek sayısı arasındaki fark bulunur: 24 - 18 = 6.\n2. Kedilerin ve köpeklerin toplam sayısı bulunur: 24 + 18 = 42.\n3. Kuşların sayısı ile kedilerin ve köpeklerin toplam sayısı arası"
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir okul kantininde bir hafta boyunca 65 kutu süt, 40 şişe su ve 50 bardak ayran satılmıştır. Satılan süt sayısı, satılan su sayısından kaç fazladır? Bu hafta boyunca satılan toplam içecek sayısı kaçtır?",
+          "answer": "Satılan süt sayısı, satılan su sayısından 25 fazladır; bu hafta boyunca toplam 155 içecek satılmıştır.",
+          "solution_excerpt": "1. Satılan süt sayısı ile satılan su sayısı arasındaki fark bulunur: 65 - 40 = 25.\n2. Bu hafta boyunca satılan toplam içecek sayısı bulunur: 65 + 40 + 50 = 155."
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir sınıftaki öğrencilerin en sevdiği renkleri gösteren bir sıklık tablosu oluşturulduğunda, bu tablodan hangi bilgileri kolayca öğrenebiliriz? En az sevilen rengi veya en çok sevilen rengi nasıl belirleriz?",
+          "answer": "Sıklık tablosundan her bir rengi seven öğrenci sayısını ve toplam öğrenci sayısını kolayca öğrenebiliriz. En az sevilen renk, sıklığı (seven öğrenci sayısı) en küçük olan renktir; en çok sevilen renk ise sıklığı en büyük olan renktir.",
+          "solution_excerpt": "1. Sıklık tablosunun, belirli kategorilere ait verilerin (bu durumda renklerin) kaçar kez tekrar ettiğini (sıklığını) gösterdiği açıklanır.\n2. Her rengin karşısındaki sayıya bakılarak o rengi seven öğ"
+        }
+      ]
+    },
+    {
+      "grade": 5,
+      "kazanim_kod": "M.5.6.1",
+      "topic_id": "veri_isleme",
+      "difficulty": "orta",
+      "include_textbook": true,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "static",
+      "textbook_chunks_used": 3,
+      "elapsed_sec": 15.5,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.074,
+      "unique_context_tokens": 88,
+      "sample_contexts": [
+        "amaçları",
+        "aracın",
+        "arasındaki",
+        "araç",
+        "araçları",
+        "araştırma",
+        "araştırmadan",
+        "araştırmanın",
+        "araştırılmıştır",
+        "avantajlı",
+        "aşağıdaki",
+        "basketbolu",
+        "bilim",
+        "birbirine",
+        "bisiklet"
+      ],
+      "avg_question_chars": 294,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir mağazada bir haftanın ilk üç gününde satılan defter sayıları aşağıdaki gibidir: Pazartesi günü 45 defter, Salı günü 58 defter ve Çarşamba günü 37 defter satılmıştır. Salı günü satılan defter sayısı, Pazartesi günü satılan defter sayısından kaç fazladır?",
+          "answer": "13 defter fazladır.",
+          "solution_excerpt": "1. Salı günü satılan defter sayısı: 58\n2. Pazartesi günü satılan defter sayısı: 45\n3. Farkı bulmak için çıkarma işlemi yapılır: 58 - 45 = 13"
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir okul kütüphanesinde bulunan kitapların türlerine göre sayıları şöyledir: Macera kitapları 125 adet, Bilim Kurgu kitapları 98 adet, Tarih kitapları 110 adet. Kütüphanedeki macera kitaplarının sayısı, bilim kurgu kitaplarının sayısından kaç fazladır ve toplamda macera ile tarih kitaplarının sayısı kaçtır?",
+          "answer": "Macera kitapları 27 adet fazladır. Macera ve tarih kitaplarının toplamı 235 adettir.",
+          "solution_excerpt": "1. Macera kitapları ile bilim kurgu kitapları arasındaki farkı bulmak için çıkarma işlemi yapılır: 125 - 98 = 27\n2. Macera kitapları ile tarih kitaplarının toplam sayısını bulmak için toplama işlemi y"
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir sınıftaki öğrencilerin en sevdiği spor dalları araştırılmıştır. Bu araştırmanın sonuçlarına göre futbolu 15 öğrenci, basketbolu 12 öğrenci, voleybolu 8 öğrenci ve yüzmeyi 5 öğrenci sevmektedir. Bu verilere göre en çok sevilen iki spor dalı arasındaki öğrenci sayısı farkı kaçtır ve en az sevilen spor dalı hangisidir?",
+          "answer": "En çok sevilen iki spor dalı arasındaki fark 3 öğrencidir. En az sevilen spor dalı yüzmedir.",
+          "solution_excerpt": "1. Verilen bilgilere göre en çok sevilen spor dalı futbol (15 öğrenci), ikinci en çok sevilen spor dalı ise basketbol (12 öğrenci) dir.\n2. Bu iki spor dalı arasındaki farkı bulmak için çıkarma işlemi "
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir mahallede yaşayan kişilerin en çok tercih ettiği ulaşım araçları hakkında bir araştırma yapılıyor ve sonuçlar kaydediliyor. Otobüs 75 kişi, metro 50 kişi, özel araç 65 kişi ve bisiklet 30 kişi tarafından tercih ediliyor. Bu verilere göre, otobüs ve özel araç tercih edenlerin toplam sayısı ile metro ve bisiklet tercih edenlerin toplam sayısı arasındaki fark kaçtır?",
+          "answer": "Fark 60'tır.",
+          "solution_excerpt": "1. Otobüs ve özel araç tercih edenlerin toplam sayısı bulunur: 75 + 65 = 140\n2. Metro ve bisiklet tercih edenlerin toplam sayısı bulunur: 50 + 30 = 80\n3. İki toplam arasındaki farkı bulmak için çıkarm"
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.5.6.1",
+          "question": "Bir araştırmadan elde edilen verileri düzenlemek ve görselleştirmek için kullanılan sıklık tablosu ve sütun grafiğinin temel amaçları nelerdir? Bu iki aracın birbirine göre avantajlı olduğu durumlar neler olabilir?",
+          "answer": "Sıklık tablosu ve sütun grafiğinin temel amacı, toplanan verileri düzenleyerek anlaşılır hâle getirmek ve karşılaştırmalar yapmayı kolaylaştırmaktır. Sıklık tablosu verilerin sayısal değerlerini ve her bir kategorinin kaç kez tekrarlandığını (sıklığını) net bir şekilde gösterirken, sütun grafiği bu sıklıkları görsel olarak daha çarpıcı ve hızlı anlaşılır bir biçimde sunar. Sıklık tablosu, detaylı sayısal bilgiye ihtiyaç duyulan durumlarda, sütun grafiği ise verilerin genel dağılımını ve kategoriler arası büyüklük farklarını hızlıca görmek istendiğinde daha avantajlıdır.",
+          "solution_excerpt": "1. Sıklık tablosunun ve sütun grafiğinin genel amaçları belirtilir: verileri düzenleme, anlaşılır kılma, karşılaştırma yapma.\n2. Sıklık tablosunun avantajı açıklanır: detaylı sayısal değerleri ve sıkl"
+        }
+      ]
+    },
+    {
+      "grade": 6,
+      "kazanim_kod": "M.6.1.5",
+      "topic_id": "dogal_sayilar",
+      "difficulty": "orta",
+      "include_textbook": false,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 0,
+      "elapsed_sec": 22.4,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.103,
+      "unique_context_tokens": 34,
+      "sample_contexts": [
+        "arasından",
+        "asal",
+        "açıklayınız",
+        "belirleyiniz",
+        "düzenlemesi",
+        "istiyor",
+        "katıdır",
+        "koşulu",
+        "kısaca",
+        "listeleyiniz",
+        "olacak",
+        "olanları",
+        "olanlarını",
+        "olduğuna",
+        "olmasının"
+      ],
+      "avg_question_chars": 127.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.6.1.5",
+          "question": "84 sayısını asal çarpanlarının çarpımı şeklinde yazınız.",
+          "answer": "84 = 2² × 3 × 7",
+          "solution_excerpt": "84 sayısını asal çarpanlarına ayırmak için bölme algoritması kullanılır: 84 ÷ 2 = 42, 42 ÷ 2 = 21, 21 ÷ 3 = 7, 7 ÷ 7 = 1. Böylece 84 = 2 × 2 × 3 × 7 = 2² × 3 × 7 olarak yazılır."
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.6.1.5",
+          "question": "72 sayısının tüm çarpanlarını bulunuz. Bu çarpanlar arasından asal olanlarını listeleyiniz.",
+          "answer": "Çarpanları: 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36, 72. Asal çarpanları: 2, 3.",
+          "solution_excerpt": "1. 72 sayısının tüm çarpanlarını bulalım: 1 × 72, 2 × 36, 3 × 24, 4 × 18, 6 × 12, 8 × 9. Yani çarpanları: 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36, 72'dir. 2. Bu çarpanlar arasından asal olanları belirleye"
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.1.5",
+          "question": "Bir çiçekçi, 90 adet papatyayı eşit sayıda olmak üzere farklı vazoları yerleştirmek istiyor. Her vazodaki papatya sayısı asal bir sayı olacak şekilde kaç farklı vazo düzenlemesi yapabilir?",
+          "answer": "3 farklı düzenleme yapabilir.",
+          "solution_excerpt": "1. Çiçekçinin toplam 90 adet papatyası vardır. Her vazodaki papatya sayısı eşit ve asal bir sayı olmalıdır. 2. Bunun için 90 sayısının asal çarpanlarını bulmalıyız. 90 = 2 × 3 × 3 × 5 = 2 × 3² × 5. 3."
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.1.5",
+          "question": "Bir sayı hem 4'ün hem de 6'nın bir katıdır. Bu sayı 80'den küçük olduğuna göre, bu koşulu sağlayan en büyük sayının asal çarpanlarını bulunuz.",
+          "answer": "2 ve 3",
+          "solution_excerpt": "1. Hem 4'ün hem de 6'nın katı olan sayılar, 4 ve 6'nın en küçük ortak katının (EKOK) katlarıdır. EKOK(4, 6) = 12'dir. 2. Bu sayının 80'den küçük olması gerektiği için, 12'nin 80'den küçük katlarını bu"
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.6.1.5",
+          "question": "51 sayısının tüm çarpanlarını listeleyiniz. Bu çarpanlar arasından asal olanları belirleyiniz ve bir sayının asal olmasının temel şartını kısaca açıklayınız.",
+          "answer": "Çarpanları: 1, 3, 17, 51. Asal çarpanları: 3, 17. Asal sayılar, 1'den büyük olup 1 ve kendisinden başka pozitif tam böleni olmayan doğal sayılardır.",
+          "solution_excerpt": "1. 51 sayısının tüm çarpanlarını bulalım: 1 × 51 = 51, 3 × 17 = 51. Yani çarpanları: 1, 3, 17, 51'dir. 2. Bu çarpanlar arasından asal olanları belirleyelim. Asal sayılar 1'den büyük ve yalnızca 1 ile "
+        }
+      ]
+    },
+    {
+      "grade": 6,
+      "kazanim_kod": "M.6.1.5",
+      "topic_id": "dogal_sayilar",
+      "difficulty": "orta",
+      "include_textbook": true,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 3,
+      "elapsed_sec": 21.7,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.044,
+      "unique_context_tokens": 45,
+      "sample_contexts": [
+        "ancak",
+        "arasındaki",
+        "arasından",
+        "asal",
+        "basamaklı",
+        "belirtiniz",
+        "boncuk",
+        "boncuklardan",
+        "boncukları",
+        "defa",
+        "ders",
+        "dersleri",
+        "eğer",
+        "fitness",
+        "günden"
+      ],
+      "avg_question_chars": 155.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.6.1.5",
+          "question": "108 sayısının asal çarpanlarının çarpımı şeklinde yazılışını bulunuz.",
+          "answer": "2² × 3³",
+          "solution_excerpt": "1. 108 sayısını asal çarpanlarına ayırmak için bölme algoritmasını kullanırız:\n   108 ÷ 2 = 54\n   54 ÷ 2 = 27\n   27 ÷ 3 = 9\n   9 ÷ 3 = 3\n   3 ÷ 3 = 1\n2. Bu durumda 108 sayısının asal çarpanlarının çar"
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.6.1.5",
+          "question": "72 sayısının tüm pozitif çarpanlarını listeleyiniz ve bu çarpanlar arasından asal olanları belirtiniz.",
+          "answer": "Çarpanlar: 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36, 72. Asal çarpanlar: 2, 3.",
+          "solution_excerpt": "1. 72 sayısının tüm pozitif çarpanlarını bulmak için 72'yi tam bölen sayıları sırayla belirleriz: 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36, 72.\n2. Bu çarpanlar arasından asal sayı tanımına uyanları (1'den "
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.1.5",
+          "question": "Bir takı tasarımcısı, 1'den 50'ye kadar numaralandırılmış boncuklardan sadece asal sayı olanları kullanarak bir kolye yapmayı planlamaktadır. Ancak, 5'in katı olan boncukları kolye yapımında kullanmamaya karar vermiştir. Tasarımcının kolye için kullanabileceği kaç farklı asal boncuk vardır?",
+          "answer": "14 farklı asal boncuk vardır.",
+          "solution_excerpt": "1. 1'den 50'ye kadar olan asal sayıları listeleyelim: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47. Toplam 15 asal sayı vardır.\n2. Tasarımcı 5'in katı olan boncukları kullanmayacaktır. Asal "
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.1.5",
+          "question": "Bir spor salonunda fitness dersleri her 4 günde bir, yoga dersleri ise her 6 günde bir yapılmaktadır. Eğer bu iki ders ilk kez aynı gün yapıldıysa, bu ilk günden sonraki 70 gün içinde kaç defa daha aynı gün yapılırlar?",
+          "answer": "5 defa",
+          "solution_excerpt": "1. Fitness dersleri 4'ün katı olan günlerde (4, 8, 12, 16, ...) ve yoga dersleri 6'nın katı olan günlerde (6, 12, 18, 24, ...) yapılır.\n2. İki dersin ilk kez birlikte yapıldığı gün, 4 ve 6'nın en küçü"
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.6.1.5",
+          "question": "İki basamaklı en küçük asal sayı ile iki basamaklı en büyük asal sayı arasındaki fark kaçtır?",
+          "answer": "86",
+          "solution_excerpt": "1. İki basamaklı sayılar 10'dan başlar. 10 asal değildir. 11 asal bir sayıdır. Dolayısıyla iki basamaklı en küçük asal sayı 11'dir.\n2. İki basamaklı sayılar 99'a kadar devam eder. 99, 98 asal değildir"
+        }
+      ]
+    },
+    {
+      "grade": 6,
+      "kazanim_kod": "M.6.6.2",
+      "topic_id": "veri_isleme",
+      "difficulty": "orta",
+      "include_textbook": false,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 0,
+      "elapsed_sec": 43.1,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.247,
+      "unique_context_tokens": 68,
+      "sample_contexts": [
+        "adetleri",
+        "aldıkları",
+        "anlama",
+        "arada",
+        "aritmetik",
+        "ayrı",
+        "açıklayınız",
+        "aşağıdaki",
+        "bahçede",
+        "başarı",
+        "bilgi",
+        "bilgiler",
+        "birinin",
+        "birlikte",
+        "boyları"
+      ],
+      "avg_question_chars": 265,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Aşağıdaki veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayarak, bu değerlerin veri grubu hakkında ne ifade ettiğini kısaca açıklayınız: 14, 17, 12, 17, 15, 14, 17",
+          "answer": "Aritmetik Ortalama: 15.14 (yaklaşık), Ortanca: 15, Tepe Değeri: 17. Verilerin ortalaması yaklaşık 15.14 olup, en çok tekrar eden değer 17'dir. Verilerin yarısı 15'ten küçük, diğer yarısı 15'ten büyüktür.",
+          "solution_excerpt": "1. Verileri küçükten büyüğe sıralayalım: 12, 14, 14, 15, 17, 17, 17.\n2. Aritmetik ortalamayı bulmak için tüm verileri toplayıp veri sayısına bölelim: (12 + 14 + 14 + 15 + 17 + 17 + 17) / 7 = 106 / 7 ≈"
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Verilen sayı grubunun aritmetik ortalamasını, ortancasını ve tepe değerini bulunuz. Bu değerleri kullanarak veri grubunun merkezi eğilimleri hakkında kısa bir yorum yapınız: 32, 28, 35, 32, 29, 30",
+          "answer": "Aritmetik Ortalama: 31, Ortanca: 30.5, Tepe Değeri: 32. Veri grubunun ortalaması 31'dir. Sayıların yarısı 30.5'ten küçük, yarısı ise büyüktür. En sık rastlanan değer 32'dir.",
+          "solution_excerpt": "1. Verileri küçükten büyüğe sıralayalım: 28, 29, 30, 32, 32, 35.\n2. Aritmetik ortalamayı bulmak için tüm verileri toplayıp veri sayısına bölelim: (28 + 29 + 30 + 32 + 32 + 35) / 6 = 186 / 6 = 31.\n3. O"
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Bir bahçede yetiştirilen 8 adet fidanın boyları (santimetre cinsinden) aşağıdaki gibidir: 25, 30, 28, 25, 32, 27, 25, 35. Bu veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayınız. Fidanların boy dağılımı hakkında bu ölçütlerin bir arada ne gibi bilgiler verdiğini yorumlayınız.",
+          "answer": "Aritmetik Ortalama: 28.375 cm, Ortanca: 27.5 cm, Tepe Değeri: 25 cm. Fidan boylarının ortalaması yaklaşık 28.375 cm'dir. Fidanların yarısının boyu 27.5 cm'den az, yarısının ise fazladır. En çok 25 cm boyunda fidan bulunmaktadır.",
+          "solution_excerpt": "1. Verileri küçükten büyüğe sıralayalım: 25, 25, 25, 27, 28, 30, 32, 35.\n2. Aritmetik ortalamayı bulmak için tüm verileri toplayıp veri sayısına bölelim: (25 + 25 + 25 + 27 + 28 + 30 + 32 + 35) / 8 = "
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Bir marketin bir haftalık yoğurt satış adetleri (kilogram) sırasıyla 120, 150, 130, 140, 150, 110, 150 şeklindedir. Bu veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayarak, marketin yoğurt satış performansı hakkında bir değerlendirme yapınız.",
+          "answer": "Aritmetik Ortalama: 135.71 (yaklaşık), Ortanca: 140, Tepe Değeri: 150. Marketin günlük ortalama yoğurt satışı yaklaşık 135.71 kg'dır. Satışların yarısı 140 kg'dan az, diğer yarısı ise fazladır. En sık satılan yoğurt miktarı 150 kg'dır.",
+          "solution_excerpt": "1. Verileri küçükten büyüğe sıralayalım: 110, 120, 130, 140, 150, 150, 150.\n2. Aritmetik ortalamayı bulmak için tüm verileri toplayıp veri sayısına bölelim: (110 + 120 + 130 + 140 + 150 + 150 + 150) /"
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Bir grup öğrencinin katıldığı deneme sınavından aldıkları puanlar şöyledir: 60, 70, 80, 70, 90, 65, 70. Bu veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayınız. Ardından, bu üç ölçütün her birinin öğrenci puanları hakkında ayrı ayrı ne anlama geldiğini ve birlikte sınıfın genel başarı düzeyi hakkında ne tür bir bilgi verdiğini açıklayınız.",
+          "answer": "Aritmetik Ortalama: 72.14 (yaklaşık), Ortanca: 70, Tepe Değeri: 70. Aritmetik ortalama, tüm puanların genel ortalamasını; ortanca, puanların tam ortasındaki değeri (yarısı bu değerden az, yarısı fazla); tepe değeri ise en sık alınan puanı gösterir. Bu değerler birlikte, sınıfın genel başarı düzeyinin ortalama 72.14 olduğunu, ancak puanların çoğunlukla 70 civarında yoğunlaştığını ifade eder.",
+          "solution_excerpt": "1. Verileri küçükten büyüğe sıralayalım: 60, 65, 70, 70, 70, 80, 90.\n2. Aritmetik ortalamayı bulmak için tüm verileri toplayıp veri sayısına bölelim: (60 + 65 + 70 + 70 + 70 + 80 + 90) / 7 = 505 / 7 ≈"
+        }
+      ]
+    },
+    {
+      "grade": 6,
+      "kazanim_kod": "M.6.6.2",
+      "topic_id": "veri_isleme",
+      "difficulty": "orta",
+      "include_textbook": true,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 3,
+      "elapsed_sec": 13.2,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.282,
+      "unique_context_tokens": 42,
+      "sample_contexts": [
+        "aritmetik",
+        "ayakkabı",
+        "ayrı",
+        "açıklama",
+        "açıklayınız",
+        "aşağıdaki",
+        "bahçesindeki",
+        "bilgiler",
+        "birinin",
+        "birlikte",
+        "dağılımı",
+        "değerini",
+        "dizisinin",
+        "durağın",
+        "durağından"
+      ],
+      "avg_question_chars": 195.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Aşağıdaki veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayınız: 15, 20, 18, 15, 22, 25, 15.",
+          "answer": "Aritmetik Ortalama: 18.57 (yaklaşık), Ortanca: 18, Tepe Değeri: 15.",
+          "solution_excerpt": "1. Veri grubunu küçükten büyüğe sıralayınız: 15, 15, 15, 18, 20, 22, 25.\n2. Aritmetik ortalama: Tüm verilerin toplamını (15+15+15+18+20+22+25 = 130) veri sayısına (7) bölünüz. 130 / 7 ≈ 18.57.\n3. Orta"
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Aşağıdaki sayı dizisinin aritmetik ortalamasını, ortancasını ve tepe değerini bulunuz: 30, 35, 28, 30, 40, 32.",
+          "answer": "Aritmetik Ortalama: 32.5, Ortanca: 31, Tepe Değeri: 30.",
+          "solution_excerpt": "1. Veri grubunu küçükten büyüğe sıralayınız: 28, 30, 30, 32, 35, 40.\n2. Aritmetik ortalama: Tüm verilerin toplamını (28+30+30+32+35+40 = 195) veri sayısına (6) bölünüz. 195 / 6 = 32.5.\n3. Ortanca: Ver"
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Bir otobüs durağından 6 farklı saatte geçen yolcu sayıları sırasıyla 45, 52, 48, 55, 45, 60'tır. Bu veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayarak, durağın yoğunluğu hakkında bir yorum yapınız.",
+          "answer": "Aritmetik Ortalama: 50.83 (yaklaşık), Ortanca: 50, Tepe Değeri: 45. Durağın ortalama yoğunluğu yaklaşık 50.83 yolcu olup, en sık 45 yolcu geçtiği saatler olmuştur. Yoğunluk genellikle 45 ile 55 yolcu arasında değişmektedir.",
+          "solution_excerpt": "1. Veri grubunu küçükten büyüğe sıralayınız: 45, 45, 48, 52, 55, 60.\n2. Aritmetik ortalama: Tüm verilerin toplamını (45+45+48+52+55+60 = 305) veri sayısına (6) bölünüz. 305 / 6 ≈ 50.83.\n3. Ortanca: Ve"
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Bir gruptaki 7 kişinin yaşları 12, 15, 13, 12, 16, 14, 17 şeklindedir. Bu veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayarak, grubun yaş dağılımı hakkında bir açıklama yapınız.",
+          "answer": "Aritmetik Ortalama: 14.14 (yaklaşık), Ortanca: 14, Tepe Değeri: 12. Grubun ortalama yaşı yaklaşık 14.14 olup, yaşların yarısı 14'ten az, diğer yarısı ise 14'ten fazladır. En sık görülen yaş 12'dir.",
+          "solution_excerpt": "1. Veri grubunu küçükten büyüğe sıralayınız: 12, 12, 13, 14, 15, 16, 17.\n2. Aritmetik ortalama: Tüm verilerin toplamını (12+12+13+14+15+16+17 = 99) veri sayısına (7) bölünüz. 99 / 7 ≈ 14.14.\n3. Ortanc"
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.6.6.2",
+          "question": "Bir okul bahçesindeki 9 öğrencinin ayakkabı numaraları şu şekildedir: 36, 38, 37, 36, 39, 40, 37, 36, 38. Bu veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayınız. Ayakkabı numaralarının dağılımı hakkında bu üç ölçütün her birinin ayrı ayrı ve birlikte ne tür bilgiler verdiğini açıklayınız.",
+          "answer": "Aritmetik Ortalama: 37.44 (yaklaşık), Ortanca: 37, Tepe Değeri: 36. Ortalama ayakkabı numarası yaklaşık 37.44 olup, öğrencilerin yarısının ayakkabı numarası 37'den küçük veya eşit, diğer yarısının ise 37'den büyük veya eşittir. En çok karşılaşılan ayakkabı numarası 36'dır.",
+          "solution_excerpt": "1. Veri grubunu küçükten büyüğe sıralayınız: 36, 36, 36, 37, 37, 38, 38, 39, 40.\n2. Aritmetik ortalama: Tüm verilerin toplamını (36+36+36+37+37+38+38+39+40 = 337) veri sayısına (9) bölünüz. 337 / 9 ≈ "
+        }
+      ]
+    },
+    {
+      "grade": 6,
+      "kazanim_kod": "M.6.7.1",
+      "topic_id": "olasilik",
+      "difficulty": "orta",
+      "include_textbook": false,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 0,
+      "elapsed_sec": 11.6,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.124,
+      "unique_context_tokens": 50,
+      "sample_contexts": [
+        "asal",
+        "asılıdır",
+        "atölyesi",
+        "atıldığında",
+        "bilim",
+        "bulunmaktadır",
+        "büyüklükteki",
+        "durumu",
+        "ediniz",
+        "elma",
+        "etkinliği",
+        "gelen",
+        "ifade",
+        "ilanı",
+        "ilanın"
+      ],
+      "avg_question_chars": 149.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.6.7.1",
+          "question": "1'den 15'e kadar numaralandırılmış eş büyüklükteki kartlar bir kutuya konulmuştur. Kutudan rastgele çekilen bir kartın tek sayı olma olasılığını kesir olarak ifade ediniz.",
+          "answer": "8/15",
+          "solution_excerpt": "1. Kutudaki toplam kart sayısı 15'tir.\n2. 1'den 15'e kadar olan sayılardan tek olanlar 1, 3, 5, 7, 9, 11, 13, 15 olmak üzere 8 tanedir.\n3. Çekilen kartın tek sayı olma olasılığı, tek sayıların sayısın"
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.6.7.1",
+          "question": "Bir standart zar atıldığında üst yüze gelen sayının asal sayı olma olasılığı nedir?",
+          "answer": "1/2",
+          "solution_excerpt": "1. Standart bir zar atıldığında gelebilecek sayılar 1, 2, 3, 4, 5, 6 olmak üzere toplam 6 olası durum vardır.\n2. Bu sayılardan asal olanlar 2, 3, 5 olmak üzere 3 tanedir.\n3. Olayın olasılığı, asal say"
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.7.1",
+          "question": "Bir meyve sepetinde 6 elma, 9 portakal ve 5 muz bulunmaktadır. Sepetten rastgele seçilen bir meyvenin portakal olma olasılığını kesir olarak yazınız.",
+          "answer": "9/20",
+          "solution_excerpt": "1. Sepetteki toplam meyve sayısı 6 (elma) + 9 (portakal) + 5 (muz) = 20'dir.\n2. Seçilen meyvenin portakal olma durumu, portakal sayısına eşittir: 9 adet.\n3. Olasılık, portakal sayısının toplam meyve s"
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.7.1",
+          "question": "Bir okul panosunda 10 adet spor etkinliği ilanı, 8 adet bilim kulübü ilanı ve 7 adet sanat atölyesi ilanı asılıdır. Panodan rastgele seçilen bir ilanın spor etkinliği veya sanat atölyesi ilanı olma olasılığı nedir?",
+          "answer": "17/25",
+          "solution_excerpt": "1. Panodaki toplam ilan sayısı 10 (spor) + 8 (bilim) + 7 (sanat) = 25'tir.\n2. Seçilen ilanın spor etkinliği veya sanat atölyesi ilanı olma durumu, bu iki tür ilanın toplamıdır: 10 + 7 = 17 adet.\n3. Ol"
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.6.7.1",
+          "question": "Bir torbada sadece kırmızı renkli toplar bulunmaktadır. Torbadan rastgele çekilen bir topun kırmızı olma olasılık durumu nedir?",
+          "answer": "Kesin olay",
+          "solution_excerpt": "1. Torbada bulunan tüm toplar kırmızı renklidir.\n2. Torbadan çekilecek her top mutlaka kırmızı olacaktır.\n3. Bu nedenle, çekilen topun kırmızı olması durumu kesin bir olaydır."
+        }
+      ]
+    },
+    {
+      "grade": 6,
+      "kazanim_kod": "M.6.7.1",
+      "topic_id": "olasilik",
+      "difficulty": "orta",
+      "include_textbook": true,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 3,
+      "elapsed_sec": 15.9,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.122,
+      "unique_context_tokens": 50,
+      "sample_contexts": [
+        "atıldığında",
+        "bulunmaktadır",
+        "büyüklükteki",
+        "değerinde",
+        "durumuna",
+        "ediniz",
+        "gelen",
+        "ifade",
+        "kartlar",
+        "kartın",
+        "kesir",
+        "kitabın",
+        "kitaplar",
+        "konulmuştur",
+        "kumbarada"
+      ],
+      "avg_question_chars": 166.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.6.7.1",
+          "question": "1'den 18'e kadar numaralandırılmış eş büyüklükteki kartlar bir kutuya konulmuştur. Kutudan rastgele çekilen bir kartın 4'ün katı olma olasılığını kesir olarak ifade ediniz.",
+          "answer": "2/9",
+          "solution_excerpt": "1. Kutudaki toplam kart sayısını belirleyin (1'den 18'e kadar olduğu için 18 kart vardır).\n2. 1'den 18'e kadar olan sayılar arasında 4'ün katı olan sayıları bulun (4, 8, 12, 16 olmak üzere 4 tanedir)."
+        },
+        {
+          "n": 2,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.7.1",
+          "question": "Bir çiçekçide 9 gül, 7 papatya ve 4 lale bulunmaktadır. Müşterinin rastgele seçtiği bir çiçeğin papatya olma olasılığı nedir?",
+          "answer": "7/20",
+          "solution_excerpt": "1. Çiçekçideki toplam çiçek sayısını bulun (9 gül + 7 papatya + 4 lale = 20 çiçek).\n2. İstenen durum olan papatya sayısını belirleyin (7 papatya).\n3. Papatya seçme olasılığını, papatya sayısının topla"
+        },
+        {
+          "n": 3,
+          "type": "islem",
+          "kazanim_kod": "M.6.7.1",
+          "question": "Bir küpün yüzeylerinde 1, 2, 3, 4, 5, 6 sayıları yazmaktadır. Bu küp bir kez atıldığında üst yüze gelen sayının hem çift hem de 5'ten küçük olma olasılığını kesir olarak bulunuz.",
+          "answer": "1/3",
+          "solution_excerpt": "1. Küp atıldığında gelebilecek tüm olası durumları belirleyin (1, 2, 3, 4, 5, 6 olmak üzere toplam 6 durum vardır).\n2. Üst yüze gelen sayının hem çift hem de 5'ten küçük olma koşulunu sağlayan durumla"
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.6.7.1",
+          "question": "Bir kumbarada 10 tane 1 TL, 8 tane 50 kuruş ve 12 tane 25 kuruş değerinde madeni para vardır. Kumbaradan rastgele çekilen bir madeni paranın 1 TL veya 25 kuruş olma olasılığını kesir olarak yazınız.",
+          "answer": "11/15",
+          "solution_excerpt": "1. Kumbaradaki toplam madeni para sayısını bulun (10 tane 1 TL + 8 tane 50 kuruş + 12 tane 25 kuruş = 30 para).\n2. Çekilen paranın 1 TL veya 25 kuruş olma durumlarını belirleyin (10 tane 1 TL ve 12 ta"
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.6.7.1",
+          "question": "Bir rafta sadece kırmızı renkli kitaplar bulunmaktadır. Bu raftan rastgele seçilen bir kitabın mavi renkli olma olasılığı hangi olasılık durumuna örnektir?",
+          "answer": "İmkansız olay",
+          "solution_excerpt": "1. Rafta bulunan kitapların renklerini belirleyin (sadece kırmızı renkli kitaplar).\n2. Seçilmek istenen kitabın rengini belirleyin (mavi renkli).\n3. Rafta mavi renkli kitap olmadığı için, mavi renkli "
+        }
+      ]
+    },
+    {
+      "grade": 7,
+      "kazanim_kod": "M.7.7.1",
+      "topic_id": "olasilik",
+      "difficulty": "orta",
+      "include_textbook": false,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 0,
+      "elapsed_sec": 14.9,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.322,
+      "unique_context_tokens": 43,
+      "sample_contexts": [
+        "alınan",
+        "anlama",
+        "arasından",
+        "asal",
+        "bilyeler",
+        "bilyenin",
+        "bulunmaktadır",
+        "durumun",
+        "ediniz",
+        "elma",
+        "erkek",
+        "geldiğini",
+        "ifade",
+        "kesir",
+        "kutuda"
+      ],
+      "avg_question_chars": 183.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.7.7.1",
+          "question": "1'den 20'ye kadar olan tam sayılar arasından rastgele seçilen bir sayının tek sayı olma olasılığını kesir, ondalık ve yüzde olarak hesaplayınız.",
+          "answer": "1/2, 0.5, %50",
+          "solution_excerpt": "1. Toplam olası durum sayısı bulunur: 1'den 20'ye kadar 20 tam sayı vardır.\n2. İstenen durum sayısı bulunur: 1'den 20'ye kadar olan tek sayılar (1, 3, 5, 7, 9, 11, 13, 15, 17, 19) olmak üzere 10 taned"
+        },
+        {
+          "n": 2,
+          "type": "islem",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir torbada 1'den 10'a kadar numaralandırılmış on top bulunmaktadır. Bu torbadan rastgele çekilen bir topun üzerindeki sayının asal sayı olma olasılığını kesir, ondalık ve yüzde olarak ifade ediniz.",
+          "answer": "2/5, 0.4, %40",
+          "solution_excerpt": "1. Torbadaki toplam top sayısı bulunur: 10.\n2. Üzerindeki sayı asal olan top sayısı belirlenir: 1'den 10'a kadar olan asal sayılar (2, 3, 5, 7) olmak üzere 4 tanedir.\n3. Olasılık kesir olarak hesaplan"
+        },
+        {
+          "n": 3,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir sınıfta 12 kız öğrenci ve 18 erkek öğrenci bulunmaktadır. Bu sınıftan rastgele seçilen bir öğrencinin erkek öğrenci olma olasılığını kesir, ondalık ve yüzde olarak hesaplayınız.",
+          "answer": "3/5, 0.6, %60",
+          "solution_excerpt": "1. Sınıftaki toplam öğrenci sayısı bulunur: 12 kız + 18 erkek = 30 öğrenci.\n2. İstenen durum sayısı (erkek öğrenci sayısı) belirlenir: 18.\n3. Erkek öğrenci seçme olasılığı kesir olarak hesaplanır: Erk"
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir meyve sepetinde 8 adet elma, 7 adet portakal ve 5 adet muz bulunmaktadır. Sepetten rastgele alınan bir meyvenin portakal olma olasılığını kesir, ondalık ve yüzde olarak ifade ediniz.",
+          "answer": "7/20, 0.35, %35",
+          "solution_excerpt": "1. Sepetteki toplam meyve sayısı bulunur: 8 elma + 7 portakal + 5 muz = 20 meyve.\n2. İstenen durum sayısı (portakal sayısı) belirlenir: 7.\n3. Portakal seçme olasılığı kesir olarak hesaplanır: Portakal"
+        },
+        {
+          "n": 5,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir kutuda sadece kırmızı bilyeler bulunmaktadır. Bu kutudan rastgele çekilen bir bilyenin mavi olma olasılığını kesir, ondalık ve yüzde olarak ifade ediniz ve bu durumun ne anlama geldiğini yorumlayınız.",
+          "answer": "0/X = 0, 0.0, %0. Bu durum, olayın imkansız olduğunu gösterir.",
+          "solution_excerpt": "1. Kutudaki mavi bilye sayısı belirlenir: Kutuda hiç mavi bilye olmadığı için mavi bilye sayısı 0'dır.\n2. Kutudaki toplam bilye sayısı belirlenir (örneğin 10 kırmızı bilye olsa bile sonuç değişmez).\n3"
+        }
+      ]
+    },
+    {
+      "grade": 7,
+      "kazanim_kod": "M.7.7.1",
+      "topic_id": "olasilik",
+      "difficulty": "orta",
+      "include_textbook": true,
+      "model_used": "gemini-2.5-flash",
+      "few_shot_source": "rag",
+      "textbook_chunks_used": 2,
+      "elapsed_sec": 11.4,
+      "produced": 5,
+      "expected": 5,
+      "type_distribution": {
+        "islem": 2,
+        "sozel_problem": 2,
+        "kavram_sorusu": 1
+      },
+      "avg_pairwise_jaccard": 0.322,
+      "unique_context_tokens": 40,
+      "sample_contexts": [
+        "asal",
+        "atıldığında",
+        "bulunmaktadır",
+        "ediniz",
+        "erkek",
+        "gelen",
+        "gözlüklüdür",
+        "gözlüksüz",
+        "ifade",
+        "kadın",
+        "kalem",
+        "kalemin",
+        "kesir",
+        "kutuda",
+        "kutudan"
+      ],
+      "avg_question_chars": 160.0,
+      "questions": [
+        {
+          "n": 1,
+          "type": "islem",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir kutuda 1'den 20'ye kadar numaralandırılmış toplar bulunmaktadır. Kutudan rastgele çekilen bir topun üzerindeki sayının 4'ün katı olma olasılığını kesir, ondalık ve yüzde olarak hesaplayınız.",
+          "answer": "Kesir: 1/5, Ondalık: 0.2, Yüzde: %20",
+          "solution_excerpt": "1. Kutudaki toplam top sayısı 20'dir.\n2. 1'den 20'ye kadar olan sayılar arasında 4'ün katları olan sayılar: 4, 8, 12, 16, 20 olmak üzere 5 tanedir.\n3. Olasılık (kesir olarak): İstenen durum sayısı / T"
+        },
+        {
+          "n": 2,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir torbada 7 mavi, 8 kırmızı ve 5 sarı kalem bulunmaktadır. Bu torbadan rastgele seçilen bir kalemin kırmızı olma olasılığını kesir, ondalık ve yüzde olarak ifade ediniz.",
+          "answer": "Kesir: 2/5, Ondalık: 0.4, Yüzde: %40",
+          "solution_excerpt": "1. Torbadaki toplam kalem sayısı: 7 (mavi) + 8 (kırmızı) + 5 (sarı) = 20 kalem.\n2. Kırmızı kalem sayısı: 8.\n3. Kırmızı kalem çekme olasılığı (kesir olarak): Kırmızı kalem sayısı / Toplam kalem sayısı "
+        },
+        {
+          "n": 3,
+          "type": "kavram_sorusu",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir zar atıldığında üst yüze gelen sayının asal sayı olma olasılığını kesir, ondalık ve yüzde olarak hesaplayınız.",
+          "answer": "Kesir: 1/2, Ondalık: 0.5, Yüzde: %50",
+          "solution_excerpt": "1. Adil bir zar atıldığında gelebilecek tüm olası durumlar: {1, 2, 3, 4, 5, 6} olmak üzere 6 tanedir.\n2. Bu sayılar arasından asal olanlar (kendisi ve 1'den başka böleni olmayan 1'den büyük sayılar): "
+        },
+        {
+          "n": 4,
+          "type": "sozel_problem",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir otobüste 15 erkek ve 10 kadın yolcu bulunmaktadır. Bu otobüsten rastgele seçilen bir yolcunun kadın olma olasılığını kesir, ondalık ve yüzde olarak bulunuz.",
+          "answer": "Kesir: 2/5, Ondalık: 0.4, Yüzde: %40",
+          "solution_excerpt": "1. Otobüsteki toplam yolcu sayısı: 15 (erkek) + 10 (kadın) = 25 yolcu.\n2. Kadın yolcu sayısı: 10.\n3. Kadın yolcu seçme olasılığı (kesir olarak): Kadın yolcu sayısı / Toplam yolcu sayısı = 10/25 = 2/5."
+        },
+        {
+          "n": 5,
+          "type": "islem",
+          "kazanim_kod": "M.7.7.1",
+          "question": "Bir sınıftaki 32 öğrencinin 12'si gözlüklüdür. Sınıftan rastgele seçilen bir öğrencinin gözlüksüz olma olasılığını kesir, ondalık ve yüzde olarak ifade ediniz.",
+          "answer": "Kesir: 5/8, Ondalık: 0.625, Yüzde: %62.5",
+          "solution_excerpt": "1. Sınıftaki toplam öğrenci sayısı 32'dir.\n2. Gözlüklü öğrenci sayısı 12 ise, gözlüksüz öğrenci sayısı: 32 - 12 = 20'dir.\n3. Gözlüksüz öğrenci seçme olasılığı (kesir olarak): Gözlüksüz öğrenci sayısı "
+        }
+      ]
+    }
+  ]
+}

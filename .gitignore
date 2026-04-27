@@ -16,3 +16,5 @@ ENV/
 .vscode/
 .DS_Store
 .claude/
+knowledge_base/chroma_db/
+knowledge_base/*.pdf

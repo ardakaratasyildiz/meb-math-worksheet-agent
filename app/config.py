@@ -7,6 +7,12 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
     gemini_fallback_models: str = "gemini-2.5-flash-lite,gemini-2.5-pro"
+    gemini_embedding_model: str = "gemini-embedding-001"
+
+    use_rag: bool = True
+    chroma_db_path: str = "knowledge_base/chroma_db"
+    chroma_collection: str = "meb_examples"
+
     app_host: str = "0.0.0.0"
     app_port: int = 8000
     app_reload: bool = True

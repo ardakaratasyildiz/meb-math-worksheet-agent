@@ -50,22 +50,67 @@ def _format_distribution(distribution: dict[QuestionType, int]) -> str:
     return "\n".join(lines)
 
 
-def _format_few_shot(examples: list[dict], target_difficulty: Difficulty) -> str:
+def _format_few_shot(
+    examples: list[dict],
+    target_difficulty: Difficulty,
+    source: str = "static",
+) -> str:
     if not examples:
         return ""
-    lines = [
-        "",
-        f"Hedef zorluk ({target_difficulty.value}) için MEB ders kitabı tarzında örnek sorular "
-        "(ASLA bu sayıları/bağlamları kopyalama; stil ve seviye referansı):",
-    ]
+    header = (
+        f"Hedef zorluk ({target_difficulty.value}) için MEB müfredat havuzundan seçilmiş örnek sorular "
+        "(ASLA bu sayıları/bağlamları kopyalama; stil, seviye ve çeşitlilik referansı):"
+    )
+    if source == "rag":
+        header = (
+            f"Hedef zorluk ({target_difficulty.value}) için vector store'dan alınmış ilgili örnek sorular "
+            "(MEB müfredatı + sentetik zengin corpus). Stil, seviye ve çeşitlilik referansı — "
+            "sayıları/bağlamları KOPYALAMA."
+        )
+    lines = ["", header]
     for i, ex in enumerate(examples, start=1):
         qt = ex["type"]
         qt_value = qt.value if isinstance(qt, QuestionType) else str(qt)
         ex_diff = ex.get("difficulty", "orta")
-        lines.append(f"\n[Örnek {i} — Tip: {qt_value} | Zorluk: {ex_diff}]")
+        ex_src = ex.get("source")
+        src_suffix = f" | Kaynak: {ex_src}" if ex_src else ""
+        lines.append(f"\n[Örnek {i} — Tip: {qt_value} | Zorluk: {ex_diff}{src_suffix}]")
         lines.append(f"Soru: {ex['question']}")
         lines.append(f"Cevap: {ex['answer']}")
         lines.append(f"Çözüm: {ex['solution']}")
+    return "\n".join(lines)
+
+
+def _format_textbook_context(chunks: list[dict]) -> str:
+    """MEB ders kitabından alınmış chunk'ları referans bağlam olarak biçimler."""
+    if not chunks:
+        return ""
+    lines = [
+        "",
+        "MEB DERS KİTABINDAN İLGİLİ İÇERİK (referans olarak — KOPYALAMA, sadece stil/seviye/bağlam ipucu olarak kullan):",
+    ]
+    for i, c in enumerate(chunks, 1):
+        page = c.get("page_start")
+        page_str = f" sayfa {page}" if page is not None else ""
+        header = c.get("header") or "kavram"
+        ct = c.get("content_type") or ""
+        ct_label = {
+            "textbook_example": "Örnek",
+            "textbook_activity": "Etkinlik",
+            "textbook_problem": "Problem",
+            "textbook_exercise": "Alıştırma",
+            "textbook_concept": "Kavram",
+            "curriculum_expansion": "Müfredat dışı bağlam",
+        }.get(ct, ct)
+        src = c.get("source") or ""
+        text = (c.get("question") or "")[:700]
+        lines.append(f"\n[Kaynak {i} — {ct_label} | {src}{page_str} | başlık: {header}]")
+        lines.append(text)
+    lines.append("")
+    lines.append(
+        "Yukarıdaki ders kitabı içerikleri SADECE bağlam ve seviye referansıdır. "
+        "Aynı sayıları, isimleri veya senaryoları KOPYALAMA — kendi sorularını farklı bağlamlarla üret."
+    )
     return "\n".join(lines)
 
 
@@ -112,6 +157,8 @@ def build_user_prompt(
     distribution: dict[QuestionType, int],
     few_shot_examples: list[dict],
     context_exclusions: list[str] | None = None,
+    few_shot_source: str = "static",
+    textbook_chunks: list[dict] | None = None,
 ) -> str:
     parts = [
         f"Sınıf: {grade}. sınıf",
@@ -121,7 +168,8 @@ def build_user_prompt(
         f"Üretilecek Soru Sayısı: {question_count}",
         "",
         _format_distribution(distribution),
-        _format_few_shot(few_shot_examples, difficulty),
+        _format_few_shot(few_shot_examples, difficulty, source=few_shot_source),
+        _format_textbook_context(textbook_chunks or []),
         _format_exclusions(context_exclusions or []),
         "",
         f"Yukarıdaki kriterlere göre tam {question_count} adet soru üret. "

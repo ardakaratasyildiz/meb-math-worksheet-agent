@@ -25,6 +25,7 @@ from app.services.diversity import (
 )
 from app.services.examples import get_examples_for_kazanim
 from app.services.history import GENERATION_HISTORY, HistoryKey
+from app.services.retriever import ExampleRetriever, get_retriever
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,7 @@ def _select_kazanimlar(
     )
 
 
-def _collect_few_shot(
+def _collect_few_shot_static(
     grade: int,
     kazanimlar: list[Kazanim],
     distribution: dict[QuestionType, int],
@@ -69,7 +70,7 @@ def _collect_few_shot(
     max_total: int,
     rng: random.Random,
 ) -> list[dict]:
-    """Hedef kazanım + zorluğa uyan few-shot örnekleri seçer; hedef zorluğa olabildiğince yakın tutar."""
+    """Statik (manuel) few-shot havuzundan örnek toplar — RAG kapalıysa veya fallback."""
     preferred = list(distribution.keys())
     pool: list[dict] = []
     for k in kazanimlar:
@@ -82,10 +83,103 @@ def _collect_few_shot(
             rng=rng,
         )
         pool.extend(examples)
-    # Hedef zorluktakiler önde kalsın — rastgele karıştırmak yerine hafif jitter.
     pool.sort(
         key=lambda e: (0 if e.get("difficulty") == target_difficulty else 1, rng.random()),
     )
+    return pool[:max_total]
+
+
+def _collect_few_shot_rag(
+    retriever: ExampleRetriever,
+    grade: int,
+    topic_id: str,
+    kazanimlar: list[Kazanim],
+    target_difficulty: str,
+    max_total: int,
+    rng: random.Random,
+) -> list[dict]:
+    """Her hedef kazanım için vector store'dan örnek çeker, birleştirir."""
+    pool: list[dict] = []
+    per_kazanim = max(2, max_total // max(len(kazanimlar), 1))
+    for k in kazanimlar:
+        query = f"{k['metin']} {k.get('difficulty_hints', {}).get(target_difficulty, '')}"
+        retrieved = retriever.retrieve(
+            query_text=query,
+            grade=grade,
+            kazanim_kod=k["kod"],
+            topic_id=topic_id,
+            difficulty=target_difficulty,
+            k=per_kazanim,
+        )
+        pool.extend(retrieved)
+
+    # Rastgele jitter + tercihe göre sıralama (hedef zorluk önde).
+    rng.shuffle(pool)
+    pool.sort(
+        key=lambda e: (0 if e.get("difficulty") == target_difficulty else 1,)
+    )
+    return pool[:max_total]
+
+
+def _collect_few_shot(
+    grade: int,
+    topic_id: str,
+    kazanimlar: list[Kazanim],
+    distribution: dict[QuestionType, int],
+    target_difficulty: str,
+    max_total: int,
+    rng: random.Random,
+) -> tuple[list[dict], str]:
+    """RAG veya statik havuzdan few-shot toplar. İkinci değer kaynak ('rag' / 'static')."""
+    if settings.use_rag:
+        retriever = get_retriever()
+        if retriever is not None and retriever.count() > 0:
+            rag_pool = _collect_few_shot_rag(
+                retriever, grade, topic_id, kazanimlar, target_difficulty, max_total, rng
+            )
+            if rag_pool:
+                return rag_pool, "rag"
+    static_pool = _collect_few_shot_static(
+        grade, kazanimlar, distribution, target_difficulty, max_total, rng
+    )
+    return static_pool, "static"
+
+
+def _collect_textbook_context(
+    grade: int,
+    topic_id: str,
+    kazanimlar: list[Kazanim],
+    target_difficulty: str,
+    max_total: int = 3,
+) -> list[dict]:
+    """MEB ders kitabından bağlam chunk'ları çeker. RAG kapalıysa veya retriever yoksa boş döner."""
+    if not settings.use_rag:
+        return []
+    retriever = get_retriever()
+    if retriever is None or retriever.count() == 0:
+        return []
+    pool: list[dict] = []
+    per_kazanim = max(1, max_total // max(len(kazanimlar), 1))
+    seen_ids: set[str] = set()
+    for k in kazanimlar:
+        query = f"{k['metin']} {k.get('difficulty_hints', {}).get(target_difficulty, '')}"
+        try:
+            chunks = retriever.retrieve_textbook(
+                query_text=query,
+                grade=grade,
+                kazanim_kod=k["kod"],
+                topic_id=topic_id,
+                k=per_kazanim,
+            )
+        except Exception as exc:
+            logger.warning("Textbook retrieval başarısız (%s): %s", k["kod"], exc)
+            continue
+        for c in chunks:
+            cid = f"{c.get('source')}|{c.get('page_start')}|{c.get('header')}|{(c.get('question') or '')[:60]}"
+            if cid in seen_ids:
+                continue
+            seen_ids.add(cid)
+            pool.append(c)
     return pool[:max_total]
 
 
@@ -122,6 +216,7 @@ class GeminiAgent:
         seed: int | None = None,
         temperature: float | None = None,
         max_retry_rounds: int = 1,
+        include_textbook: bool = True,
     ) -> list[Question]:
         # Seed jitter: aynı parametrelerle yapılan art arda çağrılar farklı sonuç versin.
         if seed is None:
@@ -132,13 +227,29 @@ class GeminiAgent:
 
         kazanimlar = _select_kazanimlar(grade, topic_id, kazanim_kod)
         distribution = distribute_question_types(question_count, difficulty)
-        few_shot = _collect_few_shot(
+        few_shot, few_shot_source = _collect_few_shot(
             grade,
+            topic_id,
             kazanimlar,
             distribution,
             target_difficulty=difficulty.value,
             max_total=6,
             rng=rng,
+        )
+        self._last_few_shot_source = few_shot_source
+        textbook_chunks: list[dict] = []
+        if include_textbook:
+            textbook_chunks = _collect_textbook_context(
+                grade=grade,
+                topic_id=topic_id,
+                kazanimlar=kazanimlar,
+                target_difficulty=difficulty.value,
+                max_total=3,
+            )
+        self._last_textbook_count = len(textbook_chunks)
+        logger.info(
+            "Few-shot kaynağı: %s (%s örnek) | textbook chunks: %s",
+            few_shot_source, len(few_shot), len(textbook_chunks),
         )
         topic = get_topic(grade, topic_id)
         assert topic is not None
@@ -161,6 +272,8 @@ class GeminiAgent:
             distribution=distribution,
             few_shot_examples=few_shot,
             context_exclusions=history_contexts,
+            few_shot_source=few_shot_source,
+            textbook_chunks=textbook_chunks,
         )
 
         config = types.GenerateContentConfig(
@@ -237,6 +350,14 @@ class GeminiAgent:
     @property
     def last_model_used(self) -> str:
         return getattr(self, "_last_model_used", self.model)
+
+    @property
+    def last_few_shot_source(self) -> str:
+        return getattr(self, "_last_few_shot_source", "static")
+
+    @property
+    def last_textbook_count(self) -> int:
+        return getattr(self, "_last_textbook_count", 0)
 
     def _call_with_backoff(
         self,
