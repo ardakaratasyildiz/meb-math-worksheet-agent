@@ -9,17 +9,28 @@ Kuralların:
 2. Kazanımın dışına çıkan, üst sınıf bilgisi gerektiren soru ÜRETME.
 3. Sorular açık uçlu ve işlem tabanlı olmalı (çoktan seçmeli ASLA üretme).
 4. Her sorunun kesin ve doğru bir cevabı olmalı; matematiksel olarak hatalı soru üretme.
-5. Görsel/şekil/resim gerektiren sorular üretme; geometri sorularını sözel olarak ifade et (kenar uzunlukları, açı ölçüleri vb. metinde verilsin).
+5. Görsel ihtiyaçları (tablo/grafik/şekil) için RESİM ya da SVG üretme; bunun yerine SADECE METİN-TABANLI gösterimler kullan:
+   - Tablolar için: GitHub-flavored Markdown tablosu (`| Başlık | ... |` ve `|---|---|`).
+   - Sütun/çubuk grafikleri için: kod bloğu içinde `█` veya `▇` karakterleriyle yatay/dikey çubuklar (her çubuğa etiket ve değer).
+   - Geometrik şekiller için: kod bloğu içinde Unicode geometri karakterleri (△ □ ○ ◇ ▲ ●) + kenar/açı ölçüleri metin etiketi olarak.
+   - Örüntüler için: Unicode sembol dizisi (♥ ♦ ♠ ★ ▲ ●) ya da emoji (🔴 🔵 🟢) — düzenli aralıklı.
+   Tüm görsel bloklar `question` alanının İÇİNDE Markdown olarak gömülü olmalı. Soru kendi kendini açıklamalı; soru metni okunup görsel görüldüğünde net olmalı.
 6. Zorluk seviyesi "Zorluk Kalibrasyonu" bölümünde somut olarak belirtilmiştir — sayısal aralık, adım sayısı ve bağlam karmaşıklığı bu kalibrasyona UYMALIDIR:
    - Kolay: tek adım, sınıf düzeyinin tabanında sayılar, bağlam yalın.
    - Orta: 2-3 adım, sınıf düzeyi sayılar, kısa günlük hayat bağlamı.
    - Zor: çok adımlı, sınıf üst sınırı sayılar, birden fazla kavram birleşik.
 7. Soruları akıcı, sade ve doğru Türkçe ile, MEB ders kitabı tonunda yaz.
 8. Her sorunun çözüm adımlarını mutlaka belirt.
-9. İstenen soru tipi dağılımına TAM olarak uy.
+9. İstenen soru tipi dağılımına TAM olarak uy. Tip-spesifik formatlar:
+   - `salt_islem`: SADECE matematiksel ifade ve "= ?" — Türkçe açıklama ASLA olmasın. Örnek: "3/4 + 1/6 = ?", "(12 + 8) × 3 ÷ 5 = ?"
+   - `tablo_sorusu`: Soru metni + Markdown tablo + tabloya dayalı bir hesap/yorum sorusu.
+   - `gorsel_geometri`: Soru metni + ```kod bloğu``` içinde Unicode şekil + ölçü etiketleri.
+   - `grafik_okuma`: Soru metni + ```kod bloğu``` içinde ASCII sütun grafiği + grafiğe dayalı bir soru.
+   - `oruntu_sekil`: Soru metni + sembol/emoji dizisi + "?" ile devam eden örüntü.
+   - Diğer tipler (islem, sozel_problem, vs.): mevcut sözel/işlem formatında devam.
 10. Verilen örnek soruların stilini ve seviyesini referans al, AMA aynı sayıları/bağlamları KOPYALAMA.
 11. Verilen örnekler hedef zorluğa yakın seçilmiştir; üretimlerini aynı zorlukta tut.
-12. Çıktıyı MUTLAKA istenen JSON formatında üret; ek metin/açıklama EKLEME."""
+12. Çıktıyı MUTLAKA istenen JSON formatında üret; ek metin/açıklama EKLEME. `question` alanı Markdown içerebilir — newline (\\n), tablo, kod bloğu (```...```) serbesttir."""
 
 
 def _format_kazanim_block(kazanimlar: list[Kazanim], difficulty: Difficulty) -> str:

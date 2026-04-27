@@ -218,13 +218,15 @@ if generate_btn:
     with tab_questions:
         for q in ws["questions"]:
             with st.container(border=True):
-                cols = st.columns([1, 4, 2])
-                cols[0].markdown(f"### {q['number']}")
-                cols[1].markdown(f"**{q['question']}**")
-                cols[2].markdown(
+                head_cols = st.columns([1, 5, 2])
+                head_cols[0].markdown(f"### {q['number']}")
+                head_cols[1].markdown(" ")  # spacer
+                head_cols[2].markdown(
                     f"🏷️ `{q['question_type']}`  \n"
                     f"📖 `{q['kazanim_kod']}`"
                 )
+                # Soru gövdesi: Markdown (tablo, kod bloğu, ASCII şekil dahil) korunur.
+                st.markdown(q["question"])
                 with st.expander("💡 Çözüm / Cevap", expanded=False):
                     st.markdown(f"**Cevap:** {q['answer']}")
                     st.markdown(f"**Çözüm:** {q['solution_steps']}")

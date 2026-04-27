@@ -226,7 +226,7 @@ class GeminiAgent:
             temperature = DIFFICULTY_TEMPERATURES[difficulty]
 
         kazanimlar = _select_kazanimlar(grade, topic_id, kazanim_kod)
-        distribution = distribute_question_types(question_count, difficulty)
+        distribution = distribute_question_types(question_count, difficulty, topic_id=topic_id)
         few_shot, few_shot_source = _collect_few_shot(
             grade,
             topic_id,

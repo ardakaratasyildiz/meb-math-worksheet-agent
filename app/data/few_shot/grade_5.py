@@ -59,6 +59,13 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Önce parantez: 8−5=3. Sonra çarpma: 4×3=12. En son toplama: 12+12=24.",
         },
         {
+            "type": QuestionType.SALT_ISLEM,
+            "difficulty": "orta",
+            "question": "(15 + 5) × 4 − 3² = ?",
+            "answer": "71",
+            "solution": "Parantez: 15+5=20. Üs: 3²=9. Çarpma: 20×4=80. Çıkarma: 80−9=71.",
+        },
+        {
             "type": QuestionType.AKIL_YURUTME,
             "difficulty": "zor",
             "question": "20 − 6 ÷ 2 + 3 × 4 işleminin sonucu kaçtır?",
@@ -139,6 +146,20 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Paydaları eşitlemek için ortak payda 6: 3/6 + 2/6 = 5/6.",
         },
         {
+            "type": QuestionType.SALT_ISLEM,
+            "difficulty": "kolay",
+            "question": "3/4 + 1/6 = ?",
+            "answer": "11/12",
+            "solution": "Ortak payda 12: 9/12 + 2/12 = 11/12.",
+        },
+        {
+            "type": QuestionType.SALT_ISLEM,
+            "difficulty": "orta",
+            "question": "5/6 − 2/9 = ?",
+            "answer": "11/18",
+            "solution": "Ortak payda 18: 15/18 − 4/18 = 11/18.",
+        },
+        {
             "type": QuestionType.AKIL_YURUTME,
             "difficulty": "zor",
             "question": "3/4 − 2/5 işleminin sonucu kaçtır?",
@@ -203,6 +224,24 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Çevre = 7 + 9 + 12 = 28 cm.",
         },
         {
+            "type": QuestionType.GORSEL_GEOMETRI,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıda kenar uzunlukları verilmiş bir üçgen vardır. "
+                "Üçgenin çevresini bulunuz.\n\n"
+                "```\n"
+                "        △\n"
+                "       / \\\n"
+                "  6 cm/   \\8 cm\n"
+                "     /     \\\n"
+                "    /_______\\\n"
+                "       9 cm\n"
+                "```"
+            ),
+            "answer": "23 cm",
+            "solution": "Çevre = 6 + 8 + 9 = 23 cm.",
+        },
+        {
             "type": QuestionType.SOZEL_PROBLEM,
             "difficulty": "orta",
             "question": "Eni 8 m, boyu 14 m olan dikdörtgen şeklindeki bir bahçenin etrafına tel çekilecektir. Kaç metre tel gerekir?",
@@ -217,6 +256,23 @@ EXAMPLES: dict[str, list[dict]] = {
             "question": "Bir kenarı 6 cm olan karenin alanı kaç cm²'dir?",
             "answer": "36 cm²",
             "solution": "Karenin alanı = kenar × kenar = 6 × 6 = 36 cm².",
+        },
+        {
+            "type": QuestionType.GORSEL_GEOMETRI,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıda eni ve boyu verilmiş bir dikdörtgen vardır. "
+                "Bu dikdörtgenin alanını hesaplayınız.\n\n"
+                "```\n"
+                "    ┌─────────────────┐\n"
+                "    │                 │ 5 cm\n"
+                "    │                 │\n"
+                "    └─────────────────┘\n"
+                "          12 cm\n"
+                "```"
+            ),
+            "answer": "60 cm²",
+            "solution": "Alan = en × boy = 5 × 12 = 60 cm².",
         },
         {
             "type": QuestionType.GUNLUK_HAYAT,
@@ -329,6 +385,42 @@ EXAMPLES: dict[str, list[dict]] = {
             "question": "Bir sınıftaki 25 öğrencinin en sevdiği meyve sayıları şöyledir: elma 8, muz 6, çilek 7, üzüm 4. Bu veriyi sıklık tablosuna aktardığınızda en yüksek sıklığa sahip meyve hangisidir?",
             "answer": "Elma (8)",
             "solution": "Sıklıklar karşılaştırılır: elma=8, çilek=7, muz=6, üzüm=4. En yüksek sıklık 8 ile elmaya aittir.",
+        },
+        {
+            "type": QuestionType.TABLO_SORUSU,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıdaki sıklık tablosu bir sınıftaki öğrencilerin "
+                "en sevdiği spor dallarını göstermektedir.\n\n"
+                "| Spor Dalı  | Öğrenci Sayısı |\n"
+                "|------------|----------------|\n"
+                "| Futbol     | 9              |\n"
+                "| Basketbol  | 7              |\n"
+                "| Voleybol   | 5              |\n"
+                "| Yüzme      | 4              |\n\n"
+                "Bu sınıftaki toplam öğrenci sayısı kaçtır ve en az sevilen spor dalı hangisidir?"
+            ),
+            "answer": "Toplam 25 öğrenci; en az sevilen spor dalı yüzme (4 öğrenci).",
+            "solution": "Toplam: 9+7+5+4 = 25 öğrenci. En küçük sıklık 4 ile yüzmeye aittir.",
+        },
+        {
+            "type": QuestionType.GRAFIK_OKUMA,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıdaki sütun grafiği bir hafta boyunca bir kütüphaneden "
+                "ödünç alınan kitap sayısını göstermektedir.\n\n"
+                "```\n"
+                "Pzt  ████████ 8\n"
+                "Sal  ██████ 6\n"
+                "Çar  ██████████ 10\n"
+                "Per  ███████ 7\n"
+                "Cum  █████████ 9\n"
+                "```\n\n"
+                "Hafta boyunca toplam kaç kitap ödünç alınmıştır ve "
+                "en çok ödünç alma hangi gün gerçekleşmiştir?"
+            ),
+            "answer": "Toplam 40 kitap; en çok ödünç alma Çarşamba günü (10 kitap).",
+            "solution": "Toplam: 8+6+10+7+9 = 40 kitap. En yüksek değer 10 ile Çarşamba.",
         },
         {
             "type": QuestionType.AKIL_YURUTME,

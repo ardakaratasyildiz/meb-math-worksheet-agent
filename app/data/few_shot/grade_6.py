@@ -379,6 +379,25 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Eylül + Aralık = 18 + 22 = 40. Fark: 40 − 30 = 10.",
         },
         {
+            "type": QuestionType.GRAFIK_OKUMA,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıdaki sütun grafiği bir mağazanın 5 günlük telefon "
+                "satışlarını göstermektedir.\n\n"
+                "```\n"
+                "Pzt  ████████████ 12\n"
+                "Sal  ███████████████ 15\n"
+                "Çar  █████████ 9\n"
+                "Per  ██████████████████ 18\n"
+                "Cum  █████████████████████ 21\n"
+                "```\n\n"
+                "Mağazanın bu 5 günde sattığı toplam telefon sayısı kaçtır "
+                "ve günlük ortalama satış kaç telefondur?"
+            ),
+            "answer": "Toplam 75 telefon; günlük ortalama 15 telefon.",
+            "solution": "Toplam: 12+15+9+18+21 = 75. Ortalama: 75 ÷ 5 = 15.",
+        },
+        {
             "type": QuestionType.AKIL_YURUTME,
             "difficulty": "orta",
             "question": "Bir çizgi grafiğinde bir çiçeğin haftalık boy uzunluğu (cm) sırasıyla 4, 7, 11, 16, 22 olarak verilmiştir. Çiçeğin boy artış miktarı hangi haftadan sonra giderek artmıştır?",
@@ -395,6 +414,25 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Toplam = 58, ortalama = 58/6 ≈ 9,67. Sıralı veride orta iki değer 8 ve 10 → ortanca = (8+10)/2 = 9. En sık tekrar eden değer 8.",
         },
         {
+            "type": QuestionType.TABLO_SORUSU,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıdaki tablo 7 öğrencinin matematik sınav puanlarını göstermektedir.\n\n"
+                "| Öğrenci | Puan |\n"
+                "|---------|------|\n"
+                "| Ali     | 70   |\n"
+                "| Burcu   | 85   |\n"
+                "| Cem     | 75   |\n"
+                "| Deniz   | 90   |\n"
+                "| Ela     | 70   |\n"
+                "| Furkan  | 80   |\n"
+                "| Gizem   | 70   |\n\n"
+                "Bu verinin aritmetik ortalamasını ve tepe değerini bulunuz."
+            ),
+            "answer": "Aritmetik ortalama 77,14 (≈77,1); tepe değer 70.",
+            "solution": "Toplam = 70+85+75+90+70+80+70 = 540. Ortalama = 540/7 ≈ 77,14. En sık tekrar eden 70 (3 kez) → tepe değer = 70.",
+        },
+        {
             "type": QuestionType.AKIL_YURUTME,
             "difficulty": "zor",
             "question": "5 öğrencinin matematik notlarının ortalaması 80'dir. 6. öğrenci dahil edildiğinde ortalama 78'e düşmektedir. 6. öğrencinin notu kaçtır?",
@@ -409,6 +447,22 @@ EXAMPLES: dict[str, list[dict]] = {
             "question": "Adil bir madeni para havaya atıldığında 'tura' gelmesi olayının olasılığı nedir?",
             "answer": "1/2",
             "solution": "Madeni paranın iki yüzünden biri tura. Eş olası iki sonuç: P(tura) = 1/2.",
+        },
+        {
+            "type": QuestionType.TABLO_SORUSU,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıdaki tabloda bir torbadaki bilyelerin renkleri ve sayıları gösterilmiştir.\n\n"
+                "| Renk      | Bilye Sayısı |\n"
+                "|-----------|--------------|\n"
+                "| Kırmızı   | 6            |\n"
+                "| Mavi      | 4            |\n"
+                "| Yeşil     | 5            |\n"
+                "| Sarı      | 5            |\n\n"
+                "Torbadan rastgele bir bilye çekildiğinde mavi olma olasılığını kesir olarak yazınız."
+            ),
+            "answer": "1/5",
+            "solution": "Toplam: 6+4+5+5 = 20 bilye. Mavi: 4. P(mavi) = 4/20 = 1/5.",
         },
         {
             "type": QuestionType.AKIL_YURUTME,

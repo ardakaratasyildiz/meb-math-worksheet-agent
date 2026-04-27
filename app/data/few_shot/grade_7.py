@@ -187,6 +187,23 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "Alan = πr² = 3 × 25 = 75 cm².",
         },
         {
+            "type": QuestionType.GORSEL_GEOMETRI,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıda merkezi O olan ve yarıçapı verilmiş bir daire vardır. "
+                "Bu dairenin alanını hesaplayınız. (π = 3 alınız.)\n\n"
+                "```\n"
+                "       ●───────●\n"
+                "      ╱         ╲\n"
+                "     ●     O─────● 6 cm\n"
+                "      ╲         ╱\n"
+                "       ●───────●\n"
+                "```"
+            ),
+            "answer": "108 cm²",
+            "solution": "Alan = πr² = 3 × 6² = 3 × 36 = 108 cm².",
+        },
+        {
             "type": QuestionType.SOZEL_PROBLEM,
             "difficulty": "orta",
             "question": "Yarıçapı 7 cm olan dairesel bir bölgenin alanı kaç cm²'dir? (π = 22/7 alınız.)",
@@ -267,6 +284,13 @@ EXAMPLES: dict[str, list[dict]] = {
             "solution": "5x = 25 → x = 5.",
         },
         {
+            "type": QuestionType.SALT_ISLEM,
+            "difficulty": "orta",
+            "question": "4x + 9 = 33 → x = ?",
+            "answer": "x = 6",
+            "solution": "4x = 24 → x = 6.",
+        },
+        {
             "type": QuestionType.SOZEL_PROBLEM,
             "difficulty": "orta",
             "question": "Bir sayının 4 katından 6 çıkarıldığında 22 elde edildiğine göre bu sayı kaçtır?",
@@ -313,6 +337,24 @@ EXAMPLES: dict[str, list[dict]] = {
             "question": "200 kişiyle yapılan bir ankette daire grafiğinde elma %35, armut %25, üzüm %30 olarak gösterilmiştir. Geri kalan kategori 'diğer'dir. Daire grafiğinde 'diğer' kaç kişiye karşılık gelir ve dilim kaç derece olmalıdır?",
             "answer": "20 kişi; 36°",
             "solution": "Diğer yüzdesi: 100 − (35 + 25 + 30) = 10. Kişi sayısı: 200 × 10/100 = 20. Dilim açısı: 360 × 10/100 = 36°.",
+        },
+        {
+            "type": QuestionType.TABLO_SORUSU,
+            "difficulty": "orta",
+            "question": (
+                "Aşağıdaki tabloda 400 öğrenciye yapılan favori spor anketinin "
+                "sonuçları yer almaktadır.\n\n"
+                "| Spor       | Öğrenci Sayısı |\n"
+                "|------------|----------------|\n"
+                "| Futbol     | 160            |\n"
+                "| Basketbol  | 100            |\n"
+                "| Voleybol   | 80             |\n"
+                "| Yüzme      | 60             |\n\n"
+                "Bu veriler daire grafiğinde gösterildiğinde basketbol dilimi "
+                "kaç derece olur?"
+            ),
+            "answer": "90°",
+            "solution": "Basketbolun yüzdesi: 100/400 = 1/4. Daire grafiğinde dilim açısı: 360 × 1/4 = 90°.",
         },
         {
             "type": QuestionType.AKIL_YURUTME,

@@ -29,29 +29,91 @@ DIFFICULTY_DISTRIBUTIONS: dict[Difficulty, list[tuple[QuestionType, float]]] = {
     ],
 }
 
+# Topic'e özel görsel/yapısal tip ağırlıkları. Toplamları 0.7'yi geçemez —
+# sözel çekirdek dağılım her zaman korunur, üstüne bu tipler bindirilir.
+TOPIC_VISUAL_BIAS: dict[str, dict[QuestionType, float]] = {
+    "veri_isleme": {
+        QuestionType.TABLO_SORUSU: 0.30,
+        QuestionType.GRAFIK_OKUMA: 0.25,
+    },
+    "olasilik": {
+        QuestionType.TABLO_SORUSU: 0.20,
+    },
+    "geometri": {
+        QuestionType.GORSEL_GEOMETRI: 0.35,
+    },
+    "cebir": {
+        QuestionType.ORUNTU_SEKIL: 0.15,
+        QuestionType.SALT_ISLEM: 0.10,
+    },
+    "dogal_sayilar": {
+        QuestionType.SALT_ISLEM: 0.15,
+    },
+    "kesirler": {
+        QuestionType.SALT_ISLEM: 0.20,
+    },
+    "olcme": {
+        QuestionType.SALT_ISLEM: 0.10,
+    },
+}
+
+_MAX_VISUAL_SHARE = 0.65  # bias toplamı bu üst sınırla kırpılır
+
 
 def distribute_question_types(
-    total: int, difficulty: Difficulty
+    total: int,
+    difficulty: Difficulty,
+    topic_id: str | None = None,
 ) -> dict[QuestionType, int]:
     """Toplam soruyu zorluk profiline göre soru tiplerine paylaştırır.
 
+    `topic_id` verilirse topic'e özel görsel/yapısal tipler (TABLO_SORUSU,
+    GRAFIK_OKUMA, GORSEL_GEOMETRI, ORUNTU_SEKIL, SALT_ISLEM) belirli bir paya
+    sahip olur; geri kalan pay zorluk profili üzerinden dağıtılır.
+
     Yuvarlama hatalarını telafi etmek için en yüksek paylı tipe ekleme/çıkarma yapılır.
     """
-    weights = DIFFICULTY_DISTRIBUTIONS[difficulty]
+    base = DIFFICULTY_DISTRIBUTIONS[difficulty]
+    visual_bias = TOPIC_VISUAL_BIAS.get(topic_id or "", {})
+
+    if visual_bias:
+        visual_share = min(sum(visual_bias.values()), _MAX_VISUAL_SHARE)
+        # Bias üst sınırı aşıyorsa orantılı kırp
+        if sum(visual_bias.values()) > _MAX_VISUAL_SHARE:
+            scale_v = _MAX_VISUAL_SHARE / sum(visual_bias.values())
+            visual_bias = {qt: w * scale_v for qt, w in visual_bias.items()}
+            visual_share = _MAX_VISUAL_SHARE
+        scale_b = 1.0 - visual_share
+        weights: list[tuple[QuestionType, float]] = [
+            (qt, w * scale_b) for qt, w in base
+        ]
+        weights.extend(visual_bias.items())
+    else:
+        weights = list(base)
+
     raw = [(qt, total * w) for qt, w in weights]
-    counts: dict[QuestionType, int] = {qt: int(v) for qt, v in raw}
+    counts: dict[QuestionType, int] = {}
+    for qt, v in raw:
+        counts[qt] = counts.get(qt, 0) + int(v)
     assigned = sum(counts.values())
     diff = total - assigned
     if diff != 0:
         sorted_types = [qt for qt, _ in sorted(weights, key=lambda x: -x[1])]
+        # Aynı QT iki kez gelmesin (visual + base aynı tip olabilir teorik olarak)
+        seen: set[QuestionType] = set()
+        unique_sorted: list[QuestionType] = []
+        for qt in sorted_types:
+            if qt not in seen:
+                seen.add(qt)
+                unique_sorted.append(qt)
         i = 0
-        while diff != 0 and i < 100:
-            qt = sorted_types[i % len(sorted_types)]
+        while diff != 0 and i < 200:
+            qt = unique_sorted[i % len(unique_sorted)]
             if diff > 0:
-                counts[qt] += 1
+                counts[qt] = counts.get(qt, 0) + 1
                 diff -= 1
             else:
-                if counts[qt] > 0:
+                if counts.get(qt, 0) > 0:
                     counts[qt] -= 1
                     diff += 1
             i += 1
