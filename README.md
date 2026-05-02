@@ -188,6 +188,68 @@ app/services/
 
 Detaylar: **[docs/RAG_ROADMAP.md](docs/RAG_ROADMAP.md)**
 
+## 🧪 Değerlendirme & CI
+
+Üretim kalitesini regresyonsuz tutmak için A/B karşılaştırma harness'i + GitHub Actions tabanlı kalite kapısı.
+
+### Yerel kullanım
+
+```bash
+# Tam karşılaştırma (3 config × 4 senaryo × 3 iter ≈ 25-30 dk)
+python scripts/eval/ab_runner.py
+
+# Hızlı doğrulama (~1-2 dk, PR gate'le aynı senaryo)
+python scripts/eval/ab_runner.py --quick
+
+# Belirli config/senaryo
+python scripts/eval/ab_runner.py --configs sprint2_full --scenarios g5_cebir_orta --iterations 2
+
+# Eşik kontrolü (latest raw çıktıyla)
+python scripts/eval/check_regression.py \
+    --raw knowledge_base/eval/ab_raw_<ts>.json \
+    --config sprint2_full
+```
+
+Çıktılar `knowledge_base/eval/`:
+- `ab_raw_<ts>.json` — tüm sorular + trace + metrikler
+- `ab_report_<ts>.md` — markdown karşılaştırma tablosu
+
+### Eşikler
+
+`scripts/eval/thresholds.json` minimum diversity, kazanım uyumu, delivered ratio, success ratio, max duration sınırlarını tutar. **Yeni sprint sonrası elle güncellenmeli** — mevcut metrikten ~%10 marj bırakacak şekilde. Ekleme: `_baseline_run` alanı hangi run'dan referans alındığını belgeler.
+
+### CI (GitHub Actions)
+
+`.github/workflows/eval.yml` 3 job içerir:
+
+| Job | Tetiklenir | Süre | Maliyet |
+|-----|-----------|------|---------|
+| `lint-import` | her push/PR | ~30sn | ücretsiz |
+| `quick-eval` | PR + manual dispatch | ~2 dk | ~$0.001 |
+| `full-eval` | nightly cron (02:00 UTC) + manual dispatch | ~25-30 dk | ~$0.05 |
+
+Eşik fail olursa `full-eval` otomatik issue açar (`eval-regression` label).
+
+### Kurulum
+
+GitHub repo settings → Secrets and variables → Actions → New repository secret:
+- Name: `GEMINI_API_KEY`
+- Value: Gemini API anahtarın
+
+Workflow ilk push'tan sonra otomatik aktifleşir.
+
+### Threshold güncelleme akışı
+
+Sprint sonrası metrikler iyileşmiş olabilir; eşikleri yükseltmek için:
+
+```bash
+# 1. Yeni full eval çalıştır
+python scripts/eval/ab_runner.py
+
+# 2. sprint2_full kolonundaki yeni değerleri thresholds.json'a yansıt (~%10 marj bırak)
+# 3. Commit'le, _baseline_run ve _observed alanlarını güncelle
+```
+
 ## 📐 İlk Plan Dokümanı
 
 Projenin ilk tasarım dokümanı: **[implementation_plan.md](implementation_plan.md)**

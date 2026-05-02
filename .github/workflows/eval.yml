@@ -1,0 +1,152 @@
+name: eval
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Her gün 02:00 UTC (Türkiye 05:00)
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      iterations:
+        description: "Senaryo başına iterasyon sayısı"
+        required: false
+        default: "3"
+      configs:
+        description: "Çalıştırılacak config'ler (virgülle)"
+        required: false
+        default: "baseline,sprint1_only,sprint2_full"
+
+concurrency:
+  # Aynı branch'te paralel full eval'ları tek-uçuştur (Gemini quota & maliyet).
+  group: eval-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  # 1. Hızlı statik kontrol — her push/PR'da, ücretsiz, ~30sn.
+  lint-import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: AST parse all modules
+        run: |
+          python -c "
+          import ast, pathlib, sys
+          targets = list(pathlib.Path('app').rglob('*.py')) + \
+                    list(pathlib.Path('scripts').rglob('*.py'))
+          for f in targets:
+              try:
+                  ast.parse(f.read_text(encoding='utf-8'))
+              except SyntaxError as e:
+                  print(f'SYNTAX FAIL: {f}: {e}')
+                  sys.exit(1)
+          print(f'OK: {len(targets)} dosya parse edildi.')
+          "
+      - name: Import smoke
+        env:
+          GEMINI_API_KEY: "fake-key-for-import-only"
+        run: |
+          python -c "
+          import app.main
+          import app.routers.worksheets
+          import app.services.agent
+          import app.services.diversity
+          import app.services.history
+          import app.services.critic
+          import app.services.retriever
+          import scripts.eval.ab_runner
+          import scripts.eval.check_regression
+          print('imports OK')
+          "
+
+  # 2. PR gate: hızlı eval (~1-2 dk) — sadece PR'lar ve manual dispatch'te
+  quick-eval:
+    needs: lint-import
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - name: Quick A/B eval
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PYTHONIOENCODING: "utf-8"
+        run: python scripts/eval/ab_runner.py --quick
+      - name: Threshold gate
+        env:
+          PYTHONIOENCODING: "utf-8"
+        run: |
+          # En son üretilen ab_raw_*.json dosyasını bul
+          latest=$(ls -t knowledge_base/eval/ab_raw_*.json | head -1)
+          echo "Checking: $latest"
+          python scripts/eval/check_regression.py --raw "$latest" --config sprint2_full
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quick-eval-results
+          path: knowledge_base/eval/ab_*
+
+  # 3. Nightly full eval — schedule + manual dispatch
+  full-eval:
+    needs: lint-import
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - name: Full A/B eval
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PYTHONIOENCODING: "utf-8"
+        run: |
+          python scripts/eval/ab_runner.py \
+            --iterations ${{ github.event.inputs.iterations || '3' }} \
+            --configs "${{ github.event.inputs.configs || 'baseline,sprint1_only,sprint2_full' }}"
+      - name: Threshold gate
+        id: gate
+        env:
+          PYTHONIOENCODING: "utf-8"
+        run: |
+          latest=$(ls -t knowledge_base/eval/ab_raw_*.json | head -1)
+          echo "Checking: $latest"
+          python scripts/eval/check_regression.py --raw "$latest" --config sprint2_full
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-eval-results
+          path: knowledge_base/eval/ab_*
+      - name: Open issue on regression
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          latest_md=$(ls -t knowledge_base/eval/ab_report_*.md | head -1 || echo "")
+          body="Nightly eval threshold check başarısız oldu.\n\n"
+          body+="Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          if [ -n "$latest_md" ]; then
+            body+="\n\n## Rapor özeti\n\n"
+            body+="$(head -30 "$latest_md")"
+          fi
+          gh issue create \
+            --title "Eval regression: $(date -u +%Y-%m-%d)" \
+            --body "$body" \
+            --label "eval-regression"
