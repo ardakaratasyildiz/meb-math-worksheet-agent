@@ -61,6 +61,7 @@ def generate_worksheet(req: GenerateWorksheetRequest) -> GenerateWorksheetRespon
             kazanim_kod=req.kazanim_kod,
             difficulty=req.difficulty,
             question_count=req.question_count,
+            tenant_id=req.tenant_id,
         )
     except AgentError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
@@ -87,5 +88,6 @@ def generate_worksheet(req: GenerateWorksheetRequest) -> GenerateWorksheetRespon
     metadata = WorksheetMetadata(
         generated_at=datetime.now(tz=timezone.utc),
         model=agent.last_model_used,
+        trace=agent.build_last_trace(),
     )
     return GenerateWorksheetResponse(worksheet=worksheet, metadata=metadata)

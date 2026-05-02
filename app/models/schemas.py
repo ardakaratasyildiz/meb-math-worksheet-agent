@@ -48,11 +48,26 @@ class GenerateWorksheetRequest(BaseModel):
     )
     difficulty: Difficulty = Difficulty.ORTA
     question_count: int = Field(10, ge=1, le=20, description="Üretilecek soru sayısı")
+    tenant_id: str | None = Field(
+        None,
+        description="Opsiyonel: kullanıcı/sınıf/kurum izolasyonu. Boş bırakılırsa "
+        "ortak history kullanılır. Aynı tenant_id'yi tekrar veren istemci kümülatif "
+        "varyasyon kazanır.",
+        max_length=64,
+    )
 
     @field_validator("topic_id")
     @classmethod
     def _strip_topic(cls, v: str) -> str:
         return v.strip().lower()
+
+    @field_validator("tenant_id")
+    @classmethod
+    def _normalize_tenant(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        v = v.strip()
+        return v or None
 
 
 class Question(BaseModel):
@@ -69,10 +84,34 @@ class AnswerKeyEntry(BaseModel):
     answer: str
 
 
+class GenerationTrace(BaseModel):
+    """Üretim sürecinin gözlemlenebilirlik verisi.
+
+    Hangi few-shot kaynağı kullanıldı, kaç tekrar atıldı, kaç critic reddetti,
+    retrieval ne kadar emin — kalite regresyonlarını yakalamak için.
+    """
+
+    few_shot_source: str  # "rag" | "static"
+    few_shot_count: int
+    textbook_count: int
+    retrieval_avg_distance: float | None = None
+    model_used: str
+    temperature: float  # initial (jitter sonrası)
+    final_temperature: float | None = None  # retry'da boost olduysa son değer
+    seed: int
+    retry_rounds: int
+    dedup_rejected_string: int = 0
+    dedup_rejected_semantic: int = 0
+    critic_rejected: int = 0
+    requested_count: int
+    delivered_count: int
+
+
 class WorksheetMetadata(BaseModel):
     generated_at: datetime
     model: str
     curriculum: str = "MEB"
+    trace: GenerationTrace | None = None
 
 
 class Worksheet(BaseModel):

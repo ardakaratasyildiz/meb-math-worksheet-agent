@@ -139,22 +139,40 @@ def build_retry_prompt(
     original_user_prompt: str,
     already_generated_questions: list[str],
     missing_count: int,
+    missing_distribution: dict[QuestionType, int] | None = None,
 ) -> str:
     """Eksik kalan sorular için yeniden üretim prompt'u.
 
     Orijinal talimat + kazanım + zorluk kriterleri korunur; üstüne
     daha önce üretilmiş soruların metinleri 'tekrar etme' uyarısıyla eklenir.
+
+    `missing_distribution` verilirse hangi soru tipinden kaç tane üretilmesi
+    gerektiği açıkça belirtilir — modelin tüm eksikleri ISLEM ile doldurmaması için.
     """
     already_block = "\n".join(
         f"  {i + 1}. {q}" for i, q in enumerate(already_generated_questions)
     )
+    distribution_block = ""
+    if missing_distribution:
+        items = [
+            f"  - {qt.value}: {n} adet"
+            for qt, n in sorted(missing_distribution.items(), key=lambda x: -x[1])
+            if n > 0
+        ]
+        if items:
+            distribution_block = (
+                "\n\nEKSİK KALAN SORU TİPLERİ — TAM olarak şu dağılımla üret "
+                "(diğer tipleri tercih ETME, eksikleri kapat):\n"
+                + "\n".join(items)
+            )
     extension = (
         "\n\n─── YENİDEN ÜRETİM ───\n"
         "Aşağıdaki sorular daha önce üretildi. ASLA bu soruların aynısını, çok benzerini "
         "veya aynı sayıları/bağlamları kullanan başka bir versiyonunu üretme:\n"
         f"{already_block}\n\n"
-        f"Yukarıdakilerden tamamen FARKLI, {missing_count} yeni soru üret. "
-        "Önceki talimatlar (kazanım, zorluk, soru tipi dağılımı, JSON formatı) aynen geçerli."
+        f"Yukarıdakilerden tamamen FARKLI, {missing_count} yeni soru üret."
+        f"{distribution_block}\n\n"
+        "Önceki talimatlar (kazanım, zorluk, JSON formatı) aynen geçerli."
     )
     return original_user_prompt + extension
 

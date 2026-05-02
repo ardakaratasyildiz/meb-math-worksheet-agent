@@ -1,9 +1,15 @@
 """Soru tipi dağılımı + in-batch tekrar önleme."""
+from __future__ import annotations
+
+import logging
+import math
 import re
 import unicodedata
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from app.models.enums import Difficulty, QuestionType
+
+logger = logging.getLogger(__name__)
 
 DIFFICULTY_DISTRIBUTIONS: dict[Difficulty, list[tuple[QuestionType, float]]] = {
     Difficulty.KOLAY: [
@@ -212,6 +218,7 @@ class BatchDeduplicator:
         self._seen: set[str] = set()
         self._contexts: set[str] = set()
         self._primed_count = 0
+        self._rejected = 0
 
     def prime(self, normalized_questions: Iterable[str]) -> None:
         """History'den gelen normalize soruları duplikat kontrolüne dahil eder."""
@@ -220,7 +227,10 @@ class BatchDeduplicator:
         self._primed_count += len(self._seen) - before
 
     def is_duplicate(self, question: str) -> bool:
-        return normalize_question(question) in self._seen
+        dup = normalize_question(question) in self._seen
+        if dup:
+            self._rejected += 1
+        return dup
 
     def add(self, question: str) -> None:
         self._seen.add(normalize_question(question))
@@ -233,3 +243,79 @@ class BatchDeduplicator:
     @property
     def primed_count(self) -> int:
         return self._primed_count
+
+    @property
+    def rejected_count(self) -> int:
+        return self._rejected
+
+
+def _cosine_similarity(a: Sequence[float], b: Sequence[float]) -> float:
+    if len(a) != len(b) or not a:
+        return 0.0
+    dot = 0.0
+    norm_a = 0.0
+    norm_b = 0.0
+    for x, y in zip(a, b):
+        dot += x * y
+        norm_a += x * x
+        norm_b += y * y
+    if norm_a == 0.0 or norm_b == 0.0:
+        return 0.0
+    return dot / (math.sqrt(norm_a) * math.sqrt(norm_b))
+
+
+class SemanticDeduplicator:
+    """Embedding tabanlı tekrar önleme.
+
+    `prime()` ile geçmiş sorulara ait embedding'ler yüklenir; `is_duplicate(emb)`
+    yeni gelen embedding'i mevcut havuzla cosine similarity üstünden karşılaştırır.
+    Threshold üstündeki herhangi bir eşleşme tekrar olarak işaretlenir.
+
+    Embedding üretimi pahalı olduğundan bu sınıf embedding'leri kendi üretmez —
+    çağıran taraf (agent) batch embed eder ve bu sınıfı besler.
+    """
+
+    def __init__(self, threshold: float = 0.88) -> None:
+        self.threshold = threshold
+        self._embeddings: list[list[float]] = []
+        self._primed_count = 0
+        self._rejected = 0
+
+    def prime(self, embeddings: Iterable[Sequence[float]]) -> None:
+        before = len(self._embeddings)
+        for emb in embeddings:
+            if emb:
+                self._embeddings.append(list(emb))
+        self._primed_count += len(self._embeddings) - before
+
+    def is_duplicate(self, embedding: Sequence[float]) -> tuple[bool, float]:
+        """En yüksek similarity'i ve duplicate olup olmadığını döner."""
+        if not embedding or not self._embeddings:
+            return False, 0.0
+        max_sim = 0.0
+        for existing in self._embeddings:
+            sim = _cosine_similarity(embedding, existing)
+            if sim > max_sim:
+                max_sim = sim
+            if max_sim >= self.threshold:
+                return True, max_sim
+        return False, max_sim
+
+    def add(self, embedding: Sequence[float]) -> None:
+        if embedding:
+            self._embeddings.append(list(embedding))
+
+    def record_rejection(self) -> None:
+        self._rejected += 1
+
+    @property
+    def primed_count(self) -> int:
+        return self._primed_count
+
+    @property
+    def rejected_count(self) -> int:
+        return self._rejected
+
+    @property
+    def size(self) -> int:
+        return len(self._embeddings)

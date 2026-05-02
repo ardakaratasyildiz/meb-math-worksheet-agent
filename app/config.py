@@ -13,6 +13,16 @@ class Settings(BaseSettings):
     chroma_db_path: str = "knowledge_base/chroma_db"
     chroma_collection: str = "meb_examples"
 
+    enable_semantic_dedup: bool = True
+    semantic_dedup_threshold: float = 0.88
+
+    enable_critic: bool = True
+    critic_model: str = "gemini-2.5-flash-lite"
+    critic_min_confidence: float = 0.6
+
+    enable_history_persist: bool = True
+    history_db_path: str = "knowledge_base/history.sqlite3"
+
     app_host: str = "0.0.0.0"
     app_port: int = 8000
     app_reload: bool = True
