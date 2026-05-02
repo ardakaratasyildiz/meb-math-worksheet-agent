@@ -1,0 +1,1912 @@
+{
+  "timestamp": "20260501_181943",
+  "iterations": 3,
+  "question_count": 5,
+  "configs": [
+    "baseline",
+    "sprint1_only",
+    "sprint2_full"
+  ],
+  "runs": {
+    "baseline": [
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "m - 148 = 97 denkleminde m kaçtır?",
+            "answer": "m = 245",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "315 - k = 180 denkleminde k kaçtır?",
+            "answer": "k = 135",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir bahçedeki elma ağaçlarının bir kısmı hastalıktan kurumuştur. Sağlıklı kalan 132 elma ağacı olduğuna ve kurumuş olan ağaç sayısı 45 olduğuna göre, başlangıçta bahçede kaç elma ağacı vardı?",
+            "answer": "177",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Tuğçe'nin kumbarasında 275 TL parası vardı. Bu paranın bir kısmıyla yeni bir hikaye kitabı aldı. Geriye kumbarasında 118 TL kaldığına göre, Tuğçe hikaye kitabına kaç TL ödemiştir?",
+            "answer": "157",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Aşağıdaki sayı örüntüsünde '?' ile belirtilen yere hangi sayı gelmelidir.```72, 63, ?, 45, 36```",
+            "answer": "54",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "oruntu_sekil"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3748709758122762,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 1181147300,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 18.610300540924072,
+        "error": null
+      },
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "Bir sayıdan 357 çıkarıldığında sonuç 482 oluyor. Bu sayı kaçtır?",
+            "answer": "839",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "615 sayısından hangi sayı çıkarılırsa sonuç 248 olur?",
+            "answer": "367",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir fırında sabah pişirilen simitlerden 215 tanesi satıldı. Öğleden sonra yapılan sayımda, fırında 147 simit olduğu görüldü. Fırında başlangıçta kaç tane simit pişirilmişti?",
+            "answer": "362",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir ağaçta toplam 98 kuş vardı. Bir süre sonra ağaçtan bazı kuşlar uçup gitti. Ağaçta son durumda 39 kuş kaldığına göre, ağaçtan kaç kuş uçmuştur?",
+            "answer": "59",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Aşağıdaki sayı örüntüsünde her adımda bir önceki sayıdan sabit bir sayı çıkarılarak ilerlenmiştir. Soru işareti (?) ile belirtilen yere gelmesi gereken sayıyı bulunuz.\n\n`🍎 320, 🍏 285, 🍐 ?, 🍊 215, 🍋 180`",
+            "answer": "250",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "oruntu_sekil"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3748709758122762,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 465118668,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 30.976085662841797,
+        "error": null
+      },
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "x - 176 = 315 denkleminde x kaçtır?",
+            "answer": "x = 491",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "452 - y = 188 denkleminde y kaçtır?",
+            "answer": "y = 264",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir otobüste bir miktar yolcu vardı. İlk durakta 28 yolcu indikten sonra otobüste 37 yolcu kalmıştır. Başlangıçta otobüste kaç yolcu vardı?",
+            "answer": "65",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir kütüphanede 245 tane hikaye kitabı vardı. Yıl boyunca bir kısmı öğrencilere ödünç verildi ve kütüphanede 119 hikaye kitabı kaldı. Kütüphaneden kaç tane hikaye kitabı ödünç verilmiştir?",
+            "answer": "126",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Aşağıdaki sayı örüntüsünde her bir terim, bir önceki terimden aynı sayı çıkarılarak elde edilmektedir. '?' ile gösterilen terimin değerini bulunuz.\n```\n🔴 210 🔴  ➡️  🔵 195 🔵  ➡️  🟢 ? 🟢  ➡️  🟡 165 🟡\n```",
+            "answer": "180",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "oruntu_sekil"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3748709758122762,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 1376529896,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 23.4276225566864,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Dört bin altı yüz on iki sayısını rakamlarla yazınız.",
+            "answer": "4612",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Binler basamağı 5, yüzler basamağı 2, onlar basamağı 0 ve birler basamağı 9 olan sayıyı rakamlarla yazınız.",
+            "answer": "5209",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "7934 sayısını basamak değerlerine göre çözümleyerek yazınız.",
+            "answer": "7000 + 900 + 30 + 4",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "6821 sayısındaki 8 rakamının basamak değerini ve sayı değerini ayrı ayrı belirtiniz.",
+            "answer": "Basamak değeri: 800, Sayı değeri: 8",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          },
+          {
+            "question": "3057 sayısında 0 rakamının bulunduğu basamağın adını yazınız.",
+            "answer": "Yüzler basamağı",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.29112712542215985,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.55,
+          "final_temperature": 0.55,
+          "seed": 1181979768,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 8.430171012878418,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "Yedi bin dört yüz on dokuz sayısını rakamlarla ifade ediniz.",
+            "answer": "7419",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Dokuz bin altı yüz iki sayısını sayısal olarak yazınız.",
+            "answer": "9602",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "6531 sayısının basamaklarına göre ayrılmış hâlini gösteriniz. (Örnek: 1234 = 1000 + 200 + 30 + 4)",
+            "answer": "6000 + 500 + 30 + 1",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "3629 sayısında 6 rakamının bulunduğu yer ve bu yerin temsil ettiği miktar nedir?",
+            "answer": "Yüzler yerinde, 600 miktarını temsil eder.",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          },
+          {
+            "question": "8407 sayısında binler yerinde hangi rakam bulunur?",
+            "answer": "8",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.29112712542215985,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.55,
+          "final_temperature": 0.55,
+          "seed": 1022329876,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 23.440032720565796,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Dört bin altı yüz yetmiş iki sayısını rakamlarla ifade ediniz.",
+            "answer": "4672",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "5039 sayısının okunuşunu yazınız.",
+            "answer": "Beş bin otuz dokuz",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Sekiz bin yüz beş sayısını rakamlarla yazınız.",
+            "answer": "8105",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "7324 sayısını oluşturan sayısal değerlerin toplamı şeklinde gösteriniz.",
+            "answer": "7000 + 300 + 20 + 4",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          },
+          {
+            "question": "9156 sayısında, 1'in sayıya kattığı değeri yazınız.",
+            "answer": "100",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.29112712542215985,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.55,
+          "final_temperature": 0.55,
+          "seed": 840169648,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 18.66213321685791,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Bir kumaş topu 30 tam 3/4 metre uzunluğundadır. Kumaşın 1/3'ü elbise dikimi için kullanıldı. Kalan kumaşın 2/5'i ise örtü yapımı için ayrıldı. En son kalan kumaş, her biri 1 tam 1/2 metre olan eş parçalara bölünecektir. Buna göre, toplam kaç parça kumaş elde edilir?",
+            "answer": "12 parça",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir su deposunun 3/5'i doludur. Depodaki suyun 1/4'ü kullanıldıktan sonra, kalan su 1 tam 1/2 litrelik şişelere doldurulacaktır. Deponun tamamı 60 litre su alabildiğine göre, bu işlem için kaç şişeye ihtiyaç duyulur?",
+            "answer": "18 şişe",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "(5 tam 1/4 ÷ 2 tam 1/3) × (1 tam 1/2 + 3/4) = ?",
+            "answer": "3 tam 3/4",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "salt_islem"
+          },
+          {
+            "question": "Bir dikdörtgenler prizmasının hacmi 15 tam 3/4 metreküptür. Bu prizmanın taban alanı 4 tam 1/2 metrekare olduğuna göre, yüksekliği kaç metredir? Eğer prizmanın yüksekliğinin 2/3'ü kadar su doldurulursa, prizmanın içinde kaç metreküp su olur?",
+            "answer": "7 tam 7/8 metreküp",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir çiftçi tarlasının 2/5'ini ilk gün sürdü. İkinci gün ise kalan tarlanın 1/3'ünü sürdü. Geriye kalan tarlanın tamamını 4 tam 1/2 günde sürmeyi planlıyor. Eğer çiftçi her gün eşit miktarda tarla sürerse, günde tüm tarlanın kaçta kaçını sürmüş olur?",
+            "answer": "1/15",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27422144015630084,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 1.0,
+          "final_temperature": 1.0,
+          "seed": 175097516,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 64.0417788028717,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "( (3 tam 1/4 + 1/2) / (7/8) ) - (2 tam 1/3 * 3/7) = ?",
+            "answer": "3 tam 1/2",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "salt_islem"
+          },
+          {
+            "question": "Bir boya atölyesinde 12 tam 3/5 litre hacimli bir boya kutusu bulunmaktadır. Bu boyanın 1/3'ü bir duvar boyama projesi için kullanılmıştır. Kalan boyanın 5/7'si, her biri 2/5 litre boya alan küçük kutulara doldurulmuştur. Bu küçük kutulardaki her bir litre boya ile 4 adet sandalye boyanabildiğine göre, toplamda kaç adet sandalye boyanabilir?",
+            "answer": "48 adet sandalye",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir ip fabrikası 48 tam 3/4 metre uzunluğunda bir ip bobini üretmiştir. Bu ipin 2/5'i toptancıya satılmıştır. Kalan ipin 3/4'ü ise, her biri 2 tam 1/2 metre uzunluğunda parçalara ayrılmış ve bu parçaların her biri 1/4 metre uzunluğundaki küçük bağlama iplerine bölünerek paketlenmiştir. Fabrika toplamda kaç adet küçük bağlama ipi elde etmiştir?",
+            "answer": "45 adet küçük bağlama ipi",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir çiftçi 20 tam 1/4 dönümlük arazisinin 1/3'ünü ev yapımı için ayırmıştır. Kalan arazinin 3/5'i ise sebze bahçesi olarak kullanılacaktır. Bu sebze bahçesi alanının her 1 tam 1/2 dönümlük kısmı, 2/3 dönümlük eşit parsellere ayrılarak farklı sebzeler ekilecektir. Her bir parsel için 1/10 çuval gübre gerektiğine göre, bu çiftçinin sebze ekimi için toplam kaç çuval gübreye ihtiyacı vardır?",
+            "answer": "3 tam 1/5 çuval gübre",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir aşçı 5 tam 1/2 litre sıvı yağı, yemek yapmak için kullanmak üzere hazırlamıştır. Bu yağın 1/5'i salata sosu için ayrılmıştır. Kalan yağın 2/3'ü ise, her biri 1/4 litre yağ alabilen şişelere doldurulmuştur. Aşçı bu şişeleri 3'erli gruplar halinde raflara dizdiğine göre, toplamda kaç grup şişe oluşturmuştur?",
+            "answer": "4 grup şişe",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27422144015630084,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 1.0,
+          "final_temperature": 1.0,
+          "seed": 1939969324,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 80.8020350933075,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Bir arsa dikdörtgen şeklindedir ve toplam alanı 15 tam 3/4 metrekaredir. Arsanın uzun kenarının uzunluğu 5 tam 1/4 metredir. Bu arsanın kısa kenarının 1/3'ü genişliğinde ve uzun kenarı boyunca bir yürüyüş yolu yapılacaktır. Yürüyüş yolunun kapladığı alan, arsanın toplam alanının kaçta kaçıdır?",
+            "answer": "1/3",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir un çuvalının 2/5'i bir ekmek tarifi için kullanıldı. Kalan unun 3/4'ü ise poğaça yapımında değerlendirildi. Son durumda çuvalda kalan un, 1 tam 1/2 kilogramlık poşetlere eşit olarak paylaştırılmak isteniyor. Eğer başlangıçta çuvalda 30 kilogram un olsaydı, kaç tane poşete ihtiyaç duyulurdu?",
+            "answer": "3 poşet",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir su deposunun 3/8'i tarımsal sulama için kullanıldı. Depoda kalan suyun 2/3'ü, her biri 2 tam 1/4 metreküp su alan depolama tanklarına eşit şekilde aktarılacaktır. Eğer depoda başlangıçta 144 metreküp su olsaydı, bu depolama tanklarından kaç tanesi tamamen dolar?",
+            "answer": "14 tank",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir bisikletçi, gideceği yolun önce 1/3'ünü kat etti. Kalan yolun 2/5'ini daha gittikten sonra mola verdi. Mola verdiğinde kalan yolun uzunluğu 18 kilometre olduğuna göre, bisikletçinin gideceği toplam yol kaç kilometredir?",
+            "answer": "45 kilometre",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "(3 tam 1/5 + 1/2) ÷ (2/3 - 1/4) - (1 tam 1/3 × 1/2) = ?",
+            "answer": "16",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "salt_islem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27422144015630084,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 1.0,
+          "final_temperature": 1.0,
+          "seed": 1137737300,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 42.78377437591553,
+        "error": null
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Bir okul gezisine katılan 240 öğrencinin ulaşım tercihleri daire grafiği ile gösterilseydi, otobüsle gitmeyi tercih edenler %45, trenle gitmeyi tercih edenler %30, minibüsle gitmeyi tercih edenler %15 olmuştur. Geriye kalan öğrenciler ise özel araçla gitmeyi tercih etmiştir. Özel araçla gitmeyi tercih eden öğrenci sayısı kaçtır?",
+            "answer": "24 öğrenci",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir çiğköftecide bir günde satılan dürüm, porsiyon ve tabak çiğköfte sayıları aşağıdaki tabloda verilmiştir. Bu verilere göre bir daire grafiği oluşturulduğunda, porsiyon çiğköfteye ait dilimin merkez açısı kaç derece olur ve dürüm çiğköfte sayısı, toplam satışın yüzde kaçıdır?\n\n```\n| Ürün Tipi | Satış Adedi |\n|-----------|-------------|\n| Dürüm     | 120         |\n| Porsiyon  | 80          |\n| Tabak     | 40          |\n```",
+            "answer": "Porsiyon çiğköfteye ait dilimin merkez açısı 120°'dir. Dürüm çiğköfte sayısı, toplam satışın %50'sidir.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir giyim mağazasında bir ayda satılan gömlek, pantolon, etek ve ceket sayılarının dağılımı aşağıdaki sütun grafiğinde gösterilmiştir. Bu verilere göre bir daire grafiği oluşturulduğunda, etek satışlarının temsil ettiği dilimin merkez açısı kaç derece olur ve ceket satışlarının toplam satış içindeki yüzdesi kaçtır?\n\n```\nSatılan Ürün Sayıları\nGömlek   : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (20 adet)\nPantolon : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (30 adet)\nEtek     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (24 adet)\nCeket    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (16 adet)\n```",
+            "answer": "Etek satışlarının merkez açısı 96°'dir. Ceket satışlarının toplam satış içindeki yüzdesi %16'dır.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          },
+          {
+            "question": "Bir sınıfta öğrencilerin en sevdiği renklerin dağılımı aşağıdaki tabloda verilmiştir. Eğer bu sınıfın mevcudu 40 ise, kırmızı rengi seven öğrencilerin sayısı, mavi rengi seven öğrencilerin sayısından kaç kişi fazladır ve kırmızı rengi seven öğrencilerin oranı daire grafiğinde kaç derecelik bir dilimle gösterilir?\n\n```\n| Renk    | Yüzde (%) |\n|---------|-----------|\n| Mavi    | 25        |\n| Yeşil   | 30        |\n| Kırmızı | 20        |\n| Sarı    | 15        |\n| Diğer   | 10        |\n```",
+            "answer": "Mavi rengi seven öğrencilerden 2 kişi azdır. Kırmızı rengi seven öğrencilerin oranı daire grafiğinde 72°'lik bir dilimle gösterilir.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir otoparktaki araçların renklerine göre dağılımı aşağıdaki daire grafiğinde merkez açıları ile gösterilmiştir. Toplam 120 araç bulunan bu otoparkta, siyah araç sayısı ile beyaz araç sayısı arasındaki fark kaçtır ve gri renkli araçların yüzdesi kaçtır?\n\n```\nDaire Grafiği: Araç Renkleri Dağılımı\n             _________________________\n            /           |             \\\n           /     Siyah  |  Gri        \\\n          /       108°  |  ?°          \\\n         |--------------+---------------|\n         |              |               |\n         | Mavi   72°   | Beyaz  90°    |\n          \\             |               /\n           \\____________|______________/\n```",
+            "answer": "Siyah araç sayısı ile beyaz araç sayısı arasındaki fark 6'dır. Gri renkli araçların yüzdesi %25'tir.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27134452925788033,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 972033440,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 48.0531792640686,
+        "error": null
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "Bir bütünün dört farklı parçası bulunmaktadır. Bu parçalardan üçünün tüm bütün içindeki yüzdeleri sırasıyla %30, %25 ve %15'tir. Eğer bütünün tamamı 400 birim ise, dördüncü parçanın değeri kaçtır?",
+            "answer": "120 birim",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir okulda yapılan anket sonucunda öğrencilerin en çok sevdiği renkler aşağıdaki çizelgede belirtilmiştir. Toplam öğrenci sayısı 250'dir.\n\n| Renk  | Öğrenci Sayısı |\n|-------|----------------|\n| Mavi  | 80             |\n| Kırmızı | 70             |\n| Sarı  | 50             |\n| Yeşil | ?              |\n\nYeşil rengi seven öğrencilerin yüzdesi kaçtır? Ayrıca, Mavi rengi seven öğrencilerin sayısı, Sarı rengi seven öğrencilerin sayısından yüzde kaç fazladır?",
+            "answer": "Yeşil seven öğrenci yüzdesi %20'dir. Mavi seven öğrenci sayısı, Sarı seven öğrenci sayısından %60 fazladır.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir manavın hafta içi ve hafta sonu sattığı elma, portakal ve muz miktarları aşağıdaki çizelgede belirtilmiştir.\n\n| Ürün     | Hafta İçi (kg) | Hafta Sonu (kg) |\n|----------|----------------|-----------------|\n| Elma     | 120            | 80              |\n| Portakal | 90             | 110             |\n| Muz      | 60             | 70              |\n\nHafta sonu satılan portakal miktarı, hafta içi satılan muz miktarından yüzde kaç fazladır? Ayrıca, tüm satışlarda muzun payı yüzde kaçtır?",
+            "answer": "Hafta sonu satılan portakal miktarı, hafta içi satılan muz miktarından %83.33 fazladır. Tüm satışlarda muzun payı yaklaşık %24.5'tir.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir teknoloji mağazasının dört farklı markadan sattığı bilgisayar sayıları aşağıda çubuk grafik ile sunulmuştur.\n\n```\nMarka A: ████████████████████ (20 adet)\nMarka B: ████████████████ (16 adet)\nMarka C: ████████████ (12 adet)\nMarka D: ██████████████ (14 adet)\n```\n\nEn az satılan marka ile en çok satılan marka arasındaki satış farkı kaçtır? Eğer bu veriler bir çember grafiği ile sunulsaydı, Marka D'ye karşılık gelen merkez açı kaç derece olurdu?",
+            "answer": "Satış farkı 8 adettir. Marka D'ye karşılık gelen merkez açı 84 derecedir.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          },
+          {
+            "question": "Bir ilçedeki dört farklı mahallede yaşayan kişi sayıları aşağıda çubuk grafik ile sunulmuştur. Toplam kişi sayısı 500'dür.\n\n```\nMahalle K: ████████████████████████████████ (160 kişi)\nMahalle L: ████████████████████████████ (140 kişi)\nMahalle M: ██████████████████████ (100 kişi)\nMahalle N: ?\n```\n\nMahalle N'de yaşayan kişi sayısı kaçtır? Mahalle K'de yaşayan kişi sayısının tüm ilçedeki kişi sayısına oranı bir çember grafiği ile ifade edilseydi, Mahalle K'ye ait merkez açının ölçüsü kaç derece olurdu?",
+            "answer": "Mahalle N'de 100 kişi yaşamaktadır. Mahalle K'ye ait merkez açı 115.2 derecedir.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27134452925788033,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 1780711484,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 55.696985960006714,
+        "error": null
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Bir okulda 500 öğrenci vardır. Öğrencilerin %30'u futbol, %25'i basketbol, %20'si voleybol oynamaktadır. Kalan öğrenciler ise masa tenisi oynamaktadır. Masa tenisi oynayan öğrenci grubuna karşılık gelen daire diliminin ölçüsü kaç derecedir?",
+            "answer": "90 derece",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir mağazanın bir hafta boyunca sattığı ürünlerin türüne göre dağılımı aşağıdaki tabloda verilmiştir.\n```\n| Ürün Türü   | Satış Adedi |\n|-------------|-------------|\n| Giyim       | 90          |\n| Elektronik  | 60          |\n| Ev Eşyası   | 30          |\n| Kitap       | 120         |\n```\nBu verilere göre, daire grafiği oluşturulduğunda 'Giyim' ürünlerine ait dilimin merkez açısı kaç derece olur ve 'Kitap' ürünlerinin satış adedi, toplam satış adedinin yüzde kaçını oluşturur?",
+            "answer": "Giyim ürünleri dilimi 90 derece; Kitap ürünleri toplam satışın %40'ını oluşturur.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir çiftçinin tarlasında yetiştirdiği ürünlerin ekim alanı dağılımı aşağıdaki tabloda gösterilmiştir. Toplam ekim alanı 120 dönümdür.\n```\n| Ürün      | Ekim Alanı (dönüm) |\n|-----------|--------------------|\n| Buğday    | 48                 |\n| Arpa      | 36                 |\n| Mısır     | 24                 |\n| Ayçiçeği  | ?                  |\n```\nBu bilgilere göre, daire grafiğinde 'Ayçiçeği' ürünlerine karşılık gelen dilimin merkez açısı kaç derecedir? Ayrıca 'Buğday' ekili alan, 'Mısır' ekili alanın kaç katıdır?",
+            "answer": "Ayçiçeği dilimi 36 derece; Buğday ekili alan, Mısır ekili alanın 2 katıdır.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir okul kütüphanesindeki farklı türdeki kitapların dağılımı aşağıdaki çubuk grafiğinde gösterilmiştir.\n```\nKitap Türü Dağılımı\n-------------------\nRoman     : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (200 adet)\nHikaye    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (160 adet)\nŞiir      : ▇▇▇▇▇▇▇▇ (80 adet)\nBilim     : ▇▇▇▇▇▇▇▇▇▇▇▇ (120 adet)\n```\nBu verilere göre, kütüphanedeki 'Hikaye' kitaplarının sayısı, tüm kitapların yüzde kaçını oluşturur? Daire grafiğinde 'Roman' kitaplarına ait dilimin merkez açısı kaç derecedir?",
+            "answer": "Hikaye kitapları tüm kitapların %32'sini oluşturur; Roman kitapları dilimi 144 derecedir.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          },
+          {
+            "question": "Bir öğrencinin hafta içi çözdüğü soru sayılarının dağılımı aşağıdaki çubuk grafiğinde gösterilmiştir.\n```\nHafta İçi Çözülen Soru Sayısı\n----------------------------\nPazartesi : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (200 soru)\nSalı      : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (300 soru)\nÇarşamba  : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (240 soru)\nPerşembe  : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (220 soru)\nCuma      : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (180 soru)\n```\nBu verilere göre, çözülen toplam soru sayısı daire grafiğinde gösterilseydi, 'Salı' günü çözülen sorulara ait dilimin merkez açısı kaç derece olurdu? Ayrıca 'Perşembe' günü çözülen soru sayısı, 'Cuma' günü çözülen soru sayısından yüzde kaç fazladır?",
+            "answer": "Salı günü dilimi 90 derece; Perşembe günü çözülen soru sayısı, Cuma gününden %22.22 fazladır.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27134452925788033,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 1643269636,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 30.26048493385315,
+        "error": null
+      }
+    ],
+    "sprint1_only": [
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "m - 49 = 87 denkleminde m kaçtır?",
+            "answer": "m = 136",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "123 - k = 76 denkleminde k kaçtır?",
+            "answer": "k = 47",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir kütüphanede bir miktar kitap vardı. Haftanın ilk günü 28 kitap ödünç verildiğinde kütüphanede 115 kitap kaldı. Başlangıçta kütüphanede kaç kitap vardı?",
+            "answer": "143",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir çiftlikte 210 tane tavuk vardı. Bir ay içinde bir miktar tavuk satıldı ve geriye 137 tavuk kaldı. Çiftlikte kaç tane tavuk satılmıştır?",
+            "answer": "73",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Aşağıdaki sayı örüntüsünde her adımda bir önceki sayıdan sabit bir miktar çıkarılmaktadır. Örüntüdeki '?' yerine gelmesi gereken sayıyı bulunuz.\n```\n110, 102, 94, ?, 78\n```",
+            "answer": "86",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "oruntu_sekil"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3748709758122762,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 474861216,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 30.126067638397217,
+        "error": null
+      },
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "264 - k = 118 = ?",
+            "answer": "k = 146",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "m - 183 = 95 = ?",
+            "answer": "m = 278",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir markette sabah belli sayıda ekmek bulunuyordu. Gün içinde 115 ekmek satıldı ve akşam sayımında 78 ekmek olduğu görüldü. Sabah markette kaç ekmek vardı?",
+            "answer": "193 ekmek",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Ayşe'nin kumbarasında 245 TL birikmiş parası bulunuyordu. Bu paranın bir kısmıyla yeni bir defter seti aldı. Kumbarasında 180 TL'si bulunduğuna göre, Ayşe defter setine kaç TL harcamıştır?",
+            "answer": "65 TL",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Aşağıda bir örüntüdeki ilk üç adım verilmiştir.\n```\n1. Adım: ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ (20 üçgen)\n2. Adım: ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ (19 üçgen)\n3. Adım: ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ (18 üçgen)\n```\nBu örüntüdeki 4. adımdaki üçgen sayısını 'z' ile gösterelim. Eğer 1. adımdaki üçgen sayısından 'z' çıkarıldığında sonuç 3 oluyorsa, 'z' kaçtır?",
+            "answer": "z = 17",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "oruntu_sekil"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3748709758122762,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 536302544,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 36.940391302108765,
+        "error": null
+      },
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Bir sayıdan 175 çıkarıldığında sonuç 248 olmaktadır. Bu sayı kaçtır?",
+            "answer": "423",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir kutuda 780 adet misket vardı. Bu misketlerin bir kısmı bir oyunda kullanıldıktan sonra kutuda 345 adet misket kalmıştır. Kutudan kaç adet misket kullanılmıştır?",
+            "answer": "435",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "562 sayısından bir sayı çıkarıldığında sonuç 197 olmaktadır. Çıkarılan sayı kaçtır?",
+            "answer": "365",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir çiftlikte belirli sayıda tavuk vardı. Bu tavuklardan 238 tanesi satıldıktan sonra çiftlikte 167 tavuk kalmıştır. Başlangıçta çiftlikte kaç tavuk vardı?",
+            "answer": "405",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3748709758122762,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 969589428,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 1,
+          "requested_count": 5,
+          "delivered_count": 4
+        },
+        "duration_seconds": 16.905176639556885,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Yedi bin dört yüz on iki sayısını rakamla yazınız.",
+            "answer": "7412",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Dokuz bin altmış beş sayısını rakamla yazınız.",
+            "answer": "9065",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "5381 sayısını basamak değerlerine göre çözümleyiniz. (Örnek: 1234 = 1000 + 200 + 30 + 4)",
+            "answer": "5000 + 300 + 80 + 1",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "4729 sayısındaki 7 rakamının basamak değerini ve sayı değerini ayrı ayrı açıklayınız.",
+            "answer": "Basamak değeri: 700, Sayı değeri: 7",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.29112712542215985,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.55,
+          "final_temperature": 0.55,
+          "seed": 695044244,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 1,
+          "requested_count": 5,
+          "delivered_count": 4
+        },
+        "duration_seconds": 14.810003995895386,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "'Yedi bin kırk dokuz' sayısını sayılarla ifade ediniz.",
+            "answer": "7049",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "'Dört bin altmış bir' sayısını sayılarla yazınız.",
+            "answer": "4061",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "'İki bin beş yüz sekiz' sayısını sayılarla gösteriniz.",
+            "answer": "2508",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "9172 sayısını basamaklarına göre açarak yazınız.",
+            "answer": "9000 + 100 + 70 + 2",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.29112712542215985,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.55,
+          "final_temperature": 0.55,
+          "seed": 472803508,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 1,
+          "requested_count": 5,
+          "delivered_count": 4
+        },
+        "duration_seconds": 12.929856538772583,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Yedi bin üç yüz doksan altı sayısını rakamlarla yazınız.",
+            "answer": "7396",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Beş bin on dört sayısını rakamlarla yazınız.",
+            "answer": "5014",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "6000 + 500 + 70 + 2 toplamı hangi sayıyı oluşturur?",
+            "answer": "6572",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "4831 sayısında yer alan 8 rakamının bulunduğu basamağın adını belirtiniz.",
+            "answer": "Yüzler basamağı",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          },
+          {
+            "question": "9057 sayısında birler basamağında bulunan rakam ile onlar basamağında bulunan rakamın farkını bulunuz.",
+            "answer": "2",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.29112712542215985,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.55,
+          "final_temperature": 0.55,
+          "seed": 517875520,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 30.789381980895996,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Bir çiftçi, 24 dönümlük tarlasının 1/6'sına domates ekmiştir. Kalan tarlanın 3/8'ine biber ekildikten sonra, geriye kalan alanın tamamını her biri 3/5 dönüm büyüklüğünde eşit parçalara ayırarak farklı otlar yetiştirmek istiyor. Çiftçi kaç adet ot ekim alanı oluşturabilir?",
+            "answer": "20 ot ekim alanı",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Ayşe, kumbarasında biriktirdiği 600 TL'nin 2/5'ini bir kitaba harcamıştır. Kalan paranın 1/3'ü ile de kırtasiye malzemeleri almıştır. Geriye kalan paranın tamamı ile her biri 1 tam 1/2 TL olan kalemlerden kaç tane alabilir?",
+            "answer": "160 kalem",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27422144015630084,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 1.0,
+          "final_temperature": 1.0,
+          "seed": 1242627848,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 3,
+          "requested_count": 5,
+          "delivered_count": 2
+        },
+        "duration_seconds": 37.16558074951172,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "Bir marangoz, 12 tam 3/5 metre uzunluğundaki bir tahta parçasının 3/4'ünü kullanarak 9 adet masa ayağı yapmıştır. Marangoz, elindeki toplam 20 tam 1/4 metrelik başka bir tahta parçasının tamamıyla kaç tane masa ayağı yapabilir ve sonunda kaç metre tahta artar?",
+            "answer": "19 adet masa ayağı yapabilir ve 0,3 metre tahta artar.",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir fırıncı, 25 tam 1/2 kilogram unun 2/3'ü ile ekmek yapmıştır. Kalan unun 3/4'ünü kullanarak kurabiye hamuru hazırlamış ve bu hamuru her biri 1/8 kilogram olan küçük parçalara ayırmıştır. Fırıncı, kurabiye hamurundan kaç adet küçük parça elde etmiştir?",
+            "answer": "51 adet küçük parça elde etmiştir.",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "`[ (5 tam 1/4 - 2/3) ÷ (1 tam 1/2) ] + (3/8 × 4/9) = ?`",
+            "answer": "3 tam 2/9 veya 29/9",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "salt_islem"
+          },
+          {
+            "question": "Bir su deposunun 1/3'ü doludur. Depoya 50 litre su eklendiğinde deponun 1/2'si doluyor. Eğer bu depodaki su, her biri 2 tam 1/2 litrelik şişelere doldurulacak olursa, deponun tamamı doluyken kaç şişeye ihtiyaç duyulur?",
+            "answer": "120 adet şişeye ihtiyaç duyulur.",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir duvar ustası, bir duvarın ilk gün 1/3'ünü örmüştür. İkinci gün ise kalan duvarın 3/4'ünü örmeyi başarmıştır. Eğer ikinci gün ördüğü kısım toplam 15 metre ise, duvarın tamamının uzunluğu kaç metredir? Usta, duvarın kalan kısmını tamamlamak için 1 tam 1/4 metrelik tuğla sıraları kullandığına göre, kalan kısım için kaç sıra tuğla kullanmıştır?",
+            "answer": "Duvarın tamamı 30 metredir. Kalan kısım için 4 sıra tuğla kullanmıştır.",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27422144015630084,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 1.0,
+          "final_temperature": 1.0,
+          "seed": 1901102232,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 57.69418263435364,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Bir manav, elindeki portakalların 3/4'ünü kilogramı 24 TL'den satmıştır. Satılan portakalların parasının 2/3'ü ile çilek almıştır. Manavın aldığı çileklerin parasının, başlangıçta elinde kalan portakalların parasının kaçta kaçı olduğunu bulunuz.",
+            "answer": "3/16",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir çiftçi, tarlasının 5/8'ini buğday ekmek için ayırmıştır. Ayırdığı buğday ekili alanın 2/3'üne tohum serptikten sonra, kalan tohum serpmemiş alanın 1/5'i kadarını da sebze ekmek için kullanmıştır. Buna göre çiftçinin sebze ekmek için kullandığı alan, tarlanın tamamının kaçta kaçıdır?",
+            "answer": "1/12",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir depoda bulunan 720 litre benzin, 5/6'lık ve 7/9'luk oranlarında iki farklı tanka ayrılmıştır. Bu iki tanktaki benzin miktarlarının toplamının, deponun tamamının kaçta kaçı olduğunu hesaplayınız.",
+            "answer": "29/30",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir miktar kumaşın 3/7'si ile elbise, kalan kumaşın 2/5'i ile de pantolon dikilmiştir. Dikilen elbiselerin kumaş miktarının, dikilen pantolonların kumaş miktarına oranı nedir?",
+            "answer": "7/6",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir çiftlikte bulunan 1200 litre sütün, 5/8'i yoğurt yapımında kullanılmıştır. Yoğurt yapımında kullanılan sütün 3/5'i ise 15 litrelik bidonlara doldurulacaktır. Buna göre, kaç adet 15 litrelik bidon kullanılacaktır?",
+            "answer": "8 adet",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27422144015630084,
+          "model_used": "gemini-2.5-flash-lite",
+          "temperature": 1.0,
+          "final_temperature": 1.0,
+          "seed": 1613342536,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 135.15797233581543,
+        "error": null
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Bir lokantadaki günlük yemek satışlarının dağılımı daire grafiği ile gösterilecektir. Köfte %35, Tavuk %25, Balık %20 oranında satılmıştır. Geriye kalan ise Sebzeli Yemekler'dir. Sebzeli Yemekler'in daire grafiğindeki merkez açısı kaç derecedir?",
+            "answer": "72 derece",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir müzik okulundaki öğrencilerin enstrüman tercihlerini gösteren tablo aşağıdadır.\n```\n| Enstrüman | Öğrenci Sayısı |\n|---|---|\n| Piyano | 60 |\n| Gitar | 45 |\n| Keman | 30 |\n| Bateri | 15 |\n```\nBu veriler daire grafiği ile gösterildiğinde, Piyano tercih eden öğrencilere ait daire diliminin merkez açısı, Bateri tercih eden öğrencilere ait daire diliminin merkez açısından kaç derece fazladır?",
+            "answer": "108 derece",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir ildeki yıllık turist dağılımını gösteren tablo aşağıdaki gibidir.\n```\n| Ülke | Turist Sayısı |\n|---|---|\n| Almanya | 12000 |\n| İngiltere | 9000 |\n| Fransa | 6000 |\n| Diğer Ülkeler | 3000 |\n```\nBu veriler daire grafiği ile gösterildiğinde, İngiltere'den gelen turistlere ait daire diliminin merkez açısı kaç derecedir?",
+            "answer": "108 derece",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir okul kantininde bir hafta boyunca satılan içeceklerin sayıları aşağıdaki çubuk grafiğinde gösterilmiştir.\n```\nSatılan İçecekler (Adet)\nSu:         ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (15 birim)\nMeyve Suyu: ▇▇▇▇▇▇▇▇▇▇ (10 birim)\nSüt:        ▇▇▇▇▇▇▇ (7 birim)\nAyran:      ▇▇▇▇ (4 birim)\n```\nGrafikteki her birim 10 adet içeceğe karşılık geldiğine göre, bu içeceklerin dağılımı daire grafiği ile gösterilseydi, Su ve Meyve Suyu'nun toplamına ait dilimin merkez açısı kaç derece olurdu?",
+            "answer": "250 derece",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          },
+          {
+            "question": "Bir öğrencinin bir gün içinde gerçekleştirdiği etkinliklere ayırdığı süreler aşağıdaki çubuk grafiğinde gösterilmiştir.\n```\nGünlük Etkinlik Süreleri (Saat)\nDers Çalışma: ▇▇▇▇▇▇▇▇▇▇▇▇ (12 birim)\nUyku:         ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (18 birim)\nYemek:        ▇▇▇▇ (4 birim)\nDinlenme:     ▇▇▇▇▇▇ (6 birim)\n```\nGrafikteki her birim yarım saate (0.5 saat) karşılık geldiğine göre, bu öğrencinin günlük etkinlik süreleri daire grafiği ile gösterilseydi, Uyku için ayrılan sürenin merkez açısı kaç derecedir?",
+            "answer": "162 derece",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27134452925788033,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 1479989912,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 33.533174991607666,
+        "error": null
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 1,
+        "questions": [],
+        "trace": {},
+        "duration_seconds": 219.85378575325012,
+        "error": "Gemini çıktısı beklenen JSON şemasına uymadı."
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Bir hayvan barınağında toplam 400 hayvan bulunmaktadır. Bu hayvanların %35'i kedi, %20'si köpek, %15'i kuş ve geri kalanı tavşandır. Tavşanların sayısı kaçtır?",
+            "answer": "120",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir araştırma şirketinin iki farklı şehirdeki (A Şehri ve B Şehri) insanların favori içecek tercihlerini belirlemek için yaptığı anket sonuçları aşağıdaki tabloda verilmiştir.\n```\n| İçecek Türü | A Şehri (Kişi Sayısı) | B Şehri (Kişi Sayısı) |\n|-------------|-----------------------|-----------------------|\n| Çay         | 240                   | 300                   |\n| Kahve       | 180                   | 200                   |\n| Meyve Suyu  | 120                   | 100                   |\n| Gazlı İçecek| 60                    | 100                   |\n```\nA Şehrindeki katılımcıların toplam sayısı, B Şehrindeki katılımcıların toplam sayısından kaç kişi azdır? Ayrıca, A Şehrindeki çay tercih edenlerin oranı, A Şehrindeki toplam katılımcıların yüzde kaçıdır?",
+            "answer": "A Şehri 100 kişi azdır; A Şehrinde çay tercih edenler %40'ıdır.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir öğrencinin dört farklı dersten aldığı notların dağılımı aşağıdaki çubuk çiziminde verilmiştir.\n```\nDers Notları (Puan)\n\nMatematik : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (90 puan)\nFen Bilgisi: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (72 puan)\nTürkçe    : ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (69 puan)\nSosyal Bil.: ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ (60 puan)\n```\nBu öğrencinin tüm derslerden aldığı toplam puan kaçtır? Fen Bilgisi dersinden aldığı puan, tüm puanların yüzde kaçını oluşturmaktadır?",
+            "answer": "Toplam puan 291'dir; Fen Bilgisi puanı tüm puanların yaklaşık %24.74'ünü oluşturmaktadır.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.27134452925788033,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8,
+          "final_temperature": 0.8,
+          "seed": 1464045848,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 2,
+          "requested_count": 5,
+          "delivered_count": 3
+        },
+        "duration_seconds": 32.22092604637146,
+        "error": null
+      }
+    ],
+    "sprint2_full": [
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "x - 187 = 356 denkleminde \"x\" yerine gelmesi gereken sayıyı bulunuz.",
+            "answer": "543",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "412 - x = 195 denkleminde \"x\" yerine gelmesi gereken sayıyı bulunuz.",
+            "answer": "217",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir markette gün içinde satılan 245 adet portakalın ardından tezgahta 178 adet portakal kalmıştır. Buna göre, başlangıçta tezgahta kaç adet portakal vardı?",
+            "answer": "423 adet",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir otobüste başlangıçta 320 yolcu bulunmaktadır. Belirli sayıda yolcu indikten sonra otobüste 185 yolcu kalmıştır. Otobüsten kaç yolcu inmiştir?",
+            "answer": "135 yolcu",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3766491810480754,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8886655223858285,
+          "final_temperature": 0.8886655223858285,
+          "seed": 47124580,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 1,
+          "requested_count": 5,
+          "delivered_count": 4
+        },
+        "duration_seconds": 32.631187438964844,
+        "error": null
+      },
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "45 - x = 18 denklemini çözerek 'x' değerini bulunuz.",
+            "answer": "27",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "y - 24 = 37 denklemini çözerek 'y' değerini bulunuz.",
+            "answer": "61",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir kasada 72 adet elma vardı. Bu elmaların bir kısmı satıldı ve kasada 35 adet elma kaldı. Buna göre kaç adet elma satılmıştır?",
+            "answer": "37",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir öğrenci, bir kitaptan okuması gereken sayfa sayısının 48 sayfasını okuduktan sonra geriye okuması gereken 65 sayfa kaldığını fark etmiştir. Buna göre kitabın tamamı kaç sayfadır?",
+            "answer": "113",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "```\n🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴 (15 kırmızı top)\n🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴 (12 kırmızı top)\n🔴🔴🔴🔴🔴🔴🔴🔴🔴 (9 kırmızı top)\n?\n```\nYukarıdaki örüntüde her adımda bir önceki adımdan aynı sayıda top çıkarılmaktadır. İkinci adımdaki top sayısı 12 ve üçüncü adımdaki top sayısı 9 olduğuna göre, örüntünün kuralını bulmak için kullanılan ve çıkarılan top sayısını (x) gösteren denklemi (12 - x = 9) çözerek dördüncü adımdaki top sayısını bulunuz.",
+            "answer": "6",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "oruntu_sekil"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3795711066987779,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.7439061897170194,
+          "final_temperature": 0.7439061897170194,
+          "seed": 466197060,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 23.938932418823242,
+        "error": null
+      },
+      {
+        "scenario_label": "g5_cebir_orta",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "72 - x = 39 = ?",
+            "answer": "33",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "x - 48 = 65 = ?",
+            "answer": "113",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir çiftçi, tarlasındaki 95 adet ağacın belirli bir kısmını budadıktan sonra geriye budanmamış 47 adet ağaç kalmıştır. Çiftçi kaç adet ağaç budamıştır?",
+            "answer": "48",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Bir pastacı, gün içinde yaptığı kurabiyelerin 56 tanesini sattıktan sonra elinde 38 adet kurabiye kaldığını fark etmiştir. Pastacı başlangıçta kaç adet kurabiye yapmıştır?",
+            "answer": "94",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "Aşağıdaki şekil örüntüsünde, her bir adımdaki geometrik şekil sayısı bir önceki adımdaki şekil sayısından eşit miktarda azaltılmaktadır.\n\nAdım 1: ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ (15 üçgen)\nAdım 2: ▲▲▲▲▲▲▲▲▲▲▲ (11 üçgen)\nAdım 3: ?\nAdım 4: ▲▲▲ (3 üçgen)\n\nBuna göre, üçüncü adımdaki üçgen sayısını bulunuz.",
+            "answer": "7",
+            "kazanim_kod": "M.5.5.1",
+            "question_type": "oruntu_sekil"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3722957173983256,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.7670574827377978,
+          "final_temperature": 0.7670574827377978,
+          "seed": 782921132,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 44.84207248687744,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Binler basamağında 6, yüzler basamağında 1, onlar basamağında 5 ve birler basamağında 3 rakamı bulunan doğal sayıyı yazınız.",
+            "answer": "6153",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "2708 sayısını okunuşuyla yazınız.",
+            "answer": "İki bin yedi yüz sekiz",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "\"Üç bin dokuz yüz kırk bir\" şeklinde okunan doğal sayıyı rakamlarla yazınız.",
+            "answer": "3941",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "8529 doğal sayısındaki 5 rakamının bulunduğu basamağın adını yazınız.",
+            "answer": "Yüzler basamağı",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          },
+          {
+            "question": "4076 doğal sayısındaki 4 rakamının basamak değerini bulunuz.",
+            "answer": "4000",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.2957124014695485,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.5491020580259012,
+          "final_temperature": 0.5491020580259012,
+          "seed": 527981924,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 10.939118385314941,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "\"Üç bin beş yüz on yedi\" şeklinde ifade edilen doğal sayıyı sayısal olarak yazınız.",
+            "answer": "3517",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "7249 sayısındaki 2 rakamının temsil ettiği miktar kaçtır?",
+            "answer": "200",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          },
+          {
+            "question": "6084 doğal sayısı nasıl okunur?",
+            "answer": "Altı bin seksen dört",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "4 tane binlik, 9 tane onluk ve 3 tane birlikten oluşan doğal sayı kaçtır?",
+            "answer": "4093",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          },
+          {
+            "question": "Binler pozisyonunda 5, yüzler pozisyonunda 1, onlar pozisyonunda 0 ve birler pozisyonunda 8 olan dört basamaklı doğal sayıyı yazınız.",
+            "answer": "5108",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.3305757939815521,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.4859139947996684,
+          "final_temperature": 0.4859139947996684,
+          "seed": 729798184,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 13.472491979598999,
+        "error": null
+      },
+      {
+        "scenario_label": "g3_dogal_kolay",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Yedi bin altı yüz üç sayısını rakamlarla yazınız.",
+            "answer": "7603",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "8054 sayısının okunuşunu yazınız.",
+            "answer": "Sekiz bin elli dört",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "5379 sayısında 3'ün bulunduğu yerin sayısal değeri nedir?",
+            "answer": "300",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          },
+          {
+            "question": "İçinde 6 tane bin, 4 tane yüz ve 7 tane bir olan sayıyı yazınız.",
+            "answer": "6407",
+            "kazanim_kod": "M.3.1.1",
+            "question_type": "kavram_sorusu"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 0,
+          "retrieval_avg_distance": 0.3414627015590668,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.458344980318832,
+          "final_temperature": 0.458344980318832,
+          "seed": 1317501596,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 1,
+          "requested_count": 5,
+          "delivered_count": 4
+        },
+        "duration_seconds": 18.719114542007446,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Bir proje için her biri 2/5 metre uzunluğunda ipler gerekmektedir. Elimizde 1. kaynakta 18 metre ip, 2. kaynakta ise 14 tam 2/5 metre ip bulunmaktadır. Hangi kaynaktan daha fazla parça ip elde edilebileceğini ve aralarındaki farkı bulunuz.",
+            "answer": "1. kaynaktan 45 parça, 2. kaynaktan 36 parça elde edilir. 1. kaynaktan 9 parça daha fazla ip elde edilebilir.",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir depoda 240 litre su bulunmaktadır. Bu suyun 1/3'ü bahçe sulaması için kullanılmıştır. Kalan suyun 2/5'i ise hayvanların içme suyu olarak ayrılmıştır. Geriye kalan suyun tamamı, her biri 3/4 litrelik şişelere doldurulmak isteniyor. Kaç adet şişe tam olarak doldurulabilir?",
+            "answer": "128 adet şişe",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          },
+          {
+            "question": "((5 tam 1/2) - (1 tam 3/4)) ÷ (7/8) = ?",
+            "answer": "4",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "salt_islem"
+          },
+          {
+            "question": "Bir marangoz, elindeki toplam 12 tam 1/2 metrelik tahta parçasını kullanarak iki farklı ürün yapacaktır. Birinci ürün için her biri 5/8 metre, ikinci ürün için ise her biri 3/4 metre tahta gerekmektedir. Marangoz, elindeki tüm tahtayı sadece birinci ürünü yapmak için kullanırsa kaç tane ürün yapabilir? Peki sadece ikinci ürünü yapmak için kullanırsa kaç tane ürün yapabilir? Elde ettiği sonuçları karşılaştırarak hangi ürün türünden daha fazla parça elde edebileceğini açıklayınız.",
+            "answer": "Birinci üründen 20 adet, ikinci üründen 16 adet yapabilir. Birinci üründen 4 adet daha fazla parça elde edebilir.",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          },
+          {
+            "question": "Bir pasta ustası, özel bir tarif için her bir pasta başına 3/4 su bardağı süt kullanmaktadır. Bu hafta 18 adet pasta yapması gerekmektedir. Usta, kullanacağı toplam süt miktarını, her biri 1/2 su bardağı süt alabilen kaplara dolduracaktır. Toplamda kaç adet kabı tam olarak doldurabilir?",
+            "answer": "27 adet kap",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3035266664293077,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.9730950565774624,
+          "final_temperature": 0.9730950565774624,
+          "seed": 709402264,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 25.273473978042603,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "5 tam 1/3 - 2/3 işleminin sonucunu 1 tam 1/6'ya bölünüz. Bu işlemin sonucu kaçtır?",
+            "answer": "4",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "salt_islem"
+          },
+          {
+            "question": "Dikdörtgen şeklindeki bir arsanın alanı 28 tam 1/2 metrekaredir. Arsanın kısa kenarının uzunluğu 4 tam 3/4 metre olduğuna göre, uzun kenarının uzunluğunu hesaplayınız. Eğer bu arsanın uzun kenarı her biri 1 tam 1/2 metre olan eşit uzunlukta parçalara ayrılırsa, kaç parça elde edilir?",
+            "answer": "4 parça",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "akil_yurutme"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.3011861973338657,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 1.0648636504188327,
+          "final_temperature": 1.0648636504188327,
+          "seed": 213187788,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 3,
+          "requested_count": 5,
+          "delivered_count": 2
+        },
+        "duration_seconds": 55.275585651397705,
+        "error": null
+      },
+      {
+        "scenario_label": "g6_kesir_zor",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Bir terzi, 12 tam 3/4 metre uzunluğundaki bir top kumaşın 1/3'ünü elbiseler için kullandı. Kalan kumaşın her birinden 1 tam 1/2 metre uzunluğunda eşarplar dikecektir. Terzi bu kumaştan kaç tane eşarp dikebilir?",
+            "answer": "5 tam 2/3 eşarp",
+            "kazanim_kod": "M.6.2.3",
+            "question_type": "sozel_problem"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.28969328933291966,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.9119530855850224,
+          "final_temperature": 0.9119530855850224,
+          "seed": 1801796288,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 1,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 4,
+          "requested_count": 5,
+          "delivered_count": 1
+        },
+        "duration_seconds": 62.359055042266846,
+        "error": null
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 0,
+        "questions": [
+          {
+            "question": "Bir okulda yapılan anket sonucunda öğrencilerin en sevdiği dersler belirlenmiştir. Ankete katılan 400 öğrencinin %30'u Matematik, %25'i Fen Bilimleri, %20'si Türkçe dersini tercih etmiştir. Geri kalan öğrenciler ise Sosyal Bilgiler dersini seçmiştir. Buna göre, Sosyal Bilgiler dersini tercih eden öğrenci sayısı kaçtır?",
+            "answer": "100 öğrenci",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Aşağıdaki çubuk grafiği, bir şirketin dört farklı departmanındaki çalışan sayılarını göstermektedir. 'Pazarlama' departmanındaki çalışan sayısı grafikte belirtilmemiştir.\n\n```\nDepartmanlara Göre Çalışan Sayıları\n-----------------------------------\nÜretim:    ████████████████████ (100)\nMuhasebe:  ██████████████ (70)\nSatış:     ██████████████████ (90)\nPazarlama: ████████████████████████ (X)\n```\n\nBu şirketteki toplam çalışanların %20'si 'Pazarlama' departmanında çalıştığına göre, 'Pazarlama' departmanındaki çalışan sayısı (X) kaçtır?",
+            "answer": "65 kişi",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.30882345967822605,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8472416722648206,
+          "final_temperature": 0.8472416722648206,
+          "seed": 1883984296,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 3,
+          "requested_count": 5,
+          "delivered_count": 2
+        },
+        "duration_seconds": 61.16939949989319,
+        "error": null
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 1,
+        "questions": [
+          {
+            "question": "Bir toplulukta yapılan bir anket sonucunda, katılımcıların en sevdikleri tatlı türlerine göre dağılımı aşağıdaki gibidir:\n\n| Tatlı Türü      | Yüzde (%) |\n|-----------------|-----------|\n| Sütlaç          | 30        |\n| Baklava         | 25        |\n| Künefe          | 20        |\n| Kazandibi       | 15        |\n| Diğer Tatlılar  | ?         |",
+            "answer": "Diğer Tatlılar %10'dur.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir okulun 500 öğrencisinin katıldığı bir kulüp seçimi anketinin sonuçları daire grafiği ile gösterilmiştir. Öğrencilerin %40'ı Spor Kulübü'nü, %30'u Bilim Kulübü'nü, %15'i Sanat Kulübü'nü ve geri kalanı Müzik Kulübü'nü tercih etmiştir. Buna göre, Müzik Kulübü'nü tercih eden öğrenci sayısı kaçtır?",
+            "answer": "75",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Aşağıdaki grafik, bir kütüphanede bir hafta boyunca ödünç alınan hikaye kitaplarının türlerine göre dağılımını göstermektedir:\n\n```\nMacera:  ██████████ (100 kitap)\nGizem:   ███████ (70 kitap)\nFantastik: ████████ (80 kitap)\nDiğer:   ███ (30 kitap)\n```\n\nBu verilere göre, en çok hangi tür hikaye kitabı ödünç alınmıştır ve toplam kaç kitap ödünç alınmıştır?",
+            "answer": "En çok Macera türü hikaye kitabı ödünç alınmıştır. Toplamda 300 kitap ödünç alınmıştır.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          },
+          {
+            "question": "Bir bisiklet tamircisinin bir ayda tamir ettiği bisikletlerin renklerine göre dağılımı aşağıdaki tabloda verilmiştir:\n\n| Renk    | Tamir Edilen Bisiklet Sayısı |\n|---------|----------------------------|\n| Kırmızı | 45                         |\n| Mavi    | 60                         |\n| Siyah   | 75                         |\n| Beyaz   | 30                         |\n| Yeşil   | ?                          |",
+            "answer": "Yeşil renkte 30 bisiklet tamir edilmiştir.",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir okulun öğrenci meclisi seçiminde adayların aldıkları oyların dağılımı aşağıdaki gibidir:\n\n```\nAday A: ████████████ (120 oy)\nAday B: ██████████ (100 oy)\nAday C: ███████ (70 oy)\nAday D: ██████████████ (140 oy)\n```\n\nBu sonuçlar bir daire grafiği ile gösterilseydi, Aday D'nin daire grafiğindeki dilimini temsil eden merkez açısı kaç derece olurdu?",
+            "answer": "140 derece",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.310212857193417,
+          "model_used": "gemini-2.5-flash-lite",
+          "temperature": 0.7111428693877658,
+          "final_temperature": 0.7111428693877658,
+          "seed": 776469504,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 61.19845795631409,
+        "error": null
+      },
+      {
+        "scenario_label": "g7_veri_orta",
+        "iteration_index": 2,
+        "questions": [
+          {
+            "question": "Bir okulda öğrencilerin tercih ettiği kulüplerin toplam içindeki oranları verilmiştir. Müzik Kulübü öğrencilerin %35'ini, Spor Kulübü %30'unu, Sanat Kulübü %20'sini oluşturmaktadır. Geriye kalan öğrenciler Bilim Kulübü'nü tercih etmiştir. Okuldaki toplam 240 öğrenciye göre, Bilim Kulübü'nü tercih eden öğrenci sayısı kaçtır?",
+            "answer": "36 öğrenci",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "islem"
+          },
+          {
+            "question": "Bir ailenin aylık gelirinin harcama kalemlerine ayrılan payları aşağıdaki tabloda gösterilmiştir. Kira ve Faturalar için ayrılan pay, tüm gelirin %30'udur.\n\n| Harcama Kalemi | Gelirden Ayrılan Pay (%) |\n|-----------------|--------------------------|\n| Gıda            | 40                       |\n| Ulaşım          | 15                       |\n| Eğitim          | 10                       |\n| Kira ve Faturalar | ?                        |\n| Diğer Giderler  | 5                        |\n\nEğer ailenin aylık geliri 8000 TL ise, Kira ve Faturalar için ayrılan miktar ile Gıda için ayrılan miktar arasındaki fark kaç TL'dir?",
+            "answer": "800 TL",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir çiftçinin yıllık meyve üretimindeki çeşitlere göre üretim oranları aşağıdaki tabloda verilmiştir. Kiraz üretimi, toplam üretimin %20'sidir.\n\n| Meyve Çeşidi | Üretim Oranı (%) |\n|--------------|------------------|\n| Elma         | 30               |\n| Armut        | 25               |\n| Çilek        | 15               |\n| Kiraz        | ?                |\n| Erik         | 10               |\n\nÇiftçinin toplam 6000 kg meyve ürettiği bilindiğine göre, Elma ve Erik üretimlerinin toplamı ile Armut ve Çilek üretimlerinin toplamı arasındaki fark kaç kilogramdır?",
+            "answer": "0 kg",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "tablo_sorusu"
+          },
+          {
+            "question": "Bir mağazanın bir haftalık satış oranları ürün kategorilerine göre aşağıdaki çubuk gösterimde verilmiştir. Gösterimde % sembolü kullanılmamıştır ancak her █ 1 birimlik yüzdeyi temsil etmektedir.\n```\nElektronik: ████████████████████████████████ (32 birim)\nGiyim     : ████████████████████████ (24 birim)\nEv Aletleri:████████████████████ (20 birim)\nKitap     : ██████████████ (14 birim)\nDiğer     : ?\n```\nMağazanın toplam bir haftalık satış tutarı 50.000 TL olduğuna göre, \"Diğer\" kategorisine ait satış tutarı kaç TL'dir?",
+            "answer": "5000 TL",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          },
+          {
+            "question": "İki farklı okulda öğrencilerin en sevdiği derslere göre tercih oranları aşağıdaki çubuk gösterimlerinde verilmiştir. Her bir █ karakteri 1 birimlik yüzdeyi temsil etmektedir.\n\n**Okul A Tercih Oranları**\n```\nMatematik: ██████████████████████████████ (30 birim)\nFen Bilimleri: ████████████████████████ (24 birim)\nTürkçe   : ████████████████████ (20 birim)\nSosyal Bilgiler: ████████████████ (16 birim)\nİngilizce: ?\n```\n\n**Okul B Tercih Oranları**\n```\nMatematik: ████████████████████████████████████ (36 birim)\nFen Bilimleri: ██████████████████████████ (28 birim)\nTürkçe   : ████████████████ (16 birim)\nSosyal Bilgiler: ████████████ (12 birim)\nİngilizce: ?\n```\nOkul A'da 250 öğrenci, Okul B'de 300 öğrenci olduğuna göre, Okul A'daki İngilizce tercih eden öğrenci sayısı ile Okul B'deki İngilizce tercih eden öğrenci sayısı arasındaki fark kaçtır?",
+            "answer": "1 öğrenci",
+            "kazanim_kod": "M.7.6.1",
+            "question_type": "grafik_okuma"
+          }
+        ],
+        "trace": {
+          "few_shot_source": "rag",
+          "few_shot_count": 6,
+          "textbook_count": 3,
+          "retrieval_avg_distance": 0.28242837058173287,
+          "model_used": "gemini-2.5-flash",
+          "temperature": 0.8349779880061551,
+          "final_temperature": 0.8349779880061551,
+          "seed": 1845496460,
+          "retry_rounds": 0,
+          "dedup_rejected_string": 0,
+          "dedup_rejected_semantic": 0,
+          "critic_rejected": 0,
+          "requested_count": 5,
+          "delivered_count": 5
+        },
+        "duration_seconds": 115.29078412055969,
+        "error": null
+      }
+    ]
+  },
+  "metrics": {
+    "baseline": {
+      "config_name": "baseline",
+      "total_runs": 12,
+      "successful_runs": 12,
+      "avg_intra_batch_distance": 0.31613037589182463,
+      "avg_cross_batch_distance": 0.30699509368473044,
+      "unique_normalize_ratio": 1.0,
+      "avg_unique_context_tokens_per_batch": 53.75,
+      "avg_critic_pass_rate": 1.0,
+      "avg_delivered_ratio": 1.0,
+      "avg_kazanim_alignment": 0.6657565298951036,
+      "temperature_variance": 0.1595893166850463,
+      "retrieval_distance_variance": 0.04223928604076018,
+      "avg_duration_seconds": 37.0987153450648,
+      "total_questions_generated": 60,
+      "per_scenario": {
+        "g5_cebir_orta": {
+          "cross_batch_distance": 0.3494411518617276,
+          "delivered_ratio": 1.0,
+          "questions": 15
+        },
+        "g3_dogal_kolay": {
+          "cross_batch_distance": 0.3259077371038635,
+          "delivered_ratio": 1.0,
+          "questions": 15
+        },
+        "g6_kesir_zor": {
+          "cross_batch_distance": 0.280267918336159,
+          "delivered_ratio": 1.0,
+          "questions": 15
+        },
+        "g7_veri_orta": {
+          "cross_batch_distance": 0.2723635674371716,
+          "delivered_ratio": 1.0,
+          "questions": 15
+        }
+      }
+    },
+    "sprint1_only": {
+      "config_name": "sprint1_only",
+      "total_runs": 12,
+      "successful_runs": 11,
+      "avg_intra_batch_distance": 0.32111831277269376,
+      "avg_cross_batch_distance": 0.3178066092289728,
+      "unique_normalize_ratio": 1.0,
+      "avg_unique_context_tokens_per_batch": 40.27272727272727,
+      "avg_critic_pass_rate": 0.8545454545454546,
+      "avg_delivered_ratio": 0.8545454545454546,
+      "avg_kazanim_alignment": 0.6607833816365829,
+      "temperature_variance": 0.16663911618021235,
+      "retrieval_distance_variance": 0.04298438987106224,
+      "avg_duration_seconds": 39.84297407757152,
+      "total_questions_generated": 47,
+      "per_scenario": {
+        "g5_cebir_orta": {
+          "cross_batch_distance": 0.35701435259502423,
+          "delivered_ratio": 0.9333333333333333,
+          "questions": 14
+        },
+        "g3_dogal_kolay": {
+          "cross_batch_distance": 0.3214372487413741,
+          "delivered_ratio": 0.8666666666666667,
+          "questions": 13
+        },
+        "g6_kesir_zor": {
+          "cross_batch_distance": 0.3071514841374174,
+          "delivered_ratio": 0.8,
+          "questions": 12
+        },
+        "g7_veri_orta": {
+          "cross_batch_distance": 0.2856233514420755,
+          "delivered_ratio": 0.8,
+          "questions": 8
+        }
+      }
+    },
+    "sprint2_full": {
+      "config_name": "sprint2_full",
+      "total_runs": 12,
+      "successful_runs": 12,
+      "avg_intra_batch_distance": 0.32888060518377726,
+      "avg_cross_batch_distance": 0.3174653324018383,
+      "unique_normalize_ratio": 1.0,
+      "avg_unique_context_tokens_per_batch": 41,
+      "avg_critic_pass_rate": 0.8,
+      "avg_delivered_ratio": 0.8,
+      "avg_kazanim_alignment": 0.6696585030374528,
+      "temperature_variance": 0.1833473317445033,
+      "retrieval_distance_variance": 0.033670832352243954,
+      "avg_duration_seconds": 43.75913945833842,
+      "total_questions_generated": 48,
+      "per_scenario": {
+        "g5_cebir_orta": {
+          "cross_batch_distance": 0.3557761114801561,
+          "delivered_ratio": 0.9333333333333333,
+          "questions": 14
+        },
+        "g3_dogal_kolay": {
+          "cross_batch_distance": 0.3141564958713747,
+          "delivered_ratio": 0.9333333333333333,
+          "questions": 14
+        },
+        "g6_kesir_zor": {
+          "cross_batch_distance": 0.2972243734949093,
+          "delivered_ratio": 0.5333333333333333,
+          "questions": 8
+        },
+        "g7_veri_orta": {
+          "cross_batch_distance": 0.30270434876091296,
+          "delivered_ratio": 0.8,
+          "questions": 12
+        }
+      }
+    }
+  }
+}

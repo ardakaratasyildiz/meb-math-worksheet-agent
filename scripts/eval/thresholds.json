@@ -1,0 +1,32 @@
+{
+  "_doc": "Sprint 2 sonrası referans metrikler (2026-05-01 A/B run, sprint2_full kolonu). Eşikler ~%10-15 marj bırakacak şekilde belirlendi. Yeni sprint sonrası bu dosya update edilmeli — `python scripts/eval/relock_thresholds.py <new_raw.json>` ile.",
+  "_baseline_run": "ab_raw_20260501_181943.json",
+  "_baseline_config": "sprint2_full",
+  "diversity": {
+    "avg_intra_batch_distance_min": 0.28,
+    "avg_cross_batch_distance_min": 0.27,
+    "_observed_intra": 0.3289,
+    "_observed_cross": 0.3175
+  },
+  "quality": {
+    "avg_kazanim_alignment_min": 0.55,
+    "avg_delivered_ratio_min": 0.65,
+    "avg_critic_pass_rate_min": 0.60,
+    "avg_critic_pass_rate_max": 0.99,
+    "_doc_critic": "pass_rate çok yüksek (≥0.99) = critic pasif olabilir; çok düşük (<0.60) = model bozuk veya kazanım hatalı.",
+    "_observed_alignment": 0.6697,
+    "_observed_delivered": 0.8000,
+    "_observed_critic_pass": 0.8000
+  },
+  "stability": {
+    "successful_runs_ratio_min": 0.90,
+    "_doc": "12 run'dan en az 11'i başarılı olmalı.",
+    "_observed_baseline": "12/12",
+    "_observed_sprint2": "12/12"
+  },
+  "performance": {
+    "avg_duration_seconds_max": 75.0,
+    "_doc": "Çağrı başına 75s'i aşarsa muhtemel API yavaşlığı veya retry patlaması. Alarm vermeli.",
+    "_observed": 43.76
+  }
+}
