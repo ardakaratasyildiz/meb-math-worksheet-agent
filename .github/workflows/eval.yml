@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    # Her gün 02:00 UTC (Türkiye 05:00)
-    - cron: "0 2 * * *"
+    # Pazartesi 02:00 UTC (Türkiye Pazartesi 05:00) — haftada bir
+    - cron: "0 2 * * 1"
   workflow_dispatch:
     inputs:
       iterations:
