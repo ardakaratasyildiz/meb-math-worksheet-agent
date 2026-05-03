@@ -33,6 +33,8 @@ sys.path.insert(0, str(ROOT))
 PDFS_BY_GRADE: dict[int, list[str]] = {
     1: ["matematik_1_1.pdf", "matematik_1_2.pdf"],
     2: ["matematik_2_1.pdf", "matematik_2_2.pdf"],
+    3: ["3.Sinif-Matematik-Ders-Kitabi-MEB-pdf.pdf"],
+    4: ["4.Sinif-Matematik-Ders-Kitabi-MEB-pdf.pdf"],
     5: ["matematik_5_1.pdf", "matematik_5_2.pdf"],
     6: ["matematik_6_1.pdf", "matematik_6_2.pdf"],
     7: ["Matematik Ders Kitabı-MEB.pdf"],
