@@ -1,17 +1,93 @@
 {
   "reports": [
     {
-      "filename": "1.sinif_1.pdf",
-      "file_size_mb": 130.4,
-      "total_pages": 193,
-      "assumed_grade": 1,
+      "filename": "2.sinif.pdf",
+      "file_size_mb": 29.1,
+      "total_pages": 109,
+      "assumed_grade": 2,
       "extraction_status": "text_embedded",
-      "avg_text_chars_per_page": 226.0,
-      "avg_images_per_page": 5.9,
+      "avg_text_chars_per_page": 290.0,
+      "avg_images_per_page": 3.0,
       "math_symbols_in_sample": 0,
       "kazanim_codes_found_in_first_30_pages": [],
       "header_hint_counts": {
-        "unite_bolum": 1,
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 0,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 8,
+      "pymupdf_outline_sample": [
+        [
+          1,
+          "2. KADEME GİRİŞ",
+          1
+        ],
+        [
+          1,
+          "1.öa",
+          8
+        ],
+        [
+          1,
+          "2-öa ",
+          28
+        ],
+        [
+          1,
+          "2.Kademe 3.öa",
+          38
+        ],
+        [
+          1,
+          "4.öa",
+          70
+        ]
+      ],
+      "toc_candidate_pages": [
+        5
+      ],
+      "sample_text_excerpt": "[sayfa 3] GENÇLİĞE HİTABE \n \nEy Türk gençliği! Birinci vazifen, Türk istiklâlini, Türk Cumhuriyetini, \nilelebet muhafaza ve müdafaa etmektir. \nMevcudiyetinin ve istikbalinin yegâne temeli budur. Bu temel, senin en \nkymetli hazinendir. İstikbalde dahi, seni bu hazineden mahrum etmek \nisteyecek dâhilî ve hâric\n---\n[sayfa 13] 14\n5’er 5’er 100’e kadar sayarak hedefe ulaş ve boşlukları \nuygun sayılar ile doldur.\n15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100\n10\n5\n15\n50\n75\n---\n[sayfa 14] 15\n10’ar 10’ar 100’e kadar say ve mavi uçağın \npencerelerindeki  boşlukları uygun sayılar ile doldur.\n10\n100\n20\n30\n40\n50\n60\n70\n80\n90\n---\n"
+    },
+    {
+      "filename": "2.sinif_1.pdf",
+      "file_size_mb": 69.6,
+      "total_pages": 180,
+      "assumed_grade": 2,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 825.0,
+      "avg_images_per_page": 2.0,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
+        "kazanim": 0,
+        "ornek": 0,
+        "etkinlik": 0,
+        "alistirma": 0,
+        "problem": 0
+      },
+      "pymupdf_outline_entries": 0,
+      "pymupdf_outline_sample": [],
+      "toc_candidate_pages": [
+        6
+      ],
+      "sample_text_excerpt": "[sayfa 6] 7\nİÇİNDEKİLER\n7\nKitabımızı Tanıyalım ......................................................................................................................................8\n1. TEMA: NESNELERİN GEOMETRİSİ (1) .............................................10 \nGeometrik Cisimler ........................\n---\n[sayfa 26] 27\n27\nHATIRLAYALIM\nTarihî ev görselini inceleyelim. Soruların cevaplarını noktalı yerlere \nyazalım.\n27\n27\nGEOMETRİK ŞEKİL MODELLERİ\n\t••\t\nEv görselinde hangi geometrik şekillerin benzerleri vardır?\n.......................................................................................................\n---\n[sayfa 28] 29\n29\n2\nModelleri inceleyelim. Noktalı yerlere modelde kullanılan \ngeometrik şekilleri yazalım.\nModelde ............................ ve daire \nkullanılmıştır."
+    },
+    {
+      "filename": "2.sinif_2.pdf",
+      "file_size_mb": 162.2,
+      "total_pages": 213,
+      "assumed_grade": 2,
+      "extraction_status": "text_embedded",
+      "avg_text_chars_per_page": 259.0,
+      "avg_images_per_page": 1.6,
+      "math_symbols_in_sample": 0,
+      "kazanim_codes_found_in_first_30_pages": [],
+      "header_hint_counts": {
+        "unite_bolum": 0,
         "kazanim": 0,
         "ornek": 0,
         "etkinlik": 0,
@@ -24,17 +100,17 @@
         7,
         8
       ],
-      "sample_text_excerpt": "[sayfa 26] 26\nDerenin \niçinde \nne var? \nTavşanın \netrafında \nneler var?\nÇukurda \nne var?\nÇocukların \narasında \nne var?\nAşağıdaki soruları cevaplayalım. Doğru \ncevaplara ait yuvarlağı boyayalım. \n14\n---\n[sayfa 28] 28\n2.\nBÖLÜM\nEş Nesneler\nAşağıdaki nesneleri görselden bularak yuvarlak \niçine alalım.\n1\nDÜŞÜNELİM\n---\n"
+      "sample_text_excerpt": "[sayfa 26] 3.\tTEMA\n26\nİŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE\n6.\t Aşağıdaki etkinlikleri yapınız. Bulduğunuz sonuçlar arasındaki \nilişkiyi inceleyiniz.                          \nAşağıda 15 tane papatya vardır. Bu papatyaları dörderli grup­\nlandırınız. Kaç grup oluştuğunu ve geriye kaç papatya kaldığını \nyazınız.\n15’ten\n---\n[sayfa 28] 3.\tTEMA\n28\nİŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE\n1.\t Aşağıdaki tabloda boş bırakılan yerleri, satır ve sütunun ba­\nşında verilen sayıları çarparak doldurunuz.\nx\n1\n2\n3\n4\n5\n1\n3\n5\n2\n2\n4\n3\n6\n12\n4\n4\n12\n20\n5\n5\n15\n25\n6\n12\n24\n7\n14\n8\n8\n24\n40\n9\n18\n36\n45\n10\n20\n40\n---\n"
     },
     {
-      "filename": "1.sinif_2.pdf",
-      "file_size_mb": 142.6,
-      "total_pages": 191,
-      "assumed_grade": 1,
+      "filename": "2.sinif_3.pdf",
+      "file_size_mb": 65.8,
+      "total_pages": 202,
+      "assumed_grade": 2,
       "extraction_status": "text_embedded",
-      "avg_text_chars_per_page": 563.0,
-      "avg_images_per_page": 2.3,
-      "math_symbols_in_sample": 15,
+      "avg_text_chars_per_page": 1055.0,
+      "avg_images_per_page": 9.8,
+      "math_symbols_in_sample": 0,
       "kazanim_codes_found_in_first_30_pages": [],
       "header_hint_counts": {
         "unite_bolum": 0,
@@ -48,26 +124,28 @@
       "pymupdf_outline_sample": [],
       "toc_candidate_pages": [
         6,
-        7,
-        8
+        12,
+        15,
+        18,
+        20
       ],
-      "sample_text_excerpt": "[sayfa 6] 7\nİçindekiler\nNESNELERİN GEOMETRİSİ 1        11\nYER, YÖN, KONUM.........................................................12\nİLERİ, GERİ.....................................................................................13\nALTINDA, ÜSTÜNDE, ETRAFINDA......................16\nÖNÜNDE, ARKASINDA.........\n---\n[sayfa 26] 27\nArkadaşınıza kalem kutusunun içindeki boya \nkalemlerinin renklerini söyleyiniz. Kalem kutusunun içinde \nbulunan boya kalemlerini aşağıdan seçerek işaretleyiniz.\nAşağıdaki oyunu arkadaşlarınızla oynayınız.\nİçinde-Dışında Oyunu\nOkul bahçesine öğrenci sayısı kadar çember çizilir. \nÇemberlerin arasın\n---\n[sayfa 28] 29\n1.\t Çantanın sağına mavi bir top çiziniz. Çizdiğiniz topu \nboyayınız.\n2.\tÇantanın soluna sarı bir top çiziniz. Çizdiğiniz topu \nboyayınız.\n3.\t Çocuğun sağ "
+      "sample_text_excerpt": "[sayfa 6] 7\nİÇİNDEKİLER\n7\n6. TEMA: VERİYE DAYALI ARAŞTIRMA .................................................160 \nVeri Toplama ve Değerlendirme .......................................................................................162\n6. Tema Değerlendirme  .....................................................\n---\n[sayfa 26] 27\n27\n3\nAsağıdaki bölme işlemlerinin sonuçlarını ardışık çıkarma ve \nbölme işlemi yaparak bulalım. Noktalı yerlere uygun sayıları \nyazalım.\n10 Antep fıstığını\n2 kişiye eşit olarak \npaylaştıralım.\nBir kişiye kaç Antep \nfıstığı düşer?\n10 - 2 = 8\n 8 - 2 = .......\n....... - 2 = .......\n....... - 2 = ...\n---\n[sayfa 28] 29\n29\n5\nVerilen problemleri defterimize çözelim.\nBerfin, 20 tane çıkartmayı defterinin 5 sayfasına eşit olarak \nyapıştırdı. Berfin her bir sayfaya kaç tane çı"
     },
     {
-      "filename": "1.sinif_3.pdf",
-      "file_size_mb": 113.2,
-      "total_pages": 161,
-      "assumed_grade": 1,
+      "filename": "2.sinif_4.pdf",
+      "file_size_mb": 32.6,
+      "total_pages": 128,
+      "assumed_grade": 2,
       "extraction_status": "text_embedded",
-      "avg_text_chars_per_page": 388.0,
-      "avg_images_per_page": 14.3,
+      "avg_text_chars_per_page": 1181.0,
+      "avg_images_per_page": 5.8,
       "math_symbols_in_sample": 0,
       "kazanim_codes_found_in_first_30_pages": [],
       "header_hint_counts": {
-        "unite_bolum": 1,
+        "unite_bolum": 0,
         "kazanim": 0,
         "ornek": 0,
-        "etkinlik": 0,
+        "etkinlik": 3,
         "alistirma": 0,
         "problem": 0
       },
@@ -76,44 +154,18 @@
       "toc_candidate_pages": [
         7,
         8,
-        22
+        9
       ],
-      "sample_text_excerpt": "[sayfa 22] 22\nAşağıdaki toplama işlemlerini yapalım. \nToplama işlemlerine ait cümleleri örnekteki \ngibi yazalım. Yazdığımız cümleleri okuyalım.\nİki artı iki eşittir dört eder.\n2\n+\n+\n=\n2\n........\n........\n........\n+\n+\n+\n+\n+\n+\n=\n=\n=\n........\n........\n........\n........\n........\n........\n........\n........\n........\n---\n[sayfa 26] 26\nAşağıda yan yana ve alt alta verilen toplama \nişlemlerini örnekteki gibi yapalım.\n1.\n3.\n5.\n7.\n2.\n4.\n6.\n8.\n8+1=\n8\n1\n+\n3+3=\n3\n3\n+\n4+3=\n 4\n 3\n+\n9+3=\n9\n3\n+\n7+4=11\n7\n4\n11\n+\n5+2=\n5\n2\n+\n8+2=\n9+7=\n8\n2\n9\n7\n+\n+\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n....\n9\n---\n"
+      "sample_text_excerpt": "[sayfa 8] 8\nYönümüzü Bulalım ................................................................................................................................70\nSimetri Dedektifi ....................................................................................................................................\n---\n[sayfa 22] 22\n.\t.\tKarekodu okutarak “SIVILARI ÖLÇÜYORUZ” etkinliğini \naçınız.\n.\t.\tZenginleştirme uygulamasına katılacak öğrencilerin sırayla \netkinliği yapmasını sağlayınız.\n.\t.\tÖğrencilerinize “Siz de günlük hayatınızda yaptığınız çalışmadaki gibi \nölçümlerle karşılaşıyor musunuz?” sorusunu yönelterek cevapla\n---\n"
     },
     {
-      "filename": "1.sinif_4.pdf",
-      "file_size_mb": 79.6,
-      "total_pages": 151,
-      "assumed_grade": 1,
+      "filename": "matematik_2_1.pdf",
+      "file_size_mb": 16.5,
+      "total_pages": 182,
+      "assumed_grade": 2,
       "extraction_status": "text_embedded",
-      "avg_text_chars_per_page": 331.0,
-      "avg_images_per_page": 0.0,
-      "math_symbols_in_sample": 0,
-      "kazanim_codes_found_in_first_30_pages": [],
-      "header_hint_counts": {
-        "unite_bolum": 0,
-        "kazanim": 0,
-        "ornek": 0,
-        "etkinlik": 0,
-        "alistirma": 0,
-        "problem": 0
-      },
-      "pymupdf_outline_entries": 0,
-      "pymupdf_outline_sample": [],
-      "toc_candidate_pages": [
-        7,
-        8
-      ],
-      "sample_text_excerpt": "[sayfa 22] 22\nİŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE\n4.\tTEMA\n7.\t Aşağıdaki görselleri inceleyiniz. Görsellerle ilgili \nsoruları cevaplayınız. \n\t•  Kırmızı vazoda kaç tane çiçek vardır?\n\t•  Mavi vazoda kaç tane çiçek vardır? \n\t•  Kırmızı ve mavi vazodaki çiçekleri mor vazoya \nkoyarsak mor vazoda kaç çiçek olur?\n= \n+\n8.\n---\n[sayfa 26] 26\nİŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE\n4.\tTEMA\n12.\tAşağıdaki çıkarma işlemlerini örnekteki gibi yapınız.\n5 - 2 =\n7 - 3 =\n4 - 4 =\n9 - 5 =\n8 - 8 =\n3\n---\n"
-    },
-    {
-      "filename": "1.sinif_5.pdf",
-      "file_size_mb": 59.5,
-      "total_pages": 95,
-      "assumed_grade": 1,
-      "extraction_status": "text_embedded",
-      "avg_text_chars_per_page": 298.0,
-      "avg_images_per_page": 3.0,
+      "avg_text_chars_per_page": 487.0,
+      "avg_images_per_page": 2.6,
       "math_symbols_in_sample": 0,
       "kazanim_codes_found_in_first_30_pages": [],
       "header_hint_counts": {
@@ -127,23 +179,22 @@
       "pymupdf_outline_entries": 0,
       "pymupdf_outline_sample": [],
       "toc_candidate_pages": [
-        8,
-        9
+        7
       ],
-      "sample_text_excerpt": "[sayfa 13] 13\n1. Etkinlik\n1.\nTEMA\nTema No\n1\nTema Adı\nNesnelerin Geometrisi 1\nEtkinliğin Adı\nOryantiring\nEtkinliğin Amacı\nÖğrencilerin hedefe ulaşması için mesafe ve yönleri içeren \nyönergeleri çözümleyebilmesi amaçlanmaktadır.\nZenginleştirme Uygulaması\nÖğrenciler hedefe ulaşmak için mesafe ve yönleri içeren \ny\n---\n[sayfa 14] 14\nOryantiring kuralları:\n1.\t Verilen haritayı sırasıyla takip ederek belirtilen hedeflere \nvarılır.\n2.\tBelirtilen zamana uyulur.\n3.\tBu spor yapılırken diğer oyuncular takip edilmez.\n4.\tHedeflere ulaşmak için sadece harita ve pusula kullanılır.\nOryantiring, bir bölgenin haritası üzerinde belirtilmiş\n---\n"
+      "sample_text_excerpt": "[sayfa 6] 6\n---\n[sayfa 26] 26\n26\nYAPALIM ÖĞRENELİM\n1 ders saati\nMalzemeler: Oyun küpü, tenis topu, ilaç kutuları, hediye kutuları gibi \nfarklı geometrik cisimler, göz bandı veya tülbent.\nEtkinlik Alanı: Sınıf.\nEtkinliğe Hazırlık\nGerçekleştirdiğimiz aşamaları işaretleyelim. \n\t••\t\nSınıfımızı dört gruba ayıralım. Her grup bir ta\n---\n[sayfa 28] 28\n28\n\t••\t\nGörseldeki köprünün yapımında genellikle ......................................... şekli \nkullanılmıştır. Nedenini araştıralım.\n1 Fotoğraflardaki geometrik şekillere benzeyen kısımları incele­\nyelim. Noktalı yerlere uygun ifadeleri yazalım.\n\t••\t\nGörseldeki güneş panelinde genellikle .....\n---\n"
     },
     {
-      "filename": "matematik_1_1.pdf",
-      "file_size_mb": 130.4,
-      "total_pages": 193,
-      "assumed_grade": 1,
+      "filename": "matematik_2_2.pdf",
+      "file_size_mb": 13.5,
+      "total_pages": 203,
+      "assumed_grade": 2,
       "extraction_status": "text_embedded",
-      "avg_text_chars_per_page": 226.0,
-      "avg_images_per_page": 5.9,
+      "avg_text_chars_per_page": 1055.0,
+      "avg_images_per_page": 4.2,
       "math_symbols_in_sample": 0,
       "kazanim_codes_found_in_first_30_pages": [],
       "header_hint_counts": {
-        "unite_bolum": 1,
+        "unite_bolum": 0,
         "kazanim": 0,
         "ornek": 0,
         "etkinlik": 0,
@@ -153,37 +204,13 @@
       "pymupdf_outline_entries": 0,
       "pymupdf_outline_sample": [],
       "toc_candidate_pages": [
-        7,
-        8
+        6,
+        12,
+        15,
+        18,
+        20
       ],
-      "sample_text_excerpt": "[sayfa 26] 26\nDerenin \niçinde \nne var? \nTavşanın \netrafında \nneler var?\nÇukurda \nne var?\nÇocukların \narasında \nne var?\nAşağıdaki soruları cevaplayalım. Doğru \ncevaplara ait yuvarlağı boyayalım. \n14\n---\n[sayfa 28] 28\n2.\nBÖLÜM\nEş Nesneler\nAşağıdaki nesneleri görselden bularak yuvarlak \niçine alalım.\n1\nDÜŞÜNELİM\n---\n"
-    },
-    {
-      "filename": "matematik_1_2.pdf",
-      "file_size_mb": 113.2,
-      "total_pages": 161,
-      "assumed_grade": 1,
-      "extraction_status": "text_embedded",
-      "avg_text_chars_per_page": 388.0,
-      "avg_images_per_page": 14.3,
-      "math_symbols_in_sample": 0,
-      "kazanim_codes_found_in_first_30_pages": [],
-      "header_hint_counts": {
-        "unite_bolum": 1,
-        "kazanim": 0,
-        "ornek": 0,
-        "etkinlik": 0,
-        "alistirma": 0,
-        "problem": 0
-      },
-      "pymupdf_outline_entries": 0,
-      "pymupdf_outline_sample": [],
-      "toc_candidate_pages": [
-        7,
-        8,
-        22
-      ],
-      "sample_text_excerpt": "[sayfa 22] 22\nAşağıdaki toplama işlemlerini yapalım. \nToplama işlemlerine ait cümleleri örnekteki \ngibi yazalım. Yazdığımız cümleleri okuyalım.\nİki artı iki eşittir dört eder.\n2\n+\n+\n=\n2\n........\n........\n........\n+\n+\n+\n+\n+\n+\n=\n=\n=\n........\n........\n........\n........\n........\n........\n........\n........\n........\n---\n[sayfa 26] 26\nAşağıda yan yana ve alt alta verilen toplama \nişlemlerini örnekteki gibi yapalım.\n1.\n3.\n5.\n7.\n2.\n4.\n6.\n8.\n8+1=\n8\n1\n+\n3+3=\n3\n3\n+\n4+3=\n 4\n 3\n+\n9+3=\n9\n3\n+\n7+4=11\n7\n4\n11\n+\n5+2=\n5\n2\n+\n8+2=\n9+7=\n8\n2\n9\n7\n+\n+\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n.....\n....\n9\n---\n"
+      "sample_text_excerpt": "[sayfa 6] 7\nİÇİNDEKİLER\n7\n6. TEMA: VERİYE DAYALI ARAŞTIRMA .................................................160 \nVeri Toplama ve Değerlendirme .......................................................................................162\n6. Tema Değerlendirme  .....................................................\n---\n[sayfa 26] 27\n27\n3\nAsağıdaki bölme işlemlerinin sonuçlarını ardışık çıkarma ve \nbölme işlemi yaparak bulalım. Noktalı yerlere uygun sayıları \nyazalım.\n10 Antep fıstığını\n2 kişiye eşit olarak \npaylaştıralım.\nBir kişiye kaç Antep \nfıstığı düşer?\n10 - 2 = 8\n 8 - 2 = .......\n....... - 2 = .......\n....... - 2 = ...\n---\n[sayfa 28] 29\n29\n5\nVerilen problemleri defterimize çözelim.\nBerfin, 20 tane çıkartmayı defterinin 5 sayfasına eşit olarak \nyapıştırdı. Berfin her bir sayfaya kaç tane çı"
     }
   ]
 }
