@@ -21,6 +21,13 @@ class Scenario:
 
 SCENARIOS: list[Scenario] = [
     Scenario(
+        grade=1,
+        topic_id="dogal_sayilar",
+        kazanim_kod="M.1.1.1",
+        difficulty=Difficulty.KOLAY,
+        label="g1_dogal_kolay",
+    ),
+    Scenario(
         grade=5,
         topic_id="cebir",
         kazanim_kod="M.5.5.1",

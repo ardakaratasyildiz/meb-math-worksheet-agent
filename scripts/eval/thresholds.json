@@ -28,5 +28,9 @@
     "avg_duration_seconds_max": 75.0,
     "_doc": "Çağrı başına 75s'i aşarsa muhtemel API yavaşlığı veya retry patlaması. Alarm vermeli.",
     "_observed": 43.76
+  },
+  "verifiers": {
+    "_doc": "Sprint 3 ek metrikleri. math_verifier_rejected çok yüksekse (≥%30) ya verifier bozuk ya model SALT_ISLEM/ISLEM tipinde aritmetik hata yapıyor. Critic ile birlikte değerlendir.",
+    "math_verifier_rejection_rate_max": 0.30
   }
 }

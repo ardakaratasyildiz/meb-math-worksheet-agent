@@ -38,6 +38,56 @@ PDFS_BY_GRADE: dict[int, list[str]] = {
     7: ["Matematik Ders Kitabı-MEB.pdf"],
 }
 
+# Sprint 5 yeni kaynak deseni — knowledge_base/ kökünden glob ile bulunur.
+# Hardcoded mapping'e ekleme yapmadan, dosya adından sınıf çıkarımı.
+GRADE_PATTERN_RE = re.compile(
+    r"^(?P<grade>\d)\.s[ıi]n[ıi]f(?:_\d+)?\.pdf$",
+    re.IGNORECASE,
+)
+
+
+def _discover_grade_pdfs(grade: int, base_dir: Path) -> list[Path]:
+    """Sınıf için tüm PDF'leri bul: hardcoded liste + regex deseni.
+    md5 hash ile duplicate'leri eler (aynı içerik farklı isimle eklenmiş olabilir)."""
+    paths: list[Path] = []
+    seen_hashes: set[str] = set()
+
+    # Önce hardcoded liste — eski isimler öncelikli (ChromaDB'de zaten var)
+    for fname in PDFS_BY_GRADE.get(grade, []):
+        p = base_dir / fname
+        if p.exists():
+            h = _file_quick_hash(p)
+            if h not in seen_hashes:
+                seen_hashes.add(h)
+                paths.append(p)
+
+    # Sonra regex desenli yeni dosyalar
+    for p in sorted(base_dir.glob("*.pdf")):
+        m = GRADE_PATTERN_RE.match(p.name)
+        if not m:
+            continue
+        try:
+            if int(m.group("grade")) != grade:
+                continue
+        except ValueError:
+            continue
+        h = _file_quick_hash(p)
+        if h in seen_hashes:
+            logger.info("Duplicate atlandı (md5 eşleşti): %s", p.name)
+            continue
+        seen_hashes.add(h)
+        paths.append(p)
+
+    return paths
+
+
+def _file_quick_hash(path: Path) -> str:
+    """İlk 1MB md5 — duplicate dedektörü olarak yeterli, tam hash'ten 100x hızlı."""
+    h = hashlib.md5()
+    with path.open("rb") as f:
+        h.update(f.read(1024 * 1024))
+    return h.hexdigest()
+
 MIN_CHUNK_CHARS = 120
 MAX_CHUNK_CHARS = 2200
 MAX_LOOKAHEAD_CHARS = 1800  # Bir Örnek/Etkinlik bloğunun üst sınırı
@@ -317,17 +367,22 @@ def process_pdf(pdf_path: Path, grade: int) -> list[Chunk]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--grade", type=int, required=True, choices=sorted(PDFS_BY_GRADE.keys()))
+    parser.add_argument("--grade", type=int, required=True, choices=range(1, 8))
     args = parser.parse_args()
     grade = args.grade
     output = ROOT / "knowledge_base" / "processed" / f"textbook_chunks_grade{grade}.json"
 
+    base_dir = ROOT / "knowledge_base"
+    pdfs = _discover_grade_pdfs(grade, base_dir)
+    if not pdfs:
+        logger.error("Sınıf %s için PDF bulunamadı.", grade)
+        return
+    logger.info("Sınıf %s için %s benzersiz PDF işlenecek:", grade, len(pdfs))
+    for p in pdfs:
+        logger.info("  - %s", p.name)
+
     all_chunks: list[Chunk] = []
-    for fname in PDFS_BY_GRADE[grade]:
-        path = ROOT / "knowledge_base" / fname
-        if not path.exists():
-            logger.error("PDF yok: %s", path)
-            continue
+    for path in pdfs:
         all_chunks.extend(process_pdf(path, grade))
 
     output.parent.mkdir(parents=True, exist_ok=True)

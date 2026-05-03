@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 logger = logging.getLogger("discover")
 
 
-# Heuristic sınıf tespiti
+# Heuristic sınıf tespiti — özel isimli dosyalar için sabit eşleşmeler
 GRADE_HINTS: dict[str, int] = {
     "3.Sinif-Matematik-Ders-Kitabi-MEB-pdf.pdf": 3,
     "4.Sinif-Matematik-Ders-Kitabi-MEB-pdf.pdf": 4,
@@ -34,6 +34,27 @@ GRADE_HINTS: dict[str, int] = {
     "matematik_6_2.pdf": 6,
     "Matematik Ders Kitabı-MEB.pdf": 7,  # 7. sınıf test kitabı (TOC incelendi)
 }
+
+# Sprint 5 yeni kaynaklar: "X.sinif.pdf" veya "X.sinif_N.pdf" deseni → sınıfı dosyadan çıkar
+GRADE_FROM_PATTERN_RE = re.compile(
+    r"^(?P<grade>\d)\.s[ıi]n[ıi]f(?:_\d+)?\.pdf$",
+    re.IGNORECASE,
+)
+
+
+def detect_grade(filename: str) -> int | None:
+    """Önce sabit eşlemeye, sonra regex deseni."""
+    if filename in GRADE_HINTS:
+        return GRADE_HINTS[filename]
+    m = GRADE_FROM_PATTERN_RE.match(filename)
+    if m:
+        try:
+            g = int(m.group("grade"))
+            if 1 <= g <= 7:
+                return g
+        except ValueError:
+            return None
+    return None
 
 
 MATH_SYMBOL_RE = re.compile(r"[×÷±≤≥≠≈π√∞°∠∆¬∀∃∑∏∫½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]")
@@ -126,7 +147,7 @@ def analyze_pdf(path: Path) -> dict:
         "filename": path.name,
         "file_size_mb": round(path.stat().st_size / 1024 / 1024, 1),
         "total_pages": total_pages,
-        "assumed_grade": GRADE_HINTS.get(path.name),
+        "assumed_grade": detect_grade(path.name),
         "extraction_status": "scanned_ocr_required" if is_scanned else "text_embedded",
         "avg_text_chars_per_page": round(avg_text, 0),
         "avg_images_per_page": round(avg_images, 1),
@@ -143,7 +164,24 @@ def analyze_pdf(path: Path) -> dict:
 
 
 def main() -> None:
-    pdfs = sorted(PDF_DIR.glob("*.pdf"))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--grade", type=int, default=None,
+        help="Sadece bu sınıfa ait PDF'leri analiz et (1-7). Boşsa hepsi.",
+    )
+    parser.add_argument(
+        "--pattern", type=str, default=None,
+        help="Glob pattern (örn '1.sinif_*.pdf'). --grade ile birlikte kullanılabilir.",
+    )
+    args = parser.parse_args()
+
+    if args.pattern:
+        pdfs = sorted(PDF_DIR.glob(args.pattern))
+    else:
+        pdfs = sorted(PDF_DIR.glob("*.pdf"))
+    if args.grade is not None:
+        pdfs = [p for p in pdfs if detect_grade(p.name) == args.grade]
     logger.info("%s PDF bulundu", len(pdfs))
 
     reports = []

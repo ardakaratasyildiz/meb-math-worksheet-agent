@@ -111,6 +111,26 @@ def evaluate(
     )
     statuses.append(s); lines.append(line)
 
+    # Sprint 3: math_verifier_rejected oranı (eldeki metrik aggregate değil; ham
+    # runs üzerinden hesaplamak gerekir).
+    ver = thresholds.get("verifiers", {})
+    runs = raw.get("runs", {}).get(config_name) or []
+    total_qs = 0
+    total_math_rej = 0
+    for r in runs:
+        t = r.get("trace") or {}
+        total_qs += t.get("delivered_count", 0) + t.get("math_verifier_rejected", 0)
+        total_math_rej += t.get("math_verifier_rejected", 0)
+    if total_qs > 0:
+        rate = total_math_rej / total_qs
+        s, line = _check(
+            "math_verifier_rejection_rate",
+            rate,
+            max_v=ver.get("math_verifier_rejection_rate_max"),
+            is_critical=False,
+        )
+        statuses.append(s); lines.append(line)
+
     has_fail = FAIL in statuses
     return not has_fail, lines
 
