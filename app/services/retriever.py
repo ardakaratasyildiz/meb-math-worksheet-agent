@@ -12,13 +12,24 @@ from __future__ import annotations
 
 import logging
 import random
+import re
 from functools import lru_cache
 from typing import Any
 
 import chromadb
+from rank_bm25 import BM25Okapi
 
 from app.config import settings
 from app.services.embedder import GeminiEmbedder
+
+_TOKEN_RE = re.compile(r"\w+", flags=re.UNICODE)
+
+
+def _tokenize(text: str) -> list[str]:
+    """Küçük harfe indirir, kelime token'larına ayırır. Türkçe ASCII-folding yok —
+    'ı/i' veya 'ç/c' gibi farklılıklar BM25'te ayrı sayılır (bu istenir; matematik
+    terimlerinin doğru türünü korumak)."""
+    return [m.group(0).lower() for m in _TOKEN_RE.finditer(text or "")]
 
 logger = logging.getLogger(__name__)
 
@@ -106,9 +117,56 @@ class ExampleRetriever:
                 "Önce `python scripts/ingest_to_chroma.py` çalıştırın."
             ) from exc
         self.embedder = GeminiEmbedder()
+        # BM25 indeksi — filter scope'una göre lazy & cached
+        self._bm25_cache: dict[str, tuple[BM25Okapi, list[str], list[str], list[dict]]] = {}
 
     def count(self) -> int:
         return self.collection.count()
+
+    def _bm25_for_filter(
+        self,
+        where: dict[str, Any] | None,
+    ) -> tuple[BM25Okapi, list[str], list[str], list[dict]] | None:
+        """Verilen filter scope'u için BM25 indeksi (id, text, metadata).
+
+        Aynı filter daha önce sorgulanmışsa cache'ten döner. Build maliyeti
+        ~100ms/2000 doc; tek seferlik."""
+        cache_key = repr(where)
+        cached = self._bm25_cache.get(cache_key)
+        if cached is not None:
+            return cached
+        try:
+            res = self.collection.get(where=where, include=["documents", "metadatas"])
+        except Exception as exc:
+            logger.warning("BM25 corpus alınamadı (%s): %s", where, exc)
+            return None
+        ids: list[str] = res.get("ids") or []
+        docs: list[str] = res.get("documents") or []
+        metas: list[dict] = res.get("metadatas") or []
+        if not ids:
+            return None
+        tokenized = [_tokenize(d) for d in docs]
+        if not any(tokenized):
+            return None
+        bm25 = BM25Okapi(tokenized)
+        out = (bm25, ids, docs, metas)
+        self._bm25_cache[cache_key] = out
+        return out
+
+    @staticmethod
+    def _rrf_fuse(
+        rankings: list[list[str]],
+        k: int,
+        rrf_k: int = 60,
+    ) -> list[str]:
+        """Reciprocal Rank Fusion: birden çok sıralı id listesinden tek sıralama.
+        Score = sum(1 / (rrf_k + rank_in_list))"""
+        scores: dict[str, float] = {}
+        for rank_list in rankings:
+            for rank, cid in enumerate(rank_list):
+                scores[cid] = scores.get(cid, 0.0) + 1.0 / (rrf_k + rank + 1)
+        sorted_ids = sorted(scores.keys(), key=lambda c: -scores[c])
+        return sorted_ids[:k]
 
     # content_type değerlerinden textbook'a ait olanlar — few-shot yolunda hariç tutulur
     _TEXTBOOK_CONTENT_TYPES = {
@@ -225,25 +283,62 @@ class ExampleRetriever:
         candidate_pool: list[dict] = []
         target = k if rng is not None else k  # collected aynı sayıya hedeflenir
 
+        use_hybrid = settings.enable_hybrid_retrieval
+
         for where in filters_to_try:
             # rng varsa daha geniş havuz topla; deterministic modda erken çık.
             if rng is None and len(candidate_pool) >= target:
                 break
             if rng is not None and len(candidate_pool) >= k * oversample_factor:
                 break
+            n_dense = max(k * oversample_factor * 2, 30)
             try:
                 res = self.collection.query(
                     query_embeddings=[query_embedding],
-                    n_results=max(k * oversample_factor * 2, 30),
+                    n_results=n_dense,
                     where=where,
                 )
             except Exception as exc:
                 logger.warning("Chroma query hata (%s): %s", where, exc)
                 continue
-            ids = (res.get("ids") or [[]])[0]
-            docs = (res.get("documents") or [[]])[0]
-            metas = (res.get("metadatas") or [[]])[0]
-            distances = (res.get("distances") or [[]])[0]
+            dense_ids: list[str] = (res.get("ids") or [[]])[0]
+            dense_docs: list[str] = (res.get("documents") or [[]])[0]
+            dense_metas: list[dict] = (res.get("metadatas") or [[]])[0]
+            dense_distances: list[float] = (res.get("distances") or [[]])[0]
+
+            if use_hybrid:
+                # BM25 sıralaması; aynı filter scope'unda
+                bm25_data = self._bm25_for_filter(where)
+                if bm25_data is not None:
+                    bm25, all_ids, all_docs, all_metas = bm25_data
+                    bm25_scores = bm25.get_scores(_tokenize(query_text))
+                    # En yüksek BM25 skorlu top-N (n_dense kadar)
+                    top_n_idx = sorted(
+                        range(len(all_ids)),
+                        key=lambda i: -bm25_scores[i],
+                    )[:n_dense]
+                    bm25_ids = [all_ids[i] for i in top_n_idx]
+                    # RRF füzyonu
+                    fused_ids = self._rrf_fuse(
+                        [dense_ids, bm25_ids],
+                        k=n_dense,
+                        rrf_k=settings.hybrid_rrf_k,
+                    )
+                    # Doc/meta/distance'ları ID'den haritala
+                    id_to_doc = {cid: all_docs[i] for i, cid in enumerate(all_ids)}
+                    id_to_meta = {cid: all_metas[i] for i, cid in enumerate(all_ids)}
+                    id_to_dist = {
+                        cid: dense_distances[i] if i < len(dense_distances) else None
+                        for i, cid in enumerate(dense_ids)
+                    }
+                    ids = fused_ids
+                    docs = [id_to_doc.get(cid, "") for cid in fused_ids]
+                    metas = [id_to_meta.get(cid, {}) for cid in fused_ids]
+                    distances = [id_to_dist.get(cid) for cid in fused_ids]
+                else:
+                    ids, docs, metas, distances = dense_ids, dense_docs, dense_metas, dense_distances
+            else:
+                ids, docs, metas, distances = dense_ids, dense_docs, dense_metas, dense_distances
             for i, cid in enumerate(ids):
                 if cid in seen_ids:
                     continue

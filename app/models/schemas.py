@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 from pydantic import BaseModel, Field, field_validator
@@ -70,11 +71,80 @@ class GenerateWorksheetRequest(BaseModel):
         return v or None
 
 
+class SolutionStep(BaseModel):
+    step_no: int = Field(..., description="Adım sırası (1'den başlar)")
+    description: str = Field(..., description="Adımın kısa açıklaması")
+    computation: str | None = Field(
+        None,
+        description="O adıma karşılık gelen aritmetik ifade (ör. '3 + 4 = 7'). Sözel adımda boş.",
+    )
+
+
+_STEP_LEAD_RE = re.compile(
+    r"""
+    \A                                     # sadece string başında
+    (?:
+        (\d+)[\.\)]                        # "1." veya "1)"
+      | (?:adım|step)\s*(\d+)\s*[:\.\-]?   # "Adım 1:" / "Step 2 -"
+      | [•∙]                                # gerçek bullet karakterleri (- DEĞİL)
+    )
+    \s*
+    """,
+    flags=re.IGNORECASE | re.VERBOSE,
+)
+_INLINE_COMPUTATION_RE = re.compile(r"[\d\(\)\+\-\*\/\^\=\.\,\s]{4,}")
+
+
+def parse_solution_steps(text: str) -> list[SolutionStep]:
+    """Düz metin çözümü adım listesine çevirir. Numaralı/maddeli pattern'leri yakalar.
+
+    Yakalama olmazsa tek adım olarak döner (description=text). Frontend bu listeyi
+    güvenle render edebilir; her adımın opsiyonel computation alanı ayrı renderlanabilir.
+    """
+    if not text or not text.strip():
+        return []
+    raw = text.replace("\r\n", "\n").strip()
+    # Önce satır bölme; sonra her satırda "1." pattern'i için kes
+    parts: list[str] = []
+    for line in raw.split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        # Aynı satırda multiple "1.", "2." varsa böl
+        sub = re.split(r"(?<=[\.\?\!])\s+(?=\d+[\.\)])", line)
+        parts.extend(s.strip() for s in sub if s.strip())
+    if not parts:
+        parts = [raw]
+
+    steps: list[SolutionStep] = []
+    for i, p in enumerate(parts, start=1):
+        clean = _STEP_LEAD_RE.sub("", p, count=1).strip()
+        if not clean:
+            continue
+        # Computation: en uzun aritmetik substring (>=4 char, içinde digit ve operatör)
+        comp = None
+        candidates = _INLINE_COMPUTATION_RE.findall(clean)
+        for cand in sorted(candidates, key=len, reverse=True):
+            cand_strip = cand.strip()
+            if (
+                any(c.isdigit() for c in cand_strip)
+                and any(c in "+-*/=^" for c in cand_strip)
+                and len(cand_strip) >= 4
+            ):
+                comp = cand_strip
+                break
+        steps.append(SolutionStep(step_no=i, description=clean, computation=comp))
+    return steps
+
+
 class Question(BaseModel):
     number: int
     question: str
     answer: str
-    solution_steps: str
+    solution_steps: str | list[SolutionStep] = Field(
+        ...,
+        description="Düz metin çözüm (eski format) ya da yapılandırılmış adım listesi.",
+    )
     kazanim_kod: str
     question_type: QuestionType
 
@@ -96,12 +166,14 @@ class GenerationTrace(BaseModel):
     textbook_count: int
     retrieval_avg_distance: float | None = None
     model_used: str
+    provider: str = "gemini"  # "gemini" | "anthropic" — son başarılı çağrının kaynağı
     temperature: float  # initial (jitter sonrası)
     final_temperature: float | None = None  # retry'da boost olduysa son değer
     seed: int
     retry_rounds: int
     dedup_rejected_string: int = 0
     dedup_rejected_semantic: int = 0
+    math_verifier_rejected: int = 0
     critic_rejected: int = 0
     requested_count: int
     delivered_count: int

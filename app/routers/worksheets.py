@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from functools import lru_cache
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import Response
 
 from app.config import settings
 from app.data.curriculum import get_topic
@@ -13,7 +14,9 @@ from app.models.schemas import (
     Worksheet,
     WorksheetMetadata,
 )
+from app.security import limiter, rate_limit_string, require_api_key
 from app.services.agent import AgentError, GeminiAgent
+from app.services.pdf_renderer import render_worksheet_pdf
 
 router = APIRouter()
 
@@ -47,8 +50,8 @@ def _validate_request(req: GenerateWorksheetRequest) -> None:
             )
 
 
-@router.post("/generate", response_model=GenerateWorksheetResponse)
-def generate_worksheet(req: GenerateWorksheetRequest) -> GenerateWorksheetResponse:
+def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, WorksheetMetadata]:
+    """Ortak üretim mantığı: hem JSON hem PDF endpoint'leri kullanır."""
     _validate_request(req)
     topic = get_topic(req.grade, req.topic_id)
     assert topic is not None
@@ -73,7 +76,6 @@ def generate_worksheet(req: GenerateWorksheetRequest) -> GenerateWorksheetRespon
         )
 
     title = f"{req.grade}. Sınıf - {topic['name']} Çalışma Kağıdı"
-
     worksheet = Worksheet(
         title=title,
         grade=req.grade,
@@ -90,4 +92,57 @@ def generate_worksheet(req: GenerateWorksheetRequest) -> GenerateWorksheetRespon
         model=agent.last_model_used,
         trace=agent.build_last_trace(),
     )
+    return worksheet, metadata
+
+
+@router.post("/generate", response_model=GenerateWorksheetResponse)
+@limiter.limit(rate_limit_string())
+def generate_worksheet(
+    request: Request,
+    req: GenerateWorksheetRequest,
+    _api_key: str = Depends(require_api_key),
+) -> GenerateWorksheetResponse:
+    worksheet, metadata = _build_worksheet(req)
     return GenerateWorksheetResponse(worksheet=worksheet, metadata=metadata)
+
+
+def _pdf_response(worksheet: Worksheet) -> Response:
+    pdf_bytes = render_worksheet_pdf(worksheet)
+    safe_title = (
+        worksheet.title.replace(" ", "_")
+        .replace("/", "-")
+        .encode("ascii", "ignore")
+        .decode()
+    ) or "worksheet"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{safe_title}.pdf"',
+        },
+    )
+
+
+@router.post("/generate.pdf")
+@limiter.limit(rate_limit_string())
+def generate_worksheet_pdf(
+    request: Request,
+    req: GenerateWorksheetRequest,
+    _api_key: str = Depends(require_api_key),
+) -> Response:
+    """Üretim + PDF render tek call'da. Rate limit + auth uygulanır (LLM çağrısı yapar)."""
+    worksheet, _ = _build_worksheet(req)
+    return _pdf_response(worksheet)
+
+
+@router.post("/render.pdf")
+def render_existing_worksheet(
+    worksheet: Worksheet,
+    _api_key: str = Depends(require_api_key),
+) -> Response:
+    """Önceden üretilmiş bir worksheet JSON'unu PDF'e çevirir.
+
+    LLM çağrısı YAPMAZ → rate limit yok; sadece auth kontrolü.
+    Frontend hızlı tekrar PDF üretebilir.
+    """
+    return _pdf_response(worksheet)

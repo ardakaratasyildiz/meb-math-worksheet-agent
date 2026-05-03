@@ -59,6 +59,18 @@ def generate_worksheet(payload: dict[str, Any]) -> dict:
     return r.json()
 
 
+@st.cache_data(ttl=600, show_spinner="PDF hazırlanıyor...")
+def render_pdf(worksheet: dict) -> bytes:
+    """Mevcut worksheet JSON'unu backend'de PDF'e çevirir (LLM çağrısı yok)."""
+    r = requests.post(
+        f"{API_BASE}/api/worksheets/render.pdf",
+        json=worksheet,
+        timeout=30,
+    )
+    r.raise_for_status()
+    return r.content
+
+
 def _check_backend() -> bool:
     try:
         r = requests.get(f"{API_BASE}/health", timeout=3)
@@ -239,11 +251,28 @@ if generate_btn:
         st.json(data)
 
     export_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    st.download_button(
-        "⬇️ JSON olarak indir",
-        data=str(data).encode("utf-8"),
-        file_name=f"worksheet_{grade}_{topic_id}_{export_ts}.json",
-        mime="application/json",
-    )
+    dl_cols = st.columns(2)
+    with dl_cols[0]:
+        st.download_button(
+            "⬇️ JSON olarak indir",
+            data=str(data).encode("utf-8"),
+            file_name=f"worksheet_{grade}_{topic_id}_{export_ts}.json",
+            mime="application/json",
+            use_container_width=True,
+        )
+    with dl_cols[1]:
+        try:
+            pdf_bytes = render_pdf(ws)
+            st.download_button(
+                "📄 PDF olarak indir",
+                data=pdf_bytes,
+                file_name=f"worksheet_{grade}_{topic_id}_{export_ts}.pdf",
+                mime="application/pdf",
+                use_container_width=True,
+            )
+        except requests.HTTPError as exc:
+            st.error(f"PDF üretilemedi: {exc.response.text if exc.response else exc}")
+        except Exception as exc:
+            st.error(f"PDF üretilemedi: {exc}")
 else:
     st.info("👈 Sol panelden seçimlerinizi yapın ve **Soruları Üret** butonuna tıklayın.")

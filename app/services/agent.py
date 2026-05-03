@@ -4,14 +4,12 @@ import random
 import time
 
 from google import genai
-from google.genai import errors as genai_errors
-from google.genai import types
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
 from app.config import settings
 from app.data.curriculum import Kazanim, get_topic
 from app.models.enums import Difficulty, QuestionType
-from app.models.schemas import Question
+from app.models.schemas import Question, SolutionStep
 from app.prompts.templates import (
     SYSTEM_PROMPT,
     build_retry_prompt,
@@ -27,6 +25,13 @@ from app.services.diversity import (
 )
 from app.services.embedder import EmbedderError, GeminiEmbedder
 from app.services.examples import get_examples_for_kazanim, select_diverse
+from app.services.llm_providers import (
+    AnthropicProvider,
+    GeminiProvider,
+    ProviderError,
+    call_with_chain,
+)
+from app.services.math_verifier import verify_batch as verify_math_batch
 from app.services.history import DEFAULT_TENANT, GENERATION_HISTORY, HistoryKey
 from app.services.retriever import ExampleRetriever, get_retriever
 
@@ -34,6 +39,11 @@ logger = logging.getLogger(__name__)
 
 
 class GeneratedQuestion(BaseModel):
+    """Gemini'den dönen ham üretim. solution_steps şimdilik str — Gemini
+    response_schema union types ile her zaman güvenli değil; Question.solution_steps
+    daha sonra frontend tarafında parse edilebilir list'e çevrilebilir
+    (`parse_solution_steps`)."""
+
     question: str
     answer: str
     solution_steps: str
@@ -229,11 +239,25 @@ class GeminiAgent:
         key = api_key or settings.gemini_api_key
         if not key:
             raise AgentError("GEMINI_API_KEY ayarı boş. .env dosyanızı kontrol edin.")
-        self.client = genai.Client(api_key=key)
+        self.client = genai.Client(api_key=key)  # legacy (kullanılmıyor)
         self.model = model or settings.gemini_model
         self.fallback_models = (
             fallback_models if fallback_models is not None else settings.fallback_model_list
         )
+        try:
+            self._gemini_provider: GeminiProvider | None = GeminiProvider(
+                primary_model=self.model,
+                fallback_models=self.fallback_models,
+            )
+        except ProviderError as exc:
+            raise AgentError(str(exc)) from exc
+        # Anthropic fallback opsiyonel; api key yoksa veya flag kapalıysa None.
+        self._anthropic_provider: AnthropicProvider | None = None
+        if settings.enable_anthropic_fallback and settings.anthropic_api_key:
+            try:
+                self._anthropic_provider = AnthropicProvider()
+            except ProviderError as exc:
+                logger.warning("Anthropic fallback başlatılamadı: %s", exc)
         self._embedder: GeminiEmbedder | None = None
         self._critic: GeminiCritic | None = None
 
@@ -344,13 +368,6 @@ class GeminiAgent:
             textbook_chunks=textbook_chunks,
         )
 
-        config = types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            temperature=temperature,
-            response_mime_type="application/json",
-            response_schema=GeneratedBatch,
-        )
-
         dedup = BatchDeduplicator()
         dedup.prime(history_seen)
 
@@ -370,10 +387,23 @@ class GeminiAgent:
         valid_kazanim_codes = {k["kod"] for k in kazanimlar}
         fallback_kazanim = kazanimlar[0]["kod"]
 
-        # İlk üretim.
-        response, model_used = self._call_with_backoff(user_prompt, config)
-        self._last_model_used = model_used
-        batch = self._parse_response(response)
+        # İlk üretim — provider chain (Gemini → Anthropic) ile.
+        try:
+            result = call_with_chain(
+                system=SYSTEM_PROMPT,
+                prompt=user_prompt,
+                schema=GeneratedBatch,
+                temperature=temperature,
+                gemini=self._gemini_provider,
+                anthropic=self._anthropic_provider,
+            )
+        except ProviderError as exc:
+            raise AgentError(str(exc)) from exc
+        self._last_model_used = result.model_name
+        self._last_provider = result.provider
+        batch = result.parsed
+        if not isinstance(batch, GeneratedBatch):
+            raise AgentError("Provider beklenmedik tip döndürdü.")
         candidates = self._process_batch(
             batch, dedup, valid_kazanim_codes, fallback_kazanim, starting_number=1
         )
@@ -392,12 +422,6 @@ class GeminiAgent:
         ):
             missing = question_count - len(questions)
             retry_temperature = _clamp_temp(retry_temperature + RETRY_TEMPERATURE_BOOST)
-            retry_config = types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                temperature=retry_temperature,
-                response_mime_type="application/json",
-                response_schema=GeneratedBatch,
-            )
             # Hangi tipten kaç eksik kaldığını hesapla — model bu dağılımı hedeflesin.
             produced_by_type: dict[QuestionType, int] = {}
             for q in questions:
@@ -428,10 +452,20 @@ class GeminiAgent:
                 retry_temperature,
             )
             try:
-                response2, model_used2 = self._call_with_backoff(retry_prompt, retry_config)
-                self._last_model_used = model_used2
-                batch2 = self._parse_response(response2)
-            except AgentError as exc:
+                result2 = call_with_chain(
+                    system=SYSTEM_PROMPT,
+                    prompt=retry_prompt,
+                    schema=GeneratedBatch,
+                    temperature=retry_temperature,
+                    gemini=self._gemini_provider,
+                    anthropic=self._anthropic_provider,
+                )
+                self._last_model_used = result2.model_name
+                self._last_provider = result2.provider
+                batch2 = result2.parsed
+                if not isinstance(batch2, GeneratedBatch):
+                    raise ProviderError("Provider beklenmedik tip döndürdü.")
+            except ProviderError as exc:
                 logger.warning("Retry başarısız, mevcut sorularla devam ediliyor: %s", exc)
                 break
             more_candidates = self._process_batch(
@@ -454,6 +488,37 @@ class GeminiAgent:
         # Hedef sayıyı aşmasın.
         questions = questions[:question_count]
         accepted_embeddings = accepted_embeddings[: len(questions)]
+
+        # Deterministic math verifier: SymPy ile aritmetik doğrulama.
+        # Critic'ten ÖNCE çalışır — ucuz, hızlı, yanılma payı yok.
+        math_rejected = 0
+        if settings.enable_math_verifier and questions:
+            verdicts = verify_math_batch(questions)
+            drop_indices: set[int] = set()
+            for v in verdicts:
+                if v.is_verifiable and not v.is_valid:
+                    drop_indices.add(v.question_index)
+                    logger.info(
+                        "Math verifier reddetti [%s]: %s | %s",
+                        v.question_index,
+                        questions[v.question_index].question[:80],
+                        v.reason,
+                    )
+            if drop_indices:
+                kept_pairs = [
+                    (q, accepted_embeddings[i] if i < len(accepted_embeddings) else None)
+                    for i, q in enumerate(questions)
+                    if i not in drop_indices
+                ]
+                questions = [
+                    q.model_copy(update={"number": idx + 1})
+                    for idx, (q, _) in enumerate(kept_pairs)
+                ]
+                accepted_embeddings = [
+                    emb if emb is not None else []
+                    for _, emb in kept_pairs
+                ]
+                math_rejected = len(drop_indices)
 
         # Critic geçişi: matematik doğruluğu + kazanım/zorluk uyumu kontrolü.
         critic_rejected = 0
@@ -498,6 +563,7 @@ class GeminiAgent:
         self._last_dedup_rejected_semantic = (
             semantic_dedup.rejected_count if semantic_dedup else 0
         )
+        self._last_math_verifier_rejected = math_rejected
         self._last_critic_rejected = critic_rejected
         self._last_retry_rounds = retry_round
         self._last_temperature = temperature  # initial (jitter sonrası)
@@ -538,83 +604,18 @@ class GeminiAgent:
             textbook_count=getattr(self, "_last_textbook_count", 0),
             retrieval_avg_distance=getattr(self, "_last_retrieval_avg_distance", None),
             model_used=self.last_model_used,
+            provider=getattr(self, "_last_provider", "gemini"),
             temperature=getattr(self, "_last_temperature", 0.0),
             final_temperature=getattr(self, "_last_final_temperature", None),
             seed=getattr(self, "_last_seed", 0),
             retry_rounds=getattr(self, "_last_retry_rounds", 0),
             dedup_rejected_string=getattr(self, "_last_dedup_rejected_string", 0),
             dedup_rejected_semantic=getattr(self, "_last_dedup_rejected_semantic", 0),
+            math_verifier_rejected=getattr(self, "_last_math_verifier_rejected", 0),
             critic_rejected=getattr(self, "_last_critic_rejected", 0),
             requested_count=getattr(self, "_last_requested_count", 0),
             delivered_count=getattr(self, "_last_delivered_count", 0),
         )
-
-    def _call_with_backoff(
-        self,
-        user_prompt: str,
-        config: types.GenerateContentConfig,
-        max_attempts_per_model: int = 3,
-        base_delay: float = 1.5,
-    ) -> tuple[types.GenerateContentResponse, str]:
-        """Her model için exponential backoff + jitter; tükenirse bir sonraki fallback modele geçer.
-
-        Returns:
-            (response, başarılı olan model adı)
-        """
-        models_to_try = [self.model, *self.fallback_models]
-        last_exc: Exception | None = None
-        for model_name in models_to_try:
-            for attempt in range(1, max_attempts_per_model + 1):
-                try:
-                    response = self.client.models.generate_content(
-                        model=model_name,
-                        contents=user_prompt,
-                        config=config,
-                    )
-                    return response, model_name
-                except genai_errors.ServerError as exc:
-                    last_exc = exc
-                    status = getattr(exc, "code", None)
-                    if status not in (500, 502, 503, 504):
-                        logger.error("Gemini sunucu hatası (kalıcı): %s", exc)
-                        raise AgentError(f"Gemini çağrısı başarısız: {exc}") from exc
-                    if attempt == max_attempts_per_model:
-                        logger.warning(
-                            "%s modelinde %s denemede 503; sonraki modele geçiliyor.",
-                            model_name,
-                            max_attempts_per_model,
-                        )
-                        break  # Sonraki modele geç
-                    delay = base_delay * (2 ** (attempt - 1)) + random.uniform(0, 0.5)
-                    logger.warning(
-                        "%s modelinde geçici hata (%s); %.1fs sonra tekrar denenecek (%s/%s)",
-                        model_name, status, delay, attempt, max_attempts_per_model,
-                    )
-                    time.sleep(delay)
-                except genai_errors.ClientError as exc:
-                    logger.error("Gemini istemci hatası: %s", exc)
-                    raise AgentError(f"Gemini çağrısı başarısız: {exc}") from exc
-                except Exception as exc:
-                    logger.exception("Beklenmeyen Gemini hatası")
-                    raise AgentError(f"Gemini çağrısı başarısız: {exc}") from exc
-        raise AgentError(
-            "Gemini tüm modellerde (primary + fallback) kapasite darlığı yaşıyor. "
-            f"Son hata: {last_exc}"
-        )
-
-    @staticmethod
-    def _parse_response(response: types.GenerateContentResponse) -> GeneratedBatch:
-        parsed = getattr(response, "parsed", None)
-        if isinstance(parsed, GeneratedBatch):
-            return parsed
-        text = getattr(response, "text", None)
-        if not text:
-            raise AgentError("Gemini boş yanıt döndü.")
-        try:
-            return GeneratedBatch.model_validate_json(text)
-        except ValidationError as exc:
-            logger.error("Gemini çıktısı şemaya uymadı: %s", text[:500])
-            raise AgentError("Gemini çıktısı beklenen JSON şemasına uymadı.") from exc
 
     @staticmethod
     def _process_batch(
@@ -631,12 +632,15 @@ class GeminiAgent:
                 continue
             kod = raw.kazanim_kod if raw.kazanim_kod in valid_kazanim_codes else fallback_kazanim
             dedup.add(raw.question)
+            steps = raw.solution_steps
+            if isinstance(steps, str):
+                steps = steps.strip()
             questions.append(
                 Question(
                     number=starting_number + len(questions),
                     question=raw.question.strip(),
                     answer=raw.answer.strip(),
-                    solution_steps=raw.solution_steps.strip(),
+                    solution_steps=steps,
                     kazanim_kod=kod,
                     question_type=raw.question_type,
                 )
