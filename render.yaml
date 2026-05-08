@@ -1,0 +1,63 @@
+# Render Blueprint — bir tıkla backend deploy.
+# Kullanım: Render → New → Blueprint → repo'yu seç → Deploy.
+# Free tier: 750 saat/ay, kalıcı disk YOK (history.sqlite3 restart'ta sıfırlanır,
+# müfredat verisi knowledge_base/ image'a copy edildiği için kalıcı).
+#
+# UptimeRobot pinger /healthz'a 14 dk'da bir vurarak cold start'ı önler.
+
+services:
+  - type: web
+    name: meb-genagent-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: frankfurt # Avrupa, Türkiye'ye en yakın
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /healthz
+    envVars:
+      # LLM
+      - key: GEMINI_API_KEY
+        sync: false # Render dashboard'dan elle gir (sırrı)
+      - key: ENABLE_ANTHROPIC_FALLBACK
+        value: "false"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+      # API auth — frontend NEXT_PUBLIC_API_KEY ile aynı olmalı
+      - key: API_KEYS
+        sync: false
+
+      # Rate limit — production
+      - key: RATE_LIMIT_PER_HOUR
+        value: "60"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "10"
+
+      # Cache
+      - key: ENABLE_GENERATION_CACHE
+        value: "true"
+      - key: GENERATION_CACHE_MAX_PER_KEY
+        value: "10"
+
+      # Critic & verifier
+      - key: ENABLE_CRITIC
+        value: "true"
+      - key: ENABLE_MATH_VERIFIER
+        value: "true"
+
+      # Sentry
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_ENVIRONMENT
+        value: production
+      - key: SENTRY_TRACES_SAMPLE_RATE
+        value: "0.1"
+
+      # CORS — Vercel deploy URL'i ile değiştir
+      - key: CORS_ORIGINS
+        sync: false # ör. "https://meb-genagent.vercel.app,https://your-domain.com"
+
+      # Python runtime
+      - key: PYTHONIOENCODING
+        value: utf-8
