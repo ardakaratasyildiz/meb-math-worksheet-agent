@@ -1,0 +1,57 @@
+# Build context'ten hariç tutulacaklar — image küçülsün ve sırlar sızmasın
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.venv
+venv
+env
+ENV
+
+# Editor / OS
+.vscode
+.idea
+.DS_Store
+
+# Claude / dev
+.claude
+CLAUDE.md
+*.md
+
+# Sırlar
+.env
+.env.*
+!.env.example
+
+# Ham veri (PDF'ler) ve raw eval çıktıları image'a girmesin
+knowledge_base/*.pdf
+knowledge_base/eval/ab_raw_*.json
+knowledge_base/eval/ab_report_*.md
+knowledge_base/eval/run_*.log
+# Referans baseline kalsın (CI threshold check'i bunu işaret ediyor)
+!knowledge_base/eval/ab_raw_20260501_181943.json
+!knowledge_base/eval/ab_report_20260501_181943.md
+
+# Runtime tarafında oluşur
+knowledge_base/history.sqlite3
+
+# CI artifact'leri
+coverage.xml
+.coverage
+htmlcov
+
+# Docker
+Dockerfile
+.dockerignore
