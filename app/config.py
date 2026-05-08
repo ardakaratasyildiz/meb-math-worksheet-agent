@@ -34,6 +34,16 @@ class Settings(BaseSettings):
     hybrid_bm25_weight: float = 0.3  # RRF fusion'da BM25'in göreceli ağırlığı
     hybrid_rrf_k: int = 60  # standart Reciprocal Rank Fusion sabiti
 
+    # Generation cache (Sprint 6) — aynı tuple için cached set döndürür, LLM call atlar
+    enable_generation_cache: bool = True
+    generation_cache_max_per_key: int = 10
+
+    # Sentry error tracking (Sprint 6) — DSN boşsa Sentry off
+    sentry_dsn: str = ""
+    sentry_environment: str = "development"
+    sentry_traces_sample_rate: float = 0.1  # %10 performance sample
+    sentry_release: str | None = None
+
     # Rate limit + API key
     api_keys: str = ""  # virgülle ayrılmış geçerli key'ler. Boşsa auth devre dışı.
     rate_limit_per_hour: int = 30

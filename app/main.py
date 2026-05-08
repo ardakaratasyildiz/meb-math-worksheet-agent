@@ -1,9 +1,39 @@
+import logging
+
 from fastapi import FastAPI
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
-from app.routers import curriculum, worksheets
+from app.config import settings
+from app.routers import curriculum, health, worksheets
 from app.security import limiter
+
+logger = logging.getLogger(__name__)
+
+
+def _init_sentry() -> None:
+    """SENTRY_DSN ayarlıysa Sentry SDK'yı başlat. DSN yoksa sessiz geç."""
+    if not settings.sentry_dsn:
+        return
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.fastapi import FastApiIntegration
+        from sentry_sdk.integrations.starlette import StarletteIntegration
+
+        sentry_sdk.init(
+            dsn=settings.sentry_dsn,
+            environment=settings.sentry_environment,
+            release=settings.sentry_release,
+            traces_sample_rate=settings.sentry_traces_sample_rate,
+            integrations=[StarletteIntegration(), FastApiIntegration()],
+        )
+        logger.info("Sentry initialized (env=%s)", settings.sentry_environment)
+    except Exception as exc:
+        # Sentry init başarısız olursa app yine ayağa kalksın.
+        logger.warning("Sentry başlatılamadı: %s", exc)
+
+
+_init_sentry()
 
 app = FastAPI(
     title="MEB Matematik Çalışma Kağıdı Üretici",
@@ -29,6 +59,7 @@ async def rate_limit_handler(request, exc: RateLimitExceeded):
 
 app.include_router(curriculum.router, prefix="/api/curriculum", tags=["curriculum"])
 app.include_router(worksheets.router, prefix="/api/worksheets", tags=["worksheets"])
+app.include_router(health.router, tags=["system"])
 
 
 @app.get("/health", tags=["system"])

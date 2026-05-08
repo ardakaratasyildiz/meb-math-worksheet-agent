@@ -25,6 +25,7 @@ from app.services.diversity import (
 )
 from app.services.embedder import EmbedderError, GeminiEmbedder
 from app.services.examples import get_examples_for_kazanim, select_diverse
+from app.services.llm_cache import GENERATION_CACHE
 from app.services.llm_providers import (
     AnthropicProvider,
     GeminiProvider,
@@ -306,6 +307,64 @@ class GeminiAgent:
 
         kazanimlar = _select_kazanimlar(grade, topic_id, kazanim_kod)
         distribution = distribute_question_types(question_count, difficulty, topic_id=topic_id)
+
+        # History anahtarı — hem cache lookup hem üretim sonrası kayıt için.
+        history_key: HistoryKey = (
+            tenant_id or DEFAULT_TENANT,
+            grade,
+            topic_id,
+            kazanim_kod or "__AUTO__",
+            difficulty.value,
+        )
+
+        # --- Cache lookup (Sprint 6) ---------------------------------------
+        # Aynı (grade, topic, kazanım, zorluk, count) için önceden üretilmiş set
+        # varsa LLM çağrısını atla. Kullanıcının history'sinde bulunan sorulara
+        # sahip set'ler atlanır → tekrar dağıtım önlenir.
+        if settings.enable_generation_cache:
+            history_seen_norm = GENERATION_HISTORY.seen_questions(history_key)
+            cached = GENERATION_CACHE.get(
+                grade=grade,
+                topic_id=topic_id,
+                kazanim_kod=kazanim_kod,
+                difficulty=difficulty.value,
+                question_count=question_count,
+                exclude_questions=history_seen_norm,
+            )
+            if cached is not None:
+                # Trace bilgilerini cache hit moduna ayarla.
+                self._last_few_shot_source = "cache"
+                self._last_few_shot_count = 0
+                self._last_textbook_count = 0
+                self._last_retrieval_avg_distance = None
+                self._last_model_used = "cache"
+                self._last_provider = "cache"
+                self._last_temperature = 0.0
+                self._last_final_temperature = 0.0
+                self._last_seed = seed
+                self._last_retry_rounds = 0
+                self._last_dedup_rejected_string = 0
+                self._last_dedup_rejected_semantic = 0
+                self._last_math_verifier_rejected = 0
+                self._last_critic_rejected = 0
+                self._last_requested_count = question_count
+                self._last_delivered_count = len(cached)
+                self._last_cache_hit = True
+                self._last_prompt_tokens = 0
+                self._last_completion_tokens = 0
+                self._last_cost_usd = 0.0
+                # History'e yine de kaydet — sonraki çağrıda aynı set'i tekrar
+                # vermemek için (overlap kontrolü exclude_questions ile yapılıyor).
+                for q in cached:
+                    GENERATION_HISTORY.record(
+                        history_key,
+                        normalize_question(q.question),
+                        extract_context_tokens(q.question),
+                        embedding=None,
+                    )
+                logger.info("Üretim cache hit — LLM çağrısı atlandı (%d soru).", len(cached))
+                return cached
+
         few_shot, few_shot_source = _collect_few_shot(
             grade,
             topic_id,
@@ -344,13 +403,16 @@ class GeminiAgent:
         topic = get_topic(grade, topic_id)
         assert topic is not None
 
-        history_key: HistoryKey = (
-            tenant_id or DEFAULT_TENANT,
-            grade,
-            topic_id,
-            kazanim_kod or "__AUTO__",
-            difficulty.value,
-        )
+        # history_key yukarıda cache lookup için tanımlandı (cache devredeyken).
+        # Cache devre dışıysa burada üret.
+        if not settings.enable_generation_cache:
+            history_key = (
+                tenant_id or DEFAULT_TENANT,
+                grade,
+                topic_id,
+                kazanim_kod or "__AUTO__",
+                difficulty.value,
+            )
         history_seen = GENERATION_HISTORY.seen_questions(history_key)
         history_contexts = GENERATION_HISTORY.context_exclusions(history_key)
         history_embeddings = GENERATION_HISTORY.seen_embeddings(history_key)
@@ -387,6 +449,11 @@ class GeminiAgent:
         valid_kazanim_codes = {k["kod"] for k in kazanimlar}
         fallback_kazanim = kazanimlar[0]["kod"]
 
+        # Cost metering — bu generate() boyunca tüm LLM call'ların token toplamı.
+        total_prompt_tokens = 0
+        total_completion_tokens = 0
+        total_cost_usd = 0.0
+
         # İlk üretim — provider chain (Gemini → Anthropic) ile.
         try:
             result = call_with_chain(
@@ -401,6 +468,10 @@ class GeminiAgent:
             raise AgentError(str(exc)) from exc
         self._last_model_used = result.model_name
         self._last_provider = result.provider
+        if result.usage is not None:
+            total_prompt_tokens += result.usage.input_tokens
+            total_completion_tokens += result.usage.output_tokens
+            total_cost_usd += result.usage.estimated_cost_usd
         batch = result.parsed
         if not isinstance(batch, GeneratedBatch):
             raise AgentError("Provider beklenmedik tip döndürdü.")
@@ -462,6 +533,10 @@ class GeminiAgent:
                 )
                 self._last_model_used = result2.model_name
                 self._last_provider = result2.provider
+                if result2.usage is not None:
+                    total_prompt_tokens += result2.usage.input_tokens
+                    total_completion_tokens += result2.usage.output_tokens
+                    total_cost_usd += result2.usage.estimated_cost_usd
                 batch2 = result2.parsed
                 if not isinstance(batch2, GeneratedBatch):
                     raise ProviderError("Provider beklenmedik tip döndürdü.")
@@ -571,6 +646,17 @@ class GeminiAgent:
         self._last_seed = seed
         self._last_requested_count = question_count
         self._last_delivered_count = len(questions)
+        self._last_prompt_tokens = total_prompt_tokens
+        self._last_completion_tokens = total_completion_tokens
+        self._last_cost_usd = total_cost_usd
+        # Yapılandırılmış cost log — Render/Sentry agregasyonu için kolay parse.
+        logger.info(
+            "cost_meter | grade=%s topic=%s kazanim=%s diff=%s "
+            "prompt_tokens=%d completion_tokens=%d cost_usd=%.6f model=%s",
+            grade, topic_id, kazanim_kod or "AUTO", difficulty.value,
+            total_prompt_tokens, total_completion_tokens, total_cost_usd,
+            self._last_model_used,
+        )
 
         # History'e kayıt: üretilen her soruyu normalize + bağlamlarıyla + embedding'iyle sakla.
         for idx, q in enumerate(questions):
@@ -581,6 +667,25 @@ class GeminiAgent:
                 extract_context_tokens(q.question),
                 embedding=emb,
             )
+
+        # Cache write: başarılı üretim sonrası cache'e ekle (gelecek isteklerde hit için).
+        # Yalnızca tam istenen sayıda soru üretildiyse (kısmi setler tekrar tetiklemesin).
+        self._last_cache_hit = False
+        if (
+            settings.enable_generation_cache
+            and len(questions) == question_count
+        ):
+            try:
+                GENERATION_CACHE.put(
+                    grade=grade,
+                    topic_id=topic_id,
+                    kazanim_kod=kazanim_kod,
+                    difficulty=difficulty.value,
+                    question_count=question_count,
+                    questions=questions,
+                )
+            except Exception as exc:
+                logger.warning("Cache yazımı başarısız (yutuldu): %s", exc)
 
         return questions
 
@@ -615,6 +720,10 @@ class GeminiAgent:
             critic_rejected=getattr(self, "_last_critic_rejected", 0),
             requested_count=getattr(self, "_last_requested_count", 0),
             delivered_count=getattr(self, "_last_delivered_count", 0),
+            cache_hit=getattr(self, "_last_cache_hit", False),
+            prompt_tokens=getattr(self, "_last_prompt_tokens", 0),
+            completion_tokens=getattr(self, "_last_completion_tokens", 0),
+            estimated_cost_usd=getattr(self, "_last_cost_usd", 0.0),
         )
 
     @staticmethod

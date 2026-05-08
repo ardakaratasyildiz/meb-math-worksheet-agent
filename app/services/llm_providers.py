@@ -25,12 +25,40 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T", bound=BaseModel)
 
 
+# Tahmini fiyatlar (USD per 1M token, 2026 başı). Cost metering loglaması için —
+# kesin fatura değil; provider faturalarıyla periyodik karşılaştırılmalı.
+PRICING_USD_PER_1M_TOKENS: dict[str, tuple[float, float]] = {
+    "gemini-2.5-flash": (0.075, 0.30),
+    "gemini-2.5-flash-lite": (0.04, 0.15),
+    "gemini-2.5-pro": (1.25, 5.00),
+    "claude-sonnet-4-6": (3.00, 15.00),
+    "claude-opus-4-7": (15.00, 75.00),
+    "claude-haiku-4-5-20251001": (0.80, 4.00),
+}
+
+
+@dataclass
+class TokenUsage:
+    input_tokens: int = 0
+    output_tokens: int = 0
+    model_name: str = ""
+
+    @property
+    def estimated_cost_usd(self) -> float:
+        prices = PRICING_USD_PER_1M_TOKENS.get(self.model_name)
+        if not prices:
+            return 0.0
+        in_p, out_p = prices
+        return (self.input_tokens * in_p + self.output_tokens * out_p) / 1_000_000
+
+
 @dataclass
 class ProviderResponse:
     parsed: BaseModel | None
     model_name: str
     provider: str  # "gemini" | "anthropic"
     raw_text: str | None = None
+    usage: TokenUsage | None = None
 
 
 class ProviderError(Exception):
@@ -97,9 +125,18 @@ class GeminiProvider:
         except genai_errors.ClientError as exc:
             raise ProviderError(f"Gemini istemci hatası: {exc}") from exc
 
+        usage_meta = getattr(response, "usage_metadata", None)
+        usage = TokenUsage(
+            input_tokens=getattr(usage_meta, "prompt_token_count", 0) or 0,
+            output_tokens=getattr(usage_meta, "candidates_token_count", 0) or 0,
+            model_name=model_name,
+        )
+
         parsed = getattr(response, "parsed", None)
         if isinstance(parsed, schema):
-            return ProviderResponse(parsed=parsed, model_name=model_name, provider="gemini")
+            return ProviderResponse(
+                parsed=parsed, model_name=model_name, provider="gemini", usage=usage,
+            )
         text = getattr(response, "text", None)
         if not text:
             raise ProviderError("Gemini boş yanıt döndü.")
@@ -109,6 +146,7 @@ class GeminiProvider:
                 model_name=model_name,
                 provider="gemini",
                 raw_text=text,
+                usage=usage,
             )
         except ValidationError as exc:
             raise ProviderError("Gemini çıktısı şemaya uymadı.") from exc
@@ -182,12 +220,20 @@ class AnthropicProvider:
         if tool_input is None:
             raise ProviderError("Anthropic tool_use bloğu döndürmedi.")
 
+        usage_obj = getattr(response, "usage", None)
+        usage = TokenUsage(
+            input_tokens=getattr(usage_obj, "input_tokens", 0) or 0,
+            output_tokens=getattr(usage_obj, "output_tokens", 0) or 0,
+            model_name=model_name,
+        )
+
         try:
             return ProviderResponse(
                 parsed=schema.model_validate(tool_input),
                 model_name=model_name,
                 provider="anthropic",
                 raw_text=json.dumps(tool_input, ensure_ascii=False),
+                usage=usage,
             )
         except ValidationError as exc:
             raise ProviderError(f"Anthropic çıktısı şemaya uymadı: {exc}") from exc

@@ -57,6 +57,27 @@ class GenerateWorksheetRequest(BaseModel):
         max_length=64,
     )
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "grade": 5,
+                    "topic_id": "cebir",
+                    "kazanim_kod": "M.5.5.1",
+                    "difficulty": "orta",
+                    "question_count": 10,
+                    "tenant_id": "ogretmen-42",
+                },
+                {
+                    "grade": 3,
+                    "topic_id": "dogal_sayilar",
+                    "difficulty": "kolay",
+                    "question_count": 5,
+                },
+            ]
+        }
+    }
+
     @field_validator("topic_id")
     @classmethod
     def _strip_topic(cls, v: str) -> str:
@@ -177,6 +198,12 @@ class GenerationTrace(BaseModel):
     critic_rejected: int = 0
     requested_count: int
     delivered_count: int
+    cache_hit: bool = False  # True ise LLM çağrısı yapılmadı, cached set döndü
+    # Cost metering (Sprint 6) — tüm LLM çağrılarının (üretim + retry + critic)
+    # token toplamları + tahmini USD maliyet. cache_hit=True ise hepsi 0.
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    estimated_cost_usd: float = 0.0
 
 
 class WorksheetMetadata(BaseModel):
