@@ -109,19 +109,37 @@ def generate_worksheet(
     return GenerateWorksheetResponse(worksheet=worksheet, metadata=metadata)
 
 
+# Türkçe karakterleri ASCII karşılıklarına çevirir; başlığa benzer şekilde
+# frontend/lib'de de aynı haritalama var (PDF dosya adı tutarlılığı için).
+_TURKISH_TRANSLIT = str.maketrans({
+    "ş": "s", "Ş": "S",
+    "ı": "i", "İ": "I",
+    "ğ": "g", "Ğ": "G",
+    "ç": "c", "Ç": "C",
+    "ö": "o", "Ö": "O",
+    "ü": "u", "Ü": "U",
+})
+
+
+def _build_pdf_filename(worksheet: Worksheet) -> str:
+    title_ascii = worksheet.title.translate(_TURKISH_TRANSLIT)
+    cleaned = "".join(
+        c if c.isalnum() or c in " -_" else " " for c in title_ascii
+    )
+    parts = [p for p in cleaned.split() if p]
+    slug = "_".join(parts) if parts else "Calisma_Kagidi"
+    today = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+    return f"SheetGen_{slug}_{today}.pdf"
+
+
 def _pdf_response(worksheet: Worksheet) -> Response:
     pdf_bytes = render_worksheet_pdf(worksheet)
-    safe_title = (
-        worksheet.title.replace(" ", "_")
-        .replace("/", "-")
-        .encode("ascii", "ignore")
-        .decode()
-    ) or "worksheet"
+    filename = _build_pdf_filename(worksheet)
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f'attachment; filename="{safe_title}.pdf"',
+            "Content-Disposition": f'attachment; filename="{filename}"',
         },
     )
 

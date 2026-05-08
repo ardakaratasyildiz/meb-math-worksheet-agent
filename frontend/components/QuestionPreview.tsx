@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { downloadBlob, renderPdf } from "@/lib/api";
+import { buildPdfFilename } from "@/lib/filename";
 import { useGenerateStore } from "@/lib/store";
 import { QuestionCard } from "./QuestionCard";
 
@@ -51,17 +52,13 @@ export function QuestionPreview() {
 
   const { worksheet, metadata } = result;
   const cacheHit = metadata.trace?.cache_hit ?? false;
-  const cost = metadata.trace?.estimated_cost_usd ?? 0;
 
   async function onDownloadPdf() {
     if (!result) return;
     const t = toast.loading("PDF hazırlanıyor…");
     try {
       const blob = await renderPdf(result.worksheet);
-      const safe = result.worksheet.title
-        .replace(/\s+/g, "_")
-        .replace(/[^\w_-]/g, "");
-      downloadBlob(blob, `${safe || "worksheet"}.pdf`);
+      downloadBlob(blob, buildPdfFilename(result.worksheet.title));
       toast.success("PDF indirildi", { id: t });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Hata";
@@ -76,17 +73,13 @@ export function QuestionPreview() {
         <div>
           <h2 className="text-lg font-semibold">{worksheet.title}</h2>
           <p className="text-xs text-muted-foreground">
-            {worksheet.questions.length} soru · {worksheet.difficulty} · {metadata.model}
+            {worksheet.questions.length} soru · {worksheet.difficulty} · Yapay zekâ ile üretildi
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {cacheHit ? (
+          {cacheHit && (
             <Badge variant="outline" className="border-primary/40 text-primary">
-              <Zap className="mr-1 h-3 w-3" /> Cache hit
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="text-muted-foreground">
-              ~${cost.toFixed(4)}
+              <Zap className="mr-1 h-3 w-3" /> Anında
             </Badge>
           )}
           <Button onClick={onDownloadPdf} className="gap-2">

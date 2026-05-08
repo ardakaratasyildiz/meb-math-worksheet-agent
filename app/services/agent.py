@@ -633,6 +633,110 @@ class GeminiAgent:
                         ]
                         critic_rejected = len(drop_indices)
 
+        # Post-filter top-up: math_verifier ve/veya critic soru düşürdüyse,
+        # eksik kalan kadar yeniden üretim çağrısı at; yeni gelenleri de aynı
+        # filtrelerden geçir. Aksi halde kullanıcının istediği N'den az soru
+        # döner (10 → 7 problemi).
+        post_filter_rounds = 0
+        POST_FILTER_MAX_RETRIES = 2
+        while (
+            len(questions) < question_count
+            and post_filter_rounds < POST_FILTER_MAX_RETRIES
+        ):
+            missing = question_count - len(questions)
+            retry_temperature = _clamp_temp(retry_temperature + RETRY_TEMPERATURE_BOOST)
+            retry_prompt = build_retry_prompt(
+                original_user_prompt=user_prompt,
+                already_generated_questions=[q.question for q in questions],
+                missing_count=missing,
+                missing_distribution=None,
+            )
+            logger.info(
+                "Post-filter top-up [%s/%s]: eksik=%s temp=%.2f",
+                post_filter_rounds + 1, POST_FILTER_MAX_RETRIES,
+                missing, retry_temperature,
+            )
+            try:
+                result_pf = call_with_chain(
+                    system=SYSTEM_PROMPT,
+                    prompt=retry_prompt,
+                    schema=GeneratedBatch,
+                    temperature=retry_temperature,
+                    gemini=self._gemini_provider,
+                    anthropic=self._anthropic_provider,
+                )
+                self._last_model_used = result_pf.model_name
+                self._last_provider = result_pf.provider
+                if result_pf.usage is not None:
+                    total_prompt_tokens += result_pf.usage.input_tokens
+                    total_completion_tokens += result_pf.usage.output_tokens
+                    total_cost_usd += result_pf.usage.estimated_cost_usd
+                batch_pf = result_pf.parsed
+                if not isinstance(batch_pf, GeneratedBatch) or not batch_pf.questions:
+                    break
+            except ProviderError as exc:
+                logger.warning("Post-filter LLM çağrısı başarısız: %s", exc)
+                break
+
+            new_candidates = self._process_batch(
+                batch_pf, dedup, valid_kazanim_codes,
+                fallback_kazanim, starting_number=len(questions) + 1,
+            )
+            new_questions, new_embs = self._apply_semantic_dedup(
+                new_candidates, embedder, semantic_dedup
+            )
+            if not new_questions:
+                post_filter_rounds += 1
+                continue
+
+            # Yeni gelenleri math verifier'dan geçir.
+            if settings.enable_math_verifier:
+                verdicts_v = verify_math_batch(new_questions)
+                drop_v = {
+                    v.question_index for v in verdicts_v
+                    if v.is_verifiable and not v.is_valid
+                }
+                if drop_v:
+                    new_questions = [q for i, q in enumerate(new_questions) if i not in drop_v]
+                    if new_embs:
+                        new_embs = [e for i, e in enumerate(new_embs) if i not in drop_v]
+                    math_rejected += len(drop_v)
+
+            # Critic'ten geçir.
+            if settings.enable_critic and new_questions:
+                critic = self._get_critic()
+                if critic is not None:
+                    verdicts_c = critic.evaluate(new_questions, kazanimlar, difficulty) or []
+                    drop_c = {
+                        v.question_index for v in verdicts_c
+                        if (
+                            not v.is_valid
+                            and v.confidence >= settings.critic_min_confidence
+                            and 0 <= v.question_index < len(new_questions)
+                        )
+                    }
+                    if drop_c:
+                        new_questions = [q for i, q in enumerate(new_questions) if i not in drop_c]
+                        if new_embs:
+                            new_embs = [e for i, e in enumerate(new_embs) if i not in drop_c]
+                        critic_rejected += len(drop_c)
+
+            if not new_questions:
+                post_filter_rounds += 1
+                continue
+
+            # En fazla `missing` kadar al; numaraları sıkı tut.
+            take = new_questions[:missing]
+            base_no = len(questions)
+            take = [
+                q.model_copy(update={"number": base_no + i + 1})
+                for i, q in enumerate(take)
+            ]
+            questions.extend(take)
+            if new_embs:
+                accepted_embeddings.extend(new_embs[: len(take)])
+            post_filter_rounds += 1
+
         # Trace bilgilerini sakla.
         self._last_dedup_rejected_string = dedup.rejected_count
         self._last_dedup_rejected_semantic = (

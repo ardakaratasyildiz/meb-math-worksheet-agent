@@ -17,10 +17,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# ChromaDB hnswlib için gcc + g++ gerekiyor
+# ChromaDB hnswlib için gcc + g++; PDF Türkçe karakter desteği için DejaVu fontları
+# (pdf_renderer.py /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf yolunu otomatik bulur).
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         curl \
+        fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
