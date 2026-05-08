@@ -49,9 +49,17 @@ class Settings(BaseSettings):
     rate_limit_per_hour: int = 30
     rate_limit_per_minute: int = 5
 
+    # CORS — frontend domain'leri (virgülle). Boşsa "*" (yalnızca dev için).
+    cors_origins: str = ""
+
     @property
     def api_key_list(self) -> list[str]:
         return [k.strip() for k in self.api_keys.split(",") if k.strip()]
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        items = [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        return items or ["*"]
 
     app_host: str = "0.0.0.0"
     app_port: int = 8000

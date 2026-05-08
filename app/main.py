@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
@@ -39,6 +40,15 @@ app = FastAPI(
     title="MEB Matematik Çalışma Kağıdı Üretici",
     description="MEB müfredatına uygun (1-7. sınıf) matematik soruları üreten Gemini tabanlı mikroservis.",
     version="0.1.0",
+)
+
+# CORS — frontend domain'leri için izin (Vercel + lokal dev)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origin_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Rate limiting
