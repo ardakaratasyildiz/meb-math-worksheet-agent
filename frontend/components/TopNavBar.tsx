@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { Moon, Sun, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { UserButton, useAuth } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,7 @@ import {
 
 const TopNavBar = () => {
   const { setTheme } = useTheme();
+  const { isLoaded, isSignedIn } = useAuth();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -63,16 +64,16 @@ const TopNavBar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          <SignedIn>
+          {isLoaded && isSignedIn && (
             <UserButton
               appearance={{ elements: { avatarBox: "h-8 w-8" } }}
             />
-          </SignedIn>
-          <SignedOut>
+          )}
+          {isLoaded && !isSignedIn && (
             <Button asChild size="sm">
               <Link href="/sign-in">Giriş yap</Link>
             </Button>
-          </SignedOut>
+          )}
         </div>
       </div>
     </nav>
