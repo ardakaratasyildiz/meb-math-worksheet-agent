@@ -1,4 +1,4 @@
-# MEB Matematik Üretici — Frontend
+# SheetGen — Frontend
 
 Next.js 14 + TypeScript + Tailwind + shadcn/ui + Clerk auth.
 Backend: aynı repo'nun kökündeki FastAPI uygulaması (`../app`).

@@ -1,7 +1,7 @@
 import { HistoryList } from "@/components/HistoryList";
 
 export const metadata = {
-  title: "Geçmiş · MEB Matematik Üretici",
+  title: "Geçmiş · SheetGen",
 };
 
 export default function HistoryPage() {

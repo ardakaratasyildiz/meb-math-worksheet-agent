@@ -27,7 +27,7 @@ const TopNavBar = () => {
       <div className="container flex h-14 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <Sparkles className="h-5 w-5 text-primary" aria-hidden />
-          <span>MEB Matematik Üretici</span>
+          <span>SheetGen</span>
         </Link>
         <div className="flex items-center gap-2">
           <Link

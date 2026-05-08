@@ -69,7 +69,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t bg-muted/30">
         <div className="container flex flex-col items-center justify-between gap-2 py-6 text-sm text-muted-foreground sm:flex-row">
-          <p>© 2026 MEB Matematik Üretici · Eğitim için yapıldı.</p>
+          <p>© 2026 SheetGen · MEB müfredatına uyumlu, eğitim için.</p>
           <div className="flex gap-4">
             <Link href="/" className="hover:text-foreground">
               Gizlilik

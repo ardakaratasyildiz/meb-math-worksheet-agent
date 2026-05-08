@@ -5,10 +5,10 @@ Sıfır maliyetli production deploy. **Toplam süre: ~45-60 dk** (hesap açma da
 ```
 GitHub repo (main branch)
     │
-    ├─→ Render: backend (FastAPI Docker)         → meb-genagent-backend.onrender.com
+    ├─→ Render: backend (FastAPI Docker)         → sheetgen-backend.onrender.com
     │   └─ knowledge_base/ image içinde, history.sqlite3 runtime'da
     │
-    ├─→ Vercel: frontend (Next.js)                → meb-genagent.vercel.app
+    ├─→ Vercel: frontend (Next.js)                → sheetgen.vercel.app
     │   └─ Clerk auth + backend'e fetch
     │
     └─→ UptimeRobot: 14 dk'da bir /healthz ping  → cold start sıfır
@@ -28,7 +28,7 @@ GitHub repo (main branch)
 ## 1. Clerk auth setup (~5 dk)
 
 1. [clerk.com/sign-up](https://clerk.com/sign-up) → ücretsiz hesap aç (10k MAU/ay)
-2. **Create application** → adı: `meb-genagent`
+2. **Create application** → adı: `SheetGen`
 3. Sign-in options: **Email** + **Google** (öğretmenler için kolay)
 4. **API Keys** sekmesi → şu iki değeri kopyala:
    - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (pk_test_… veya pk_live_…)
@@ -57,7 +57,7 @@ GitHub repo (main branch)
 
 5. **Manual Deploy** → **Deploy latest commit** (ilk build ~5-8 dk; ChromaDB image
    içinde geldiği için ek setup gerekmez)
-6. Build başarılıysa: `https://meb-genagent-backend.onrender.com/healthz` → `{"status":"ok"}`
+6. Build başarılıysa: `https://sheetgen-backend.onrender.com/healthz` → `{"status":"ok"}`
 7. Backend URL'ini bir yere not al (Vercel'de kullanacaksın)
 
 **Önemli:** Free tier 15 dk inaktif sonra uyur; ilk istek ~30-60sn cold start.
@@ -87,7 +87,7 @@ UptimeRobot ile çözüyoruz (Adım 5).
 | `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` | `/generate` |
 
 5. **Deploy** → ~2-3 dk
-6. Deploy URL'ini al (ör. `https://meb-genagent.vercel.app`)
+6. Deploy URL'ini al (ör. `https://sheetgen.vercel.app`)
 7. Clerk dashboard → **Domains** → Vercel URL'ini ekle
 
 ---
@@ -97,7 +97,7 @@ UptimeRobot ile çözüyoruz (Adım 5).
 1. Render → service → **Environment**
 2. `CORS_ORIGINS` =
    ```
-   https://meb-genagent.vercel.app,https://meb-genagent-*.vercel.app
+   https://sheetgen.vercel.app,https://sheetgen-*.vercel.app
    ```
    (ikinci pattern preview deploy'lar için)
 3. **Save Changes** → service otomatik restart olur (~30sn)
@@ -110,7 +110,7 @@ UptimeRobot ile çözüyoruz (Adım 5).
 2. **Add New Monitor**:
    - **Type**: HTTP(s)
    - **Friendly name**: `MEB Backend Healthz`
-   - **URL**: `https://meb-genagent-backend.onrender.com/healthz`
+   - **URL**: `https://sheetgen-backend.onrender.com/healthz`
    - **Monitoring interval**: `5 minutes` (free tier minimum) — Render 15 dk
      sonra uyuduğu için bu yeter
 3. **Create Monitor**

@@ -1,7 +1,7 @@
 import { SignUp } from "@clerk/nextjs";
 
 export const metadata = {
-  title: "Kayıt ol · MEB Matematik Üretici",
+  title: "Kayıt ol · SheetGen",
 };
 
 export default function SignUpPage() {

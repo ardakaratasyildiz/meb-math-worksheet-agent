@@ -2,7 +2,7 @@ import { GenerateForm } from "@/components/GenerateForm";
 import { QuestionPreview } from "@/components/QuestionPreview";
 
 export const metadata = {
-  title: "Üret · MEB Matematik Üretici",
+  title: "Üret · SheetGen",
 };
 
 export default function GeneratePage() {

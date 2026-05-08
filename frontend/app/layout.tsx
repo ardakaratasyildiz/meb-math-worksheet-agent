@@ -17,7 +17,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MEB Matematik Üretici",
+  title: "SheetGen — MEB Matematik Üretici",
   description:
     "MEB müfredatına %100 uyumlu (1-7. sınıf) matematik çalışma kağıtlarını saniyeler içinde üretin.",
 };
