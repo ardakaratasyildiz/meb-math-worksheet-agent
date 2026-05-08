@@ -1,8 +1,11 @@
+import asyncio
+import json
 from datetime import datetime, timezone
 from functools import lru_cache
+from typing import AsyncIterator
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import Response
+from fastapi.responses import Response, StreamingResponse
 
 from app.config import settings
 from app.data.curriculum import get_topic
@@ -146,3 +149,75 @@ def render_existing_worksheet(
     Frontend hızlı tekrar PDF üretebilir.
     """
     return _pdf_response(worksheet)
+
+
+# ---- SSE streaming endpoint (Sprint 7) ----------------------------------
+# Pragmatik MVP: agent.generate hâlâ blocking (Gemini batch response).
+# Endpoint blocking üretim sonrası her soruyu ayrı SSE event olarak yollar →
+# frontend EventSource canlı akış hissi verir, perceived latency düşer.
+# Gerçek token-by-token streaming Sprint 7.5'te (Gemini streaming API + agent
+# refactor) eklenecek.
+
+
+async def _stream_worksheet_events(
+    req: GenerateWorksheetRequest,
+) -> AsyncIterator[str]:
+    """SSE event akışı üretir. Format:
+        event: meta        — başlangıç (request echo)
+        event: question    — her soru
+        event: complete    — final worksheet + metadata
+        event: error       — hata
+    """
+
+    def sse(event: str, data: dict | str) -> str:
+        body = data if isinstance(data, str) else json.dumps(data, ensure_ascii=False)
+        return f"event: {event}\ndata: {body}\n\n"
+
+    # Hand-off başlangıç event'i — frontend "bağlantı kuruldu" olarak gösterir
+    yield sse("meta", {
+        "grade": req.grade,
+        "topic_id": req.topic_id,
+        "kazanim_kod": req.kazanim_kod,
+        "difficulty": req.difficulty.value if hasattr(req.difficulty, "value") else req.difficulty,
+        "question_count": req.question_count,
+    })
+
+    try:
+        worksheet, metadata = await asyncio.to_thread(_build_worksheet, req)
+    except HTTPException as exc:
+        yield sse("error", {"detail": exc.detail, "status": exc.status_code})
+        return
+    except Exception as exc:  # noqa: BLE001
+        yield sse("error", {"detail": str(exc)[:500], "status": 500})
+        return
+
+    # Her soru ayrı event — frontend skeleton'ları teker teker doldurur.
+    for q in worksheet.questions:
+        yield sse("question", q.model_dump(mode="json"))
+        await asyncio.sleep(0.05)  # küçük gecikme → akış hissi
+
+    yield sse(
+        "complete",
+        {
+            "worksheet": worksheet.model_dump(mode="json"),
+            "metadata": metadata.model_dump(mode="json"),
+        },
+    )
+
+
+@router.post("/generate.stream")
+@limiter.limit(rate_limit_string())
+def generate_worksheet_stream(
+    request: Request,
+    req: GenerateWorksheetRequest,
+    _api_key: str = Depends(require_api_key),
+) -> StreamingResponse:
+    """SSE streaming üretim. Frontend EventSource ile bağlanır."""
+    return StreamingResponse(
+        _stream_worksheet_events(req),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "X-Accel-Buffering": "no",  # Render/Nginx proxy buffer'ını kapat
+        },
+    )
