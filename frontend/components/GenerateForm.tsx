@@ -237,7 +237,7 @@ export function GenerateForm() {
       </Button>
 
       <p className="text-center text-xs text-muted-foreground">
-        Cache hit'te ~1 sn · İlk üretim ~30 sn
+        Cache hit&apos;te ~1 sn · İlk üretim ~30 sn
       </p>
     </div>
   );
