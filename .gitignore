@@ -21,6 +21,7 @@ knowledge_base/*.pdf
 knowledge_base/history.sqlite3
 knowledge_base/eval/ab_*.json
 knowledge_base/eval/ab_*.md
+knowledge_base/eval/run_*.log
 # Referans baseline run repo'da kalsın — thresholds.json bunu işaret ediyor.
 !knowledge_base/eval/ab_raw_20260501_181943.json
 !knowledge_base/eval/ab_report_20260501_181943.md
