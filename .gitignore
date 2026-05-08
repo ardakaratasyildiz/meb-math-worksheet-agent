@@ -16,7 +16,9 @@ ENV/
 .vscode/
 .DS_Store
 .claude/
-knowledge_base/chroma_db/
+# NOT: knowledge_base/chroma_db/ Render deploy için repo'ya commit ediliyor
+# (image içine girer; Render free tier kalıcı disk yok). 7000+ chunk, ~136 MB.
+# Yeniden ingest sonrası `git add knowledge_base/chroma_db/` ile güncellenir.
 knowledge_base/*.pdf
 knowledge_base/history.sqlite3
 knowledge_base/eval/ab_*.json
