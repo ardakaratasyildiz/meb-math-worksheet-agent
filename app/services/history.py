@@ -109,11 +109,13 @@ class GenerationHistory:
         if self._db is None:
             return
         try:
-            cur = self._db.execute(
+            # fetchall() — libsql Cursor sqlite3 gibi iter desteklemiyor; her iki
+            # backend için de güvenli yol.
+            rows = self._db.execute(
                 "SELECT key, normalized_question, contexts, embedding FROM history "
                 "ORDER BY id ASC"
-            )
-            for row in cur:
+            ).fetchall()
+            for row in rows:
                 key_str, nq, ctx_str, emb_blob = row
                 key = self._parse_key(key_str)
                 if key is None:
@@ -125,7 +127,7 @@ class GenerationHistory:
                     bucket = deque(maxlen=self._capacity)
                     self._cache[key] = bucket
                 bucket.append(_Entry(nq, contexts, emb))
-        except sqlite3.Error as exc:
+        except (sqlite3.Error, Exception) as exc:
             logger.warning("History DB load başarısız: %s", exc)
 
     @staticmethod
