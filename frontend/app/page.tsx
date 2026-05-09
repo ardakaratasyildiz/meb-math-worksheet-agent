@@ -159,20 +159,15 @@ function PdfPreviewCard({
       className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
     >
       <div className="relative aspect-[1/1.41] w-full overflow-hidden bg-muted">
-        {/* Sen frontend/public/samples/sample-N.svg koyunca otomatik gelir.
-            Yoksa placeholder skeleton görünür. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,_hsl(var(--accent))_0%,_hsl(var(--background))_100%)]"
+        />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={file}
           alt={`${grade} ${topic} örnek PDF`}
-          className="h-full w-full object-cover transition-transform group-hover:scale-105"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-0 bg-[linear-gradient(180deg,_hsl(var(--accent))_0%,_hsl(var(--background))_100%)]"
+          className="relative h-full w-full object-cover transition-transform group-hover:scale-105"
         />
       </div>
       <div className="flex items-center justify-between border-t p-4">
