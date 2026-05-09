@@ -46,6 +46,7 @@ class Settings(BaseSettings):
 
     # Rate limit + API key
     api_keys: str = ""  # virgülle ayrılmış geçerli key'ler. Boşsa auth devre dışı.
+    admin_api_key: str = ""  # /admin endpoint'leri için ayrı key. Boşsa admin devre dışı.
     rate_limit_per_hour: int = 30
     rate_limit_per_minute: int = 5
 

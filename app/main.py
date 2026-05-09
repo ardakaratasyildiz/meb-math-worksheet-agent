@@ -6,7 +6,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from app.config import settings
-from app.routers import curriculum, health, worksheets
+from app.routers import admin, curriculum, health, worksheets
 from app.security import limiter
 
 logger = logging.getLogger(__name__)
@@ -69,6 +69,7 @@ async def rate_limit_handler(request, exc: RateLimitExceeded):
 
 app.include_router(curriculum.router, prefix="/api/curriculum", tags=["curriculum"])
 app.include_router(worksheets.router, prefix="/api/worksheets", tags=["worksheets"])
+app.include_router(admin.router, prefix="/admin", tags=["admin"])
 app.include_router(health.router, tags=["system"])
 
 

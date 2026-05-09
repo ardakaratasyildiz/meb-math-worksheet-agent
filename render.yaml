@@ -1,7 +1,7 @@
 # Render Blueprint — bir tıkla backend deploy.
 # Kullanım: Render → New → Blueprint → repo'yu seç → Deploy.
-# Free tier: 750 saat/ay, kalıcı disk YOK (history.sqlite3 restart'ta sıfırlanır,
-# müfredat verisi knowledge_base/ image'a copy edildiği için kalıcı).
+# Free tier: 750 saat/ay. TURSO_DATABASE_URL set edilirse kalıcı (libSQL),
+# değilse lokal SQLite restart'ta sıfırlanır. Müfredat (knowledge_base/) image'da kalıcı.
 #
 # UptimeRobot pinger /healthz'a 14 dk'da bir vurarak cold start'ı önler.
 
@@ -26,6 +26,17 @@ services:
 
       # API auth — frontend NEXT_PUBLIC_API_KEY ile aynı olmalı
       - key: API_KEYS
+        sync: false
+
+      # /admin/* endpoint'leri için ayrı key (X-Admin-Key header)
+      - key: ADMIN_API_KEY
+        sync: false
+
+      # Turso (libSQL) — kalıcı SQLite, free tier 9GB. Boş bırakırsan
+      # lokal sqlite (her restart'ta cache+history sıfırlanır).
+      - key: TURSO_DATABASE_URL
+        sync: false  # ör. libsql://<your-db>.turso.io
+      - key: TURSO_AUTH_TOKEN
         sync: false
 
       # Rate limit — production

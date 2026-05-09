@@ -1,10 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
+  Backpack,
   BookOpen,
-  Building2,
-  Check,
   CheckCircle2,
   FileCheck,
   GraduationCap,
@@ -18,6 +16,8 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/Footer";
+import { SectionHeader } from "@/components/PageHeader";
 
 export default function LandingPage() {
   return (
@@ -62,8 +62,9 @@ function Hero() {
           .
         </h1>
         <p className="max-w-2xl text-balance text-lg text-muted-foreground sm:text-xl">
-          Sınıfı, kazanımı ve zorluğu seç. Yapay zekâ ürettiğini SymPy ile
-          doğrular, MEB müfredatına oturtur. A4 PDF olarak indir, derste dağıt.
+          Sınıfı, kazanımı ve zorluğu seç. Yapay zekâ üretir, otomatik
+          aritmetik denetim ve ikinci bir yapay zekâ kontrolü kazanım uyumunu
+          doğrular. A4 PDF olarak indir, derste dağıt.
         </p>
         <div className="flex flex-col items-center gap-3 sm:flex-row">
           <Button asChild size="lg" className="gap-2 px-7">
@@ -252,7 +253,7 @@ const STEPS = [
   {
     n: "2",
     title: "Yapay zekâ üretir",
-    body: "30 saniye içinde 5-20 arası özgün soru. SymPy ile aritmetik doğrulama, LLM-as-judge ile kalite kontrol.",
+    body: "30 saniye içinde 5-20 arası özgün soru. Otomatik aritmetik denetim ve ikinci bir yapay zekâ kontrolü her soruyu süzer.",
     icon: <Sparkles className="h-6 w-6" />,
   },
   {
@@ -296,18 +297,18 @@ function HowItWorks() {
 const PERSONAS = [
   {
     icon: <GraduationCap className="h-6 w-6" />,
-    title: "Sınıf öğretmeni",
+    title: "Öğretmen",
     body: "Ders öncesi 5 dakikada 10 soruluk pratik üret, sınıfta dağıt. Konu eksiği gördüğün anda yedek kağıt yarat.",
   },
   {
     icon: <Users className="h-6 w-6" />,
     title: "Veli",
-    body: "Çocuğunun bu hafta zorlandığı konuyu yaz, evde çözebileceği seviyede pratik kağıdı al. Cevap anahtarıyla beraber.",
+    body: "Çocuğunun bu hafta zorlandığı konuyu seç, evde çözebileceği seviyede pratik kağıdı al. Cevap anahtarıyla beraber.",
   },
   {
-    icon: <Building2 className="h-6 w-6" />,
-    title: "Etüt / Kurs",
-    body: "Her öğrenci için kişiselleştirilmiş set, kurum logonla baskı, fatura — bulk üretim limit yok.",
+    icon: <Backpack className="h-6 w-6" />,
+    title: "Öğrenci",
+    body: "Sınav öncesi zorlandığın konuyu seç, kendine özel pratik kağıdı çık. Çözümü yan sayfada — kafanı karıştırmaz.",
   },
 ];
 
@@ -349,13 +350,13 @@ const FEATURES = [
   },
   {
     icon: <ShieldCheck className="h-5 w-5" />,
-    title: "Yapay zekâ kalite kontrol",
-    body: "Her soru SymPy aritmetik doğrulamadan, ardından LLM-as-judge'tan geçer.",
+    title: "İki katmanlı kalite kontrol",
+    body: "Her soru önce otomatik aritmetik denetimden, sonra ikinci bir yapay zekâ kontrolünden geçer; uyumsuzlar elenir.",
   },
   {
     icon: <Zap className="h-5 w-5" />,
     title: "Saniyeler içinde PDF",
-    body: "Üretim 30sn; cache hit'te 1sn. Türkçe karakter problemi yok.",
+    body: "İlk üretim ~30 sn; tekrar indirme anında. Türkçe karakter problemi yok.",
   },
   {
     icon: <FileCheck className="h-5 w-5" />,
@@ -399,6 +400,14 @@ function Features() {
             </div>
           ))}
         </div>
+        <div className="mt-10 flex justify-center">
+          <Button asChild variant="outline" className="gap-2">
+            <Link href="/features">
+              Detaylı özellikler ve karşılaştırma{" "}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );
@@ -415,15 +424,15 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "Etüt için bulk üretim hayatımı kurtardı. Her öğrenciye farklı kazanım — eskiden imkânsızdı.",
-    name: "Mehmet K.",
-    role: "Etüt sahibi, Ankara",
-  },
-  {
-    quote:
       "Çocuğumla hafta sonu pratik için ideal. Cevap anahtarı olduğu için kontrol etmek 30 saniye.",
     name: "Selin B.",
     role: "Veli, İzmir",
+  },
+  {
+    quote:
+      "Sınava hazırlanırken zorlandığım konuyu seçip kendime özel pratik kağıdı üretiyorum. Çözüm adımları çok faydalı.",
+    name: "Defne A.",
+    role: "7. sınıf öğrencisi, Ankara",
   },
 ];
 
@@ -460,9 +469,19 @@ function Testimonials() {
 // ─── PRICING TEASER ──────────────────────────────────────────────────────────
 
 const PLANS = [
-  { name: "Ücretsiz", price: "0", subtitle: "5 kağıt/ay" },
-  { name: "Pro", price: "149", subtitle: "100 kağıt/ay", featured: true },
-  { name: "Kurum", price: "499", subtitle: "Sınırsız + logo" },
+  {
+    name: "Ücretsiz",
+    price: "0",
+    quota: "100 soru / ay",
+    note: "Ürünü tanı, dene",
+  },
+  {
+    name: "Pro",
+    price: "99",
+    quota: "Sınırsız soru",
+    note: "Aktif kullanıcı için",
+    featured: true,
+  },
 ];
 
 function PricingTeaser() {
@@ -476,26 +495,35 @@ function PricingTeaser() {
           Ücretsiz başla. İhtiyacın oldukça yükselt.
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-base opacity-90">
-          Kart bilgisi vermeden ilk kağıdını üret. İptal her an, taahhüt yok.
+          Kart bilgisi vermeden ilk soruları üret. İstediğinde Pro&apos;ya geç,
+          istediğinde durdur — taahhüt yok.
         </p>
-        <div className="mx-auto mt-10 grid max-w-3xl gap-4 sm:grid-cols-3">
+        <div className="mx-auto mt-10 grid max-w-2xl gap-4 sm:grid-cols-2">
           {PLANS.map((p) => (
             <div
               key={p.name}
-              className={`rounded-xl border p-5 text-left transition ${
+              className={`rounded-xl border p-6 text-left transition ${
                 p.featured
-                  ? "border-white/40 bg-white/15 ring-2 ring-white/30"
+                  ? "border-white/50 bg-white/15 ring-2 ring-white/30"
                   : "border-white/20 bg-white/5"
               }`}
             >
-              <p className="text-xs font-semibold uppercase tracking-wider opacity-75">
-                {p.name}
-              </p>
-              <p className="mt-2 text-3xl font-bold">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wider opacity-75">
+                  {p.name}
+                </p>
+                {p.featured && (
+                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
+                    Popüler
+                  </span>
+                )}
+              </div>
+              <p className="mt-3 text-4xl font-bold">
                 {p.price}
                 <span className="text-base font-normal opacity-75"> ₺/ay</span>
               </p>
-              <p className="mt-1 text-sm opacity-80">{p.subtitle}</p>
+              <p className="mt-2 text-sm font-medium opacity-95">{p.quota}</p>
+              <p className="text-xs opacity-70">{p.note}</p>
             </div>
           ))}
         </div>
@@ -507,7 +535,7 @@ function PricingTeaser() {
             className="gap-2 bg-white text-primary hover:bg-white/90"
           >
             <Link href="/pricing">
-              Tüm planları gör <ArrowRight className="h-4 w-4" />
+              Plan ayrıntıları <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </div>
@@ -525,23 +553,11 @@ const FAQS = [
   },
   {
     q: "MEB müfredatına nasıl uyduğunu garanti ediyorsunuz?",
-    a: "Her soru, MEB tarafından yayımlanan kazanım kodlarına göre üretilir. RAG sistemi MEB ders kitaplarından bağlam çeker; LLM-as-judge her soruyu kazanıma uyumluluk açısından denetler, geçmeyenler atılır.",
-  },
-  {
-    q: "KVKK ve veri gizliliği nasıl?",
-    a: "Üretim parametreleri ve geçmiş anonim olarak saklanır. Kişisel veri toplamıyoruz. Tüm veri AB sunucularında (Frankfurt) tutulur.",
-  },
-  {
-    q: "Soruların kalitesi nasıl kontrol ediliyor?",
-    a: "Üç katman: (1) SymPy ile aritmetik doğrulama (matematiksel olarak hatalı sorular elenir), (2) LLM-as-judge kazanım+zorluk denetimi, (3) post-filter top-up sistemi — eksik kalanlar otomatik yeniden üretilir.",
+    a: "Her soru, MEB tarafından yayımlanan kazanım kodlarına göre üretilir. Sistem MEB ders kitaplarından bağlam çeker; ikinci bir yapay zekâ kontrolü her soruyu kazanım uyumu açısından denetler, geçmeyenler elenir.",
   },
   {
     q: "İptal kolay mı? Para iadesi var mı?",
     a: "Aboneliğini panelden tek tıkla iptal edebilirsin, sonraki dönem ücret çekilmez. İlk 14 gün içinde memnun kalmazsan koşulsuz iade.",
-  },
-  {
-    q: "Diğer dersler eklenecek mi?",
-    a: "Evet — Türkçe ve Fen Bilimleri 2026 sonbahar için yol haritasında. Sosyal bilgiler ve yabancı dil ardından gelecek.",
   },
 ];
 
@@ -573,6 +589,13 @@ function Faq() {
             </details>
           ))}
         </div>
+        <div className="mt-8 flex justify-center">
+          <Button asChild variant="outline" className="gap-2">
+            <Link href="/faq">
+              Tüm soruları gör <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );
@@ -602,115 +625,5 @@ function FinalCta() {
   );
 }
 
-// ─── FOOTER ──────────────────────────────────────────────────────────────────
-
-function Footer() {
-  return (
-    <footer className="border-t border-slate-800 bg-slate-900 text-slate-100">
-      <div className="container py-12">
-        <div className="grid gap-8 md:grid-cols-4">
-          <div>
-            <Image
-              src="/logo-dark.svg"
-              alt="Quiz Marketi"
-              width={170}
-              height={36}
-              className="h-9 w-auto"
-            />
-            <p className="mt-4 max-w-xs text-sm opacity-70">
-              MEB müfredatına %100 uyumlu matematik çalışma kağıdı üreticisi.
-            </p>
-          </div>
-          <FooterColumn
-            title="Ürün"
-            links={[
-              { label: "Üretici", href: "/generate" },
-              { label: "Fiyatlandırma", href: "/#pricing" },
-              { label: "SSS", href: "/#faq" },
-            ]}
-          />
-          <FooterColumn
-            title="Hukuki"
-            links={[
-              { label: "KVKK Aydınlatma", href: "/legal/kvkk" },
-              { label: "Kullanım Koşulları", href: "/legal/terms" },
-              { label: "Gizlilik", href: "/legal/privacy" },
-            ]}
-          />
-          <FooterColumn
-            title="İletişim"
-            links={[
-              { label: "destek@quizmarketi.com", href: "mailto:destek@quizmarketi.com" },
-              { label: "Twitter / X", href: "#" },
-              { label: "Instagram", href: "#" },
-            ]}
-          />
-        </div>
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-800 pt-6 text-xs opacity-60 sm:flex-row">
-          <p>© 2026 Quiz Marketi · MEB müfredatına uyumlu, eğitim için.</p>
-          <p className="inline-flex items-center gap-1.5">
-            <Check className="h-3 w-3" />
-            Türkiye&apos;de geliştirildi
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FooterColumn({
-  title,
-  links,
-}: {
-  title: string;
-  links: { label: string; href: string }[];
-}) {
-  return (
-    <div>
-      <p className="text-sm font-semibold">{title}</p>
-      <ul className="mt-4 space-y-2 text-sm opacity-70">
-        {links.map((l, i) => (
-          <li key={i}>
-            <Link href={l.href} className="hover:opacity-100">
-              {l.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-// ─── SHARED ──────────────────────────────────────────────────────────────────
-
-function SectionHeader({
-  eyebrow,
-  title,
-  body,
-  align = "center",
-}: {
-  eyebrow: string;
-  title: string;
-  body?: string;
-  align?: "left" | "center";
-}) {
-  return (
-    <div
-      className={`flex flex-col gap-3 ${
-        align === "center" ? "items-center text-center" : "items-start text-left"
-      }`}
-    >
-      <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-        {eyebrow}
-      </span>
-      <h2 className="max-w-2xl text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-        {title}
-      </h2>
-      {body && (
-        <p className="max-w-2xl text-balance text-base text-muted-foreground">
-          {body}
-        </p>
-      )}
-    </div>
-  );
-}
+// (Footer + SectionHeader components/Footer.tsx ve components/PageHeader.tsx
+// içine taşındı; /features, /pricing, /faq sayfalarıyla paylaşılıyor.)

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import json
 import logging
-import sqlite3
 import threading
 import time
 from pathlib import Path
@@ -24,6 +23,7 @@ from typing import Iterable
 
 from app.config import settings
 from app.models.schemas import Question
+from app.services.db_connection import connect as db_connect
 
 logger = logging.getLogger(__name__)
 
@@ -49,14 +49,14 @@ class GenerationCache:
         self._db_path = db_path or settings.history_db_path
         self._max_per_key = max_per_key
         self._lock = threading.Lock()
-        self._db: sqlite3.Connection | None = None
+        self._db = None
         self._hits = 0
         self._misses = 0
         self._init_db()
 
     def _init_db(self) -> None:
         Path(self._db_path).parent.mkdir(parents=True, exist_ok=True)
-        self._db = sqlite3.connect(self._db_path, check_same_thread=False)
+        self._db = db_connect(self._db_path)
         self._db.execute(
             """
             CREATE TABLE IF NOT EXISTS generation_cache (

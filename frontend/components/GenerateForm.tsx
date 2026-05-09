@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useAuth } from "@clerk/nextjs";
 import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
@@ -52,6 +53,9 @@ export function GenerateForm() {
     setError,
   } = useGenerateStore();
 
+  // Clerk userId — backend cache/history kullanıcı izolasyonu için tenant_id olarak gider.
+  const { userId } = useAuth();
+
   const [grades, setGrades] = React.useState<GradeInfo[]>([]);
   const [topics, setTopics] = React.useState<TopicInfo[]>([]);
   const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>([]);
@@ -82,6 +86,7 @@ export function GenerateForm() {
         kazanim_kod: kazanimKod || null,
         difficulty,
         question_count: questionCount,
+        tenant_id: userId ?? null,
       });
       setSuccess(res);
       addHistory(
@@ -96,8 +101,8 @@ export function GenerateForm() {
       );
       const trace = res.metadata.trace;
       if (trace?.cache_hit) {
-        toast.success("Cache'ten anında geldi", {
-          description: `${res.worksheet.questions.length} soru, 1 sn altında.`,
+        toast.success("Anında hazır", {
+          description: `${res.worksheet.questions.length} soru — daha önce üretilmiş, anında geldi.`,
         });
       } else {
         toast.success("Çalışma kağıdı hazır", {
@@ -237,7 +242,7 @@ export function GenerateForm() {
       </Button>
 
       <p className="text-center text-xs text-muted-foreground">
-        Cache hit&apos;te ~1 sn · İlk üretim ~30 sn
+        İlk üretim ~30 sn · Tekrar indirme anında
       </p>
     </div>
   );

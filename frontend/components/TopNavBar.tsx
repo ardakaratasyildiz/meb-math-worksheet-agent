@@ -17,9 +17,9 @@ import {
 
 const NAV_LINKS = [
   { href: "/generate", label: "Üret" },
-  { href: "/#features", label: "Özellikler" },
-  { href: "/#pricing", label: "Fiyatlandırma" },
-  { href: "/#faq", label: "SSS" },
+  { href: "/features", label: "Özellikler" },
+  { href: "/pricing", label: "Fiyatlandırma" },
+  { href: "/faq", label: "SSS" },
 ];
 
 const TopNavBar = () => {

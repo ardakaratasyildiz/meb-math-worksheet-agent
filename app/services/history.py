@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 from app.config import settings
+from app.services.db_connection import connect as db_connect
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +83,7 @@ class GenerationHistory:
     def _init_db(self) -> None:
         try:
             Path(self._db_path).parent.mkdir(parents=True, exist_ok=True)
-            self._db = sqlite3.connect(self._db_path, check_same_thread=False)
+            self._db = db_connect(self._db_path)
             self._db.execute(
                 """
                 CREATE TABLE IF NOT EXISTS history (
