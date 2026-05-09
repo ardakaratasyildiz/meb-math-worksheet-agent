@@ -4,73 +4,78 @@
 
 @layer base {
   /*
-   * Tema: shadcn neutral base + emerald primary (Tailwind emerald-600).
-   * Tüm renkler HSL — light/dark arasında geçiş tek değişken setinin
-   * yer değişmesiyle olur.
+   * Tema: Quiz Marketi — Soft Indigo + Krem (yön C).
+   * Light: krem zemin (#FFFBEB) + indigo-600 (#4F46E5) primary + slate metin.
+   * Dark : slate-900 zemin + indigo-400 primary (kontrast için açık).
+   * Tüm renkler HSL.
    */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Page bg = krem #FFFBEB */
+    --background: 48 100% 96%;
+    --foreground: 222 47% 11%; /* slate-900 */
 
+    /* Cards = beyaz, krem üstünde "yükselmiş" hissi */
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Primary = emerald-600 (#059669), foreground = white */
-    --primary: 161 94% 30%;
+    /* Primary = indigo-600 #4F46E5 */
+    --primary: 244 76% 59%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    /* Secondary = krem ile uyumlu yumuşak nötr */
+    --secondary: 48 35% 92%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 45%;
+    --muted: 48 35% 94%;
+    --muted-foreground: 215 19% 35%; /* slate-600 */
 
-    /* Accent = emerald-50 / hover background */
-    --accent: 152 81% 96%;
-    --accent-foreground: 161 94% 22%;
+    /* Accent = indigo-50 #EEF2FF (hover/badge bg) */
+    --accent: 226 100% 97%;
+    --accent-foreground: 244 58% 53%; /* indigo-700 */
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 161 94% 30%;
+    --border: 214 32% 91%; /* slate-200 */
+    --input: 214 32% 91%;
+    --ring: 244 76% 59%;
 
     --radius: 0.75rem;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Dark = slate-900 zemin */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%; /* slate-50 */
 
-    --card: 240 10% 5.5%;
-    --card-foreground: 0 0% 98%;
+    --card: 217 33% 17%; /* slate-800 */
+    --card-foreground: 210 40% 98%;
 
-    --popover: 240 10% 5.5%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
 
-    /* Dark zemin üstünde emerald-500 daha okunaklı */
-    --primary: 161 84% 42%;
-    --primary-foreground: 161 100% 8%;
+    /* Dark üstünde indigo-400 daha okunaklı */
+    --primary: 234 89% 74%;
+    --primary-foreground: 222 47% 11%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 215 25% 27%; /* slate-700 */
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 215 25% 27%;
+    --muted-foreground: 215 20% 65%; /* slate-400 */
 
-    --accent: 161 60% 12%;
-    --accent-foreground: 161 84% 70%;
+    --accent: 244 40% 22%;
+    --accent-foreground: 234 89% 84%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 161 84% 42%;
+    --border: 215 25% 27%;
+    --input: 215 25% 27%;
+    --ring: 234 89% 74%;
   }
 }
 

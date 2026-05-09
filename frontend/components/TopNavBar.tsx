@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Moon, Sun, Sparkles } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { UserButton, useAuth } from "@clerk/nextjs";
 
@@ -14,8 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const NAV_LINKS = [
+  { href: "/generate", label: "Üret" },
+  { href: "/#features", label: "Özellikler" },
+  { href: "/#pricing", label: "Fiyatlandırma" },
+  { href: "/#faq", label: "SSS" },
+];
+
 const TopNavBar = () => {
-  const { setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const { isLoaded, isSignedIn } = useAuth();
   const [mounted, setMounted] = React.useState(false);
 
@@ -23,30 +31,38 @@ const TopNavBar = () => {
     setMounted(true);
   }, []);
 
+  const logoSrc =
+    mounted && resolvedTheme === "dark" ? "/logo-dark.svg" : "/logo.svg";
+
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <Sparkles className="h-5 w-5 text-primary" aria-hidden />
-          <span>SheetGen</span>
+    <nav className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <div className="container flex h-16 items-center justify-between">
+        <Link href="/" className="flex items-center" aria-label="Quiz Marketi">
+          <Image
+            src={logoSrc}
+            alt="Quiz Marketi"
+            width={190}
+            height={40}
+            priority
+            className="h-9 w-auto"
+          />
         </Link>
+        <div className="hidden items-center gap-7 md:flex">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
         <div className="flex items-center gap-2">
-          <Link
-            href="/generate"
-            className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-block"
-          >
-            Üret
-          </Link>
-          <Link
-            href="/history"
-            className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-block"
-          >
-            Geçmiş
-          </Link>
           {mounted && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Tema değiştir">
+                <Button variant="ghost" size="icon" aria-label="Tema değiştir">
                   <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 </Button>
@@ -65,14 +81,17 @@ const TopNavBar = () => {
             </DropdownMenu>
           )}
           {isLoaded && isSignedIn && (
-            <UserButton
-              appearance={{ elements: { avatarBox: "h-8 w-8" } }}
-            />
+            <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} />
           )}
           {isLoaded && !isSignedIn && (
-            <Button asChild size="sm">
-              <Link href="/sign-in">Giriş yap</Link>
-            </Button>
+            <>
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Link href="/sign-in">Giriş yap</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link href="/sign-up">Ücretsiz başla</Link>
+              </Button>
+            </>
           )}
         </div>
       </div>

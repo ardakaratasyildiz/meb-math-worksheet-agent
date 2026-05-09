@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { trTR } from "@clerk/localizations";
-import { dark } from "@clerk/themes";
 import { Toaster } from "sonner";
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -17,9 +16,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SheetGen — MEB Matematik Üretici",
+  title: "Quiz Marketi — MEB matematik çalışma kağıdı üretici",
   description:
-    "MEB müfredatına %100 uyumlu (1-7. sınıf) matematik çalışma kağıtlarını saniyeler içinde üretin.",
+    "MEB müfredatına %100 uyumlu (1-7. sınıf) matematik çalışma kağıtlarını yapay zekâ ile saniyeler içinde üret, PDF olarak indir.",
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({
@@ -31,15 +31,14 @@ export default function RootLayout({
     <ClerkProvider
       localization={trTR}
       appearance={{
-        baseTheme: dark,
-        variables: { colorPrimary: "hsl(161, 84%, 42%)" },
+        variables: { colorPrimary: "hsl(244, 76%, 59%)" },
       }}
     >
       <html lang="tr" suppressHydrationWarning>
         <body className={`${inter.variable} font-sans antialiased`}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
