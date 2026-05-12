@@ -4,78 +4,79 @@
 
 @layer base {
   /*
-   * Tema: Quiz Marketi — Soft Indigo + Krem (yön C).
-   * Light: krem zemin (#FFFBEB) + indigo-600 (#4F46E5) primary + slate metin.
-   * Dark : slate-900 zemin + indigo-400 primary (kontrast için açık).
+   * Tema: Soru Atölyesi — Kurumsal lacivert + zinc nötr palet.
+   * Light: zinc-50 zemin (#FAFAFA) + navy-800 primary (#1E3A8A) + zinc metin.
+   * Dark : zinc-900 zemin + blue-400 primary (kontrast için açık).
    * Tüm renkler HSL.
    */
   :root {
-    /* Page bg = krem #FFFBEB */
-    --background: 48 100% 96%;
-    --foreground: 222 47% 11%; /* slate-900 */
+    /* Zemin = zinc-50 #FAFAFA (nötr beyaz, sarımsı değil) */
+    --background: 0 0% 98%;
+    --foreground: 240 6% 10%; /* zinc-900 #18181B */
 
-    /* Cards = beyaz, krem üstünde "yükselmiş" hissi */
+    /* Cards = pure white, zinc zemin üstünde hafif yükseltili */
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 240 6% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 240 6% 10%;
 
-    /* Primary = indigo-600 #4F46E5 */
-    --primary: 244 76% 59%;
+    /* Primary = navy-800 #1E3A8A (Tailwind blue-900) */
+    --primary: 224 76% 33%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary = krem ile uyumlu yumuşak nötr */
-    --secondary: 48 35% 92%;
-    --secondary-foreground: 222 47% 11%;
+    /* Secondary = zinc-100 #F4F4F5 */
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
 
-    --muted: 48 35% 94%;
-    --muted-foreground: 215 19% 35%; /* slate-600 */
+    /* Muted = zinc-200 #E4E4E7 */
+    --muted: 240 5% 90%;
+    --muted-foreground: 240 4% 36%; /* zinc-600 #52525B */
 
-    /* Accent = indigo-50 #EEF2FF (hover/badge bg) */
-    --accent: 226 100% 97%;
-    --accent-foreground: 244 58% 53%; /* indigo-700 */
+    /* Accent = sky-50 #F0F9FF (hover/badge bg — primary ile yakın) */
+    --accent: 204 100% 97%;
+    --accent-foreground: 224 76% 28%; /* navy-900, biraz koyu */
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 214 32% 91%; /* slate-200 */
-    --input: 214 32% 91%;
-    --ring: 244 76% 59%;
+    --border: 240 6% 90%; /* zinc-200 */
+    --input: 240 6% 90%;
+    --ring: 224 76% 33%;
 
     --radius: 0.75rem;
   }
 
   .dark {
-    /* Dark = slate-900 zemin */
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%; /* slate-50 */
+    /* Dark = zinc-900 zemin */
+    --background: 240 6% 10%;
+    --foreground: 0 0% 98%; /* zinc-50 */
 
-    --card: 217 33% 17%; /* slate-800 */
-    --card-foreground: 210 40% 98%;
+    --card: 240 4% 16%; /* zinc-800 #27272A */
+    --card-foreground: 0 0% 98%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 4% 16%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Dark üstünde indigo-400 daha okunaklı */
-    --primary: 234 89% 74%;
-    --primary-foreground: 222 47% 11%;
+    /* Dark üstünde blue-400 daha okunaklı */
+    --primary: 213 94% 68%; /* blue-400 #60A5FA */
+    --primary-foreground: 224 76% 15%;
 
-    --secondary: 215 25% 27%; /* slate-700 */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 240 4% 22%; /* zinc-700 */
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 215 25% 27%;
-    --muted-foreground: 215 20% 65%; /* slate-400 */
+    --muted: 240 4% 22%;
+    --muted-foreground: 240 5% 65%; /* zinc-400 */
 
-    --accent: 244 40% 22%;
-    --accent-foreground: 234 89% 84%;
+    --accent: 224 71% 18%; /* navy-950 */
+    --accent-foreground: 213 94% 78%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 215 25% 27%;
-    --input: 215 25% 27%;
-    --ring: 234 89% 74%;
+    --border: 240 4% 22%;
+    --input: 240 4% 22%;
+    --ring: 213 94% 68%;
   }
 }
 
@@ -84,8 +85,17 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+    letter-spacing: -0.015em;
   }
 }
 

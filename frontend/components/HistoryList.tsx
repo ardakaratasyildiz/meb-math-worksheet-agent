@@ -39,10 +39,10 @@ export function HistoryList() {
       <Card className="flex flex-col items-center justify-center gap-3 border-dashed py-16 text-center">
         <Sparkles className="h-10 w-10 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
-          Henüz çalışma kağıdı üretmedin.
+          Henüz üretim kaydı yok.
         </p>
         <Button asChild>
-          <a href="/generate">İlk kağıdı üret</a>
+          <a href="/generate">Üretime başla</a>
         </Button>
       </Card>
     );
@@ -80,7 +80,7 @@ export function HistoryList() {
   }
 
   function onClearAll() {
-    if (!confirm("Tüm geçmişi silmek istediğine emin misin?")) return;
+    if (!confirm("Tüm üretim geçmişi silinecek. Devam edilsin mi?")) return;
     clearHistory();
     refresh();
   }
@@ -89,10 +89,10 @@ export function HistoryList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {items.length} kayıt · cihazına yerel olarak saklanır
+          {items.length} kayıt · cihaza yerel olarak saklanır
         </p>
         <Button variant="ghost" size="sm" onClick={onClearAll}>
-          <Trash2 className="mr-1 h-3 w-3" /> Hepsini sil
+          <Trash2 className="mr-1 h-3 w-3" /> Tümünü sil
         </Button>
       </div>
 
@@ -113,7 +113,7 @@ export function HistoryList() {
                 </div>
                 {cacheHit && (
                   <Badge variant="outline" className="border-primary/40 text-primary">
-                    Cache
+                    Önbellek
                   </Badge>
                 )}
               </div>
@@ -143,7 +143,7 @@ export function HistoryList() {
                   className="flex-1 gap-1"
                   onClick={() => onRegenerate(item)}
                 >
-                  <RefreshCw className="h-3 w-3" /> Tekrar üret
+                  <RefreshCw className="h-3 w-3" /> Yeniden üret
                 </Button>
                 <Button
                   size="sm"

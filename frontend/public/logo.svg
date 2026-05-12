@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 80" width="380" height="80">
-  <rect x="6" y="16" width="48" height="48" rx="12" fill="#4F46E5"/>
-  <path d="M18 40 L28 50 L44 32" stroke="#FFFBEB" stroke-width="5"
-        fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="70" y="52" font-family="Inter, system-ui, -apple-system, Segoe UI, sans-serif"
-        font-size="30" font-weight="700" fill="#0F172A" letter-spacing="-0.02em">
-    Quiz Marketi
-  </text>
-</svg>

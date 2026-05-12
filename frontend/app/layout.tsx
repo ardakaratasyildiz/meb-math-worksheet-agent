@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { trTR } from "@clerk/localizations";
 import { Toaster } from "sonner";
@@ -15,11 +15,18 @@ const inter = Inter({
   display: "swap",
 });
 
+const manrope = Manrope({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-manrope",
+  display: "swap",
+  weight: ["500", "600", "700", "800"],
+});
+
 export const metadata: Metadata = {
-  title: "Quiz Marketi — MEB matematik çalışma kağıdı üretici",
+  title: "Soru Atölyesi — MEB matematik çalışma kağıdı üretim sistemi",
   description:
-    "MEB müfredatına %100 uyumlu (1-7. sınıf) matematik çalışma kağıtlarını yapay zekâ ile saniyeler içinde üret, PDF olarak indir.",
-  icons: { icon: "/favicon.svg" },
+    "MEB matematik müfredatı (1.→7. sınıf) kapsamında, seçilen kazanım koduna göre çalışma kağıdı üreten otomatik sistem. PDF çıktı, cevap anahtarı ve adım adım çözüm dahil.",
+  icons: { icon: "/logo.png" },
 };
 
 export default function RootLayout({
@@ -31,11 +38,13 @@ export default function RootLayout({
     <ClerkProvider
       localization={trTR}
       appearance={{
-        variables: { colorPrimary: "hsl(244, 76%, 59%)" },
+        variables: { colorPrimary: "hsl(224, 76%, 33%)" },
       }}
     >
       <html lang="tr" suppressHydrationWarning>
-        <body className={`${inter.variable} font-sans antialiased`}>
+        <body
+          className={`${inter.variable} ${manrope.variable} font-sans antialiased`}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="light"

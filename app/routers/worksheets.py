@@ -129,7 +129,7 @@ def _build_pdf_filename(worksheet: Worksheet) -> str:
     parts = [p for p in cleaned.split() if p]
     slug = "_".join(parts) if parts else "Calisma_Kagidi"
     today = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
-    return f"SheetGen_{slug}_{today}.pdf"
+    return f"SoruAtolyesi_{slug}_{today}.pdf"
 
 
 def _pdf_response(worksheet: Worksheet) -> Response:

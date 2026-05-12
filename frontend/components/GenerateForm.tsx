@@ -101,12 +101,12 @@ export function GenerateForm() {
       );
       const trace = res.metadata.trace;
       if (trace?.cache_hit) {
-        toast.success("Anında hazır", {
-          description: `${res.worksheet.questions.length} soru — daha önce üretilmiş, anında geldi.`,
+        toast.success("Önbellekten getirildi", {
+          description: `${res.worksheet.questions.length} soru — aynı parametrelerle daha önce üretilmişti.`,
         });
       } else {
-        toast.success("Çalışma kağıdı hazır", {
-          description: `${res.worksheet.questions.length} soru üretildi.`,
+        toast.success("Üretim tamamlandı", {
+          description: `${res.worksheet.questions.length} soru üretildi ve denetimden geçti.`,
         });
       }
     } catch (e: unknown) {
@@ -127,7 +127,7 @@ export function GenerateForm() {
           }
         >
           <SelectTrigger id="grade">
-            <SelectValue placeholder="Sınıf seç" />
+            <SelectValue placeholder="Sınıf seçin" />
           </SelectTrigger>
           <SelectContent>
             {grades.map((g) => (
@@ -147,7 +147,7 @@ export function GenerateForm() {
           disabled={topics.length === 0}
         >
           <SelectTrigger id="topic">
-            <SelectValue placeholder="Konu seç" />
+            <SelectValue placeholder="Konu seçin" />
           </SelectTrigger>
           <SelectContent>
             {topics.map((t) => (
@@ -163,7 +163,7 @@ export function GenerateForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="kazanim">Kazanım</Label>
+        <Label htmlFor="kazanim">Kazanım kodu</Label>
         <Select
           value={kazanimKod ?? KAZANIM_AUTO}
           onValueChange={(v) =>
@@ -172,11 +172,11 @@ export function GenerateForm() {
           disabled={kazanimlar.length === 0}
         >
           <SelectTrigger id="kazanim">
-            <SelectValue placeholder="Kazanım seç" />
+            <SelectValue placeholder="Kazanım kodu seçin" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={KAZANIM_AUTO}>
-              Otomatik (tüm kazanımlar)
+              Tümü (konunun tüm kazanımlarından)
             </SelectItem>
             {kazanimlar.map((k) => (
               <SelectItem key={k.kod} value={k.kod}>
@@ -236,13 +236,14 @@ export function GenerateForm() {
         ) : (
           <>
             <Sparkles className="h-4 w-4" />
-            Üret
+            Üretimi başlat
           </>
         )}
       </Button>
 
       <p className="text-center text-xs text-muted-foreground">
-        İlk üretim ~30 sn · Tekrar indirme anında
+        Ortalama üretim süresi 30 saniyedir. Aynı parametrelerle yapılan
+        tekrar üretimde önbellek sonucu döner.
       </p>
     </div>
   );
