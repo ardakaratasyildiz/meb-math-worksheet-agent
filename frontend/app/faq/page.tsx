@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { PageHeader } from "@/components/PageHeader";
 export const metadata = {
   title: "Sıkça Sorulanlar · Quiz Marketi",
   description:
-    "Quiz Marketi hakkında en çok sorulan sorular — ürün, kalite, gizlilik, fiyat, hesap.",
+    "Quiz Marketi hakkında en sık sorulan teknik ve kullanım soruları.",
 };
 
 type FaqItem = { q: string; a: string };
@@ -16,74 +15,70 @@ type FaqCategory = { title: string; items: FaqItem[] };
 
 const FAQ_CATEGORIES: FaqCategory[] = [
   {
-    title: "Ürün",
+    title: "Üretim süreci",
     items: [
       {
-        q: "Hangi sınıflar destekleniyor?",
-        a: "Şu an 1.→7. sınıf MEB matematik müfredatı tamamen destekleniyor. 8. sınıf (LGS) yol haritasında, sonbahar 2026'da gelmesi planlanıyor. Diğer dersler — Türkçe, Fen — sonraki adım.",
+        q: "Sistem soruları nasıl üretiyor?",
+        a: "Üretim, seçilen sınıf ve kazanım kodu temel alınarak yapılır. Sistem MEB ders kitaplarından bağlam çekerek soruları üretir; üretilen her soru önce aritmetik denetimden, ardından kazanım uyumu denetiminden geçer. Bu denetimleri geçemeyen sorular kullanıcıya sunulmadan elenir.",
       },
       {
         q: "Hangi soru tipleri üretiliyor?",
-        a: "Klasik (cevabı yazılan), çoktan seçmeli, doğru/yanlış ve eşleştirme türlerinde sorular üretiliyor. Sınıf seviyesine göre dağılım otomatik ayarlanıyor — 1. sınıfta görsel ağırlıklı, 7. sınıfta klasik ağırlıklı.",
+        a: "Klasik (açık uçlu), çoktan seçmeli, doğru/yanlış ve eşleştirme türlerinde sorular üretilebilir. Soru tipi dağılımı sınıf seviyesine göre otomatik ayarlanır.",
       },
       {
-        q: "Soru sayısını ben mi seçiyorum?",
-        a: "Evet — kağıt başına 5 ile 20 arası soru sayısını sen belirliyorsun. Konuya ve zorluğa göre 10 soru standart, kapsamlı pratik için 15-20 öneririz.",
+        q: "Bir kağıtta kaç soru olabilir?",
+        a: "Kağıt başına soru sayısı 5 ile 20 arasında seçilebilir. Sayı, üretim formundaki kaydırıcı (slider) ile belirlenir.",
       },
       {
-        q: "Cevap anahtarı ve çözüm de geliyor mu?",
-        a: "Her PDF'de var: 1. sayfa(lar) sorular, son sayfada cevap anahtarı (kazanım koduyla beraber), ardından adım adım çözüm sayfası. Öğretmenin tek belge yetiyor.",
-      },
-    ],
-  },
-  {
-    title: "Kalite ve müfredat",
-    items: [
-      {
-        q: "MEB müfredatına nasıl uyduğunu garanti ediyorsunuz?",
-        a: "Her soru, MEB tarafından yayımlanan kazanım kodlarına bire bir hizalanır. Sistem, MEB ders kitaplarından bağlam çekerek bağlam üretir; ikinci bir yapay zekâ kontrolü her soruyu kazanım uyumu açısından denetler — geçmeyenler atılır ve yenileri üretilir.",
-      },
-      {
-        q: "Soruların matematiksel doğruluğu nasıl kontrol ediliyor?",
-        a: "İki katmanlı: önce otomatik aritmetik denetim (formüller, hesaplamalar), sonra ikinci bir yapay zekâ uzun cümleli/kavramsal soruları denetler. Hatalı bulunanlar kullanıcıya hiç görünmez.",
-      },
-      {
-        q: "Aynı konuyu ürettikçe hep benzer sorular mı geliyor?",
-        a: "Hayır — anlamsal benzerlik denetimi sayesinde geçmişte aldığın sorulara benzer olanlar otomatik elenir. Aynı sınıf+konu+kazanım+zorluk kombinasyonunu 10 kez ürettiğinde 10 farklı set alırsın.",
+        q: "Aynı parametrelerle tekrar üretim yapınca aynı sorular mı geliyor?",
+        a: "Hayır. Anlamsal benzerlik denetimi devreye girer: önceki üretimde çıkan sorulara cosine benzerliği yüksek olanlar üretim havuzundan elenir. Aynı parametre setiyle tekrar üretim her seferinde farklı bir soru kümesi getirir.",
       },
     ],
   },
   {
-    title: "Gizlilik ve veri",
+    title: "Çıktı ve PDF",
     items: [
       {
-        q: "KVKK ve veri gizliliği nasıl?",
-        a: "Üretim parametreleri ve geçmiş anonim olarak saklanır. Kişisel veri toplamıyoruz; sadece e-posta (giriş için) ve abonelik bilgileri. Tüm veri AB sunucularında (Frankfurt) tutulur.",
+        q: "PDF'in içinde neler yer alıyor?",
+        a: "PDF üç bölümden oluşur: (1) soru sayfaları, (2) cevap anahtarı — her sorunun yanında ilgili MEB kazanım kodu görünür, (3) adım adım çözüm sayfası.",
       },
       {
-        q: "Ürettiğim kağıt başkalarıyla paylaşılıyor mu?",
-        a: "Hayır. Üretilen sorular yalnızca senin hesabına bağlı; üçüncü tarafa açılmaz, eğitim verisi olarak kullanılmaz. Cache'leme yalnızca kendi tekrar indirmen için.",
+        q: "PDF Türkçe karakterleri doğru gösteriyor mu?",
+        a: "Evet. PDF üretimi DejaVu yazı tipi ailesi ile yapılır; tüm Türkçe karakterler (ç, ğ, ı, ö, ş, ü) doğru biçimde basılır. A4 baskı boyutu varsayılan olarak ayarlıdır.",
       },
       {
-        q: "Hesabımı silersem verilerim ne olur?",
-        a: "Hesap silme talebinde tüm geçmiş ve üretim verilerini 30 gün içinde sileriz. Talep e-postasını destek@quizmarketi.com'a iletmen yeterli.",
+        q: "Aynı PDF'i tekrar indirmek mümkün mü?",
+        a: "Üretim Geçmişi sayfasından önceki üretimlere erişilir ve aynı PDF tekrar indirilebilir. Bu indirme aylık kotadan düşmez.",
       },
     ],
   },
   {
-    title: "Hesap ve abonelik",
+    title: "Kapsam ve yol haritası",
     items: [
       {
-        q: "İptal kolay mı? Para iadesi var mı?",
-        a: "Aboneliği panelden tek tıkla iptal edersin, sonraki dönem ücret çekilmez. İlk 14 gün içinde memnun kalmazsan koşulsuz iade — sebep sormuyoruz.",
-      },
-      {
-        q: "Bir hesap birden fazla cihazda kullanılabilir mi?",
-        a: "Evet — telefondan, tabletten, bilgisayardan aynı hesapla giriş yapabilirsin. Aynı anda farklı cihazlardan üretim yapmak da serbest.",
+        q: "Hangi sınıflar destekleniyor?",
+        a: "1.→7. sınıf MEB matematik müfredatının tamamı şu an desteklenmektedir. 8. sınıf (LGS) kapsamının eklenmesi yol haritasında yer almaktadır.",
       },
       {
         q: "Diğer dersler eklenecek mi?",
-        a: "Evet — Türkçe sonbahar 2026, Fen Bilimleri 2027 başında planda. Sosyal Bilgiler ve İngilizce sonra. Yol haritası blog'umuzdan takip edilebilir.",
+        a: "Şu anda yalnızca matematik üretilmektedir. Diğer derslerin (Türkçe, Fen Bilimleri vb.) eklenmesi yol haritasındadır; takvim henüz kesinleşmemiştir.",
+      },
+    ],
+  },
+  {
+    title: "Hesap ve veri",
+    items: [
+      {
+        q: "Kayıt için hangi bilgiler gereklidir?",
+        a: "Yalnızca e-posta adresi gereklidir. Şu anda erken kullanım döneminde ödeme bilgisi alınmamaktadır.",
+      },
+      {
+        q: "Üretim verileri başka kullanıcılarla paylaşılıyor mu?",
+        a: "Hayır. Üretilen sorular kullanıcı hesabına özel olarak saklanır. Sistem önbelleği yalnızca aynı kullanıcının tekrar üretim taleplerinde kullanılır; üçüncü taraflarla paylaşılmaz, model eğitiminde kullanılmaz.",
+      },
+      {
+        q: "Hesap birden fazla cihazda kullanılabilir mi?",
+        a: "Evet. Aynı hesapla telefon, tablet ve bilgisayardan eş zamanlı giriş yapılabilir. Üretim geçmişi merkezi olarak saklanır ve tüm cihazlardan erişilebilir.",
       },
     ],
   },
@@ -94,8 +89,8 @@ export default function FaqPage() {
     <>
       <PageHeader
         eyebrow="Sıkça sorulanlar"
-        title="Kafanda soru var mı?"
-        body="Ürün, kalite, gizlilik, fiyat ve hesap konularında en çok merak edilenleri burada topladık. Aradığını bulamazsan destek@quizmarketi.com."
+        title="Sistem hakkında sık sorulan sorular"
+        body="Üretim süreci, çıktı formatı, kapsam ve hesap konularındaki temel soruların yanıtları aşağıdadır. Listede yer almayan sorular için destek@quizmarketi.com adresine yazılabilir."
       />
 
       <section className="py-20">
@@ -132,15 +127,15 @@ export default function FaqPage() {
         <div className="container">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border bg-background p-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground">
-              Hâlâ sorun mu var?
+              Yanıtını bulamadığın bir soru var mı?
             </h2>
             <p className="text-base text-muted-foreground">
-              Sıkça sorulanlarda yoksa, e-posta gönder. Genelde 24 saat içinde
-              cevaplıyoruz.
+              Listede yer almayan sorular için destek adresine yazabilirsin.
+              Yanıt süresi ortalama 24 saattir.
             </p>
             <Button asChild size="lg" className="gap-2 px-8">
               <a href="mailto:destek@quizmarketi.com">
-                Bize yaz <ArrowRight className="h-4 w-4" />
+                Destek ekibine yaz <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
           </div>

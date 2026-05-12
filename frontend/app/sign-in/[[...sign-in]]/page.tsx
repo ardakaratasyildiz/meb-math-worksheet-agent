@@ -1,7 +1,7 @@
 import { SignIn } from "@clerk/nextjs";
 
 export const metadata = {
-  title: "Giriş yap · SheetGen",
+  title: "Giriş · Quiz Marketi",
 };
 
 export default function SignInPage() {

@@ -2,7 +2,7 @@ import { GenerateForm } from "@/components/GenerateForm";
 import { QuestionPreview } from "@/components/QuestionPreview";
 
 export const metadata = {
-  title: "Üret · SheetGen",
+  title: "Çalışma Kağıdı Üretimi · Quiz Marketi",
 };
 
 export default function GeneratePage() {
@@ -12,9 +12,10 @@ export default function GeneratePage() {
         {/* Sol pane — form */}
         <aside className="lg:sticky lg:top-20 lg:h-fit">
           <div className="rounded-xl border bg-card p-6">
-            <h1 className="mb-1 text-xl font-semibold">Çalışma kağıdı üret</h1>
+            <h1 className="mb-1 text-xl font-semibold">Çalışma kağıdı üretimi</h1>
             <p className="mb-6 text-xs text-muted-foreground">
-              MEB müfredatına uygun çalışma kağıdını saniyeler içinde indir.
+              Aşağıdaki parametreleri seçin. Sistem, seçilen MEB kazanımına
+              hizalanmış bir çalışma kağıdı üretir ve PDF olarak indirir.
             </p>
             <GenerateForm />
           </div>

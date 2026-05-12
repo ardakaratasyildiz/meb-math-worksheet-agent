@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const NAV_LINKS = [
-  { href: "/generate", label: "Üret" },
+  { href: "/generate", label: "Üretim" },
   { href: "/features", label: "Özellikler" },
   { href: "/pricing", label: "Fiyatlandırma" },
-  { href: "/faq", label: "SSS" },
+  { href: "/faq", label: "Sıkça Sorulanlar" },
 ];
 
 const TopNavBar = () => {
@@ -86,10 +86,10 @@ const TopNavBar = () => {
           {isLoaded && !isSignedIn && (
             <>
               <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link href="/sign-in">Giriş yap</Link>
+                <Link href="/sign-in">Giriş</Link>
               </Button>
               <Button asChild size="sm">
-                <Link href="/sign-up">Ücretsiz başla</Link>
+                <Link href="/sign-up">Hesap aç</Link>
               </Button>
             </>
           )}

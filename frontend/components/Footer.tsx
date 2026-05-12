@@ -16,37 +16,41 @@ export function Footer() {
               className="h-9 w-auto"
             />
             <p className="mt-4 max-w-xs text-sm opacity-70">
-              MEB müfredatına %100 uyumlu matematik çalışma kağıdı üreticisi.
+              MEB matematik müfredatı kapsamında otomatik çalışma kağıdı üretim
+              sistemi. 1.→7. sınıf kazanım kodu bazlı üretim.
             </p>
           </div>
           <FooterColumn
             title="Ürün"
             links={[
-              { label: "Üretici", href: "/generate" },
+              { label: "Üretim", href: "/generate" },
               { label: "Özellikler", href: "/features" },
               { label: "Fiyatlandırma", href: "/pricing" },
-              { label: "SSS", href: "/faq" },
+              { label: "Sıkça Sorulanlar", href: "/faq" },
             ]}
           />
           <FooterColumn
             title="Hukuki"
             links={[
-              { label: "KVKK Aydınlatma", href: "/legal/kvkk" },
+              { label: "KVKK Aydınlatma Metni", href: "/legal/kvkk" },
               { label: "Kullanım Koşulları", href: "/legal/terms" },
-              { label: "Gizlilik", href: "/legal/privacy" },
+              { label: "Gizlilik Politikası", href: "/legal/privacy" },
             ]}
           />
           <FooterColumn
             title="İletişim"
             links={[
-              { label: "destek@quizmarketi.com", href: "mailto:destek@quizmarketi.com" },
-              { label: "Twitter / X", href: "#" },
-              { label: "Instagram", href: "#" },
+              {
+                label: "destek@quizmarketi.com",
+                href: "mailto:destek@quizmarketi.com",
+              },
+              { label: "Twitter / X", href: "#", disabled: true },
+              { label: "Instagram", href: "#", disabled: true },
             ]}
           />
         </div>
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-800 pt-6 text-xs opacity-60 sm:flex-row">
-          <p>© 2026 Quiz Marketi · MEB müfredatına uyumlu, eğitim için.</p>
+          <p>© 2026 Quiz Marketi · Eğitim amaçlı kullanım için tasarlanmıştır.</p>
           <p className="inline-flex items-center gap-1.5">
             <Check className="h-3 w-3" />
             Türkiye&apos;de geliştirildi
@@ -57,12 +61,14 @@ export function Footer() {
   );
 }
 
+type FooterLink = { label: string; href: string; disabled?: boolean };
+
 function FooterColumn({
   title,
   links,
 }: {
   title: string;
-  links: { label: string; href: string }[];
+  links: FooterLink[];
 }) {
   return (
     <div>
@@ -70,9 +76,15 @@ function FooterColumn({
       <ul className="mt-4 space-y-2 text-sm opacity-70">
         {links.map((l, i) => (
           <li key={i}>
-            <Link href={l.href} className="hover:opacity-100">
-              {l.label}
-            </Link>
+            {l.disabled ? (
+              <span aria-disabled="true" className="cursor-not-allowed opacity-50">
+                {l.label}
+              </span>
+            ) : (
+              <Link href={l.href} className="hover:opacity-100">
+                {l.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

@@ -29,7 +29,8 @@ export function QuestionPreview() {
       <Card className="flex h-full min-h-[400px] flex-col items-center justify-center gap-3 border-dashed p-10 text-center">
         <Sparkles className="h-10 w-10 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
-          Soldan parametreleri seç ve <strong>Üret</strong> butonuna bas.
+          Soldaki form parametreleri seçildikten sonra{" "}
+          <strong>Üretimi başlat</strong> butonu ile üretim başlatılabilir.
         </p>
       </Card>
     );
@@ -73,13 +74,13 @@ export function QuestionPreview() {
         <div>
           <h2 className="text-lg font-semibold">{worksheet.title}</h2>
           <p className="text-xs text-muted-foreground">
-            {worksheet.questions.length} soru · {worksheet.difficulty} · Yapay zekâ ile üretildi
+            {worksheet.questions.length} soru · {worksheet.difficulty} zorluk · denetimden geçti
           </p>
         </div>
         <div className="flex items-center gap-2">
           {cacheHit && (
             <Badge variant="outline" className="border-primary/40 text-primary">
-              <Zap className="mr-1 h-3 w-3" /> Anında
+              <Zap className="mr-1 h-3 w-3" /> Önbellekten
             </Badge>
           )}
           <Button onClick={onDownloadPdf} className="gap-2">
@@ -152,12 +153,12 @@ function GeneratingState({ questionCount }: { questionCount: number }) {
   }, []);
 
   const phase = elapsed < 8
-    ? "Sorular üretiliyor..."
+    ? "Sorular üretiliyor"
     : elapsed < 18
-      ? "Aritmetik denetimden geçiriliyor..."
+      ? "Aritmetik denetimi yapılıyor"
       : elapsed < 28
-        ? "Kazanım uyumu doğrulanıyor..."
-        : "Son rötuşlar yapılıyor...";
+        ? "Kazanım uyumu denetleniyor"
+        : "Çalışma kağıdı hazırlanıyor";
 
   // 30sn'de %92'ye, 60sn'de %98'e ulaş — hiç %100 olmasın (yanıltıcı olmasın).
   const progress = Math.min(98, Math.round((1 - Math.exp(-elapsed / 14)) * 100));

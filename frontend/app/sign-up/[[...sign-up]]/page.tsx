@@ -1,7 +1,7 @@
 import { SignUp } from "@clerk/nextjs";
 
 export const metadata = {
-  title: "Kayıt ol · SheetGen",
+  title: "Hesap Oluştur · Quiz Marketi",
 };
 
 export default function SignUpPage() {

@@ -5,9 +5,9 @@ import {
   Check,
   FileCheck,
   Hash,
+  Minus,
   ShieldCheck,
   Sparkles,
-  X,
   Zap,
 } from "lucide-react";
 
@@ -18,82 +18,77 @@ import { PageHeader, SectionHeader } from "@/components/PageHeader";
 export const metadata = {
   title: "Özellikler · Quiz Marketi",
   description:
-    "Quiz Marketi'nin sunduğu tüm özellikler — MEB müfredatı uyumu, iki katmanlı kalite kontrol, otomatik cevap anahtarı ve daha fazlası.",
+    "Quiz Marketi'nin sistem özellikleri: kazanım kodu bazlı üretim, iki aşamalı denetim, anlamsal benzerlik denetimi, A4 PDF çıktı.",
 };
 
 const FEATURES = [
   {
     icon: <BookOpen className="h-5 w-5" />,
-    title: "MEB müfredatı %100 uyum",
-    body: "1.→7. sınıf tüm kazanımlar destekleniyor. Üretilen her sorunun yanında MEB kazanım kodu görünür — denetlenebilir, takip edilebilir.",
+    title: "Kazanım kodu bazlı üretim",
+    body: "Üretim talebi sınıf, konu ve kazanım kodu seçilerek yapılır. PDF'teki her sorunun yanında ilgili MEB kazanım kodu (örn. M.5.2.1.1) yer alır. 1.→7. sınıf MEB matematik müfredatı kapsamındadır.",
   },
   {
     icon: <ShieldCheck className="h-5 w-5" />,
-    title: "İki katmanlı kalite kontrol",
-    body: "Önce otomatik aritmetik denetim (matematiksel hatalar elenir), sonra ikinci bir yapay zekâ kontrolü (kazanım + zorluk uyumu denetlenir). Geçmeyen sorular yeniden üretilir.",
-  },
-  {
-    icon: <Zap className="h-5 w-5" />,
-    title: "Saniyeler içinde PDF",
-    body: "İlk üretim ortalama 30 saniye; aynı kombinasyonu tekrar indirirken anında. Türkçe karakter problemi yok, A4 baskı için optimize edilmiş.",
-  },
-  {
-    icon: <FileCheck className="h-5 w-5" />,
-    title: "Cevap anahtarı + adım adım çözüm",
-    body: "Her PDF'in sonunda otomatik cevap anahtarı ve adım adım çözüm sayfası. Düzeltme dakikalar değil saniyeler — öğretmenin zamanı geri verilir.",
-  },
-  {
-    icon: <Hash className="h-5 w-5" />,
-    title: "Kazanım kodu görünür",
-    body: "Her sorunun yanında ilgili MEB kazanım kodu (örn. M.5.2.1.1). Hangi öğrencinin hangi kazanımda eksik olduğunu izlemek artık net.",
+    title: "Üretim sonrası iki aşamalı denetim",
+    body: "Üretilen her soru iki katmanlı denetimden geçer: önce sembolik hesap motoru (SymPy) ile aritmetik denetim, ardından ikinci bir model tarafından kazanım uyumu ve zorluk uyumu denetimi. Bu denetimleri geçemeyen sorular yeniden üretilir.",
   },
   {
     icon: <Sparkles className="h-5 w-5" />,
-    title: "Akıllı çeşitlilik",
-    body: "Aynı sınıf+konu+kazanım+zorluk kombinasyonunu 10 kez ürettiğinde 10 farklı set alırsın. Tekrar yok — anlamsal benzerlik denetimi sayesinde.",
+    title: "Anlamsal benzerlik denetimi",
+    body: "Aynı sınıf, konu, kazanım ve zorluk parametreleri ile yapılan tekrar üretimlerde, önceki üretimlerdeki sorulara yüksek cosine benzerliği gösteren adaylar üretim havuzundan elenir. Bu sayede tekrar üretim her seferinde farklı bir soru kümesi getirir.",
+  },
+  {
+    icon: <FileCheck className="h-5 w-5" />,
+    title: "Cevap anahtarı ve adım adım çözüm",
+    body: "Üretilen her PDF'in son bölümünde cevap anahtarı (her sorunun yanında ilgili kazanım kodu) ve adım adım çözüm sayfası yer alır. Cevap anahtarı, öğretmenin değerlendirme süresini düşürmek üzere tasarlanmıştır.",
+  },
+  {
+    icon: <Zap className="h-5 w-5" />,
+    title: "Önbellek destekli yeniden indirme",
+    body: "İlk üretim ortalama 30 saniye sürer. Aynı parametre setiyle yapılan tekrar talepler önbellekten döner ve aylık kotadan düşmez. PDF üretimi DejaVu yazı tipi ile yapılır; Türkçe karakterler eksiksiz işlenir.",
+  },
+  {
+    icon: <Hash className="h-5 w-5" />,
+    title: "İzlenebilir kazanım kodları",
+    body: "Her soru çıktısında ilgili MEB kazanım kodu açıkça görünür. Bu sayede öğrencinin eksik kaldığı kazanımlar belge üzerinden takip edilebilir, sınıf bazında raporlanabilir.",
   },
 ];
 
 const COMPARE = [
   {
-    feature: "MEB kazanımına bire bir hizalama",
+    feature: "Üretilen sorunun yanında kazanım kodu görünür",
     classic: false,
     quiz: true,
   },
   {
-    feature: "Otomatik cevap anahtarı",
-    classic: false,
+    feature: "Cevap anahtarı PDF içinde",
+    classic: "Genelde ayrı belge",
     quiz: true,
   },
   {
     feature: "Adım adım çözüm",
-    classic: "Genelde yok",
+    classic: "Kısıtlı",
     quiz: true,
   },
   {
-    feature: "Aynı konuyu istediğin sayıda farklı varyantta üretim",
+    feature: "Aynı kazanım için farklı varyant üretimi",
     classic: false,
     quiz: true,
   },
   {
-    feature: "Zorluk seviyesi seçimi",
-    classic: "Sınırlı",
+    feature: "Zorluk düzeyi seçimi",
+    classic: "Sabit",
     quiz: true,
   },
   {
-    feature: "Aritmetik doğruluk garantisi",
-    classic: "Manuel kontrol",
-    quiz: "Otomatik",
+    feature: "Aritmetik doğruluk denetimi",
+    classic: "Manuel",
+    quiz: "Otomatik (SymPy)",
   },
   {
-    feature: "Anında PDF",
-    classic: false,
-    quiz: true,
-  },
-  {
-    feature: "Maliyet (yıllık)",
-    classic: "Birden fazla dergi/kitap",
-    quiz: "Tek abonelik",
+    feature: "PDF teslim süresi",
+    classic: "Baskı/satın alma",
+    quiz: "Ortalama 30 sn",
   },
 ];
 
@@ -102,8 +97,8 @@ export default function FeaturesPage() {
     <>
       <PageHeader
         eyebrow="Özellikler"
-        title="Bir dergiden değil, üreticiden"
-        body="Quiz Marketi sadece soru göstermez — üretir, denetler, hizalar, kanıtlar. Klasik kaynaklarla farkımız tek tek aşağıda."
+        title="Sistem özellikleri"
+        body="Quiz Marketi, MEB matematik müfredatı kapsamında kazanım kodu bazlı çalışma kağıdı üreten bir sistemdir. Aşağıda üretim akışını ve çıktıyı belirleyen temel özellikler yer almaktadır."
       />
 
       <section className="py-20">
@@ -133,7 +128,8 @@ export default function FeaturesPage() {
         <div className="container max-w-4xl">
           <SectionHeader
             eyebrow="Karşılaştırma"
-            title="Klasik kaynak vs Quiz Marketi"
+            title="Basılı kaynaklarla karşılaştırma"
+            body="Aşağıdaki tablo, basılı çalışma kitapları/dergiler ile Quiz Marketi üretim sistemi arasındaki ölçülebilir farkları gösterir."
           />
           <div className="mt-12 overflow-hidden rounded-xl border">
             <table className="w-full text-sm">
@@ -143,7 +139,7 @@ export default function FeaturesPage() {
                     Özellik
                   </th>
                   <th className="px-5 py-3 text-center font-semibold text-muted-foreground">
-                    Klasik dergi/kitap
+                    Basılı kaynak
                   </th>
                   <th className="px-5 py-3 text-center font-semibold text-primary">
                     Quiz Marketi
@@ -156,7 +152,7 @@ export default function FeaturesPage() {
                     <td className="px-5 py-3.5 text-foreground">{c.feature}</td>
                     <td className="px-5 py-3.5 text-center text-muted-foreground">
                       {c.classic === false ? (
-                        <X className="mx-auto h-4 w-4 text-destructive" />
+                        <Minus className="mx-auto h-4 w-4 text-muted-foreground" />
                       ) : c.classic === true ? (
                         <Check className="mx-auto h-4 w-4 text-primary" />
                       ) : (
@@ -184,14 +180,15 @@ export default function FeaturesPage() {
         <div className="container">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border bg-card p-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground">
-              Şimdi ücretsiz dene.
+              Sistemi denemek için
             </h2>
             <p className="text-base text-muted-foreground">
-              Kart bilgisi gerekmiyor. İlk kağıdını 30 saniyede üret.
+              Erken kullanım dönemindeki tüm hesaplara aylık 100 soru kotası
+              tanınmaktadır. Hesap açmak için yalnızca e-posta yeterlidir.
             </p>
             <Button asChild size="lg" className="gap-2 px-8">
-              <Link href="/generate">
-                Ücretsiz başla <ArrowRight className="h-4 w-4" />
+              <Link href="/sign-up">
+                Hesap aç <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </div>
