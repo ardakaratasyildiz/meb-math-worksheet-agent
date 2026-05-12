@@ -6,9 +6,9 @@ import { Footer } from "@/components/Footer";
 import { PageHeader } from "@/components/PageHeader";
 
 export const metadata = {
-  title: "Fiyatlandırma · Quiz Marketi",
+  title: "Fiyatlandırma · Soru Atölyesi",
   description:
-    "Quiz Marketi şu anda erken kullanım dönemindedir. Tüm kullanıcılar aylık 100 soru kotası ile ücretsiz kullanabilir.",
+    "Soru Atölyesi şu anda erken kullanım dönemindedir. Tüm kullanıcılar aylık 100 soru kotası ile ücretsiz kullanabilir.",
 };
 
 export default function PricingPage() {
@@ -17,7 +17,7 @@ export default function PricingPage() {
       <PageHeader
         eyebrow="Fiyatlandırma"
         title="Erken kullanım dönemi"
-        body="Quiz Marketi şu anda erken kullanım dönemindedir. Tüm kullanıcılara aylık 100 soruluk ücretsiz kullanım hakkı tanınmaktadır. Ücretli abonelik seçenekleri ileriki aşamada duyurulacaktır."
+        body="Soru Atölyesi şu anda erken kullanım dönemindedir. Tüm kullanıcılara aylık 100 soruluk ücretsiz kullanım hakkı tanınmaktadır. Ücretli abonelik seçenekleri ileriki aşamada duyurulacaktır."
       />
 
       <section className="container py-12">
@@ -55,7 +55,7 @@ export default function PricingPage() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="gap-2">
-              <Link href="mailto:destek@quizmarketi.com?subject=Pro%20abonelik%20bildirimi">
+              <Link href="mailto:destek@soruatolyesi.com?subject=Pro%20abonelik%20bildirimi">
                 <Mail className="h-4 w-4" /> Pro plan bildirimi al
               </Link>
             </Button>
@@ -65,10 +65,10 @@ export default function PricingPage() {
         <p className="mx-auto mt-8 max-w-2xl text-center text-xs text-muted-foreground">
           Pro abonelik bildirimini almak isteyenler için ön kayıt:{" "}
           <a
-            href="mailto:destek@quizmarketi.com"
+            href="mailto:destek@soruatolyesi.com"
             className="underline-offset-2 hover:underline"
           >
-            destek@quizmarketi.com
+            destek@soruatolyesi.com
           </a>
         </p>
       </section>

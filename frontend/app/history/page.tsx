@@ -1,7 +1,7 @@
 import { HistoryList } from "@/components/HistoryList";
 
 export const metadata = {
-  title: "Üretim Geçmişi · Quiz Marketi",
+  title: "Üretim Geçmişi · Soru Atölyesi",
 };
 
 export default function HistoryPage() {

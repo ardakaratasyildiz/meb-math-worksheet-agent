@@ -23,10 +23,10 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Quiz Marketi — MEB matematik çalışma kağıdı üretim sistemi",
+  title: "Soru Atölyesi — MEB matematik çalışma kağıdı üretim sistemi",
   description:
     "MEB matematik müfredatı (1.→7. sınıf) kapsamında, seçilen kazanım koduna göre çalışma kağıdı üreten otomatik sistem. PDF çıktı, cevap anahtarı ve adım adım çözüm dahil.",
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: "/logo.png" },
 };
 
 export default function RootLayout({

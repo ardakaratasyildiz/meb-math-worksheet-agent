@@ -17,5 +17,5 @@ export function buildPdfFilename(title: string): string {
   const parts = cleaned.split(/\s+/).filter(Boolean);
   const slug = parts.length > 0 ? parts.join("_") : "Calisma_Kagidi";
   const today = new Date().toISOString().slice(0, 10);
-  return `QuizMarketi_${slug}_${today}.pdf`;
+  return `SoruAtolyesi_${slug}_${today}.pdf`;
 }

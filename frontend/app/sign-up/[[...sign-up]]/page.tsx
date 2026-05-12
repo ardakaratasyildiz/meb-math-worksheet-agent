@@ -1,7 +1,7 @@
 import { SignUp } from "@clerk/nextjs";
 
 export const metadata = {
-  title: "Hesap Oluştur · Quiz Marketi",
+  title: "Hesap Oluştur · Soru Atölyesi",
 };
 
 export default function SignUpPage() {

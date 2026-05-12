@@ -5,9 +5,9 @@ import { Footer } from "@/components/Footer";
 import { PageHeader } from "@/components/PageHeader";
 
 export const metadata = {
-  title: "Sıkça Sorulanlar · Quiz Marketi",
+  title: "Sıkça Sorulanlar · Soru Atölyesi",
   description:
-    "Quiz Marketi hakkında en sık sorulan teknik ve kullanım soruları.",
+    "Soru Atölyesi hakkında en sık sorulan teknik ve kullanım soruları.",
 };
 
 type FaqItem = { q: string; a: string };
@@ -90,7 +90,7 @@ export default function FaqPage() {
       <PageHeader
         eyebrow="Sıkça sorulanlar"
         title="Sistem hakkında sık sorulan sorular"
-        body="Üretim süreci, çıktı formatı, kapsam ve hesap konularındaki temel soruların yanıtları aşağıdadır. Listede yer almayan sorular için destek@quizmarketi.com adresine yazılabilir."
+        body="Üretim süreci, çıktı formatı, kapsam ve hesap konularındaki temel soruların yanıtları aşağıdadır. Listede yer almayan sorular için destek@soruatolyesi.com adresine yazılabilir."
       />
 
       <section className="py-20">
@@ -134,7 +134,7 @@ export default function FaqPage() {
               Yanıt süresi ortalama 24 saattir.
             </p>
             <Button asChild size="lg" className="gap-2 px-8">
-              <a href="mailto:destek@quizmarketi.com">
+              <a href="mailto:destek@soruatolyesi.com">
                 Destek ekibine yaz <ArrowRight className="h-4 w-4" />
               </a>
             </Button>

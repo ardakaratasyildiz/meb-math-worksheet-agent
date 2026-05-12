@@ -2,7 +2,7 @@ import { GenerateForm } from "@/components/GenerateForm";
 import { QuestionPreview } from "@/components/QuestionPreview";
 
 export const metadata = {
-  title: "Çalışma Kağıdı Üretimi · Quiz Marketi",
+  title: "Çalışma Kağıdı Üretimi · Soru Atölyesi",
 };
 
 export default function GeneratePage() {

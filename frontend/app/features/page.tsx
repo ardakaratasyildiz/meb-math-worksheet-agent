@@ -16,9 +16,9 @@ import { Footer } from "@/components/Footer";
 import { PageHeader, SectionHeader } from "@/components/PageHeader";
 
 export const metadata = {
-  title: "Özellikler · Quiz Marketi",
+  title: "Özellikler · Soru Atölyesi",
   description:
-    "Quiz Marketi'nin sistem özellikleri: kazanım kodu bazlı üretim, iki aşamalı denetim, anlamsal benzerlik denetimi, A4 PDF çıktı.",
+    "Soru Atölyesi'nin sistem özellikleri: kazanım kodu bazlı üretim, iki aşamalı denetim, anlamsal benzerlik denetimi, A4 PDF çıktı.",
 };
 
 const FEATURES = [
@@ -98,7 +98,7 @@ export default function FeaturesPage() {
       <PageHeader
         eyebrow="Özellikler"
         title="Sistem özellikleri"
-        body="Quiz Marketi, MEB matematik müfredatı kapsamında kazanım kodu bazlı çalışma kağıdı üreten bir sistemdir. Aşağıda üretim akışını ve çıktıyı belirleyen temel özellikler yer almaktadır."
+        body="Soru Atölyesi, MEB matematik müfredatı kapsamında kazanım kodu bazlı çalışma kağıdı üreten bir sistemdir. Aşağıda üretim akışını ve çıktıyı belirleyen temel özellikler yer almaktadır."
       />
 
       <section className="py-20">
@@ -129,7 +129,7 @@ export default function FeaturesPage() {
           <SectionHeader
             eyebrow="Karşılaştırma"
             title="Basılı kaynaklarla karşılaştırma"
-            body="Aşağıdaki tablo, basılı çalışma kitapları/dergiler ile Quiz Marketi üretim sistemi arasındaki ölçülebilir farkları gösterir."
+            body="Aşağıdaki tablo, basılı çalışma kitapları/dergiler ile Soru Atölyesi üretim sistemi arasındaki ölçülebilir farkları gösterir."
           />
           <div className="mt-12 overflow-hidden rounded-xl border">
             <table className="w-full text-sm">
@@ -142,7 +142,7 @@ export default function FeaturesPage() {
                     Basılı kaynak
                   </th>
                   <th className="px-5 py-3 text-center font-semibold text-primary">
-                    Quiz Marketi
+                    Soru Atölyesi
                   </th>
                 </tr>
               </thead>

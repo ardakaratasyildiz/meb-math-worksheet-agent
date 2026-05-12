@@ -31,20 +31,21 @@ const TopNavBar = () => {
     setMounted(true);
   }, []);
 
-  const logoSrc =
-    mounted && resolvedTheme === "dark" ? "/logo-dark.svg" : "/logo.svg";
+  // Logo PNG beyaz zeminde tasarlandı; dark mode'da invert filtresi ile
+  // hızlı çözüm (ideal: ayrı dark PNG/SVG).
+  const isDark = mounted && resolvedTheme === "dark";
 
   return (
     <nav className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center" aria-label="Quiz Marketi">
+        <Link href="/" className="flex items-center" aria-label="Soru Atölyesi">
           <Image
-            src={logoSrc}
-            alt="Quiz Marketi"
-            width={190}
-            height={40}
+            src="/logo.png"
+            alt="Soru Atölyesi"
+            width={386}
+            height={256}
             priority
-            className="h-9 w-auto"
+            className={`h-9 w-auto ${isDark ? "brightness-0 invert" : ""}`}
           />
         </Link>
         <div className="hidden items-center gap-7 md:flex">

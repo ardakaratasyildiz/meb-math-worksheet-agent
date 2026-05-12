@@ -9,11 +9,11 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           <div>
             <Image
-              src="/logo-dark.svg"
-              alt="Quiz Marketi"
-              width={170}
-              height={36}
-              className="h-9 w-auto"
+              src="/logo.png"
+              alt="Soru Atölyesi"
+              width={386}
+              height={256}
+              className="h-9 w-auto brightness-0 invert"
             />
             <p className="mt-4 max-w-xs text-sm opacity-70">
               MEB matematik müfredatı kapsamında otomatik çalışma kağıdı üretim
@@ -41,8 +41,8 @@ export function Footer() {
             title="İletişim"
             links={[
               {
-                label: "destek@quizmarketi.com",
-                href: "mailto:destek@quizmarketi.com",
+                label: "destek@soruatolyesi.com",
+                href: "mailto:destek@soruatolyesi.com",
               },
               { label: "Twitter / X", href: "#", disabled: true },
               { label: "Instagram", href: "#", disabled: true },
@@ -50,7 +50,7 @@ export function Footer() {
           />
         </div>
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-zinc-800 pt-6 text-xs opacity-60 sm:flex-row">
-          <p>© 2026 Quiz Marketi · Eğitim amaçlı kullanım için tasarlanmıştır.</p>
+          <p>© 2026 Soru Atölyesi · Eğitim amaçlı kullanım için tasarlanmıştır.</p>
           <p className="inline-flex items-center gap-1.5">
             <Check className="h-3 w-3" />
             Türkiye&apos;de geliştirildi

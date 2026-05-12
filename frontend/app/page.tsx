@@ -100,13 +100,13 @@ function SystemSummary() {
       <div className="container max-w-4xl">
         <div className="rounded-2xl border bg-card p-8 sm:p-12">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-            Quiz Marketi nedir
+            Soru Atölyesi nedir
           </p>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
             MEB matematik müfredatı kapsamında otomatik çalışma kağıdı üretimi
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            Quiz Marketi; 1.→7. sınıf MEB matematik müfredatı kapsamında,
+            Soru Atölyesi; 1.→7. sınıf MEB matematik müfredatı kapsamında,
             seçilen kazanım koduna göre çalışma kağıdı üreten bir yazılım
             sistemidir. Üretilen her soru, kullanıcıya sunulmadan önce iki
             aşamalı bir denetimden geçer: önce sembolik hesap motoru ile
@@ -308,7 +308,7 @@ function PricingTeaser() {
           Erken kullanım dönemi
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base opacity-90">
-          Quiz Marketi şu anda erken kullanım dönemindedir. Tüm hesaplara
+          Soru Atölyesi şu anda erken kullanım dönemindedir. Tüm hesaplara
           aylık 100 soruluk ücretsiz kullanım hakkı tanınmaktadır. Pro
           abonelik seçenekleri ileriki aşamada duyurulacaktır.
         </p>
