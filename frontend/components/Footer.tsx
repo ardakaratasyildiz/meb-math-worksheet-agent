@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-800 bg-slate-900 text-slate-100">
+    <footer className="border-t border-zinc-800 bg-zinc-900 text-zinc-100">
       <div className="container py-12">
         <div className="grid gap-8 md:grid-cols-4">
           <div>
@@ -49,7 +49,7 @@ export function Footer() {
             ]}
           />
         </div>
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-800 pt-6 text-xs opacity-60 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-zinc-800 pt-6 text-xs opacity-60 sm:flex-row">
           <p>© 2026 Quiz Marketi · Eğitim amaçlı kullanım için tasarlanmıştır.</p>
           <p className="inline-flex items-center gap-1.5">
             <Check className="h-3 w-3" />

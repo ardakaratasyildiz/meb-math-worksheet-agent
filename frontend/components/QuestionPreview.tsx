@@ -182,7 +182,7 @@ function GeneratingState({ questionCount }: { questionCount: number }) {
 
         <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-muted">
           <div
-            className="h-full bg-gradient-to-r from-primary to-indigo-400 transition-all duration-1000 ease-out"
+            className="h-full bg-gradient-to-r from-primary to-blue-500 transition-all duration-1000 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>

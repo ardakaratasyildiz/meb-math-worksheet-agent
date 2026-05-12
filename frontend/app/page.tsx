@@ -53,7 +53,7 @@ function Hero() {
         </Badge>
         <h1 className="max-w-4xl text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
           MEB kazanım kodu bazlı{" "}
-          <span className="bg-gradient-to-r from-primary to-indigo-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
             çalışma kağıdı
           </span>{" "}
           üretim sistemi
@@ -298,7 +298,7 @@ function PricingTeaser() {
   return (
     <section
       id="pricing"
-      className="relative overflow-hidden bg-gradient-to-br from-primary to-indigo-700 py-20 text-primary-foreground"
+      className="relative overflow-hidden bg-gradient-to-br from-primary to-blue-950 py-20 text-primary-foreground"
     >
       <div className="container max-w-3xl text-center">
         <p className="text-xs font-semibold uppercase tracking-wider opacity-80">
