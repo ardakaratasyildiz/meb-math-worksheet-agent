@@ -1,0 +1,31 @@
+name: keepalive
+
+# Render free tier 15 dk trafiksiz kalınca container'ı suspend ediyor.
+# 5 dk'da bir /healthz ping atarak cold start'ı önlüyoruz.
+# GitHub Actions cron'u yoğun saatlerde 5-15 dk gecikebildiği için
+# 5 dk'lık margin güvenli aralığı korur.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: keepalive
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping /healthz
+        run: |
+          set -e
+          URL="https://sheetgen-backend.onrender.com/healthz"
+          # Cold start ~60sn sürebilir → max-time 90sn, retry 1.
+          curl --fail --silent --show-error \
+               --max-time 90 \
+               --retry 1 --retry-delay 5 \
+               -o /dev/null -w "HTTP %{http_code} · %{time_total}s\n" \
+               "$URL"
