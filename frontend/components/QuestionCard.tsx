@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,6 +24,82 @@ const TYPE_LABELS: Record<string, string> = {
   grafik_okuma: "Grafik",
   oruntu_sekil: "Örüntü",
 };
+
+// LLM, prompt'ta talimat verildiği üzere `question` alanı içine Markdown blokları
+// (kod bloğu, GFM tablo, kalın/italik, inline code) gömüyor. Bunlar ham metin olarak
+// render edildiğinde ASCII çubuk grafikler ve geometri şekilleri proportional fontta
+// hizalanmıyor, backtick/pipe karakterleri görünür kalıyor. Aşağıdaki components
+// haritası kod bloklarını monospace + pre-wrap whitespace ile, tabloları gerçek
+// HTML tablo olarak render eder.
+const MD_COMPONENTS: Components = {
+  pre: ({ children }) => (
+    <pre className="my-3 overflow-x-auto whitespace-pre rounded-md border bg-zinc-50 p-3 font-mono text-xs leading-snug text-foreground dark:bg-zinc-900">
+      {children}
+    </pre>
+  ),
+  code: ({ className, children, ...props }) => {
+    // react-markdown v9: pre'nin içindeki code'da className "language-*" olur.
+    // Inline code'da className tanımsızdır → küçük etiket stili.
+    const isBlock = typeof className === "string" && className.startsWith("language-");
+    if (isBlock) {
+      return (
+        <code className={`${className} font-mono`} {...props}>
+          {children}
+        </code>
+      );
+    }
+    return (
+      <code
+        className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-[0.85em] dark:bg-zinc-800"
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  },
+  table: ({ children }) => (
+    <div className="my-3 overflow-x-auto">
+      <table className="w-full border-collapse text-xs">{children}</table>
+    </div>
+  ),
+  thead: ({ children }) => <thead className="bg-muted/60">{children}</thead>,
+  th: ({ children, style }) => (
+    <th
+      style={style}
+      className="border border-border px-2 py-1.5 text-left font-semibold text-foreground"
+    >
+      {children}
+    </th>
+  ),
+  td: ({ children, style }) => (
+    <td style={style} className="border border-border px-2 py-1.5 align-top">
+      {children}
+    </td>
+  ),
+  p: ({ children }) => (
+    <p className="my-2 leading-relaxed first:mt-0 last:mb-0">{children}</p>
+  ),
+  ul: ({ children }) => (
+    <ul className="my-2 ml-5 list-disc space-y-1">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="my-2 ml-5 list-decimal space-y-1">{children}</ol>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-semibold text-foreground">{children}</strong>
+  ),
+  em: ({ children }) => <em className="italic">{children}</em>,
+};
+
+function MarkdownQuestion({ text }: { text: string }) {
+  return (
+    <div className="text-sm">
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
+        {text}
+      </ReactMarkdown>
+    </div>
+  );
+}
 
 function isStepList(v: string | SolutionStep[]): v is SolutionStep[] {
   return Array.isArray(v);
@@ -46,7 +124,7 @@ export function QuestionCard({ q }: { q: Question }) {
         </div>
       </div>
 
-      <p className="whitespace-pre-wrap text-sm leading-relaxed">{q.question}</p>
+      <MarkdownQuestion text={q.question} />
 
       <Separator className="my-3" />
 
