@@ -27,6 +27,11 @@ Kuralların:
    - `gorsel_geometri`: Soru metni + ```kod bloğu``` içinde Unicode şekil + ölçü etiketleri.
    - `grafik_okuma`: Soru metni + ```kod bloğu``` içinde ASCII sütun grafiği + grafiğe dayalı bir soru.
    - `oruntu_sekil`: Soru metni + sembol/emoji dizisi + "?" ile devam eden örüntü.
+   - `coktan_secmeli`: Soru metni + boş satır + 4 şık her biri ayrı satırda "A) ...", "B) ...", "C) ...", "D) ..." formatında. Şıklardan SADECE BİRİ doğru olmalı; çeldiriciler makul yanlışlar (yaygın hatalar) olsun. `answer` alanı SADECE doğru şıkkın harfi ("A", "B", "C" veya "D"). Çözüm hangi şıkkın neden doğru olduğunu ve diğerlerinin neden yanlış olduğunu açıklar.
+   - `bosluk_doldurma`: Soru cümlesi içinde bir veya birden fazla "_____" (en az 3 alt çizgi) boşluğu olsun. `answer` alanı boşluğa giren ifadeler — birden fazla boşluk varsa "; " ile ayrılır (örn. "12; 5"). Sıralama soldan sağa.
+   - `dogru_yanlis`: Soru yerine TEK bir iddia/önerme cümlesi yaz (örn. "Bir karenin tüm kenarları eşittir."). Soru işareti olmasın. `answer` SADECE "Doğru" veya "Yanlış" olsun. Çözüm önermenin neden doğru/yanlış olduğunu kazanım çerçevesinde açıklar.
+   - `eslestirme`: Soru metni (yönerge) + boş satır + 2 kolonlu GFM tablo. Sol kolon "Numara/Öğe", sağ kolon "Harf/Karşılık" karıştırılmış sıralı. Tipik 3-4 satır. `answer` alanı eşleşmeler "1-c, 2-a, 3-b, 4-d" formatında. Çözüm her eşleşmenin neden olduğunu satır satır açıklar.
+   - `siralama`: Soru metni (yönerge — örn. "Aşağıdaki sayıları küçükten büyüğe doğru sıralayınız") + karıştırılmış öğe listesi (madde işaretli liste veya virgülle ayrılmış). `answer` alanı doğru sıralı öğeler " → " (boşluklu ok) ile ayrılır. Çözüm sıralama kriterini ve adımları açıklar.
    - Diğer tipler (islem, sozel_problem, vs.): mevcut sözel/işlem formatında devam.
 10. Verilen örnek soruların stilini ve seviyesini referans al, AMA aynı sayıları/bağlamları KOPYALAMA.
 11. Verilen örnekler hedef zorluğa yakın seçilmiştir; üretimlerini aynı zorlukta tut.

@@ -20,6 +20,12 @@ class QuestionType(str, Enum):
     GORSEL_GEOMETRI = "gorsel_geometri" # Unicode/ASCII şekil + ölçü etiketleriyle geometri sorusu
     GRAFIK_OKUMA = "grafik_okuma"       # ASCII/Markdown sütun grafiği okuma sorusu
     ORUNTU_SEKIL = "oruntu_sekil"       # Görsel sembollü örüntü/dizi (♥ ♥ ♦ ♥ ♥ ♦ ?)
+    # Faz 2: Format çeşitliliği (Sprint 12-A) — Bloom alt seviyelerine ve LGS hazırlığa hizmet eder.
+    COKTAN_SECMELI = "coktan_secmeli"   # 4 şıklı (A/B/C/D), tek doğru cevap
+    BOSLUK_DOLDURMA = "bosluk_doldurma" # Soru içinde "_____" ile bir/birkaç boşluk
+    DOGRU_YANLIS = "dogru_yanlis"       # Tek önerme, cevap "Doğru" veya "Yanlış"
+    ESLESTIRME = "eslestirme"           # Sol kolon ↔ sağ kolon, GFM tablo + cevap çiftleri
+    SIRALAMA = "siralama"               # Verilen öğeleri belirli kritere göre sırala
 
 
 class EducationLevel(str, Enum):

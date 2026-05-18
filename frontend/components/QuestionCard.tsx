@@ -23,6 +23,12 @@ const TYPE_LABELS: Record<string, string> = {
   gorsel_geometri: "Geometri",
   grafik_okuma: "Grafik",
   oruntu_sekil: "Örüntü",
+  // Sprint 12-A: Format çeşitliliği
+  coktan_secmeli: "Çoktan seçmeli",
+  bosluk_doldurma: "Boşluk doldurma",
+  dogru_yanlis: "Doğru/Yanlış",
+  eslestirme: "Eşleştirme",
+  siralama: "Sıralama",
 };
 
 // LLM, prompt'ta talimat verildiği üzere `question` alanı içine Markdown blokları

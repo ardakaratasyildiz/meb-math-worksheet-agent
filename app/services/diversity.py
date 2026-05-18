@@ -12,26 +12,40 @@ from app.models.enums import Difficulty, QuestionType
 logger = logging.getLogger(__name__)
 
 DIFFICULTY_DISTRIBUTIONS: dict[Difficulty, list[tuple[QuestionType, float]]] = {
+    # Sprint 12-A: Bloom alt seviyelerini ve LGS hazırlığı destekleyen format
+    # tipleri (coktan_secmeli, dogru_yanlis, bosluk_doldurma, eslestirme,
+    # siralama) zorluk bazında karıştırıldı. Sözel/işlem çekirdek korunur.
     Difficulty.KOLAY: [
-        (QuestionType.ISLEM, 0.50),
-        (QuestionType.KAVRAM_SORUSU, 0.25),
-        (QuestionType.SOZEL_PROBLEM, 0.15),
+        (QuestionType.ISLEM, 0.35),
+        (QuestionType.KAVRAM_SORUSU, 0.20),
+        (QuestionType.SOZEL_PROBLEM, 0.10),
         (QuestionType.GUNLUK_HAYAT, 0.10),
+        # Yeni format tipleri — kolay seviyede en yüksek pay (kavram pekiştirme).
+        (QuestionType.COKTAN_SECMELI, 0.10),
+        (QuestionType.DOGRU_YANLIS, 0.10),
+        (QuestionType.BOSLUK_DOLDURMA, 0.05),
     ],
     Difficulty.ORTA: [
-        (QuestionType.ISLEM, 0.30),
-        (QuestionType.SOZEL_PROBLEM, 0.30),
-        (QuestionType.KAVRAM_SORUSU, 0.15),
-        (QuestionType.AKIL_YURUTME, 0.10),
-        (QuestionType.GUNLUK_HAYAT, 0.10),
+        (QuestionType.ISLEM, 0.25),
+        (QuestionType.SOZEL_PROBLEM, 0.25),
+        (QuestionType.KAVRAM_SORUSU, 0.12),
+        (QuestionType.AKIL_YURUTME, 0.08),
+        (QuestionType.GUNLUK_HAYAT, 0.08),
         (QuestionType.MODELLEME, 0.05),
+        # Format tipleri — orta seviyede çoktan seçmeli (LGS) baskın.
+        (QuestionType.COKTAN_SECMELI, 0.10),
+        (QuestionType.ESLESTIRME, 0.04),
+        (QuestionType.SIRALAMA, 0.03),
     ],
     Difficulty.ZOR: [
-        (QuestionType.AKIL_YURUTME, 0.35),
-        (QuestionType.SOZEL_PROBLEM, 0.30),
-        (QuestionType.MODELLEME, 0.15),
-        (QuestionType.ISLEM, 0.10),
-        (QuestionType.GUNLUK_HAYAT, 0.10),
+        (QuestionType.AKIL_YURUTME, 0.30),
+        (QuestionType.SOZEL_PROBLEM, 0.25),
+        (QuestionType.MODELLEME, 0.12),
+        (QuestionType.ISLEM, 0.08),
+        (QuestionType.GUNLUK_HAYAT, 0.05),
+        # Zor seviyede çoktan seçmeli (LGS son aşama) + sıralama (karşılaştırma).
+        (QuestionType.COKTAN_SECMELI, 0.15),
+        (QuestionType.SIRALAMA, 0.05),
     ],
 }
 
