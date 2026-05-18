@@ -48,6 +48,24 @@ def _where_and(*clauses: dict[str, Any] | None) -> dict[str, Any] | None:
     return {"$and": real}
 
 
+def _cap_per_source(pool: list[dict], max_per_source: int = 2) -> list[dict]:
+    """Aynı `source` (örn. 'textbook/3.sinif_1.pdf') alanından en fazla
+    `max_per_source` chunk'ı tutar; sıralama korunur. Source bilgisi olmayan
+    chunk'lar her zaman geçer."""
+    counts: dict[str, int] = {}
+    out: list[dict] = []
+    for c in pool:
+        src = c.get("source") or ""
+        if not src:
+            out.append(c)
+            continue
+        if counts.get(src, 0) >= max_per_source:
+            continue
+        counts[src] = counts.get(src, 0) + 1
+        out.append(c)
+    return out
+
+
 def _weighted_sample(
     pool: list[dict],
     k: int,
@@ -242,20 +260,22 @@ class ExampleRetriever:
     ) -> list[dict]:
         query_embedding = self.embedder.embed_one(query_text)
 
+        # Fallback sırası — sıkı difficulty filtresi mümkün olduğu kadar uzun korunur:
+        #   1. (grade, kazanım, difficulty)  — en dar, en hedefli
+        #   2. (grade, topic, difficulty)    — topic genişler ama difficulty SIKI
+        #   3. (grade, kazanım)              — difficulty gevşer
+        #   4. (grade, topic)                — en gevşek
+        # Sprint 5 regresyonu (kolay/zor talep edildiğinde orta'ya kayma) bu
+        # sıralamayla azaltılır: synthetic kolay/zor pool boyutu kazanım başına
+        # 5; (1)'de yeterli bulunmazsa (3)'e atlamak yerine (2) ile topic genişler
+        # ama kolay/zor kalır.
         filters_to_try: list[dict[str, Any] | None] = []
-        if kazanim_kod:
-            if difficulty:
-                filters_to_try.append(
-                    _where_and(
-                        {"grade": grade},
-                        {"kazanim_kod": kazanim_kod},
-                        {"difficulty": difficulty},
-                    )
-                )
+        if kazanim_kod and difficulty:
             filters_to_try.append(
                 _where_and(
                     {"grade": grade},
                     {"kazanim_kod": kazanim_kod},
+                    {"difficulty": difficulty},
                 )
             )
         if difficulty:
@@ -264,6 +284,13 @@ class ExampleRetriever:
                     {"grade": grade},
                     {"topic_id": topic_id},
                     {"difficulty": difficulty},
+                )
+            )
+        if kazanim_kod:
+            filters_to_try.append(
+                _where_and(
+                    {"grade": grade},
+                    {"kazanim_kod": kazanim_kod},
                 )
             )
         filters_to_try.append(
@@ -368,6 +395,14 @@ class ExampleRetriever:
                 })
                 if rng is None and len(candidate_pool) >= k:
                     break
+
+        # Source-aware diversity: textbook retrieval'da aynı PDF kaynağından
+        # max_per_source kadar al. Bir kazanım için tüm chunk'lar tek bir
+        # ders kitabı dosyasından gelirse model aynı bağlamı tekrar üretmeye
+        # eğilimli — çeşitliliği bozar. Few-shot pool'unda source'lar zaten
+        # synthetic+manual ile karışık, bu sınırı uygulamak gerekli değil.
+        if textbook_only and candidate_pool:
+            candidate_pool = _cap_per_source(candidate_pool, max_per_source=2)
 
         if rng is None or len(candidate_pool) <= k:
             return candidate_pool[:k]
