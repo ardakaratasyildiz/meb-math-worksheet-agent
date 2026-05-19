@@ -30,6 +30,7 @@ from app.services.embedder import GeminiEmbedder  # noqa: E402
 SYNTH_JSON_PATH = ROOT / "knowledge_base" / "processed" / "synthetic_examples.json"
 VISUAL_JSON_PATH = ROOT / "knowledge_base" / "processed" / "visual_examples.json"
 FORMAT_JSON_PATH = ROOT / "knowledge_base" / "processed" / "format_examples.json"
+GEOMETRY_SVG_JSON_PATH = ROOT / "knowledge_base" / "processed" / "geometry_svg_examples.json"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -78,6 +79,18 @@ def _load_format() -> list[dict]:
         data = json.load(f)
     items = data.get("examples", [])
     logger.info("Format sentetik örnek: %s", len(items))
+    return items
+
+
+def _load_geometry_svg() -> list[dict]:
+    """Sprint 12-B Phase A — SVG'li gorsel_geometri örnekleri."""
+    if not GEOMETRY_SVG_JSON_PATH.exists():
+        logger.info("Geometry SVG JSON yok (atlanıyor): %s", GEOMETRY_SVG_JSON_PATH)
+        return []
+    with GEOMETRY_SVG_JSON_PATH.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    items = data.get("examples", [])
+    logger.info("Geometry SVG örnek: %s", len(items))
     return items
 
 
@@ -134,7 +147,13 @@ def main() -> None:
         pass
     logger.info("Koleksiyonda mevcut: %s kayıt", len(existing_ids))
 
-    all_items = _load_synthetic() + _load_visual() + _load_format() + _load_manual_few_shot()
+    all_items = (
+        _load_synthetic()
+        + _load_visual()
+        + _load_format()
+        + _load_geometry_svg()
+        + _load_manual_few_shot()
+    )
     logger.info("Toplam aday örnek: %s", len(all_items))
 
     # id belirle + zaten var olanları atla

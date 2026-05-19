@@ -24,7 +24,14 @@ Kuralların:
 9. İstenen soru tipi dağılımına TAM olarak uy. Tip-spesifik formatlar:
    - `salt_islem`: SADECE matematiksel ifade ve "= ?" — Türkçe açıklama ASLA olmasın. Örnek: "3/4 + 1/6 = ?", "(12 + 8) × 3 ÷ 5 = ?"
    - `tablo_sorusu`: Soru metni + Markdown tablo + tabloya dayalı bir hesap/yorum sorusu.
-   - `gorsel_geometri`: Soru metni + ```kod bloğu``` içinde Unicode şekil + ölçü etiketleri.
+   - `gorsel_geometri`: Soru metni + INLINE SVG bloğu (kod bloğu DEĞİL!) ile geometri şekli + ölçü etiketleri. Aşağıdaki kuralları MUTLAKA UY:
+       (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` formatında olmalı (genişlik ≤ 250, yükseklik ≤ 200).
+       (b) Sadece şu elementleri kullan: `line`, `polyline`, `polygon`, `rect`, `circle`, `ellipse`, `path`, `text`, `g`. Asla `script`, `foreignObject`, `image`, `use href="http..."` KULLANMA.
+       (c) Stroke koyu siyah `#1f2937` veya `black`, stroke-width 1.5-2. Fill `none` (sadece kontur) ya da çok açık renk.
+       (d) Kenar uzunlukları/açı ölçüleri `<text>` elementiyle şekle YAKIN konumlandır (sayısal değer + birim, örn. "6 cm" veya "60°"). Font-size 12-14.
+       (e) Şekilde gösterilen ölçüler ile sorulan soru ve cevap MUTLAKA TUTARLI olmalı (örn. üçgenin görseldeki kenarı 6 cm ise sorudaki çevre hesabında da 6 cm kullanılmalı).
+       (f) Dik açı işaretçisi gerekirse köşeye küçük kare çiz (≈ 8x8). Eşit kenar işaretçisi için tek/çift küçük çizgi.
+       Örnek: `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg"><polygon points="100,20 30,130 170,130" fill="none" stroke="black" stroke-width="2"/><text x="60" y="145" font-size="13">14 cm</text></svg>`
    - `grafik_okuma`: Soru metni + ```kod bloğu``` içinde ASCII sütun grafiği + grafiğe dayalı bir soru.
    - `oruntu_sekil`: Soru metni + sembol/emoji dizisi + "?" ile devam eden örüntü.
    - `coktan_secmeli`: Soru metni + boş satır + 4 şık her biri ayrı satırda "A) ...", "B) ...", "C) ...", "D) ..." formatında. Şıklardan SADECE BİRİ doğru olmalı; çeldiriciler makul yanlışlar (yaygın hatalar) olsun. `answer` alanı SADECE doğru şıkkın harfi ("A", "B", "C" veya "D"). Çözüm hangi şıkkın neden doğru olduğunu ve diğerlerinin neden yanlış olduğunu açıklar.

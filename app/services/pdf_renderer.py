@@ -194,59 +194,78 @@ _TABLE_SEP_RE = re.compile(r"^\s*\|?[\s:|\-]+\|?\s*$")
 
 
 def _segment_markdown(text: str) -> list[tuple[str, str]]:
-    """Soru metnini ('text' | 'code' | 'table', içerik) parçalarına böler.
+    """Soru metnini ('text' | 'code' | 'table' | 'svg', içerik) parçalarına böler.
 
-    Sıra korunur. Code fence (```...```) önce çıkarılır; geri kalan 'text'
-    segmentleri içinde GFM tablo blokları (`| ... |\\n|---|---|\\n| ... |`) ayrı
-    'table' segmentine geçer. Düz metin segmentleri Paragraph'a, code blokları
-    Preformatted'a, tablolar reportlab Table'a dönüşür.
+    Sıra korunur. Öncelik:
+        1) <svg>...</svg> blokları (Sprint 12-B/Phase A — gorsel_geometri tipi)
+        2) ```...``` kod blokları
+        3) GFM tablo blokları (| ... | ile başlayan satırlar + |---| ayırıcı)
+
+    Düz metin segmentleri Paragraph'a, code blokları Preformatted'a, tablolar
+    reportlab Table'a, SVG blokları svglib Drawing'e dönüşür.
     """
     if not text:
         return []
-    segments: list[tuple[str, str]] = []
-    pos = 0
-    for m in _FENCE_RE.finditer(text):
-        if m.start() > pos:
-            segments.append(("text", text[pos:m.start()]))
-        body = m.group("body").rstrip("\n")
-        segments.append(("code", body))
-        pos = m.end()
-    if pos < len(text):
-        segments.append(("text", text[pos:]))
 
-    # 'text' segmentleri içinde GFM tabloları ayrıştır
+    # Önce SVG bloklarını çıkar — code/table parser'lara takılmasın diye.
+    from app.services.svg_utils import split_text_by_svg
+    pre_svg: list[tuple[str, str]] = []
+    for kind, content in split_text_by_svg(text):
+        if kind == "svg":
+            pre_svg.append(("svg", content))
+        else:
+            pre_svg.append(("text", content))
+
+    # Sonra her 'text' parçası içinde code fence + GFM tablo ayrıştır.
     final: list[tuple[str, str]] = []
-    for kind, content in segments:
-        if kind != "text":
-            final.append((kind, content))
+    for pkind, ptext in pre_svg:
+        if pkind == "svg":
+            final.append(("svg", ptext))
             continue
-        lines = content.split("\n")
-        buf: list[str] = []
-        i = 0
-        while i < len(lines):
-            line = lines[i]
-            is_row = bool(_TABLE_ROW_RE.match(line))
-            next_sep = (
-                i + 1 < len(lines)
-                and _TABLE_ROW_RE.match(lines[i + 1])
-                and _TABLE_SEP_RE.match(lines[i + 1])
-                and "-" in lines[i + 1]
-            )
-            if is_row and next_sep:
-                if buf:
-                    final.append(("text", "\n".join(buf)))
-                    buf = []
-                table_lines = [line, lines[i + 1]]
-                i += 2
-                while i < len(lines) and _TABLE_ROW_RE.match(lines[i]):
-                    table_lines.append(lines[i])
+        # Code fence
+        segments: list[tuple[str, str]] = []
+        pos = 0
+        for m in _FENCE_RE.finditer(ptext):
+            if m.start() > pos:
+                segments.append(("text", ptext[pos:m.start()]))
+            body = m.group("body").rstrip("\n")
+            segments.append(("code", body))
+            pos = m.end()
+        if pos < len(ptext):
+            segments.append(("text", ptext[pos:]))
+
+        # 'text' segmentleri içinde GFM tabloları ayrıştır
+        for kind, content in segments:
+            if kind != "text":
+                final.append((kind, content))
+                continue
+            lines = content.split("\n")
+            buf: list[str] = []
+            i = 0
+            while i < len(lines):
+                line = lines[i]
+                is_row = bool(_TABLE_ROW_RE.match(line))
+                next_sep = (
+                    i + 1 < len(lines)
+                    and _TABLE_ROW_RE.match(lines[i + 1])
+                    and _TABLE_SEP_RE.match(lines[i + 1])
+                    and "-" in lines[i + 1]
+                )
+                if is_row and next_sep:
+                    if buf:
+                        final.append(("text", "\n".join(buf)))
+                        buf = []
+                    table_lines = [line, lines[i + 1]]
+                    i += 2
+                    while i < len(lines) and _TABLE_ROW_RE.match(lines[i]):
+                        table_lines.append(lines[i])
+                        i += 1
+                    final.append(("table", "\n".join(table_lines)))
+                else:
+                    buf.append(line)
                     i += 1
-                final.append(("table", "\n".join(table_lines)))
-            else:
-                buf.append(line)
-                i += 1
-        if buf:
-            final.append(("text", "\n".join(buf)))
+            if buf:
+                final.append(("text", "\n".join(buf)))
     return final
 
 
@@ -294,6 +313,36 @@ def _escape_for_pre(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+def _render_svg_block(svg_str: str, max_width_cm: float = 12.0) -> object | None:
+    """SVG string'i svglib ile reportlab Drawing'e çevirir.
+
+    Bozuk/tehlikeli SVG None döner — caller fallback metin gösterir.
+    max_width_cm: A4 yararlı genişliği ~17 cm; geometri şekilleri için 12 cm
+    görsel olarak daha okunabilir (santrale yatırılır).
+    """
+    from app.services.svg_utils import is_valid_svg
+    ok, _reason = is_valid_svg(svg_str)
+    if not ok:
+        return None
+    try:
+        from io import BytesIO
+        from svglib.svglib import svg2rlg
+        drawing = svg2rlg(BytesIO(svg_str.encode("utf-8")))
+        if drawing is None:
+            return None
+        # Scale: SVG intrinsic boyutu sayfa genişliğini aşıyorsa daralt
+        max_w = max_width_cm * cm
+        if drawing.width and drawing.width > max_w:
+            scale = max_w / drawing.width
+            drawing.width *= scale
+            drawing.height *= scale
+            drawing.scale(scale, scale)
+        return drawing
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("SVG → Drawing dönüşümü başarısız: %s", exc)
+        return None
+
+
 def _render_markdown_blocks(
     text: str,
     styles: dict[str, ParagraphStyle],
@@ -304,7 +353,19 @@ def _render_markdown_blocks(
     if not segments:
         return flow
     for kind, content in segments:
-        if kind == "code":
+        if kind == "svg":
+            drawing = _render_svg_block(content)
+            if drawing is not None:
+                # Drawing flowable kendi başına bir line break gibi davranır.
+                flow.append(Spacer(1, 0.2 * cm))
+                flow.append(drawing)
+                flow.append(Spacer(1, 0.2 * cm))
+            else:
+                # Fallback: bozuk SVG, kullanıcıya bilgilendirici not.
+                flow.append(Paragraph(
+                    "<i>[Görsel yüklenemedi]</i>", styles["qbody"],
+                ))
+        elif kind == "code":
             # Preformatted satır satır basar — ASCII çubuk grafik ve Unicode
             # geometri şekilleri için kritik (proportional font hizalamaz).
             if not content.strip():

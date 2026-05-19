@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { SafeSvg } from "@/components/SafeSvg";
 import type { Question, SolutionStep } from "@/lib/types";
 
 const TYPE_LABELS: Record<string, string> = {
@@ -97,12 +98,44 @@ const MD_COMPONENTS: Components = {
   em: ({ children }) => <em className="italic">{children}</em>,
 };
 
+// Question metnini SVG bloklarıyla parçalar — gorsel_geometri tipinde LLM
+// inline <svg>...</svg> üretir; rest text Markdown olarak render edilir.
+// Bu pattern react-markdown'a rehype-raw dependency eklemekten daha temiz
+// (rehype-raw HTML allow ediyor ama tüm element'leri sanitize için ek bir
+// schema gerekiyordu).
+const SVG_BLOCK_RE = /(<svg\b[^>]*>[\s\S]*?<\/svg>)/gi;
+
+function splitBySvg(text: string): Array<{ kind: "text" | "svg"; content: string }> {
+  const out: Array<{ kind: "text" | "svg"; content: string }> = [];
+  let lastIdx = 0;
+  const re = new RegExp(SVG_BLOCK_RE);
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > lastIdx) {
+      out.push({ kind: "text", content: text.slice(lastIdx, m.index) });
+    }
+    out.push({ kind: "svg", content: m[0] });
+    lastIdx = m.index + m[0].length;
+  }
+  if (lastIdx < text.length) {
+    out.push({ kind: "text", content: text.slice(lastIdx) });
+  }
+  return out;
+}
+
 function MarkdownQuestion({ text }: { text: string }) {
+  const segments = React.useMemo(() => splitBySvg(text), [text]);
   return (
     <div className="text-sm">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
-        {text}
-      </ReactMarkdown>
+      {segments.map((seg, i) =>
+        seg.kind === "svg" ? (
+          <SafeSvg key={i} content={seg.content} />
+        ) : (
+          <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
+            {seg.content}
+          </ReactMarkdown>
+        ),
+      )}
     </div>
   );
 }
