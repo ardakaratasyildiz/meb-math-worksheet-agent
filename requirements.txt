@@ -13,7 +13,10 @@ anthropic>=0.40.0
 reportlab>=4.0.0
 # Sprint 12-B: SVG render desteği (gorsel_geometri tipi için LLM-SVG çıktısı
 # pdf_renderer.py içinde svglib ile reportlab Drawing'e çevrilir).
-svglib>=1.5.0
+# Pin <1.6: svglib 1.6+ rlpycairo'ya bağlı → pycairo C build → Render Docker
+# image'da libcairo2-dev yok, build fail. 1.5.x pure-Python implementation
+# bizim ihtiyaç için (basit geometri + kısa ölçü label) yeterli.
+svglib>=1.5.1,<1.6
 lxml>=5.0.0
 slowapi>=0.1.9
 sentry-sdk[fastapi]>=2.0.0
