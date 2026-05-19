@@ -40,10 +40,19 @@ PDFS_BY_GRADE: dict[int, list[str]] = {
     7: ["Matematik Ders Kitabı-MEB.pdf"],
 }
 
-# Sprint 5 yeni kaynak deseni — knowledge_base/ kökünden glob ile bulunur.
+# Sprint 5 + 12-B yeni kaynak deseni — knowledge_base/ kökünden glob ile bulunur.
 # Hardcoded mapping'e ekleme yapmadan, dosya adından sınıf çıkarımı.
+# Tüm bu varyantları yakalar:
+#   3.sinif.pdf, 3.sinif_1.pdf, 3.Sınıf_5.pdf  (orijinal MEB)
+#   new_3_sinif_1.pdf, new_5_sinif_11.pdf       (Sprint 12-B kullanıcı yüklemesi)
+#   new_7_sinif_1.pd.pdf                         (typo-tolerant: çift uzantı)
 GRADE_PATTERN_RE = re.compile(
-    r"^(?P<grade>\d)\.s[ıi]n[ıi]f(?:_\d+)?\.pdf$",
+    r"^(?:new_)?"                       # opsiyonel "new_" prefix
+    r"(?P<grade>\d)"
+    r"[._]s[ıi]n[ıi]f"                  # . veya _ ayraçlı "sinif"
+    r"(?:[._]\d+)?"                     # opsiyonel sayfa numarası
+    r"(?:\.pd)?"                        # typo tolerance: .pd.pdf çift uzantı
+    r"\.pdf$",
     re.IGNORECASE,
 )
 
