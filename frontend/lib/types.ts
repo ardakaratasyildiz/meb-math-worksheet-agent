@@ -14,7 +14,41 @@ export type QuestionType =
   | "tablo_sorusu"
   | "gorsel_geometri"
   | "grafik_okuma"
-  | "oruntu_sekil";
+  | "oruntu_sekil"
+  | "coktan_secmeli"
+  | "bosluk_doldurma"
+  | "dogru_yanlis"
+  | "eslestirme"
+  | "siralama";
+
+export type DifficultyMode = "single" | "mixed" | "progressive";
+
+// Soru tipi grupları — UI'da 3 switch olarak gösterilir. Backend bu listeyi
+// `question_types` alanı olarak alır; her grup kapatıldıkça listeden çıkar.
+export const QUESTION_TYPE_GROUPS = {
+  open_ended: [
+    "islem",
+    "sozel_problem",
+    "kavram_sorusu",
+    "akil_yurutme",
+    "modelleme",
+    "gunluk_hayat",
+  ] satisfies QuestionType[],
+  visual: [
+    "salt_islem",
+    "tablo_sorusu",
+    "gorsel_geometri",
+    "grafik_okuma",
+    "oruntu_sekil",
+  ] satisfies QuestionType[],
+  format: [
+    "coktan_secmeli",
+    "bosluk_doldurma",
+    "dogru_yanlis",
+    "eslestirme",
+    "siralama",
+  ] satisfies QuestionType[],
+} as const;
 
 export type EducationLevel = "İlkokul" | "Ortaokul";
 
@@ -103,6 +137,11 @@ export interface GenerateWorksheetRequest {
   difficulty: Difficulty;
   question_count: number;
   tenant_id?: string | null;
+  // Sprint 12-A toggle paketi — UI'dan seçilebilir kontroller.
+  question_types?: QuestionType[] | null;
+  difficulty_mode?: DifficultyMode;
+  include_answer_key?: boolean;
+  include_solutions?: boolean;
 }
 
 export interface GenerateWorksheetResponse {

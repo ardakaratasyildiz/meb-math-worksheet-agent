@@ -409,13 +409,22 @@ def _solutions_section(questions: Iterable[Question], styles: dict[str, Paragrap
     return flow
 
 
-def render_worksheet_pdf(worksheet: Worksheet) -> bytes:
+def render_worksheet_pdf(
+    worksheet: Worksheet,
+    include_answer_key: bool = True,
+    include_solutions: bool = True,
+) -> bytes:
     """Bir Worksheet'i PDF byte'larına render eder.
 
-    Yapı:
+    Yapı (toggle'lara göre):
         Sayfa 1+: Başlık + sınıf/zorluk + sorular (cevap satırlı, çözümsüz)
-        Sayfa N: Cevap anahtarı tablo
-        Sayfa N+1: Çözüm adımları
+        [Opsiyonel] Sayfa N: Cevap anahtarı tablo (include_answer_key)
+        [Opsiyonel] Sayfa N+1: Çözüm adımları (include_solutions)
+
+    Sprint 12-A toggle paketi (2026-05-19):
+        - include_answer_key=False → sınav modu, sadece sorular basılır.
+        - include_solutions=False → öğrenci kağıdı, cevap olabilir ama çözüm yok.
+        - Her ikisi de False → temiz öğrenci versiyonu.
     """
     _register_fonts()
     styles = _styles()
@@ -442,11 +451,13 @@ def render_worksheet_pdf(worksheet: Worksheet) -> bytes:
     for q in worksheet.questions:
         flow.extend(_question_block(q, styles))
 
-    flow.append(PageBreak())
-    flow.extend(_answer_key_table(worksheet.questions, styles))
+    if include_answer_key:
+        flow.append(PageBreak())
+        flow.extend(_answer_key_table(worksheet.questions, styles))
 
-    flow.append(PageBreak())
-    flow.extend(_solutions_section(worksheet.questions, styles))
+    if include_solutions:
+        flow.append(PageBreak())
+        flow.extend(_solutions_section(worksheet.questions, styles))
 
     doc.build(flow)
     return buf.getvalue()

@@ -84,12 +84,17 @@ def distribute_question_types(
     total: int,
     difficulty: Difficulty,
     topic_id: str | None = None,
+    allowed_types: set[QuestionType] | None = None,
 ) -> dict[QuestionType, int]:
     """Toplam soruyu zorluk profiline göre soru tiplerine paylaştırır.
 
     `topic_id` verilirse topic'e özel görsel/yapısal tipler (TABLO_SORUSU,
     GRAFIK_OKUMA, GORSEL_GEOMETRI, ORUNTU_SEKIL, SALT_ISLEM) belirli bir paya
     sahip olur; geri kalan pay zorluk profili üzerinden dağıtılır.
+
+    `allowed_types` verilirse SADECE bu tipler arası dağıtım yapılır; diğer
+    tipler ağırlık 0 alır. Kullanıcı UI'dan tip filtresi uyguladığında. None
+    (default) → tüm tipler geçerli.
 
     Yuvarlama hatalarını telafi etmek için en yüksek paylı tipe ekleme/çıkarma yapılır.
     """
@@ -110,6 +115,20 @@ def distribute_question_types(
         weights.extend(visual_bias.items())
     else:
         weights = list(base)
+
+    # Kullanıcı tip filtresi — izin verilmeyen tiplerin ağırlığını 0 yap.
+    # Ardından kalan ağırlıkları renormalize et (toplam 1.0). Filtre sonrası
+    # boş kalırsa fail-safe: ISLEM tipi default olarak verilir.
+    if allowed_types is not None:
+        filtered = [(qt, w) for qt, w in weights if qt in allowed_types]
+        total_w = sum(w for _, w in filtered)
+        if total_w <= 0:
+            # Allowed tiplerden hiçbiri base/visual'da yoksa direkt eşit dağıt.
+            n = len(allowed_types) or 1
+            filtered = [(qt, 1.0 / n) for qt in allowed_types]
+        else:
+            filtered = [(qt, w / total_w) for qt, w in filtered]
+        weights = filtered
 
     raw = [(qt, total * w) for qt, w in weights]
     counts: dict[QuestionType, int] = {}

@@ -78,9 +78,20 @@ export async function generateWorksheet(
  * PDF olarak doğrudan üretim — JSON sonuç dönmez.
  * İhtiyacımıza göre: önce JSON üret, sonra render.pdf'e gönder (cache hit'lerde
  * de aynı PDF üretilir, ek LLM çağrısı yapılmaz).
+ *
+ * Sprint 12-A: include_answer_key / include_solutions toggle'ları query
+ * parametresi olarak gider (false → cevap anahtarı / çözüm sayfası atlanır).
  */
-export async function renderPdf(worksheet: Worksheet): Promise<Blob> {
-  const res = await fetch(`${BASE}/api/worksheets/render.pdf`, {
+export async function renderPdf(
+  worksheet: Worksheet,
+  opts: { include_answer_key?: boolean; include_solutions?: boolean } = {},
+): Promise<Blob> {
+  const params = new URLSearchParams();
+  if (opts.include_answer_key === false) params.set("include_answer_key", "false");
+  if (opts.include_solutions === false) params.set("include_solutions", "false");
+  const qs = params.toString();
+  const url = `${BASE}/api/worksheets/render.pdf${qs ? `?${qs}` : ""}`;
+  const res = await fetch(url, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(worksheet),

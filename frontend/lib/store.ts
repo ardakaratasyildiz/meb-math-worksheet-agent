@@ -6,7 +6,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import type { Difficulty, GenerateWorksheetResponse } from "./types";
+import type {
+  Difficulty,
+  DifficultyMode,
+  GenerateWorksheetResponse,
+} from "./types";
+
+export type TypeGroupKey = "open_ended" | "visual" | "format";
 
 export interface FormState {
   grade: number;
@@ -14,6 +20,11 @@ export interface FormState {
   kazanimKod: string | null; // null = tüm kazanımlar (auto)
   difficulty: Difficulty;
   questionCount: number;
+  // Sprint 12-A toggle paketi
+  typeGroups: Record<TypeGroupKey, boolean>;
+  difficultyMode: DifficultyMode;
+  includeAnswerKey: boolean;
+  includeSolutions: boolean;
 }
 
 interface GenerateStore extends FormState {
@@ -34,6 +45,11 @@ const DEFAULT_FORM: FormState = {
   kazanimKod: null,
   difficulty: "orta",
   questionCount: 10,
+  // Varsayılan: 3 grup da AÇIK, tek zorluk, hem cevap anahtarı hem çözüm dahil.
+  typeGroups: { open_ended: true, visual: true, format: true },
+  difficultyMode: "single",
+  includeAnswerKey: true,
+  includeSolutions: true,
 };
 
 export const useGenerateStore = create<GenerateStore>()(
@@ -58,6 +74,10 @@ export const useGenerateStore = create<GenerateStore>()(
         kazanimKod: s.kazanimKod,
         difficulty: s.difficulty,
         questionCount: s.questionCount,
+        typeGroups: s.typeGroups,
+        difficultyMode: s.difficultyMode,
+        includeAnswerKey: s.includeAnswerKey,
+        includeSolutions: s.includeSolutions,
       }),
     },
   ),

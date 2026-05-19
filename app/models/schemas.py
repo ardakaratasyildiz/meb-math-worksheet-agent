@@ -1,9 +1,13 @@
 import re
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
 
 from app.models.enums import Difficulty, EducationLevel, QuestionType
+
+
+DifficultyMode = Literal["single", "mixed", "progressive"]
 
 
 class GradeInfo(BaseModel):
@@ -56,6 +60,45 @@ class GenerateWorksheetRequest(BaseModel):
         "varyasyon kazanır.",
         max_length=64,
     )
+    # Sprint 12-A toggle paketi (2026-05-19) — kullanıcı UI'dan tipini, zorluk
+    # modunu ve cevap anahtarı dahil edip etmemeyi seçebilir.
+    question_types: list[QuestionType] | None = Field(
+        None,
+        description="Opsiyonel: yalnızca bu tiplerden üretim yapılır. None → mevcut "
+        "tip dağılımı (DIFFICULTY_DISTRIBUTIONS) kullanılır. Boş liste 400 ile reddedilir.",
+    )
+    difficulty_mode: DifficultyMode = Field(
+        "single",
+        description="single = sadece `difficulty` alanı kullanılır (mevcut). "
+        "mixed = kolay+orta+zor karışık dağıtım (4/4/2). "
+        "progressive = aynı dağılım ama soru sırası kolay→orta→zor.",
+    )
+    include_answer_key: bool = Field(
+        True,
+        description="PDF çıktısında 'Cevap Anahtarı' tablosu basılsın mı? "
+        "False = sınav modu (sadece sorular).",
+    )
+    include_solutions: bool = Field(
+        True,
+        description="PDF çıktısında 'Çözüm Adımları' sayfası basılsın mı? "
+        "False = öğrenci kağıdı (cevap anahtarı dahil olsa bile çözüm yok).",
+    )
+
+    @field_validator("question_types")
+    @classmethod
+    def _validate_types(cls, v: list[QuestionType] | None) -> list[QuestionType] | None:
+        if v is None:
+            return None
+        if not v:
+            raise ValueError("question_types boş liste olamaz; None bırakın veya en az 1 tip seçin.")
+        # Tekrarları kaldır, sırayı koru
+        seen: set[QuestionType] = set()
+        out: list[QuestionType] = []
+        for t in v:
+            if t not in seen:
+                seen.add(t)
+                out.append(t)
+        return out
 
     model_config = {
         "json_schema_extra": {

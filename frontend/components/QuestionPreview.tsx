@@ -22,7 +22,14 @@ import { useGenerateStore } from "@/lib/store";
 import { QuestionCard } from "./QuestionCard";
 
 export function QuestionPreview() {
-  const { status, result, error, questionCount } = useGenerateStore();
+  const {
+    status,
+    result,
+    error,
+    questionCount,
+    includeAnswerKey,
+    includeSolutions,
+  } = useGenerateStore();
 
   if (status === "idle") {
     return (
@@ -58,7 +65,10 @@ export function QuestionPreview() {
     if (!result) return;
     const t = toast.loading("PDF hazırlanıyor…");
     try {
-      const blob = await renderPdf(result.worksheet);
+      const blob = await renderPdf(result.worksheet, {
+        include_answer_key: includeAnswerKey,
+        include_solutions: includeSolutions,
+      });
       downloadBlob(blob, buildPdfFilename(result.worksheet.title));
       toast.success("PDF indirildi", { id: t });
     } catch (e: unknown) {

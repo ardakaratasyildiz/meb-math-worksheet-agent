@@ -295,6 +295,7 @@ class GeminiAgent:
         max_retry_rounds: int = 1,
         include_textbook: bool = True,
         tenant_id: str | None = None,
+        allowed_types: list[QuestionType] | None = None,
     ) -> list[Question]:
         # Seed jitter: aynı parametrelerle yapılan art arda çağrılar farklı sonuç versin.
         if seed is None:
@@ -306,7 +307,13 @@ class GeminiAgent:
             temperature = _clamp_temp(base_temp + jitter)
 
         kazanimlar = _select_kazanimlar(grade, topic_id, kazanim_kod)
-        distribution = distribute_question_types(question_count, difficulty, topic_id=topic_id)
+        # Kullanıcı tip filtresi — None ise tüm tipler.
+        allowed_set: set[QuestionType] | None = (
+            set(allowed_types) if allowed_types else None
+        )
+        distribution = distribute_question_types(
+            question_count, difficulty, topic_id=topic_id, allowed_types=allowed_set,
+        )
 
         # History anahtarı — hem cache lookup hem üretim sonrası kayıt için.
         history_key: HistoryKey = (

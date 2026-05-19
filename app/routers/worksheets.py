@@ -53,22 +53,84 @@ def _validate_request(req: GenerateWorksheetRequest) -> None:
             )
 
 
+def _split_difficulty_buckets(total: int) -> dict["Difficulty", int]:
+    """Karışık/progresyon modu için zorluk dağılımı.
+
+    Hedef oran: kolay 30%, orta 40%, zor 30%. Toplam < 5 için anlamlı bölüm
+    çıkmayacağından tek seviye fallback verilir.
+    """
+    from app.models.enums import Difficulty
+    if total < 5:
+        return {Difficulty.ORTA: total}
+    kolay = max(1, total * 3 // 10)
+    zor = max(1, total * 3 // 10)
+    orta = total - kolay - zor
+    if orta < 1:
+        return {Difficulty.ORTA: total}
+    return {Difficulty.KOLAY: kolay, Difficulty.ORTA: orta, Difficulty.ZOR: zor}
+
+
 def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, WorksheetMetadata]:
-    """Ortak üretim mantığı: hem JSON hem PDF endpoint'leri kullanır."""
+    """Ortak üretim mantığı: hem JSON hem PDF endpoint'leri kullanır.
+
+    Sprint 12-A toggle paketi (2026-05-19):
+        difficulty_mode = "single"     → tek difficulty ile mevcut akış
+        difficulty_mode = "mixed"      → kolay/orta/zor 3 ayrı agent.generate;
+                                         birleştirilip rastgele karıştırılır.
+        difficulty_mode = "progressive"→ aynı 3 batch; kolay → orta → zor sırası.
+        question_types verilirse agent.generate'e allowed_types geçer.
+    """
+    from app.models.enums import Difficulty as _Diff
     _validate_request(req)
     topic = get_topic(req.grade, req.topic_id)
     assert topic is not None
 
     agent = _agent()
-    try:
-        questions = agent.generate(
+
+    def _gen(diff: _Diff, count: int) -> list:
+        return agent.generate(
             grade=req.grade,
             topic_id=req.topic_id,
             kazanim_kod=req.kazanim_kod,
-            difficulty=req.difficulty,
-            question_count=req.question_count,
+            difficulty=diff,
+            question_count=count,
             tenant_id=req.tenant_id,
+            allowed_types=req.question_types,
         )
+
+    try:
+        if req.difficulty_mode == "single":
+            questions = _gen(req.difficulty, req.question_count)
+            trace_for_meta = agent.build_last_trace()
+            worksheet_difficulty = req.difficulty
+        else:
+            buckets = _split_difficulty_buckets(req.question_count)
+            collected: list = []
+            # Her bucket için ayrı agent.generate çağrısı — cache ve few-shot
+            # retrieval her zorluk için bağımsız çalışır.
+            for diff in (_Diff.KOLAY, _Diff.ORTA, _Diff.ZOR):
+                n = buckets.get(diff, 0)
+                if n <= 0:
+                    continue
+                bucket_questions = _gen(diff, n)
+                collected.extend(bucket_questions)
+
+            if req.difficulty_mode == "mixed":
+                # Karıştır — sıralama bilgisi vermesin.
+                import random as _random
+                _random.shuffle(collected)
+            # progressive ise zaten kolay→orta→zor sırasında topladık.
+            # Numaraları sıkı yeniden numarala.
+            from app.models.schemas import Question as _Q
+            questions = [
+                q.model_copy(update={"number": i + 1}) if isinstance(q, _Q)
+                else q
+                for i, q in enumerate(collected)
+            ]
+            trace_for_meta = agent.build_last_trace()  # son call'un trace'i
+            # mixed/progressive'de worksheet.difficulty alanı ne olmalı?
+            # Schemada zorunlu; request.difficulty'i nominal değer olarak tut.
+            worksheet_difficulty = req.difficulty
     except AgentError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
 
@@ -83,7 +145,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         title=title,
         grade=req.grade,
         topic=topic["name"],
-        difficulty=req.difficulty,
+        difficulty=worksheet_difficulty,
         question_count=len(questions),
         questions=questions,
         answer_key=[
@@ -93,7 +155,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
     metadata = WorksheetMetadata(
         generated_at=datetime.now(tz=timezone.utc),
         model=agent.last_model_used,
-        trace=agent.build_last_trace(),
+        trace=trace_for_meta,
     )
     return worksheet, metadata
 
@@ -132,8 +194,16 @@ def _build_pdf_filename(worksheet: Worksheet) -> str:
     return f"SoruAtolyesi_{slug}_{today}.pdf"
 
 
-def _pdf_response(worksheet: Worksheet) -> Response:
-    pdf_bytes = render_worksheet_pdf(worksheet)
+def _pdf_response(
+    worksheet: Worksheet,
+    include_answer_key: bool = True,
+    include_solutions: bool = True,
+) -> Response:
+    pdf_bytes = render_worksheet_pdf(
+        worksheet,
+        include_answer_key=include_answer_key,
+        include_solutions=include_solutions,
+    )
     filename = _build_pdf_filename(worksheet)
     return Response(
         content=pdf_bytes,
@@ -153,20 +223,31 @@ def generate_worksheet_pdf(
 ) -> Response:
     """Üretim + PDF render tek call'da. Rate limit + auth uygulanır (LLM çağrısı yapar)."""
     worksheet, _ = _build_worksheet(req)
-    return _pdf_response(worksheet)
+    return _pdf_response(
+        worksheet,
+        include_answer_key=req.include_answer_key,
+        include_solutions=req.include_solutions,
+    )
 
 
 @router.post("/render.pdf")
 def render_existing_worksheet(
     worksheet: Worksheet,
+    include_answer_key: bool = True,
+    include_solutions: bool = True,
     _api_key: str = Depends(require_api_key),
 ) -> Response:
     """Önceden üretilmiş bir worksheet JSON'unu PDF'e çevirir.
 
     LLM çağrısı YAPMAZ → rate limit yok; sadece auth kontrolü.
-    Frontend hızlı tekrar PDF üretebilir.
+    Frontend hızlı tekrar PDF üretebilir. Toggle'lar query parametresi olarak
+    geçer: ?include_answer_key=false&include_solutions=false (sınav modu).
     """
-    return _pdf_response(worksheet)
+    return _pdf_response(
+        worksheet,
+        include_answer_key=include_answer_key,
+        include_solutions=include_solutions,
+    )
 
 
 # ---- SSE streaming endpoint (Sprint 7) ----------------------------------
