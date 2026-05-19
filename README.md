@@ -1,266 +1,189 @@
-# 📐 MEB Matematik Çalışma Kağıdı Üretici
+# Soru Atölyesi — MEB Matematik Çalışma Kağıdı Üretici
 
-MEB müfredatına uygun (1-7. sınıf) matematik soruları üreten, **Gemini destekli FastAPI + Streamlit** mikroservisi.
+MEB matematik müfredatına uygun (1.→7. sınıf) çalışma kağıdı üreten otomatik
+sistem. Gemini destekli, RAG tabanlı; SVG geometri şekilleri, LaTeX matematik
+notasyonu ve 16 farklı soru tipi (LGS-stili çoktan seçmeli dahil) üretir.
 
-Sınıf, konu, kazanım kodu ve zorluk seviyesi seçersin; servis MEB ders kitabı tarzında açık uçlu sorular + çözüm adımları + cevap anahtarı üretir.
+**Canlı:**
+- Frontend: https://sheetgen.vercel.app
+- Backend: https://sheetgen-backend.onrender.com
 
-## ✨ Özellikler
-
-- **Hardcoded MEB müfredatı** — 1-7. sınıf, 5 öğrenme alanı, **107 kazanım** kodu ve metniyle
-- **Kazanım × zorluk kalibrasyonu** — her kazanım için kolay / orta / zor somut sınırlar (sayı aralığı, adım sayısı, bağlam karmaşıklığı)
-- **214 few-shot örnek** — her biri zorluk etiketli; prompt'a hedef zorluğa uyanlar önceliklendirilerek enjekte edilir
-- **Katmanlı prompt** — System (sabit kural) + Few-shot (dinamik) + User (kazanım + soru tipi dağılımı)
-- **Soru tipi taksonomisi** — işlem / sözel problem / kavram / akıl yürütme / modelleme / günlük hayat; zorluğa göre dağılım otomatik
-- **Üretim geçmişi** — aynı isteği tekrarlayınca in-memory history ile önceki bağlamlardan uzaklaşır
-- **Retry loop** — dedup sonrası eksik kalırsa ek Gemini çağrısı ile tamamlar
-- **Zorluğa bağlı temperature** — kolay 0.55, orta 0.80, zor 1.00
-- **Model fallback** — `gemini-2.5-flash` 503 verirse `flash-lite` → `pro` zincirine geçer
-- **Streamlit arayüzü** — cascading dropdown'lar, kazanım önizlemesi, anında üretim
-
-## 🏗️ Mimari
+## Mimari
 
 ```
-GenAgent/
-├── app/
-│   ├── main.py                 FastAPI uygulaması
-│   ├── config.py               Ayarlar (.env)
-│   │
-│   ├── models/
-│   │   ├── enums.py            Difficulty, QuestionType, TopicId, EducationLevel
-│   │   └── schemas.py          Pydantic request/response modelleri
-│   │
-│   ├── data/
-│   │   ├── curriculum.py       107 kazanım + difficulty_hints (kolay/orta/zor)
-│   │   └── few_shot/           Sınıf başına örnek havuzu
-│   │       ├── grade_1.py ... grade_7.py
-│   │
-│   ├── services/
-│   │   ├── agent.py            Gemini agent, backoff, fallback, retry loop
-│   │   ├── diversity.py        Soru tipi dağılımı + normalize hash dedup
-│   │   ├── examples.py         Zorluk bilincinde few-shot seçici
-│   │   └── history.py          (grade, topic, kazanim, difficulty) history cache
-│   │
-│   ├── routers/
-│   │   ├── curriculum.py       GET grades / topics / kazanimlar
-│   │   └── worksheets.py       POST /api/worksheets/generate
-│   │
-│   └── prompts/
-│       └── templates.py        System + few-shot + user + retry prompt builder
+Soru Atölyesi
+├── Backend (FastAPI · Python 3.13)        — Render Docker, free tier
+│   ├── /api/curriculum/*                  — sınıf/konu/kazanım listeleri
+│   ├── /api/worksheets/generate           — JSON üretim (LLM)
+│   ├── /api/worksheets/generate.pdf       — PDF üretim
+│   ├── /api/worksheets/render.pdf         — JSON → PDF (LLM çağrısız)
+│   ├── /api/worksheets/generate.stream    — SSE streaming
+│   ├── /admin/*                           — cache stats, history (X-Admin-Key)
+│   └── /healthz, /readyz                  — health check
 │
-├── streamlit_app.py            Streamlit arayüz
-├── implementation_plan.md      İlk plan (Türkçe)
-├── docs/
-│   └── RAG_ROADMAP.md          Sonraki iterasyon: RAG tabanlı geliştirme
-├── requirements.txt
-├── .env.example
-└── README.md
+├── Frontend (Next.js 15 · TypeScript · Tailwind · shadcn/ui)
+│   ├── /                                  — Landing + features + FAQ
+│   ├── /generate                          — Form + üretim + preview
+│   ├── /history                           — Kullanıcı bazlı geçmiş
+│   ├── /sign-in, /sign-up                 — Clerk v7 auth (10k MAU free)
+│   └── /pricing, /features                — Bilgi sayfaları
+│
+├── Vector DB                              — ChromaDB on-disk, 8449 chunk
+├── DB (history + LLM cache)               — Turso (libSQL) embedded replica
+└── LLM                                    — Gemini 2.5 Flash + Anthropic fallback
 ```
 
-## 🚀 Kurulum
+## Özellikler
+
+### Müfredat & İçerik
+- **123 kazanım** kodu (M.X.Y.Z), 1-7. sınıf MEB matematik
+- **7 öğrenme alanı**: Doğal Sayılar, Kesirler, Geometri, Ölçme, Cebir, Veri İşleme, Olasılık
+- **Kazanım × zorluk kalibrasyonu** — her kazanım için kolay/orta/zor somut sınırlar
+- **ChromaDB few-shot havuzu**: 8449 chunk (MEB ders kitabı + LGS-tarzı testler + sentetik)
+- **PDF kaynak format**: `X.sinif_N.pdf` ya da `new_X_sinif_N.pdf`
+
+### Soru Tipleri (16 tip, 3 grup)
+- **Açık uçlu sözel**: işlem, sözel problem, kavram, akıl yürütme, modelleme, günlük hayat
+- **Görsel ve yapısal**: salt işlem (LaTeX), tablo (HTML), geometri (SVG), grafik (SVG), örüntü (SVG)
+- **Format çeşitliliği**: çoktan seçmeli, boşluk doldurma, doğru/yanlış, eşleştirme, sıralama
+
+### Render Katmanı
+- **Frontend**: react-markdown + remark-gfm (tablolar) + remark-math + rehype-katex (LaTeX)
+- **SVG**: isomorphic-dompurify ile sanitize, inline render
+- **PDF**: ReportLab + svglib (SVG embed) + matplotlib mathtext (LaTeX → PNG)
+- **Cevapsız sürüm**: kullanıcı PDF'te cevap anahtarı/çözüm sayfasını kapatabilir (sınav modu)
+
+### Kalite Kapıları
+- **SymPy math verifier** — deterministic aritmetik kontrol
+- **Gemini critic** — LLM judge (kazanım uyumu + zorluk)
+- **Semantic dedup** — cosine ≥ 0.88 ile tekrar önleme
+- **Math-aware retry** — eksik tip dağılımı yeniden istenir
+- **Source-aware retrieval** — aynı PDF'ten max 2 chunk (textbook retrieval)
+
+### Üretim Akışı (Multi-Mode)
+- **Tek zorluk** — kullanıcı seçilen zorluk
+- **Karışık** — kolay (30%) + orta (40%) + zor (30%) shuffle
+- **Progresyon** — aynı dağılım, kolay → orta → zor sıralı
+
+### LLM Cache
+- ChromaDB `generation_cache` koleksiyonu, cosine > 0.92 ile semantic hit
+- Aynı (sınıf, konu, kazanım, zorluk, sayı) parametre kombinasyonları cache'ten döner
+
+### Multi-LLM Fallback Chain
+- Gemini 2.5 Flash → Flash Lite → Pro → Anthropic Claude Sonnet
+- 503/timeout'larda otomatik geçiş, 3 retry per model
+
+## Kurulum (Lokal)
+
+> Lokal Docker hedeflenmedi. Backend doğrudan uvicorn ile, frontend Codespaces'tan.
 
 ```bash
+# Backend
 python -m venv .venv
 .venv\Scripts\activate            # Windows
 pip install -r requirements.txt
-copy .env.example .env            # GEMINI_API_KEY değerini doldurun
+copy .env.example .env            # GEMINI_API_KEY zorunlu
+
+# Backend çalıştır
+uvicorn app.main:app --reload     # http://localhost:8000
+
+# Frontend (Codespaces içinde önerilir — Node lokal'de yok)
+cd frontend
+npm install
+npm run dev                       # http://localhost:3000
 ```
 
-## ▶️ Çalıştırma
-
-### 1. Backend (FastAPI)
-```bash
-uvicorn app.main:app --reload
-```
-- Swagger UI: http://localhost:8000/docs
-
-### 2. Arayüz (Streamlit)
-Ayrı bir terminalde:
-```bash
-streamlit run streamlit_app.py
-```
-- Arayüz: http://localhost:8501
-
-> Streamlit `API_BASE` ortam değişkeniyle farklı backend'e bağlanabilir:
-> `set API_BASE=http://localhost:8000 && streamlit run streamlit_app.py`
-
-## 🌐 API Endpoint'leri
+## Önemli Endpoint'ler
 
 | Method | Path | Açıklama |
-|--------|------|----------|
-| `GET`  | `/health` | Sağlık kontrolü |
-| `GET`  | `/api/curriculum/grades` | Mevcut sınıfları listeler (1-7) |
-| `GET`  | `/api/curriculum/grades/{id}/topics` | Sınıfa ait konular + kazanım sayısı |
-| `GET`  | `/api/curriculum/grades/{id}/topics/{topic_id}/kazanimlar` | Konunun kazanımları + metinleri |
-| `POST` | `/api/worksheets/generate` | Çalışma kağıdı üretir |
+|---|---|---|
+| `GET` | `/healthz` | Render health check |
+| `GET` | `/readyz` | ChromaDB + Gemini ready |
+| `GET` | `/api/curriculum/grades` | Sınıf listesi (1-7) |
+| `GET` | `/api/curriculum/grades/{id}/topics` | Konu listesi |
+| `GET` | `/api/curriculum/grades/{id}/topics/{topic_id}/kazanimlar` | Kazanım listesi |
+| `POST` | `/api/worksheets/generate` | JSON üretim |
+| `POST` | `/api/worksheets/generate.pdf` | PDF üretim |
+| `POST` | `/api/worksheets/render.pdf` | Mevcut worksheet → PDF |
+| `POST` | `/api/worksheets/generate.stream` | SSE streaming |
 
-### Örnek İstek
+### Üretim isteği örneği
 
 ```bash
-curl -X POST http://localhost:8000/api/worksheets/generate \
+curl -X POST https://sheetgen-backend.onrender.com/api/worksheets/generate \
   -H "Content-Type: application/json" \
+  -H "X-API-Key: <API_KEY>" \
   -d '{
     "grade": 5,
     "topic_id": "cebir",
     "kazanim_kod": "M.5.5.1",
-    "difficulty": "zor",
-    "question_count": 5
+    "difficulty": "orta",
+    "question_count": 10,
+    "difficulty_mode": "single",
+    "question_types": null,
+    "include_answer_key": true,
+    "include_solutions": true,
+    "tenant_id": "user-abc-123"
   }'
 ```
 
-### Cevap (kısaltılmış)
+## Deployment
 
-```json
-{
-  "worksheet": {
-    "title": "5. Sınıf - Cebir ve Denklemler Çalışma Kağıdı",
-    "grade": 5,
-    "topic": "Cebir ve Denklemler",
-    "difficulty": "zor",
-    "question_count": 5,
-    "questions": [
-      {
-        "number": 1,
-        "question": "Bir sayının 4 katından 10 eksik, 30 elmaya eşittir. Bu sayının 5 katından 20 eksik kaç elma olur?",
-        "answer": "55",
-        "solution_steps": "4x - 10 = 30 → x = 10. 5×10 - 20 = 30. ...",
-        "kazanim_kod": "M.5.5.1",
-        "question_type": "akil_yurutme"
-      }
-    ],
-    "answer_key": [ ... ]
-  },
-  "metadata": {
-    "generated_at": "2026-04-23T12:00:00Z",
-    "model": "gemini-2.5-flash",
-    "curriculum": "MEB"
-  }
-}
-```
+**Render** (backend): `render.yaml` blueprint, auto-deploy main push.
+**Vercel** (frontend): GitHub integration, auto-deploy main push.
+**Turso** (libSQL): `TURSO_DATABASE_URL` env set, history + cache kalıcı.
+**Cold start**: GitHub Actions cron (`.github/workflows/keepalive.yml`) 5 dk'da bir `/healthz`'a ping.
 
-## 📋 Müfredat Kapsamı
+## Sprint Geçmişi (kısa özet)
 
-| Sınıf | Kapsam | Kazanım Sayısı |
-|-------|--------|----------------|
-| 1 | 100'e kadar sayılar, temel geometri, örüntüler | 12 |
-| 2 | 1000'e kadar, çarpmaya giriş, cm/m | 12 |
-| 3 | 10.000'e kadar, dört işlem, kesirlere giriş | 14 |
-| 4 | Büyük sayılar, kesir türleri, açılar, alan | 16 |
-| 5 | 9 basamaklı sayılar, kesir toplama-çıkarma, denklemler | 18 |
-| 6 | Tam sayılar, kesirlerle dört işlem, alan formülleri | 16 |
-| 7 | Rasyonel sayılar, çember-daire, eşitsizlikler, oran-orantı | 19 |
+| Sprint | Tarih | İçerik |
+|---|---|---|
+| 1-4 | 2026-04 | Kalite + çeşitlilik + production rigor + UX (PDF, multi-LLM) |
+| 5 | 2026-05-07 | 1-7. sınıf MEB PDF ingest (ChromaDB 7267) |
+| 6 | 2026-05 | Backend prod-ready (Docker, healthz, Sentry, cache) |
+| 7 | 2026-05 | Next.js + Clerk frontend |
+| 8 | 2026-05 | Render Blueprint + deploy artefaktları |
+| 9 + 9.5 | 2026-05-09 | Clerk v7 migration, Turso, admin endpoints |
+| 10 | 2026-05-12 | **Go-live** (Render + Vercel + Turso) |
+| 11 | 2026-05-12 | UI rewrite + Soru Atölyesi rebrand |
+| **12-A** | 2026-05-19 | 5 yeni soru tipi + kullanıcı toggle UX |
+| **12-B** | 2026-05-19 | SVG/LaTeX render + 75 yeni PDF (734 yeni chunk) |
 
-**Toplam: 107 kazanım · 214 few-shot örnek**
+**A/B eval (Sprint 12-B sonrası):** delivered ratio %100, critic pass %100,
+avg duration 29s, 18/18 başarılı senaryo.
 
-> 1-2. sınıflarda "Kesirler" alanı mevcut olmadığından bu sınıf-konu kombinasyonu API tarafından 400 ile reddedilir.
-
-## 🔮 Sonraki İterasyon: RAG ile Geliştirme
-
-MVP şu an **hardcoded kazanımlar + elle yazılmış few-shot** ile çalışıyor. Sonraki büyük adım: **MEB ders kitaplarını RAG (Retrieval-Augmented Generation) pipeline'ı ile entegre etmek.**
-
-Detaylı yol haritası: **[docs/RAG_ROADMAP.md](docs/RAG_ROADMAP.md)**
-
-### Kısa Özet — RAG Neden Gerekli?
-
-Şu an Gemini'ye kazanım metni (1 cümle) + 3 hint + 2-3 few-shot veriliyor. RAG'la **MEB ders kitabından alınan gerçek pasajlar** prompt'a enjekte edilecek. Gemini benzetmez, doğrudan okur.
-
-### Geçiş Kriterleri
-
-Aşağıdakilerden en az biri tetiklenirse RAG'a geçilecek:
-
-- Geri bildirim: "Sorular MEB ders kitabıyla örtüşmüyor" / "tek tip"
-- Aynı kazanımda 50+ üretim sonrası benzersiz soru oranı < %60
-- Manuel few-shot bakımı sürdürülemez hale gelir
-- 8-12. sınıf ekleme ihtiyacı doğar
-
-### Mimariye Eklenecekler
-
-```
-knowledge_base/
-├── raw/                    MEB PDF'leri
-├── processed/              Chunk'lanmış veri
-└── chroma_db/              Vector store
-
-app/services/
-├── embedder.py             Embedding wrapper
-├── retriever.py            Hybrid dense + BM25
-└── semantic_dedup.py       Cosine similarity dedup
-```
-
-Detaylar: **[docs/RAG_ROADMAP.md](docs/RAG_ROADMAP.md)**
-
-## 🧪 Değerlendirme & CI
-
-Üretim kalitesini regresyonsuz tutmak için A/B karşılaştırma harness'i + GitHub Actions tabanlı kalite kapısı.
-
-### Yerel kullanım
+## Değerlendirme & CI
 
 ```bash
-# Tam karşılaştırma (3 config × 4 senaryo × 3 iter ≈ 25-30 dk)
-python scripts/eval/ab_runner.py
-
-# Hızlı doğrulama (~1-2 dk, PR gate'le aynı senaryo)
+# Hızlı doğrulama (~2 dk, 1 senaryo)
 python scripts/eval/ab_runner.py --quick
 
-# Belirli config/senaryo
-python scripts/eval/ab_runner.py --configs sprint2_full --scenarios g5_cebir_orta --iterations 2
-
-# Eşik kontrolü (latest raw çıktıyla)
-python scripts/eval/check_regression.py \
-    --raw knowledge_base/eval/ab_raw_<ts>.json \
-    --config sprint2_full
-```
-
-Çıktılar `knowledge_base/eval/`:
-- `ab_raw_<ts>.json` — tüm sorular + trace + metrikler
-- `ab_report_<ts>.md` — markdown karşılaştırma tablosu
-
-### Eşikler
-
-`scripts/eval/thresholds.json` minimum diversity, kazanım uyumu, delivered ratio, success ratio, max duration sınırlarını tutar. **Yeni sprint sonrası elle güncellenmeli** — mevcut metrikten ~%10 marj bırakacak şekilde. Ekleme: `_baseline_run` alanı hangi run'dan referans alındığını belgeler.
-
-### CI (GitHub Actions)
-
-`.github/workflows/eval.yml` 3 job içerir:
-
-| Job | Tetiklenir | Süre | Maliyet |
-|-----|-----------|------|---------|
-| `lint-import` | her push/PR | ~30sn | ücretsiz |
-| `quick-eval` | PR + manual dispatch | ~2 dk | ~$0.001 |
-| `full-eval` | nightly cron (02:00 UTC) + manual dispatch | ~25-30 dk | ~$0.05 |
-
-Eşik fail olursa `full-eval` otomatik issue açar (`eval-regression` label).
-
-### Kurulum
-
-GitHub repo settings → Secrets and variables → Actions → New repository secret:
-- Name: `GEMINI_API_KEY`
-- Value: Gemini API anahtarın
-
-Workflow ilk push'tan sonra otomatik aktifleşir.
-
-### Threshold güncelleme akışı
-
-Sprint sonrası metrikler iyileşmiş olabilir; eşikleri yükseltmek için:
-
-```bash
-# 1. Yeni full eval çalıştır
+# Tam karşılaştırma (~25-30 dk, 6 senaryo × 3 config × 3 iter)
 python scripts/eval/ab_runner.py
 
-# 2. sprint2_full kolonundaki yeni değerleri thresholds.json'a yansıt (~%10 marj bırak)
-# 3. Commit'le, _baseline_run ve _observed alanlarını güncelle
+# Eşik kontrolü
+python scripts/eval/check_regression.py \
+    --raw knowledge_base/eval/ab_raw_<ts>.json \
+    --config baseline
 ```
 
-## 📐 İlk Plan Dokümanı
+`.github/workflows/eval.yml` — `quick-eval` PR'da, `full-eval` nightly cron'da.
 
-Projenin ilk tasarım dokümanı: **[implementation_plan.md](implementation_plan.md)**
+## Teknoloji Stack
 
-## 🧪 Teknoloji
+| Katman | Teknoloji |
+|---|---|
+| Backend | Python 3.13, FastAPI, Pydantic 2, slowapi |
+| LLM | Gemini 2.5 Flash, Anthropic Claude Sonnet (fallback) |
+| Vector DB | ChromaDB (on-disk, image'a commit) |
+| Cache + History | Turso (libSQL embedded replica) ya da sqlite3 fallback |
+| Frontend | Next.js 15, TypeScript, Tailwind, shadcn/ui |
+| Auth | Clerk v7 (10k MAU free) |
+| Render katmanı | react-markdown, remark-gfm, remark-math, rehype-katex, isomorphic-dompurify |
+| PDF | ReportLab, svglib (<1.6), matplotlib mathtext |
+| Hosting | Render (backend), Vercel (frontend) |
+| Observability | Sentry (5k event/ay free) |
 
-- **Backend:** Python 3.13 + FastAPI + Pydantic 2
-- **LLM:** Google Gemini (`google-genai`), `gemini-2.5-flash` (fallback: `flash-lite`, `pro`)
-- **Arayüz:** Streamlit
-- **Config:** pydantic-settings (.env)
-
-## ⚖️ Lisans
+## Lisans
 
 (TODO: Uygun lisans eklenecek)
