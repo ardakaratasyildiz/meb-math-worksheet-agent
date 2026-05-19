@@ -18,6 +18,11 @@ reportlab>=4.0.0
 # bizim ihtiyaç için (basit geometri + kısa ölçü label) yeterli.
 svglib>=1.5.1,<1.6
 lxml>=5.0.0
+# Sprint 12-B / Phase C — salt_islem için LaTeX math notation rendering.
+# matplotlib mathtext (LaTeX subset; \frac, \sqrt, ^, _, \sum vs.) PNG'ye
+# çevirir; pdf_renderer.py reportlab Image flowable ile embed eder.
+# Linux x86_64 binary wheel mevcut, system Cairo/LaTeX gerektirmez.
+matplotlib>=3.8.0
 slowapi>=0.1.9
 sentry-sdk[fastapi]>=2.0.0
 # Turso/libSQL — opsiyonel persistence backend (TURSO_DATABASE_URL set ise aktif).

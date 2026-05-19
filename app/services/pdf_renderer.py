@@ -28,6 +28,7 @@ from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
+    Image,
     KeepTogether,
     PageBreak,
     Paragraph,
@@ -194,20 +195,21 @@ _TABLE_SEP_RE = re.compile(r"^\s*\|?[\s:|\-]+\|?\s*$")
 
 
 def _segment_markdown(text: str) -> list[tuple[str, str]]:
-    """Soru metnini ('text' | 'code' | 'table' | 'svg', içerik) parçalarına böler.
+    """Soru metnini ('text' | 'code' | 'table' | 'svg' | 'latex', içerik) parçalarına böler.
 
     Sıra korunur. Öncelik:
         1) <svg>...</svg> blokları (Sprint 12-B/Phase A — gorsel_geometri tipi)
-        2) ```...``` kod blokları
-        3) GFM tablo blokları (| ... | ile başlayan satırlar + |---| ayırıcı)
+        2) $$...$$ ve $...$ LaTeX blokları (Phase C — salt_islem)
+        3) ```...``` kod blokları
+        4) GFM tablo blokları (| ... | ile başlayan satırlar + |---| ayırıcı)
 
-    Düz metin segmentleri Paragraph'a, code blokları Preformatted'a, tablolar
-    reportlab Table'a, SVG blokları svglib Drawing'e dönüşür.
+    Düz metin → Paragraph, code → Preformatted, tablo → reportlab Table,
+    SVG → svglib Drawing, LaTeX → matplotlib mathtext PNG → Image.
     """
     if not text:
         return []
 
-    # Önce SVG bloklarını çıkar — code/table parser'lara takılmasın diye.
+    # Önce SVG bloklarını çıkar — code/table/latex parser'larına takılmasın.
     from app.services.svg_utils import split_text_by_svg
     pre_svg: list[tuple[str, str]] = []
     for kind, content in split_text_by_svg(text):
@@ -216,11 +218,26 @@ def _segment_markdown(text: str) -> list[tuple[str, str]]:
         else:
             pre_svg.append(("text", content))
 
+    # Sonra her 'text' parçası içinde LaTeX bloklarını ayrıştır.
+    from app.services.math_renderer import split_by_latex
+    pre_latex: list[tuple[str, str]] = []
+    for pkind, ptext in pre_svg:
+        if pkind != "text":
+            pre_latex.append((pkind, ptext))
+            continue
+        for lkind, lcontent, _is_display in split_by_latex(ptext):
+            if lkind == "latex":
+                # display/inline ayrımı içerikten parse aşamasında çıkar; PDF
+                # tarafında ikisini de standalone Image olarak embed ediyoruz.
+                pre_latex.append(("latex", lcontent))
+            else:
+                pre_latex.append(("text", lcontent))
+
     # Sonra her 'text' parçası içinde code fence + GFM tablo ayrıştır.
     final: list[tuple[str, str]] = []
-    for pkind, ptext in pre_svg:
-        if pkind == "svg":
-            final.append(("svg", ptext))
+    for pkind, ptext in pre_latex:
+        if pkind != "text":
+            final.append((pkind, ptext))
             continue
         # Code fence
         segments: list[tuple[str, str]] = []
@@ -364,6 +381,40 @@ def _render_markdown_blocks(
                 # Fallback: bozuk SVG, kullanıcıya bilgilendirici not.
                 flow.append(Paragraph(
                     "<i>[Görsel yüklenemedi]</i>", styles["qbody"],
+                ))
+        elif kind == "latex":
+            # Phase C: matplotlib mathtext ile LaTeX → PNG → Image embed.
+            from io import BytesIO
+            from app.services.math_renderer import render_latex_to_png
+            png = render_latex_to_png(content, display=True, font_size=14)
+            if png:
+                img = Image(BytesIO(png))
+                # PNG'nin DPI'ı 220, ama reportlab Image varsayılan boyutu
+                # native pixel dimensions. Sayfa genişliğine fit etmek için
+                # ölçeklendir. Tipik formül ~50-200px geniş; cm'ye çevir.
+                from reportlab.lib.utils import ImageReader
+                ir = ImageReader(BytesIO(png))
+                iw, ih = ir.getSize()
+                # 1 inch = 72 pt = 96 px (web) ama matplotlib PNG dpi=220
+                # → mm'ye geçmek için px / dpi * 25.4
+                px_per_mm = 220 / 25.4
+                w_mm = iw / px_per_mm
+                h_mm = ih / px_per_mm
+                # Max 12cm genişlik
+                max_w_mm = 120.0
+                if w_mm > max_w_mm:
+                    scale = max_w_mm / w_mm
+                    w_mm *= scale
+                    h_mm *= scale
+                img.drawWidth = w_mm * 0.1 * cm  # mm → reportlab "cm" point
+                img.drawHeight = h_mm * 0.1 * cm
+                flow.append(Spacer(1, 0.15 * cm))
+                flow.append(img)
+                flow.append(Spacer(1, 0.15 * cm))
+            else:
+                flow.append(Paragraph(
+                    f"<i>[Matematik ifadesi yüklenemedi: {content[:40]}]</i>",
+                    styles["qbody"],
                 ))
         elif kind == "code":
             # Preformatted satır satır basar — ASCII çubuk grafik ve Unicode

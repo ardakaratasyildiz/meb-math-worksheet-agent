@@ -8,6 +8,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 import TopNavBar from "@/components/TopNavBar";
 
 import "./globals.css";
+// Sprint 12-B / Phase C — KaTeX CSS (LaTeX math notation for salt_islem)
+// Layout'ta tek seferlik yükleniyor; QuestionCard içinde rehype-katex parsed
+// elementlerin doğru stilize olması için global gerekli.
+import "katex/dist/katex.min.css";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],

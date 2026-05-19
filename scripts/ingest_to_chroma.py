@@ -32,6 +32,7 @@ VISUAL_JSON_PATH = ROOT / "knowledge_base" / "processed" / "visual_examples.json
 FORMAT_JSON_PATH = ROOT / "knowledge_base" / "processed" / "format_examples.json"
 GEOMETRY_SVG_JSON_PATH = ROOT / "knowledge_base" / "processed" / "geometry_svg_examples.json"
 CHART_PATTERN_SVG_JSON_PATH = ROOT / "knowledge_base" / "processed" / "chart_pattern_svg_examples.json"
+SALT_ISLEM_LATEX_JSON_PATH = ROOT / "knowledge_base" / "processed" / "salt_islem_latex_examples.json"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -107,6 +108,18 @@ def _load_chart_pattern_svg() -> list[dict]:
     return items
 
 
+def _load_salt_islem_latex() -> list[dict]:
+    """Sprint 12-B Phase C — LaTeX'li salt_islem örnekleri."""
+    if not SALT_ISLEM_LATEX_JSON_PATH.exists():
+        logger.info("salt_islem LaTeX JSON yok (atlanıyor): %s", SALT_ISLEM_LATEX_JSON_PATH)
+        return []
+    with SALT_ISLEM_LATEX_JSON_PATH.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    items = data.get("examples", [])
+    logger.info("salt_islem LaTeX örnek: %s", len(items))
+    return items
+
+
 def _load_manual_few_shot() -> list[dict]:
     """Mevcut elle yazılmış few-shot örneklerini topla."""
     out: list[dict] = []
@@ -166,6 +179,7 @@ def main() -> None:
         + _load_format()
         + _load_geometry_svg()
         + _load_chart_pattern_svg()
+        + _load_salt_islem_latex()
         + _load_manual_few_shot()
     )
     logger.info("Toplam aday örnek: %s", len(all_items))

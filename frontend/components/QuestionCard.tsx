@@ -4,6 +4,8 @@ import * as React from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -131,7 +133,12 @@ function MarkdownQuestion({ text }: { text: string }) {
         seg.kind === "svg" ? (
           <SafeSvg key={i} content={seg.content} />
         ) : (
-          <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
+          <ReactMarkdown
+            key={i}
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={MD_COMPONENTS}
+          >
             {seg.content}
           </ReactMarkdown>
         ),
