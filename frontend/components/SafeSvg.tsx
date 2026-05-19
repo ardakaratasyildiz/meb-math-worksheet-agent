@@ -13,25 +13,53 @@ interface SafeSvgProps {
  * LLM tarafından üretilen ham SVG string'ini sanitize edip render eder.
  *
  * Güvenlik:
- *   - DOMPurify SVG profile: <script>, on* handler'ları, href javascript:
- *     gibi vektörleri keser. SVG primitive'leri (path, line, rect, circle,
- *     text, polygon, polyline, g, defs, marker, ...) korunur.
- *   - Sanitize sonrası boş çıkarsa hata mesajı gösterilir (LLM bozuk SVG
- *     üretmiş olabilir — fallback).
+ *   - DOMPurify SVG profile + explicit ADD_ATTR/ADD_TAGS: <script>, on*
+ *     handler'ları, href javascript: gibi vektörleri keser.
+ *   - xmlns="http://www.w3.org/2000/svg" eksikse otomatik ekleniyor (LLM
+ *     bazen unutuyor; xmlns yoksa browser SVG'yi HTML element gibi
+ *     algılıyor → render edilemiyor).
  *
  * Boyutlandırma:
- *   - viewBox SVG'de zaten tanımlıysa intrinsic; max-width ile yatay
- *     taşmayı önler. Mobile responsive — geniş ekrandan daralırsa scale eder.
+ *   - viewBox varsa intrinsic. width/height yoksa wrapper'a explicit
+ *     boyut veriyoruz ki yer kaplasın (aksi halde 0×0 görünebilir).
  */
 export function SafeSvg({ content, className }: SafeSvgProps) {
   const sanitized = React.useMemo(() => {
     if (typeof content !== "string" || !content.includes("<svg")) return null;
-    const clean = DOMPurify.sanitize(content, {
+
+    // xmlns yoksa ekle — browser SVG'yi tanıması için kritik.
+    let svg = content;
+    if (!/<svg[^>]*xmlns/i.test(svg)) {
+      svg = svg.replace(/<svg\b/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+
+    const clean = DOMPurify.sanitize(svg, {
       USE_PROFILES: { svg: true, svgFilters: true },
-      // Inline event handler ve dış kaynak yükleme yasak
-      FORBID_ATTR: ["onload", "onclick", "onerror", "onmouseover"],
-      FORBID_TAGS: ["script", "foreignObject"],
+      // xmlns, viewBox ve diğer kritik attr'ları açıkça whitelist'le —
+      // bazı DOMPurify versiyonlarında default'ta drop ediliyor.
+      ADD_ATTR: [
+        "xmlns",
+        "xmlns:xlink",
+        "viewBox",
+        "preserveAspectRatio",
+        "fill",
+        "stroke",
+        "stroke-width",
+        "stroke-dasharray",
+        "stroke-linecap",
+        "stroke-linejoin",
+        "font-size",
+        "font-family",
+        "font-weight",
+        "text-anchor",
+        "dominant-baseline",
+        "transform",
+        "opacity",
+      ],
+      FORBID_ATTR: ["onload", "onclick", "onerror", "onmouseover", "href"],
+      FORBID_TAGS: ["script", "foreignObject", "iframe"],
     });
+
     if (!clean || !clean.includes("<svg")) return null;
     return clean;
   }, [content]);
@@ -46,13 +74,13 @@ export function SafeSvg({ content, className }: SafeSvgProps) {
 
   return (
     <div
-      // Max-width ile parent'a fit, height auto SVG'nin oranını korur.
       className={`my-3 flex justify-center overflow-x-auto rounded-md border bg-white p-3 dark:bg-zinc-100 ${className ?? ""}`}
     >
       <div
-        // SVG ham HTML olarak ekleniyor, sanitize edilmiş olduğu garantili.
-        // Tailwind text-zinc-900 dark mode'da kontrastlı kalsın diye light bg.
-        className="[&>svg]:max-w-full [&>svg]:h-auto"
+        // Wrapper'a explicit max-width + min-height; SVG width/height
+        // belirtmediği durumlarda 0×0 düşmesini engelliyor (intrinsic 300×150
+        // browser default'una bırakıyor).
+        className="w-full max-w-[420px] [&>svg]:block [&>svg]:h-auto [&>svg]:max-h-[320px] [&>svg]:w-full"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: sanitized }}
       />

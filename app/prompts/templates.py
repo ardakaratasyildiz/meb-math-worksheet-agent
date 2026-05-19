@@ -34,10 +34,17 @@ Kuralların:
        (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` formatında olmalı (genişlik ≤ 250, yükseklik ≤ 200).
        (b) Sadece şu elementleri kullan: `line`, `polyline`, `polygon`, `rect`, `circle`, `ellipse`, `path`, `text`, `g`. Asla `script`, `foreignObject`, `image`, `use href="http..."` KULLANMA.
        (c) Stroke koyu siyah `#1f2937` veya `black`, stroke-width 1.5-2. Fill `none` (sadece kontur) ya da çok açık renk.
-       (d) Kenar uzunlukları/açı ölçüleri `<text>` elementiyle şekle YAKIN konumlandır (sayısal değer + birim, örn. "6 cm" veya "60°"). Font-size 12-14.
+       (d) **ETİKET KONUMLANDIRMA — KRİTİK:** Ölçü etiketleri (kenar uzunluğu / açı / yarıçap) ŞEKLİN ÇİZGİLERİNE / KENARINA / KÖŞELERİNE BİNMEMELİ. Etiketleri kenardan en az **12-15 piksel UZAĞA** yerleştir. Kurallar:
+            - Yatay kenar (en alt kenar) etiketi: kenar y koordinatından **+14** aşağıya (örn. üçgen tabanı y=130 ise label y=146)
+            - Eğik kenar etiketi: kenar dış normaline doğru ofset; yatayda **±15-20 piksel** kaydırarak konumlandır. ASLA kenar çizgisi üzerine koyma.
+            - Açı etiketi: köşeden kenar boyunca içeride **15-20 piksel** içeride; köşe noktasının dışına konulmaz.
+            - Yarıçap etiketi: yarıçap çizgisinin **yanına** (üst veya alt), çizgi üstüne BİNMESİN.
+            - `text-anchor="middle"` ile yatay merkezleme tercih edilir.
+            - Font-size 12-14.
        (e) Şekilde gösterilen ölçüler ile sorulan soru ve cevap MUTLAKA TUTARLI olmalı (örn. üçgenin görseldeki kenarı 6 cm ise sorudaki çevre hesabında da 6 cm kullanılmalı).
        (f) Dik açı işaretçisi gerekirse köşeye küçük kare çiz (≈ 8x8). Eşit kenar işaretçisi için tek/çift küçük çizgi.
-       Örnek: `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg"><polygon points="100,20 30,130 170,130" fill="none" stroke="black" stroke-width="2"/><text x="60" y="145" font-size="13">14 cm</text></svg>`
+       (g) "answer" alanı sade sayı + birim (örn. "32 cm" veya "42"); LaTeX delimeter ($, $$) KULLANMA — sadece düz metin.
+       Örnek (etiket kenardan ÇOK UZAK — 14px aşağıda): `<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg"><polygon points="100,20 30,130 170,130" fill="none" stroke="black" stroke-width="2"/><text x="100" y="148" font-size="13" text-anchor="middle">14 cm</text></svg>`
    - `grafik_okuma`: Soru metni + INLINE SVG bloğu ile sütun/pasta grafiği + grafiğe dayalı soru. Aşağıdaki kurallara MUTLAKA UY:
        (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` (W ≤ 300, H ≤ 200).
        (b) Sütun grafiği için: her sütun `<rect>`, sütun altına `<text>` etiketi, sütun üstüne `<text>` sayısal değeri, X-axis `<line>` ile yatay çizgi (y = H-30 civarı).

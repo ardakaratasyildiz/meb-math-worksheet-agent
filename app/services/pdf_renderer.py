@@ -476,24 +476,69 @@ def _question_block(q: Question, styles: dict[str, ParagraphStyle]) -> list:
     return [KeepTogether(flow)]
 
 
+_LATEX_DELIM_RE = re.compile(r"\$\$?(.+?)\$\$?", flags=re.DOTALL)
+
+
+def _clean_answer_for_table(answer: str) -> str:
+    """Cevap anahtarı tablo hücresi için sade metin üret.
+
+    LLM bazen answer alanında LaTeX delimiter'larını ($$11/12$$) bırakıyor;
+    tablo Paragraph render'da yine "$$" karakterleri görünüyor. İçeriği
+    çıkar, delimiter'ları at. Aynı zamanda multiline'ları tek satıra
+    indir, fazla boşluk normalize et.
+    """
+    a = answer.strip()
+    # Eğer "$...$" veya "$$...$$" sınırlayıcılı tek bloksa içini al
+    m = _LATEX_DELIM_RE.fullmatch(a.replace("\n", " ").strip())
+    if m:
+        a = m.group(1).strip()
+    a = a.replace("\n", " ").replace("\\frac", "").strip()
+    # Boş kaldıysa orijinal answer'ı geri ver (failsafe)
+    return a if a else answer.strip()
+
+
 def _answer_key_table(questions: Iterable[Question], styles: dict[str, ParagraphStyle]) -> list:
     flow = [Paragraph("Cevap Anahtarı", styles["section"])]
-    rows = [["#", "Cevap", "Kazanım"]]
+    # Hücre stili — Paragraph wrap için kompakt body.
+    cell_style = ParagraphStyle(
+        "AnswerKeyCell",
+        parent=styles["qbody"],
+        fontSize=10,
+        leading=12,
+        spaceBefore=0,
+        spaceAfter=0,
+    )
+    num_style = ParagraphStyle(
+        "AnswerKeyNum",
+        parent=cell_style,
+        fontName=_BOLD_FONT,
+        alignment=1,
+    )
+    header = [
+        Paragraph("<b>#</b>", num_style),
+        Paragraph("<b>Cevap</b>", cell_style),
+        Paragraph("<b>Kazanım</b>", cell_style),
+    ]
+    rows: list[list] = [header]
     for q in questions:
-        ans = q.answer.replace("\n", " ").strip()
-        rows.append([str(q.number), ans, q.kazanim_kod])
-    table = Table(rows, colWidths=[1.2 * cm, 9 * cm, 4 * cm], hAlign="LEFT")
+        ans = _clean_answer_for_table(q.answer)
+        # HTML escape — '<' veya '&' içeriği Paragraph'ı kırmasın
+        ans_safe = ans.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        rows.append([
+            Paragraph(str(q.number), num_style),
+            Paragraph(ans_safe, cell_style),
+            Paragraph(q.kazanim_kod, cell_style),
+        ])
+    # Toplam genişlik = 17 cm (A4 - 2*2cm margin). 1.2 + 11 + 3.8 = 16 cm.
+    table = Table(rows, colWidths=[1.2 * cm, 11 * cm, 3.8 * cm], hAlign="LEFT", repeatRows=1)
     table.setStyle(TableStyle([
-        ("FONTNAME", (0, 0), (-1, 0), _BOLD_FONT),
-        ("FONTNAME", (0, 1), (-1, -1), _BODY_FONT),
-        ("FONTSIZE", (0, 0), (-1, -1), 10),
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#eef2f7")),
         ("GRID", (0, 0), (-1, -1), 0.25, colors.lightgrey),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (-1, -1), 6),
         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
     ]))
     flow.append(table)
     flow.append(Spacer(1, 0.5 * cm))
