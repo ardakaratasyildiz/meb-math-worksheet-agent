@@ -1,3 +1,5 @@
+// Sprint 12-B cache-bust 2026-05-19 — tüm route'lar (/generate, /history, /features)
+// Vercel'de 404 dönüyordu; trivial config touch ile rebuild zorla.
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
