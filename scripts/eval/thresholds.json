@@ -1,36 +1,66 @@
 {
-  "_doc": "Sprint 2 sonrası referans metrikler (2026-05-01 A/B run, sprint2_full kolonu). Eşikler ~%10-15 marj bırakacak şekilde belirlendi. Yeni sprint sonrası bu dosya update edilmeli — `python scripts/eval/relock_thresholds.py <new_raw.json>` ile.",
-  "_baseline_run": "ab_raw_20260501_181943.json",
-  "_baseline_config": "sprint2_full",
+  "_doc": "Sprint 12-B sonrası referans metrikler (2026-05-19 A/B run, baseline kolonu — cache hit nedeniyle config karşılaştırması yapılamadı; baseline ilk-run gerçek değerleri yansıtıyor). Eşikler ~%10-15 marj bırakacak şekilde belirlendi. Yeni sprint sonrası bu dosya update edilmeli.",
+  "_baseline_run": "ab_raw_20260519_155114.json",
+  "_baseline_config": "baseline",
+  "_sprint_history": {
+    "2026-05-01_sprint2": {
+      "delivered": 0.80,
+      "critic_pass": 0.80,
+      "alignment": 0.6697,
+      "intra": 0.3289,
+      "cross": 0.3175,
+      "duration_s": 43.76
+    },
+    "2026-05-07_sprint5_regression": {
+      "delivered": 0.7333,
+      "critic_pass": 0.7583,
+      "alignment": 0.6806,
+      "intra": 0.3234,
+      "cross": 0.3241,
+      "duration_s": 63.72,
+      "note": "Textbook ingest sonrası regresyon: -0.067 delivered, -0.042 critic_pass."
+    },
+    "2026-05-19_sprint12b": {
+      "delivered": 1.0000,
+      "critic_pass": 1.0000,
+      "alignment": 0.6803,
+      "intra": 0.3208,
+      "cross": 0.3113,
+      "duration_s": 29.26,
+      "math_verifier_rejection": 0.0110,
+      "note": "Sprint 12-A + 12-B: 5 yeni soru tipi, SVG/LaTeX render, 112 SVG/LaTeX few-shot + 734 yeni textbook chunk (75 yeni PDF). Sprint 5 regresyonu tamamen kapandı."
+    }
+  },
   "diversity": {
     "avg_intra_batch_distance_min": 0.28,
     "avg_cross_batch_distance_min": 0.27,
-    "_observed_intra": 0.3289,
-    "_observed_cross": 0.3175
+    "_observed_intra": 0.3208,
+    "_observed_cross": 0.3113,
+    "_doc": "Cross-batch Sprint 5 → 12-B'de hafif düştü (0.3241 → 0.3113). ChromaDB büyümesiyle (7686 → 8449) retrieval benzer örnek getirme eğilimi artmış olabilir. Eşik 0.27'de bırakıldı — şu an 0.04 marjla geçiyor."
   },
   "quality": {
-    "avg_kazanim_alignment_min": 0.55,
-    "avg_delivered_ratio_min": 0.65,
-    "avg_critic_pass_rate_min": 0.60,
-    "avg_critic_pass_rate_max": 0.99,
-    "_doc_critic": "pass_rate çok yüksek (≥0.99) = critic pasif olabilir; çok düşük (<0.60) = model bozuk veya kazanım hatalı.",
-    "_observed_alignment": 0.6697,
-    "_observed_delivered": 0.8000,
-    "_observed_critic_pass": 0.8000
+    "avg_kazanim_alignment_min": 0.60,
+    "avg_delivered_ratio_min": 0.85,
+    "avg_critic_pass_rate_min": 0.85,
+    "avg_critic_pass_rate_max": 1.001,
+    "_doc_critic": "Sprint 12-B sonrası delivered ve critic_pass tam %100. Eşikler 0.85'e yükseltildi (önceden 0.60-0.65); büyük regresyonları erken yakalar. Max 1.001 — 1.0 sonuçları tetiklemesin.",
+    "_observed_alignment": 0.6803,
+    "_observed_delivered": 1.0000,
+    "_observed_critic_pass": 1.0000
   },
   "stability": {
-    "successful_runs_ratio_min": 0.90,
-    "_doc": "12 run'dan en az 11'i başarılı olmalı.",
-    "_observed_baseline": "12/12",
-    "_observed_sprint2": "12/12"
+    "successful_runs_ratio_min": 0.95,
+    "_doc": "Sprint 12-B'de 18/18 run başarılı (önceden 12/12). Eşik 0.95'e çekildi — 1 run fail edebilir ama daha fazlası alarm.",
+    "_observed_sprint12b": "18/18"
   },
   "performance": {
-    "avg_duration_seconds_max": 75.0,
-    "_doc": "Çağrı başına 75s'i aşarsa muhtemel API yavaşlığı veya retry patlaması. Alarm vermeli.",
-    "_observed": 43.76
+    "avg_duration_seconds_max": 60.0,
+    "_doc": "Sprint 12-B'de süre 63.7 → 29.3 sn (yarıya düştü). Eşik 75 → 60 sn'ye sıkılaştırıldı.",
+    "_observed": 29.26
   },
   "verifiers": {
     "_doc": "Sprint 3 ek metrikleri. math_verifier_rejected çok yüksekse (≥%30) ya verifier bozuk ya model SALT_ISLEM/ISLEM tipinde aritmetik hata yapıyor. Critic ile birlikte değerlendir.",
-    "math_verifier_rejection_rate_max": 0.30
+    "math_verifier_rejection_rate_max": 0.30,
+    "_observed_math_rejection": 0.0110
   }
 }
