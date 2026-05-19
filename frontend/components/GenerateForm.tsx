@@ -448,7 +448,7 @@ export function GenerateForm() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[11px] text-muted-foreground">
           Üretim ~30 saniye sürer. Karışık/progresyon modunda 3 ayrı çağrı
-          yapılır, süre ~60 sn'ye çıkar.
+          yapılır, süre ~60 sn&apos;ye çıkar.
         </p>
         <Button
           onClick={onGenerate}
