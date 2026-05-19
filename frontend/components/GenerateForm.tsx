@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import { useAuth } from "@clerk/nextjs";
-import { Loader2, Sparkles } from "lucide-react";
+import { ChevronDown, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -130,6 +131,20 @@ export function GenerateForm() {
   const [grades, setGrades] = React.useState<GradeInfo[]>([]);
   const [topics, setTopics] = React.useState<TopicInfo[]>([]);
   const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>([]);
+  // Progressive disclosure: gelişmiş ayarlar varsayılan kapalı. İlk kullanıcı
+  // 5 alanlı (sınıf/konu/kazanım/zorluk/sayı) sade ekranla karşılaşır;
+  // detay isteyen "▾ Gelişmiş ayarlar"ı açar.
+  const [advancedOpen, setAdvancedOpen] = React.useState(false);
+
+  // Default-dışı kaç ayar var? Kapalıyken kullanıcı bilsin diye badge'le göster.
+  const advancedChangeCount = React.useMemo(() => {
+    let n = 0;
+    if (difficultyMode !== "single") n++;
+    if (!typeGroups.open_ended || !typeGroups.visual || !typeGroups.format) n++;
+    if (!includeAnswerKey) n++;
+    if (!includeSolutions) n++;
+    return n;
+  }, [difficultyMode, typeGroups, includeAnswerKey, includeSolutions]);
 
   React.useEffect(() => {
     listGrades().then(setGrades).catch(() => setGrades([]));
@@ -278,31 +293,33 @@ export function GenerateForm() {
         </div>
       </div>
 
-      {/* ── Row 2: Zorluk / Soru sayısı (yatay) ─────────────────────────── */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label>Zorluk</Label>
-          <div className="grid grid-cols-3 gap-2">
-            {DIFFICULTIES.map((d) => (
-              <Button
-                key={d.value}
-                type="button"
-                variant={difficulty === d.value ? "default" : "outline"}
-                onClick={() => setForm({ difficulty: d.value })}
-                disabled={difficultyMode !== "single"}
-                size="sm"
-              >
-                {d.label}
-              </Button>
-            ))}
+      {/* ── Row 2: Zorluk + Soru sayısı ─────────────────────────────────
+          Karışık/Progresyon modda Zorluk butonları GİZLENİR (disable yerine);
+          Soru sayısı tek başına genişler. Mental model: "Karışık modda zorluk
+          seçimi gerekmiyor" — disabled buton sorgulamasını silindi. */}
+      <div
+        className={`grid gap-4 ${
+          difficultyMode === "single" ? "md:grid-cols-2" : "md:grid-cols-1"
+        }`}
+      >
+        {difficultyMode === "single" ? (
+          <div className="space-y-1.5">
+            <Label>Zorluk</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {DIFFICULTIES.map((d) => (
+                <Button
+                  key={d.value}
+                  type="button"
+                  variant={difficulty === d.value ? "default" : "outline"}
+                  onClick={() => setForm({ difficulty: d.value })}
+                  size="sm"
+                >
+                  {d.label}
+                </Button>
+              ))}
+            </div>
           </div>
-          {difficultyMode !== "single" ? (
-            <p className="text-[11px] text-muted-foreground">
-              {difficultyMode === "mixed" ? "Karışık" : "Progresyon"} modda
-              tekli zorluk kullanılmaz.
-            </p>
-          ) : null}
-        </div>
+        ) : null}
 
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
@@ -327,121 +344,160 @@ export function GenerateForm() {
         </div>
       </div>
 
-      {/* ── Row 3: Zorluk modu (yatay 3 buton, tek satır) ─────────────── */}
-      <div className="space-y-1.5">
-        <Label>Zorluk modu</Label>
-        <div className="grid grid-cols-3 gap-2">
-          {DIFFICULTY_MODES.map((m) => (
-            <Button
-              key={m.value}
-              type="button"
-              variant={difficultyMode === m.value ? "default" : "outline"}
-              onClick={() => setForm({ difficultyMode: m.value })}
-              size="sm"
-            >
-              {m.label}
-            </Button>
-          ))}
-        </div>
-        <p className="text-[11px] text-muted-foreground">
-          {DIFFICULTY_MODE_HINT[difficultyMode]}
-        </p>
-      </div>
-
-      {/* ── Row 4: Soru tipi grupları (yatay 3 switch kartı) ─────────── */}
-      <div className="space-y-2.5">
-        <SectionTitle
-          title="Soru tipi grupları"
-          hint="Hangi tipler üretim havuzunda olsun? En az bir grup açık olmalı."
-        />
-        <div className="grid gap-3 md:grid-cols-3">
-          {TYPE_GROUP_META.map((g) => (
-            // Card tıklanabilir ama outer button DEĞİL (inner Switch button
-            // ile iç içe geçersiz olur). Switch'in stopPropagation'ı outer
-            // toggle'ın çift tetiklenmesini önler.
-            <div
-              key={g.key}
-              role="presentation"
-              onClick={() =>
-                setForm({
-                  typeGroups: { ...typeGroups, [g.key]: !typeGroups[g.key] },
-                })
-              }
-              className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-md border bg-background p-3 text-left transition-colors hover:bg-accent/30 ${
-                typeGroups[g.key] ? "border-primary/40 bg-accent/20" : ""
+      {/* ── Gelişmiş ayarlar (varsayılan kapalı) ──────────────────────
+          Progressive disclosure — ilk kullanıcı sade form görür, detay
+          isteyen açar. Default-dışı ayar varsa badge'le bildirir. */}
+      <div className="space-y-3">
+        <button
+          type="button"
+          onClick={() => setAdvancedOpen((v) => !v)}
+          aria-expanded={advancedOpen}
+          className="flex w-full items-center justify-between gap-3 rounded-md border bg-background px-4 py-3 text-sm transition-colors hover:bg-accent/30"
+        >
+          <span className="flex items-center gap-2 font-medium">
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${
+                advancedOpen ? "rotate-180" : ""
               }`}
-            >
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium leading-tight">{g.title}</p>
-                <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-                  {g.hint}
-                </p>
-              </div>
-              <Switch
-                checked={typeGroups[g.key]}
-                onCheckedChange={(v) =>
-                  setForm({
-                    typeGroups: { ...typeGroups, [g.key]: v },
-                  })
-                }
-                aria-label={g.title}
-              />
-            </div>
-          ))}
-        </div>
-        {!anyTypeGroupOn ? (
-          <p className="text-[11px] text-destructive">
-            Üretim için en az bir grup açık olmalı.
-          </p>
-        ) : null}
-      </div>
+            />
+            Gelişmiş ayarlar
+            {advancedChangeCount > 0 ? (
+              <Badge variant="secondary" className="ml-1 text-[10px]">
+                {advancedChangeCount} değişiklik
+              </Badge>
+            ) : null}
+          </span>
+          <span className="hidden text-[11px] text-muted-foreground sm:inline">
+            Zorluk modu · Tip grupları · PDF içeriği
+          </span>
+        </button>
 
-      {/* ── Row 5: Çıktı içeriği (yatay 2 switch) ──────────────────── */}
-      <div className="space-y-2.5">
-        <SectionTitle
-          title="Çıktı (PDF) içeriği"
-          hint="Sınav modu için cevap anahtarını ve çözüm sayfasını kapatabilirsiniz."
-        />
-        <div className="grid gap-3 md:grid-cols-2">
-          <div
-            role="presentation"
-            onClick={() => setForm({ includeAnswerKey: !includeAnswerKey })}
-            className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-md border bg-background p-3 text-left transition-colors hover:bg-accent/30 ${
-              includeAnswerKey ? "border-primary/40 bg-accent/20" : ""
-            }`}
-          >
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">Cevap anahtarı sayfası</p>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">
-                PDF sonunda numara ↔ doğru cevap tablosu.
+        {advancedOpen ? (
+          <div className="space-y-6 rounded-md border bg-accent/10 p-4">
+            {/* Zorluk modu */}
+            <div className="space-y-1.5">
+              <Label>Zorluk modu</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {DIFFICULTY_MODES.map((m) => (
+                  <Button
+                    key={m.value}
+                    type="button"
+                    variant={difficultyMode === m.value ? "default" : "outline"}
+                    onClick={() => setForm({ difficultyMode: m.value })}
+                    size="sm"
+                  >
+                    {m.label}
+                  </Button>
+                ))}
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                {DIFFICULTY_MODE_HINT[difficultyMode]}
               </p>
             </div>
-            <Switch
-              checked={includeAnswerKey}
-              onCheckedChange={(v) => setForm({ includeAnswerKey: v })}
-              aria-label="Cevap anahtarı sayfası"
-            />
-          </div>
-          <div
-            role="presentation"
-            onClick={() => setForm({ includeSolutions: !includeSolutions })}
-            className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-md border bg-background p-3 text-left transition-colors hover:bg-accent/30 ${
-              includeSolutions ? "border-primary/40 bg-accent/20" : ""
-            }`}
-          >
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">Çözüm adımları sayfası</p>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">
-                Her sorunun adım adım çözümü ayrı sayfada.
-              </p>
+
+            {/* Soru tipi grupları */}
+            <div className="space-y-2.5">
+              <SectionTitle
+                title="Soru tipi grupları"
+                hint="Hangi tipler üretim havuzunda olsun? En az bir grup açık olmalı."
+              />
+              <div className="grid gap-3 md:grid-cols-3">
+                {TYPE_GROUP_META.map((g) => (
+                  <div
+                    key={g.key}
+                    role="presentation"
+                    onClick={() =>
+                      setForm({
+                        typeGroups: {
+                          ...typeGroups,
+                          [g.key]: !typeGroups[g.key],
+                        },
+                      })
+                    }
+                    className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-md border bg-background p-3 text-left transition-colors hover:bg-accent/30 ${
+                      typeGroups[g.key] ? "border-primary/40 bg-accent/20" : ""
+                    }`}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium leading-tight">
+                        {g.title}
+                      </p>
+                      <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+                        {g.hint}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={typeGroups[g.key]}
+                      onCheckedChange={(v) =>
+                        setForm({
+                          typeGroups: { ...typeGroups, [g.key]: v },
+                        })
+                      }
+                      aria-label={g.title}
+                    />
+                  </div>
+                ))}
+              </div>
+              {!anyTypeGroupOn ? (
+                <p className="text-[11px] text-destructive">
+                  Üretim için en az bir grup açık olmalı.
+                </p>
+              ) : null}
             </div>
-            <Switch
-              checked={includeSolutions}
-              onCheckedChange={(v) => setForm({ includeSolutions: v })}
-              aria-label="Çözüm adımları sayfası"
-            />
+
+            {/* Çıktı içeriği */}
+            <div className="space-y-2.5">
+              <SectionTitle
+                title="Çıktı (PDF) içeriği"
+                hint="Sınav modu için cevap anahtarını ve çözüm sayfasını kapatabilirsiniz."
+              />
+              <div className="grid gap-3 md:grid-cols-2">
+                <div
+                  role="presentation"
+                  onClick={() =>
+                    setForm({ includeAnswerKey: !includeAnswerKey })
+                  }
+                  className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-md border bg-background p-3 text-left transition-colors hover:bg-accent/30 ${
+                    includeAnswerKey ? "border-primary/40 bg-accent/20" : ""
+                  }`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium">Cevap anahtarı sayfası</p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                      PDF sonunda numara ↔ doğru cevap tablosu.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={includeAnswerKey}
+                    onCheckedChange={(v) => setForm({ includeAnswerKey: v })}
+                    aria-label="Cevap anahtarı sayfası"
+                  />
+                </div>
+                <div
+                  role="presentation"
+                  onClick={() =>
+                    setForm({ includeSolutions: !includeSolutions })
+                  }
+                  className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-md border bg-background p-3 text-left transition-colors hover:bg-accent/30 ${
+                    includeSolutions ? "border-primary/40 bg-accent/20" : ""
+                  }`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium">Çözüm adımları sayfası</p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                      Her sorunun adım adım çözümü ayrı sayfada.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={includeSolutions}
+                    onCheckedChange={(v) => setForm({ includeSolutions: v })}
+                    aria-label="Çözüm adımları sayfası"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
 
       {/* ── Row 6: Üretim butonu — her zaman görünür ──────────────────── */}
