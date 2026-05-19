@@ -7,25 +7,26 @@ export const metadata = {
 
 export default function GeneratePage() {
   return (
-    <div className="container py-8">
-      <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
-        {/* Sol pane — form */}
-        <aside className="lg:sticky lg:top-20 lg:h-fit">
-          <div className="rounded-xl border bg-card p-6">
-            <h1 className="mb-1 text-xl font-semibold">Çalışma kağıdı üretimi</h1>
-            <p className="mb-6 text-xs text-muted-foreground">
-              Aşağıdaki parametreleri seçin. Sistem, seçilen MEB kazanımına
-              hizalanmış bir çalışma kağıdı üretir ve PDF olarak indirir.
-            </p>
-            <GenerateForm />
-          </div>
-        </aside>
+    <div className="container space-y-6 py-8">
+      <header className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Çalışma kağıdı üretimi
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Aşağıdaki parametreleri seçip üretimi başlatın. Sistem, seçilen MEB
+          kazanımına hizalanmış bir çalışma kağıdı üretir ve PDF olarak indirir.
+        </p>
+      </header>
 
-        {/* Sağ pane — preview */}
-        <section className="min-w-0">
-          <QuestionPreview />
-        </section>
+      {/* Sprint 12-A UI v2: yatay form (mobile'da stack, lg+ yatay).
+          Üretim butonu form'un sonunda → her zaman görünür. */}
+      <div className="rounded-xl border bg-card p-6 shadow-sm">
+        <GenerateForm />
       </div>
+
+      {/* Preview/loading alanı — başlatıldıktan sonra otomatik kaydırma için
+          QuestionPreview kendi container'ına ref atıp scrollIntoView çağırır. */}
+      <QuestionPreview />
     </div>
   );
 }

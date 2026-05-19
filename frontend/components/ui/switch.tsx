@@ -13,15 +13,28 @@ interface SwitchProps
 // Pure-Tailwind toggle — Radix dep eklemek istemedim. shadcn switch ile
 // görsel benzer; rol="switch" + aria-checked semantik. Bilinçli olarak
 // keyboard toggle (space/enter) browser'ın button davranışıyla geliyor.
+// onClick prop'u onCheckedChange ile birleşir — caller stopPropagation
+// veya ek davranış geçirebilir (örn. dış card içinde sarılıyken).
 export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
-  ({ checked, onCheckedChange, disabled, className, ...props }, ref) => (
+  (
+    { checked, onCheckedChange, disabled, className, onClick, ...props },
+    ref,
+  ) => (
     <button
       ref={ref}
       type="button"
       role="switch"
       aria-checked={checked}
       disabled={disabled}
-      onClick={() => onCheckedChange(!checked)}
+      onClick={(e) => {
+        // Dış button/card içine sarıldığında bubble'lamasın — yoksa double
+        // toggle olur (outer card + inner switch ikisi de toggle eder).
+        e.stopPropagation();
+        onClick?.(e);
+        if (!e.defaultPrevented) {
+          onCheckedChange(!checked);
+        }
+      }}
       className={cn(
         "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",

@@ -31,28 +31,51 @@ export function QuestionPreview() {
     includeSolutions,
   } = useGenerateStore();
 
+  // Üretim başlatıldığında (idle → loading veya success → loading) preview
+  // alanını otomatik görüntüye kaydır — form'un altında olduğu için kullanıcı
+  // ekranı kaydırmak zorunda kalmasın. Aynı blok success/error geçişlerini de
+  // yumuşatır (ör. cache hit anında sonuç direkt görünür).
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (status === "idle") return;
+    // bir tick beklet — DOM güncellensin (loading state'in skeleton'ları)
+    const id = window.requestAnimationFrame(() => {
+      rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [status]);
+
   if (status === "idle") {
     return (
-      <Card className="flex h-full min-h-[400px] flex-col items-center justify-center gap-3 border-dashed p-10 text-center">
-        <Sparkles className="h-10 w-10 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">
-          Soldaki form parametreleri seçildikten sonra{" "}
-          <strong>Üretimi başlat</strong> butonu ile üretim başlatılabilir.
-        </p>
-      </Card>
+      <div ref={rootRef}>
+        <Card className="flex min-h-[280px] flex-col items-center justify-center gap-3 border-dashed p-10 text-center">
+          <Sparkles className="h-10 w-10 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">
+            Yukarıdaki parametreleri seçip{" "}
+            <strong>Üretimi başlat</strong> butonuna basın. Sonuç bu alanda
+            görünecek.
+          </p>
+        </Card>
+      </div>
     );
   }
 
   if (status === "loading") {
-    return <GeneratingState questionCount={questionCount} />;
+    return (
+      <div ref={rootRef}>
+        <GeneratingState questionCount={questionCount} />
+      </div>
+    );
   }
 
   if (status === "error") {
     return (
-      <Card className="border-destructive/50 bg-destructive/5 p-6 text-sm">
-        <p className="font-semibold text-destructive">Üretim başarısız</p>
-        <p className="mt-1 text-muted-foreground">{error}</p>
-      </Card>
+      <div ref={rootRef}>
+        <Card className="border-destructive/50 bg-destructive/5 p-6 text-sm">
+          <p className="font-semibold text-destructive">Üretim başarısız</p>
+          <p className="mt-1 text-muted-foreground">{error}</p>
+        </Card>
+      </div>
     );
   }
 
@@ -78,7 +101,7 @@ export function QuestionPreview() {
   }
 
   return (
-    <div className="space-y-3">
+    <div ref={rootRef} className="space-y-3">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-card p-4">
         <div>
