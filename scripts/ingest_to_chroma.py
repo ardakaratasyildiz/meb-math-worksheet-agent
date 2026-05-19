@@ -31,6 +31,7 @@ SYNTH_JSON_PATH = ROOT / "knowledge_base" / "processed" / "synthetic_examples.js
 VISUAL_JSON_PATH = ROOT / "knowledge_base" / "processed" / "visual_examples.json"
 FORMAT_JSON_PATH = ROOT / "knowledge_base" / "processed" / "format_examples.json"
 GEOMETRY_SVG_JSON_PATH = ROOT / "knowledge_base" / "processed" / "geometry_svg_examples.json"
+CHART_PATTERN_SVG_JSON_PATH = ROOT / "knowledge_base" / "processed" / "chart_pattern_svg_examples.json"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -94,6 +95,18 @@ def _load_geometry_svg() -> list[dict]:
     return items
 
 
+def _load_chart_pattern_svg() -> list[dict]:
+    """Sprint 12-B Phase B — SVG'li grafik_okuma + oruntu_sekil örnekleri."""
+    if not CHART_PATTERN_SVG_JSON_PATH.exists():
+        logger.info("Chart/Pattern SVG JSON yok (atlanıyor): %s", CHART_PATTERN_SVG_JSON_PATH)
+        return []
+    with CHART_PATTERN_SVG_JSON_PATH.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    items = data.get("examples", [])
+    logger.info("Chart/Pattern SVG örnek: %s", len(items))
+    return items
+
+
 def _load_manual_few_shot() -> list[dict]:
     """Mevcut elle yazılmış few-shot örneklerini topla."""
     out: list[dict] = []
@@ -152,6 +165,7 @@ def main() -> None:
         + _load_visual()
         + _load_format()
         + _load_geometry_svg()
+        + _load_chart_pattern_svg()
         + _load_manual_few_shot()
     )
     logger.info("Toplam aday örnek: %s", len(all_items))

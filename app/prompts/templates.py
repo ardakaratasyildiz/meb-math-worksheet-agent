@@ -32,8 +32,22 @@ Kuralların:
        (e) Şekilde gösterilen ölçüler ile sorulan soru ve cevap MUTLAKA TUTARLI olmalı (örn. üçgenin görseldeki kenarı 6 cm ise sorudaki çevre hesabında da 6 cm kullanılmalı).
        (f) Dik açı işaretçisi gerekirse köşeye küçük kare çiz (≈ 8x8). Eşit kenar işaretçisi için tek/çift küçük çizgi.
        Örnek: `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg"><polygon points="100,20 30,130 170,130" fill="none" stroke="black" stroke-width="2"/><text x="60" y="145" font-size="13">14 cm</text></svg>`
-   - `grafik_okuma`: Soru metni + ```kod bloğu``` içinde ASCII sütun grafiği + grafiğe dayalı bir soru.
-   - `oruntu_sekil`: Soru metni + sembol/emoji dizisi + "?" ile devam eden örüntü.
+   - `grafik_okuma`: Soru metni + INLINE SVG bloğu ile sütun/pasta grafiği + grafiğe dayalı soru. Aşağıdaki kurallara MUTLAKA UY:
+       (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` (W ≤ 300, H ≤ 200).
+       (b) Sütun grafiği için: her sütun `<rect>`, sütun altına `<text>` etiketi, sütun üstüne `<text>` sayısal değeri, X-axis `<line>` ile yatay çizgi (y = H-30 civarı).
+       (c) Pasta grafiği için: her dilim `<path d="M cx,cy L x1,y1 A r,r 0 0,1 x2,y2 Z" fill="..."/>` + dilim ortasında `<text>` etiketi.
+       (d) Renkler: kategoriler için farklı tonlar (`#3b82f6`, `#10b981`, `#f59e0b`, `#ef4444`, `#8b5cf6`). Hepsi koyu, kontrastlı.
+       (e) Sayısal değerler MUTLAKA grafikteki çubuk yüksekliği/dilim oranıyla ORANTILI. (örn. 10 ve 20 değerli iki sütun → ikincinin yüksekliği birincinin 2 katı olmalı.)
+       (f) Cevap için kullanılan sayılar grafikte görünür değer ETİKETLERİYLE tutarlı.
+       Örnek: `<svg viewBox="0 0 260 180" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="60" width="40" height="100" fill="#3b82f6"/><rect x="90" y="20" width="40" height="140" fill="#10b981"/><rect x="150" y="80" width="40" height="80" fill="#f59e0b"/><line x1="20" y1="160" x2="220" y2="160" stroke="black" stroke-width="1"/><text x="50" y="175" font-size="11" text-anchor="middle">Ocak</text><text x="110" y="175" font-size="11" text-anchor="middle">Şubat</text><text x="170" y="175" font-size="11" text-anchor="middle">Mart</text><text x="50" y="55" font-size="12" text-anchor="middle">10</text><text x="110" y="15" font-size="12" text-anchor="middle">14</text><text x="170" y="75" font-size="12" text-anchor="middle">8</text></svg>`
+   - `oruntu_sekil`: Soru metni + INLINE SVG bloğu ile renkli geometrik şekiller örüntüsü + "?" ile eksik konum. Kurallar:
+       (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` (W ≤ 360, H ≤ 80).
+       (b) 4-7 şekil yan yana eşit aralıkla (x: 30, 80, 130, 180, ...).
+       (c) Her şekil ayrı SVG primitive: `<circle>`, `<rect>`, `<polygon>` (üçgen için). Yarıçap/genişlik ≈ 20-25.
+       (d) Renkler kontrastlı kategoriler: `#ef4444` (kırmızı), `#3b82f6` (mavi), `#10b981` (yeşil), `#f59e0b` (turuncu).
+       (e) Eksik konuma `<text font-size="32" text-anchor="middle">?</text>` veya boş `<rect fill="none" stroke-dasharray="4"/>`.
+       (f) Örüntü kuralı (renk/şekil/sayı) MATEMATİKSEL OLARAK tutarlı — cevap kuralı uygulayarak bulunmalı.
+       Örnek: `<svg viewBox="0 0 320 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="20" fill="#ef4444"/><rect x="60" y="10" width="40" height="40" fill="#3b82f6"/><polygon points="160,10 140,50 180,50" fill="#10b981"/><circle cx="220" cy="30" r="20" fill="#ef4444"/><rect x="250" y="10" width="40" height="40" fill="#3b82f6"/><text x="310" y="40" font-size="32" text-anchor="middle">?</text></svg>`
    - `coktan_secmeli`: Soru metni + boş satır + 4 şık her biri ayrı satırda "A) ...", "B) ...", "C) ...", "D) ..." formatında. Şıklardan SADECE BİRİ doğru olmalı; çeldiriciler makul yanlışlar (yaygın hatalar) olsun. `answer` alanı SADECE doğru şıkkın harfi ("A", "B", "C" veya "D"). Çözüm hangi şıkkın neden doğru olduğunu ve diğerlerinin neden yanlış olduğunu açıklar.
    - `bosluk_doldurma`: Soru cümlesi içinde bir veya birden fazla "_____" (en az 3 alt çizgi) boşluğu olsun. `answer` alanı boşluğa giren ifadeler — birden fazla boşluk varsa "; " ile ayrılır (örn. "12; 5"). Sıralama soldan sağa.
    - `dogru_yanlis`: Soru yerine TEK bir iddia/önerme cümlesi yaz (örn. "Bir karenin tüm kenarları eşittir."). Soru işareti olmasın. `answer` SADECE "Doğru" veya "Yanlış" olsun. Çözüm önermenin neden doğru/yanlış olduğunu kazanım çerçevesinde açıklar.
