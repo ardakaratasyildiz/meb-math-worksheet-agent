@@ -1,7 +1,7 @@
 {
   "grade": 3,
   "total": 1193,
-  "tagged_count": 1162,
+  "tagged_count": 1193,
   "chunks": [
     {
       "chunk_id": "tb_743f0e55df86c6",
@@ -8854,11 +8854,11 @@
       "text": "A A A B B B C C C D MATEMATİK 3 1) Aşağıdaki geometrik şekillerin köşegenleri olanlarının köşegenlerini çiziniz. Kare, Dikdörtgen ve Üçgen 2 2) Aşağıdaki noktalı yerleri uygun kelimelerle tamamlayınız. Geometrik şekillerde köşeleri birleştiren çizgiye ............... denir. Üçgenin köşegeni ............... . Kare ve dikdörtgenin ............... tane köşegeni vardır. 3) Aşağıda köşegenleri verilen geometrik cisimleri çiziniz. Hangi geometrik şekli çizdiğinizi altına yazınız. 4) Aşağıdaki geometrik şekillerden köşegeni doğru çizilenlerin altına “D”, yanlış çizilenlerin altına “Y” yazınız. ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) . . . . . . . . . . . . . . . . . . . . . . MATEMATİK 3 1) Aşağıdaki geometrik şekillerin kenar sayılarını altlarına yazınız. Dörtgen, Beşgen, Altıgen ve Sekizgen 2) Aşağıdaki noktalı yerleri doldurunuz.  Üç kenarı olan geometrik şekle ……………………. denir.  Dört kenarı olan geometrik şekle ……………………. denir.  Beş kenarı olan geometrik şekle ……………………. denir.  Altı kenarı olan geometrik şekle ……………………. denir.  Sekiz kenarı olan geometrik şekle ……………………. denir. 3) Aşağıdaki nesnelerin hangi geometrik şekle benzediğini altlarına yazınız. ………… ………… ………… ! ………… ………… ………… MATEMATİK 3 1) Aşağıdaki örüntüleri inceleyiniz. Örüntünün kuralına göre örüntüyü devam ettiriniz. Geometrik Örüntüler MATEMATİK 3 1) Alfabetik sırayı takip ederek cetvel yardımıyla noktaları birleştiriniz. Nokta 1 A B Ç C K D E F G A B C N L M A B C Ç D F B C Ç D E 2) İkişer ritmik sayarak noktaları sırasıyla birleştiriniz. MATEMATİK 3 1) Aşağıdaki noktalı kâğıtta renkli kalemlerinizle 10 tane nokta belirleyip isimlendiriniz. Nokta 2 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3) Aşağıda yer alan noktalardan doğru isimlendirilenleri yuvarlak içine alınız. .A K.m . .H .3 n.B d. .P S. 2) Aşağıdaki bilgilerden doğru olanların başına “D” yanlış olanların başına “Y” yazınız. Nokta kalemin kâğıtta bıraktığı izdir.",
       "char_count": 2179,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.5.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_48d2133a4be526",
@@ -8871,11 +8871,11 @@
       "text": "Nokta küçük harflerle gösterilebilir. Noktalar farklı büyüklüklerde olabilir. Yıldızlar bir nokta modelidir. Nokta büyük harflerle gösterilir. Noktalar arası mesafeler ölçülebilir. Haritalarda şehirler nokta ile gösterilebilir. .O MATEMATİK 3 1) Aşağıda verilen görselleri, ilgili oldukları ifadelerle eşleştiriniz. Doğru, Doğru Parçası, Işın ve Açı 1 Açı Doğru parçası Işın Doğru 2) Aşağıdaki terimleri uygun modellerle eşleştiriniz.",
       "char_count": 434,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "Temel Geometrik Kavramlar",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_ad1386892b0756",
@@ -8888,11 +8888,11 @@
       "text": "Başlangıç ve bitiş noktası belli olmayan çizgiye ……………….. denir. Çubuk makarna bir ……………….. modelidir. Başlangıç noktası belli olan, bitiş noktası belli olmayan çizgiye ……………….. denir. Elektrik telleri bir ……………….. modelidir. Başlangıç noktaları aynı olan iki ışının oluşturduğu açıklığa ……………….. denir. Ucu açılmış kalem bir ……………….. modelidir. Başlangıç ve bitiş noktası belli olan düz çizgiye ……………….. denir. Çöp adamın kollarındaki ilişki bir ……………….. modelidir. Minare bir ……………….. modelidir. doğru ışın açı doğru parçası 3) Aşağıda boş bırakılan yerleri altta verilen ifadelerden uygun olanlar ile doldurunuz. (İfadeler birden fazla yerde kullanılabilir.) doğru açı doğru parçası ışın MATEMATİK 3 1) Aşağıdaki noktaları birleştirerek doğru parçaları çiziniz. Doğru parçalarının yatay mı, dikey mi, eğik mi olduğunu noktalı yerlere yazınız. Doğru, Doğru Parçası, Işın ve Açı 2 2) Kareli alanlardan yararlanarak açılar çiziniz. ………… ………… ………… 3) Aşağıdaki görselde yer alan eğik doğru modellerini mavi, yatay doğru modellerini kırmızı ve dikey doğru modellerini yeşil boya kalemi ile boyayıp görseli tamamlayınız. MATEMATİK 3 1) Simetri doğrusundan katlanan modelleri katlanmış hâlleri ile eşleştiriniz. Uzamsal İlişkiler 1",
       "char_count": 1227,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.3.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_ae73109c9ad2fb",
@@ -8905,11 +8905,11 @@
       "text": "2) Aşağıdaki şekillerde noktalı olarak gösterilen çizgilerden simetri doğrusu olanları renkli kalemle çiziniz. 3) Aşağıdaki bilgilerden doğru olanların başına “D ”, yanlış olanların başına “Y” yazınız. Karenin dört tane simetri doğrusu vardır. Dikdörtgenin köşegeni aynı zamanda simetri doğrusudur. Simetri doğrusu şekli iki eş parçaya böler. Her şeklin simetri doğrusu vardır. Dairenin simetri doğrusu sayamayacağımız kadar çoktur. Şekillerin birden fazla simetri doğrusu olabilir. Dikdörtgenin dört tane simetri doğrusu vardır. MATEMATİK 3 1) Aşağıdaki görsellerin simetri doğrusunu çiziniz. Uzamsal İlişkiler 2 2) Aşağıda verilen şekilleri simetri doğrusuna göre tamamlayınız. 3) Aşağıdaki şekilleri simetri doğrusuna göre tamamlayınız. Tamamladığınız kısmı boyayınız. MATEMATİK 3 1) Aşağıdaki şekilleri simetri doğrularına göre tamamlayınız. Uzamsal İlişkiler 3 2) Aşağıdaki şekilleri simetri doğrularına göre tamamlayınız. MATEMATİK 3 5. Ünite Değerlendirme Soruları 1. Aşağıdaki cümlelerden doğru olanların başına “D” yanlış olanların başına “Y” yazınız. Geometrik şekiller kenar sayılarına göre isimlendirilir. Küp, kare prizma, dikdörtgen prizma, üçgen prizma, silindir, koni ve küre birer geometrik cisimdir. Başlangıç noktaları aynı olan iki ışının oluşturduğu açıklığa kenar denir. Üçgenin köşegeni yoktur. Kalemin ucunu kâğıda dokundurduğumuzda bıraktığı ize nokta denir. Doğrular yatay, dikey ve eğik olabilir. 2. Aşağıda verilen kaplama örüntülerini devam ettiriniz. 3. Aşağıdakilerden hangisi çizilirken doğrular üç noktadan geçer? A) B) C) 4. Aşağıdaki doğru modellerini yatay, eğik ve dikey doğrular olarak belirtiniz. ………………. ………………. ………………. MATEMATİK 3 5. Aşağıdaki geometri cisimlerin isimlerini ve yüzey özelliklerini örnekteki gibi yazınız. • Kare prizma • 2 adet karesel bölge • 4 adet dikdörtgensel bölge • ……………………. • ……………………. ……………………. • ……………………. • ……………………. ……………………. • ……………………. • ……………………. ……………………. • ……………………. • ……………………. ……………………. • ……………………. • ……………………. ……………………. • ……………………. • ……………………. ……………………. 6. Eğri yüzeyi olan geometrik şekil hangisidir? A) B) C) 7. Çevrenizden doğru, ışın, doğru parçasına örnek nesneler bularak noktalı yerlere yazınız.",
       "char_count": 2181,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.3.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_c8bdb35e13eef2",
@@ -19836,11 +19836,11 @@
       "text": "Buna göre aşağıdakilerden hangisi yanlıştır? A) En fazla elma, 2018 yılında toplanmıştır. B) En fazla armut, 2020 yılında toplanmıştır. C) 2019 yılında, en az şeftali toplanmıştır. D) En çok ürün, 2018 yılında toplanmıştır. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 8. Aşağıdaki sıklık tablosunda bir okulun 3. sınıflarına ait öğrenci sayıları verilmiştir. Tablo: Şubelerdeki Öğrenci Sayıları Şube Öğrenci Sayısı 3/A",
       "char_count": 431,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_c0991423457e1d",
@@ -19853,11 +19853,11 @@
       "text": "3/A3 /B 3/C3 /D ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 11. Bir sınıf kütüphanesinde 48 tane hikâye kitabı, hikâye kitaplarının 12 fazlası kadar da şiir kitabı vardır. Buna göre bu kütüphanedeki hikâye ve şiir kitaplarının toplam sayısı kaçtır? A) 56 B) 60 C) 72 D) 108 10. Bir fırında sabah, öğle ve akşam olmak üzere toplam 785 ekmek pişiriliyor. Sabah 278 ekmek, öğle ise sabahkinden 50 ekmek daha fazla pişiriliyor. Buna göre akşam pişirilen ekmek sayısı kaçtır? A) 179 B) 279 C) 328 D) 457 9. Can, Elif, Kaan ve Zeynep tablodaki 1 ve 2. sayıları en yakın onluğa yuvarlayarak topluyor. 1. sayı 2. sayı Can",
       "char_count": 626,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_9b5af247894814",
@@ -19870,11 +19870,11 @@
       "text": "Buna göre hangisinin bulduğu sonuç, sayıların toplamının gerçek sonucundan küçüktür? A) Can B) Elif C) Kaan D) Zeynep 12. Aşağıdaki tabloda verilen doğal sayılar, soldan sağa ve yukarıdan aşağıya doğru toplanarak toplam kısmına yazılmıştır. + Toplam",
       "char_count": 249,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_c9a47fb110b92d",
@@ -19887,11 +19887,11 @@
       "text": "Fasulye Nohut Bulgur Yukarıdaki şekil grafiğine göre oluşturulan sıklık tablosu aşağıdakilerden hangisidir? A) Tablo: Bakliyat Miktarları Bakliyat Miktar (kg) Fasulye",
       "char_count": 166,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_54603682d929fc",
@@ -19904,11 +19904,11 @@
       "text": "Mercimek ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 16. Aşağıdaki şekil grafiğinde bir çiftlikte bulunan hayvan türlerinden tavukların sayısı gösterilmiştir.",
       "char_count": 171,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "Veri İşleme / Grafik Okuma",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_62b3e7772cc1da",
@@ -19921,11 +19921,11 @@
       "text": "●İnek sayısında kullanılacak şekil sayısı ise koyunlarda kullanılacak olandan üç fazladır. Buna göre çiftlikteki hayvanların toplam sayısı kaçtır? A) 400 B) 500 C) 600 D) 700 14. Elma ve armut ağaçlarının olduğu bir bahçedeki toplam ağaç sayısı 578’dir. Bu bahçedeki elma ağaçlarının sayısı 284 olduğuna göre armut ağaçlarının sayısı kaçtır? A) 264 B) 274 C) 284 D) 294 15. Yukarıdaki toplama işleminin tahminî ve gerçek sonucu arasındaki fark kaçtır? A) 1 B) 2 C) 3 D) 4 1 9 3 2 1 5 + ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 17. 17-18. soruları aşağıdaki bilgilere göre cevaplayınız. Aşağıdaki şekil grafiğinde bazı öğrencilerin bir haftada okudukları kitapların sayfa sayıları gösterilmiştir. Not:",
       "char_count": 716,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_588fad5fcbd96f",
@@ -19938,11 +19938,11 @@
       "text": "Kübra Arda Duygu Eda Fatih ve Kübra toplam kaç sayfa kitap okumuştur? A) 78 B) 84 C) 90 D) 96 18. Arda ve Eda’nın okudukları toplam sayfa sayısı ile Duygu’nun okuduğu sayfa sayısı arasındaki fark kaçtır? A) 20 B) 24 C) 27 D) 31 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 20. Aşağıdaki eşit bölmeli çarkta, bazı toplama işlemleri veriliyor. 679 + 212 511+ 287 420 + 394 186 + 193 Mete, çarkı çevirdiğinde okun gösterdiği toplama işleminin sonucunu, en yakın onluğa yuvarlama yöntemiyle tahmin ediyor. Buna göre aşağıdakilerden hangisi Mete’nin yaptığı doğru tahminlerden biri olamaz? A) 380 B) 790 C) 800 D) 810 19. Aşağıdaki tabloya 20, 30 ve 70 doğal sayıları her satır ve sütunda birer tane olacak şekilde yerleştirilecektir. A",
       "char_count": 743,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_0131001f5fad89",
@@ -19955,11 +19955,11 @@
       "text": "C D E Buna göre A+B+C+E işleminin sonucu kaçtır? A) 130 B) 140 C) 150 D) 160 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 21. Öğretmeni, Ayşe’den 3 onluk 6 birlikten oluşan doğal sayı ile 2 onluk 7 birlikten oluşan doğal sayıyı zihinden toplamasını istiyor. Buna göre Ayşe’nin zihinden yaptığı işlemin sonucu kaçtır? A) 63 B) 60 C) 57 D) 52 22. Aşağıdaki nesne grafiğinde bir çiçekçideki çiçek sayıları gösterilmiştir. Grafik: Çiçekçideki Çiçek Sayıları Çiçek Adı Çiçek Sayısı Gül",
       "char_count": 492,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_b3af11a38709a4",
@@ -19972,11 +19972,11 @@
       "text": "Not: Her nesne 10 çiçeği göstermektedir. Buna göre oluşturulan sıklık tablosu aşağıdakilerden hangisidir? A) Tablo: Çiçekçideki Çiçek Sayıları Çiçek Adı Çiçek Sayısı Gül",
       "char_count": 169,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "high",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_6ebb4ac6051310",
@@ -19989,11 +19989,11 @@
       "text": "Lale ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 23. Aşağıdaki sıklık ve çetele tablosunda Ece’nin balonlarının renkleri ve balonların bazılarının sayısı verilmiştir. Ece’nin toplam 54 balonu bulunmaktadır. Tablo: Balon Sayısı Tablo: Balon Sayısı Sıklık Tablosu Çetele Tablosu Balon Rengi Balon Sayısı Balon Rengi Balon Sayısı Pembe",
       "char_count": 345,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "high",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_0696af4556b5f2",
@@ -20006,11 +20006,11 @@
       "text": "Sarı …. Sarı …. Turuncu …. Turuncu …. Ece’nin sarı ve turuncu renkli balonlarının sayısı birbirine eşit olduğuna göre sarı balonlarının sayısı kaçtır? A) 10 B) 12 C) 17 D) 20 24. Bir öğretmen sınıfındaki öğrencilere sevdiği meyveleri sorar ve öğrencilerin verdikleri cevaplara göre aşağıdaki şekil grafiğini hazırlar.",
       "char_count": 317,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "high",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_6d8ae7af6f510b",
@@ -20023,11 +20023,11 @@
       "text": "Meyve Elma Armut Üzüm Muz Buna göre aşağıdaki ifadelerden hangisi doğrudur? A) Armut sevenlerin sayısı, muz sevenlerin sayısından 10 eksiktir. B) Elma sevenlerin sayısı, çilek sevenlerin sayısından 15 fazladır. C) Muz sevenlerin sayısı, elma sevenlerin sayısından 10 fazladır. D) Çilek sevenlerin sayısı, üzüm sevenlerin sayısından 3 eksiktir. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 25. Bir kantinin mutfağında yıkanan tabak sayıları ile ilgili aşağıdaki şekil grafiği tamamlanmak isteniyor. Bunun için aşağıdaki ipuçları veriliyor:",
       "char_count": 550,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "high",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_985f2059806cfb",
@@ -20040,11 +20040,11 @@
       "text": "Günler Cuma Buna göre cuma günü yıkanan tabak sayısı ile perşembe günü yıkanan tabak sayısı arasındaki fark kaçtır? A) 40 B) 60 C) 80 D) 100 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 27. Ali 15, annesi ise 41 yaşındadır. Buna göre 5 yıl sonra Ali ve annesinin yaşları toplamı kaç olur? A) 56 B) 61 C) 66 D) 71 28. Sivas’tan Ankara’ya hareket eden trendeki yolculardan 114’ü erkek, 126’sı ise kadındır. Trende 50 tane boş koltuk olduğuna göre bu tren kaç kişiliktir? A) 240 B) 290 C) 340 D) 390 26. Arda, bir hikâye kitabını her gün bir önceki günden 15 sayfa daha fazla okuyarak üç günde bitiriyor. Birinci gün 37 sayfa okuduğuna göre üçüncü gün kaç sayfa okumuştur? A) 67 B) 89 C) 104 D) 156 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 29. Aşağıdaki şekil grafiğinde, bir işçinin bir haftada topladığı fındık miktarı gösterilmektedir.",
       "char_count": 863,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "medium",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_e1c4208c4ac3fb",
@@ -20057,11 +20057,11 @@
       "text": "Günler Cuma Pazar Şekil grafiğinde verilen bilgilere göre oluşturulan çetele tablosu aşağıdakilerden hangisidir? A) Tablo: Toplanan Fındık Sayısı Günler Miktar (kg) Pazartesi",
       "char_count": 174,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "high",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_f883c9b68ed0a6",
@@ -20074,11 +20074,11 @@
       "text": "Pazar ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 30. Aşağıda üç farklı toplama işleminin zihinden yapılışı verilmiştir.",
       "char_count": 133,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_d180848eda6887",
@@ -20091,11 +20091,11 @@
       "text": "+ 31. Ece’nin akvaryumunda beslediği balıklara ait nesne grafiği aşağıdaki gibidir. Grafik: Akvaryumdaki Balıklar Balık Türü Balık Sayısı Japon Balığı Moli Balığı Melek Balığı Not: Her nesne 4 balığı göstermektedir. a) Grafikteki bilgilere göre aşağıdaki çetele ve sıklık tablosunu doldurunuz. Tablo: Akvaryumdaki Balıklar Tablo: Akvaryumdaki Balıklar Çetele Tablosu Sıklık Tablosu Balık Türü Balık Sayısı Balık Türü Balık Sayısı Japon Balığı Japon Balığı Moli Balığı Moli Balığı Melek Balığı Melek Balığı b) Aşağıdaki boşlukları grafikten yararlanarak doldurunuz.",
       "char_count": 564,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "high",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_28798a7b494e0b",
@@ -20108,11 +20108,11 @@
       "text": "●Japon balıklarının sayısı, melek balıklarının sayısından fazladır. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 32. Aşağıdaki grafikte bir oyuncak dükkânındaki oyuncakların türü ve sayısı gösterilmiştir.",
       "char_count": 216,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "İstatistik / Veri İşleme",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_3acc8f26a45012",
@@ -20125,11 +20125,11 @@
       "text": "Oyuncak Türü Araba Bebek Top Grafikte verilen bilgileri kullanarak bir problem kurunuz ve kurduğunuz problemi çözünüz. Top",
       "char_count": 122,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "İstatistik / Veri İşleme",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_61668763e190dd",
@@ -20142,11 +20142,11 @@
       "text": "- ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 37. Aşağıdaki kutularda verilen toplama işlemlerindeki doğal sayıları en yakın onluğa yuvarlayarak işlemin tahminî sonucunu bulunuz. Tahminî sonucu 100’e eşit olan işlemle rin bulunduğu kutuları kırmızıya boyayınız.",
       "char_count": 274,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "Doğal Sayıları Yuvarlama / Tahmin Etme",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_93ff455a4d5ed3",
@@ -20159,11 +20159,11 @@
       "text": "38. Aslı, tabletine dört rakamlı bir şifre oluşturuyor. Şifrenin her rakamını bulmanız için aşağıdaki ipuçlarını veriyor:",
       "char_count": 121,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_7f2db830fff623",
@@ -20176,11 +20176,11 @@
       "text": "●4. rakamı bulmak için 105 + 112 işlemlerinde verilen doğal sayıları en yakın onluğa yuvarlayarak işlemin sonucunu tahmin ediniz. İşlem sonucu ile tahmin sonucu arasındaki farkı bulup kutucuğa yazınız. Buna göre ipuçlarından faydalanarak Aslı’nın şifresini bulunuz. ŞİFRE 1. rakam 2. rakam 3. rakam 4. rakam ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 39. 25 kişilik bir sınıftaki öğrencilerden en sevdikleri rengi söylemeleri istenmiştir. 8 öğrenci pembe, 6 öğrenci sarı, 7 öğrenci mavi diğerleri ise kırmızı rengi söylemiştir. Buna göre aşağıdaki tablolarda ve grafikte boş bırakılan yerleri doldurunuz. Tablo: En Sevilen Renkler Tablo: En Sevilen Renkler Sıklık Tablosu Çetele Tablosu Renk Öğrenci Sayısı Renk Öğrenci Sayısı Mavi",
       "char_count": 745,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "İstatistik / Veri İşleme",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_1eaf4e05394975",
@@ -20193,11 +20193,11 @@
       "text": "Pembe ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 40. Aynı renkteki kutulara aynı doğal sayıları yazarak aşağıdaki işlemleri yapınız. – + – + – + 8 1 6 3 5 0 5 7 2 9 3 3 1 6 5 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 41. Aşağıda bir yük terazisi ve bu terazide tartılacak farklı kutulardan birer tanesinin kütlesi verilmiştir. Terazi en fazla 700 kg’lık yükü tartmaktadır. 458 kg 281 kg 120 kg Buna göre aşağıdaki yüklerin toplam kütlelerini yazınız ve terazinin bu yükleri tartma durumunu işaretleyiniz. Toplam Yük : kg Tartabilir. Tartamaz. Toplam Yük : kg Tartamaz. Tartabilir. Toplam Yük : kg Tartamaz. Tartabilir. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ CEVAP ANAHTARI 1. A 2. A 3. A 4. B 5. D 6. A 7. D 8. C 9. D 10. A 11. D 12. D 13. C 14. D 29. A 30. B 15. B 16. B 17. D 18. B 19. C 20. B 21. A 22. A 23. A 24. B 25. D 26. A 27. C 28. B CEVAP ANAHTARI 31. a) Tablo: Akvaryumdaki Balıklar Tablo: Akvaryumdaki Balıklar Çetele Tablosu Sıklık Tablosu Balık Türü Balık Sayısı Balık Türü Balık Sayısı Japon Balığı",
       "char_count": 1061,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "noisy"
     },
     {
       "chunk_id": "tb_bb0383c841a078",
@@ -20210,11 +20210,11 @@
       "text": "●Japon balıklarının sayısı, melek balıklarının sayısından 4 fazladır. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 33. Halterin Kütlesi (kg) Derecesi Ahmet",
       "char_count": 167,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "noisy"
     },
     {
       "chunk_id": "tb_446ea06f5c2e48",
@@ -20227,11 +20227,11 @@
       "text": "2. 34. Keçi sayısı: 152 + 23 = 175 Tavuk sayısı: 175 – 149 = 26 Toplam hayvan sayısı: 152 + 175 + 26 = 353 32. Problem: Bu oyuncak dükkânında en az kaç tane oyuncak satılırsa araba, bebek ve top sayısı eşit olur? Problemin Çözümü: Dükkândaki araba sayısı: 20 Dükkândaki bebek sayısı: 15 Dükkândaki top sayısı: 30 Oyuncak sayısı en az olan oyuncak türü bebek olduğu için diğer oyuncak türlerinin sayısı ona eşitlenir. Bu yüzden 20 – 15 = 5 30 – 15 = 15 15 + 5 = 20 En az 20 oyuncak satılırsa bütün oyuncak türlerinin sayısı eşitlenir. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 35. İşlem Tahminim İşlemin Sonucu Fark",
       "char_count": 629,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_b4ab8a58ebe4a1",
@@ -20244,11 +20244,11 @@
       "text": "– Karşılaştırma: Tahminim, işlemin sonucundan 2 eksiktir. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 36. İşlem Tahminim İşlemin Sonucu Fark",
       "char_count": 153,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.3.1.3",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_0bb59458cd9c72",
@@ -20261,11 +20261,11 @@
       "text": "1. rakam: 130 + 130 = 260 127 + 134 = 261 261 – 260 = 1 3. rakam: 170 + 100 = 270 168 + 102 = 270 270 – 270 = 0 2. rakam: 150 + 110 = 260 149 + 113 = 262 262 – 260 = 2 4. rakam: 110 + 110 = 220 105 + 112 = 217 220 – 217 = 3 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 39. Tablo: En Sevilen Renkler Tablo: En Sevilen Renkler Sıklık Tablosu Çetele Tablosu Renk Öğrenci Sayısı Renk Öğrenci Sayısı Mavi",
       "char_count": 411,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "İstatistik / Veri İşleme",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_dd14049583e223",
@@ -20278,11 +20278,11 @@
       "text": "Pembe ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 40. + – – + + – 8 1 6 9 8 1 6 3 1 9 9 2 3 5 0 5 8 3 9 3 3 5 7 2 3 6 1 9 3 3 1 6 5 3 5 0 3 6 1 9 3 3 9 8 1 6 3 1 9 9 2 0 5 9 41. Toplam Yük : 739 kg Tartabilir. Tartamaz. Toplam Yük : 698 kg Tartamaz. Tartabilir. Toplam Yük : 682 kg Tartamaz. Tartabilir. X X X Bu çalışma fasikülü, Millî Eğitim Bakanlığı Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü tarafından Ölçme Değerlendirme Merkezlerinin katkılarıyla hazırlanmıştır. Bu çalışma fasikülü, T.C. Millî Eğitim Bakanlığı Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü tarafından Ölçme Değerlendirme Merkezlerinin katkılarıyla hazırlanmıştır.",
       "char_count": 677,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "İstatistik / Kütle Ölçme",
+      "content_quality": "noisy"
     }
   ]
 }

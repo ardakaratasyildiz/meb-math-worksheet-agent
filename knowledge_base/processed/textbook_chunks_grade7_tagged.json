@@ -1,7 +1,7 @@
 {
   "grade": 7,
   "total": 2274,
-  "tagged_count": 2251,
+  "tagged_count": 2270,
   "chunks": [
     {
       "chunk_id": "tb_8db81dacde25f8",
@@ -33575,11 +33575,11 @@
       "text": ". . . Bu kartların 6 tanesinde asal sayı yazmaktadır. Buna göre, asal sayı yazan kart sayısının tüm kart sayısına oranı aşağıdakilerden hangisi olamaz? A) 7",
       "char_count": 156,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.7.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_5d15e236e40eab",
@@ -33864,11 +33864,11 @@
       "text": "2.Kampanya Her 3 ürün alana 1 ürün bedava Toplam fiyatın yarısına %10, yarısına %20 indirim Arda ve Ayşe bu mağazadan fiyatı 20 TL olan ürünlerden 60 tane almıştır. Arda 1.kampanyaya göre, Ayşe 2.kam panyaya göre ödeme yapmıştır. Buna göre, Ayşe’nin ödediği ücret Arda’nın ödediği ücretten kaç Türk Lirası fazladır? A) 60 B) 80 C) 120 D) 140 4. Bir sınıftaki öğrencilerin %40’ı erkektir. Kız öğrencilerin",
       "char_count": 404,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.5.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_ddccb0009e161e",
@@ -33881,11 +33881,11 @@
       "text": "2 ’i, erkek öğrencilerin 8 3 ’i resim kursuna kayıt yaptır mıştır. Buna göre, bu sınıftaki resim kursuna kayıt yaptıran kız öğrenci sayısı, kayıt yaptırmayan erkek öğrenci sayısının yüzde kaçıdır? A) 144 B) 96 C) 60 D) 54 5. Bir kutuda sadece mavi, kırmızı ve sarı boncuklar vardır. Mavi boncukların sayısı, kırmızı boncukların sayısının %120’si, sarı boncukların sayısı ise mavi boncukların sa yısının %50’si kadardır. Buna göre, kutudaki sarı boncuk sayısı kırmızı bon cuk sayısının yüzde kaçıdır? A) 40 B) 60 C) 80 D) 100 6. Çevresinin uzunluğu 70 cm olan bir paralelkenarın kısa kenar uzunluğunun uzun kenar uzunluğuna oranı 5 2 ’tir. Bu paralelkenarın kısa kenar uzunluğu %20 artırılıp, uzun kenar uzunluğu %20 azaltılıyor. Buna göre, son durumda bu paralelkenarın kısa kenar uzunluğunun, uzun kenar uzunluğuna oranı aşağıdaki lerden hangisidir? A) 4",
       "char_count": 855,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.5.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_5fea38363ecd83",
@@ -33898,11 +33898,11 @@
       "text": "D) 5 MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 7. Sınıf 7. Sınıf Matematik Matematik Yüzdeler - 2 7. Bir AB doğru parçasının üzerine üç eşkenar üçgen aşağı daki gibi çizilmiştir. Bu üçgenlerle ilgili aşağıdaki bilgiler verilmiştir. • I. üçgenin çevresinin uzunluğu 150 cm’dir. • II. üçgenin bir kenar uzunluğu I. üçgenin bir kenar uzunluğunun %80’idir. • III. üçgenin bir kenar uzunluğu II. üçgenin bir kenar uzunluğundan %25 eksiktir. Buna göre, AB doğru parçasının uzunluğu kaç san timetredir? A) 120 B) 130 C) 140 D) 150 8. Aşağıdaki sıralamalardan hangisi doğrudur? A)",
       "char_count": 593,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.5.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_2202226f642715",
@@ -33915,11 +33915,11 @@
       "text": "15 > 0,6 > %30 9. Kenar uzunlukları 5 cm ve 8 cm olan dikdörtgen şeklinde ki bir kâğıt kesilerek kenar uzunluğu santimetre cinsinden bir tam sayı olan en büyük alana sahip kare şeklinde par ça elde ediliyor. Buna göre, kare şeklindeki parçanın bir yüzünün ala nı, kâğıdın kesilmeden önceki bir yüzünün alanının yüzde kaçıdır? A) 62,5 B) 75 C) 80,5 D) 160 10. Aşağıda üç farklı internet sitesinin indirim kampanyala rı verilmiştir. Ayşe, fiyatı 250 TL olan bir kazak ve fiyatı 450 TL olan bir ceket alacaktır. 1.Site 2.Site 3.Site İlk ürüne 40 TL, İkinci ürüne %20 indirim Ürünlerin toplam fiyatına %50 indirim İlk ürüne %50 indirim Bu üç sitede fiyatı düşük olan ürün, ilk ürün olarak kabul edilmektedir. Ayşe en az ödeme yapacağı siteyi seçerse en çok ödeme yapacağı siteye göre kaç Türk Lirası daha az ödeme yapar? A) 95 B) 125 C) 200 D) 225 11. İki sayıdan biri, diğerinin 4 katıdır. Bu iki sayının toplamı büyük sayının yüzde kaçına eşittir? A) 80 B) 125 C) 300 D) 500 12. Bir sayının %40’ı 200 olduğuna göre, bu sayının %70 ’i, %5’inden kaç fazladır? A) 325 B) 262 C) 117 D) 52 A I II III B",
       "char_count": 1095,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.5.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_a033024c4eebad",
@@ -34816,11 +34816,11 @@
       "text": "K Buna göre, K + L – M işleminin sonucu aşağıdakilerden hangisidir? A) –5 B) –2 C) 1 D) 3 5. Azra 2 ve 4’ün kendisiyle tekrarlı çarpımlarını aşağıdaki gibi çarpım sonuçları birbirine eşit olana kadar yazıyor. 2 · 2 · . . . = 1442443 a tane 4 · 4 · . . . = 1442443 b tane yerine yazılacak sayı üç basamaklı olduğuna göre, a + b kaçtır? A) 10 B) 11 C) 12 D) 13 6. Bir apartman görevlisi başlangıçta bulunduğu kattan 4 kat yukarı çıkıp 3 kat aşağı inmiştir. Daha sonra 7 kat yukarı çıkarak binanın 13. katına gelmiştir. Buna göre, bu apartman görevlisi başlangıçta bulun- duğu kat aşağıdakilerden hangisidir? A) 4 B) 5 C) 6 D) 7 Tam Sayılarla İşlemler - 4 Tam Sayılarla İşlemler - 4",
       "char_count": 679,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.1.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_972038a4cd369e",
@@ -34833,11 +34833,11 @@
       "text": "MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 7. Sınıf 7. Sınıf Matematik Matematik 7. Ali, marketten 250 gramlık 4 paket fındık almıştır. Bu paketleri evindeki hassas terazi ile tarttığında paketlerin kütlelerinin farklı olduğunu görmüştür. Bu paketlerin gram cinsinden kütlelerinin 250’den fazla ya da eksik olmasına göre aşağıdaki tabloyu oluşturmuştur. 1. Paket 2. Paket 3. Paket 4. Paket +12 –8 +6 –11 Ali’nin tartım sonucuna göre, aldığı paketlerin toplam kütlesi kaç gramdır? A) 998 B) 999 C) 1000 D) 1001 8. +12 °C’taki bir miktar et –18 °C’a ayarlı bir derin donduru- cuda saklanacaktır. Bu et, dondurucuya konduktan sonra her 4 dakikada bir 3 °C ısı kaybettiğine göre, dondurucunun ayarlanan ısısına kaç dakika sonra ulaşır? A) 40 B) 30 C) 20 D) 10 9. –40’tan, +20’ye kadar olan tam sayılardan –2’nin doğal sayı kuvvetleri olanlar bir kağıda yazılıyor. Buna göre, bu kağıda yazılan iki tam sayının farkı en fazla kaçtır? A) 24 B) 32 C) 48 D) 64 10. (–13) + (–19) = A",
       "char_count": 993,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.1.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_59f303863bd186",
@@ -34850,11 +34850,11 @@
       "text": "(–18) – (+15) = D şeklinde veriliyor. Yukarıda verilen eşitliklere göre, aşağıdaki sıralama- lardan hangisi doğrudur? A) A < D < C < B B) D < B < A < C C) A < B < D < C D) D < A < C < B 11. Aşağıda tam sayıların yazılı olduğu taban ve kuvvet kart- ları verilmiştir.",
       "char_count": 265,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.1.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "noisy"
     },
     {
       "chunk_id": "tb_1bd2c02c07ff08",
@@ -34867,11 +34867,11 @@
       "text": "Kuvvet Taban kartından ve kuvvet kartından birer tam sayı seçi- lerek değeri negatif bir tam sayı olan üslü ifadeler oluştu- rulacaktır. Buna göre, taban ve kuvvet kartından seçilebilecek tam sayıların toplamı kaçtır? A) 0 B) 5 C) 6 D) 8 12. 5 · [(–3) + 7] = 5 · a + 5 · 7 (3 · 8) · 10 = b · (8 · 10) Yukarıda verilen eşitliklere göre, a + b kaçtır? A) 0 B) 3 C) 6 D) 10",
       "char_count": 370,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.1.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_bad1d419938c17",
@@ -34884,11 +34884,11 @@
       "text": "BECERİ TEMELLİ SORULAR MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 7. Sınıf Matematik 6. Ünite: Veri Analizi-Cisimlerin Farklı Yönlerden Görünümleri 1. Aşağıdaki daire grafiğinde 20 Ocak günü bir kafede öğleden önce yapılan satışlardan elde edilen toplam gelirin satılan ürün türlerine göre dağılımı verilmiştir. Grafik: Toplam Gelirin Ürün Türlerine Göre Dağılımı Meyve Suyu Kahve 40° 40° 40° 100° Çay Tost Pasta Bu kafede aynı gün öğleden sonra yapılan satışlardan elde edilen gelirle ilgili aşağıdaki bilgiler verilmiştir. • Öğleden önce yapılan satışlardan elde edilen toplam gelire eşittir. • Tost, pasta ve meyve suyu satışlarından elde edilen gelirler öğleden önceye göre %50 azalmıştır. • Öğleden sonraki satışlardan elde edilen toplam gelirin satılan ürün türlerine göre dağılımı bir daire grafiğiyle gösterildiğinde çay satışından elde edilen geliri gösteren daire diliminin merkez açısı yukarıdaki grafikte çay satışından elde edilen geliri gösteren daire diliminin merkez açısına göre 18º artmıştır. Bu bilgilere göre kafede öğleden sonra kahve satışından elde edilen gelir, öğleden önce kahve satışından elde edi- len gelire göre yüzde kaç artmıştır? A) 15 B) 20 C) 25 D) 30 2. Kerem 1000 parçadan oluşan aşağıdaki yapbozu 4 günde tamamlamıştır. Aşağıdaki daire grafiğinde Kerem'in yerlerine koyduğu toplam parça sayısının günlere göre dağılımı verilmiştir.",
       "char_count": 1389,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.6.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_8098f7b2e187e0",
@@ -34901,11 +34901,11 @@
       "text": "Parça Sayısının Dağılımı 3. gün 1. gün 4. gün 2. gün 54° 126° Buna göre Kerem yapbozun parçalarından kaç tanesini 4. gün yerine koymuştur? A) 400 B) 300 C) 250 D) 200 MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 6. Ünite: Veri Analizi-Cisimlerin Farklı Yönlerden Görünümleri 3. Silindir biçimindeki su deposunun şekildeki gibi yarısı 5 eş bölmeye, diğer yarısı 4 eş bölmeye ayrılmıştır. A B C D 4 eş bölme E",
       "char_count": 425,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.6.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_1debf21af1926b",
@@ -34918,11 +34918,11 @@
       "text": "Bu su deposuna belli bir miktar su konulduktan sonra deponun doluluk oranı aşağıdaki daire grafiğiyle gösterilmiştir. Grafik: Deponun Doluluk Oranı 72° Boş kısım Dolu kısım Buna göre depodaki su seviyesi hangi iki bölme arasındadır? A) A ile B B) B ile C C) C ile D D) D ile E MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 6. Ünite: Veri Analizi-Cisimlerin Farklı Yönlerden Görünümleri 4. Bir veri grubundaki sayıların toplamının, gruptaki terim sayısına bölümü ile elde edilen sayıya o veri grubunun aritmetik or- talaması denir. Bir veri grubundaki en büyük veri ile en küçük veri arasındaki farka açıklık denir. Bülent 1-10 Aralık tarihlerinde bir iş gezisi için Viyana'ya gitmiştir. Aşağıdaki grafikte Viyana'da 1-8 Aralık tarihlerindeki günlük ortalama sıcaklık değerleri verilmiştir. Grafik: Günlük Ortalama Sıcaklık Değerleri",
       "char_count": 849,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.6.2",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_b399c4473ef7e5",
@@ -34935,11 +34935,11 @@
       "text": "Günler 1 Aralık 2 Aralık 3 Aralık 4 Aralık 5 Aralık 6 Aralık 7 Aralık 8 Aralık Sıcaklık (ºC) –4 Bülent'in Viyana'da bulunduğu 10 günlük sürede günlük ortalama sıcaklık değerlerinin aritmetik ortalaması 0ºC olmuştur. Buna göre; I. 9-10 Aralık tarihlerindeki günlük ortalama hava sıcaklıklarının aritmetik ortalaması 0 ºC’den fazladır. II. Günlük ortalama hava sıcaklığının en düşük olduğu gün 9 Aralık ise en yüksek olduğu gün 10 Aralık’tır. III. 1-10 Aralık tarihlerinde Viyana'daki günlük ortalama hava sıcaklık değerlerini gösteren veri grubunun açıklığı en az 6’dır. ifadelerinden hangileri doğrudur? A) I ve II B) I ve III C) II ve III D) I, II ve III 6. Ünite: Veri Analizi-Cisimlerin Farklı Yönlerden Görünümleri MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 5. Süleyman, Manyas Gölü'nde gördüğü farklı türdeki kuşları tek tek saymıştır. Aşağıdaki tabloda Süleyman'ın gördüğü türlerine göre kuş sayıları, daire grafiğinde ise bu kuşların türlerine göre dağılımı verilmiştir. Tablo: Süleyman'ın Manyas Gölü'nde Gördüğü Türlerine Göre Kuş Sayıları Kuş Türü Sayısı Flamingo",
       "char_count": 1093,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.6.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_0d1bb9565d5fd3",
@@ -34952,11 +34952,11 @@
       "text": "Grafik: Süleyman’ın Manyas Gölü’nde Gördüğü Kuşların Türlere Göre Dağılımı 150° 60° Kılıçgaga Su çulluğu Suna Diğer Buna göre Süleyman kaç tane suna görmüştür? A) 180 B) 150 C) 120 D) 60 6. Ünite: Veri Analizi-Cisimlerin Farklı Yönlerden Görünümleri MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 6. Bir veri grubundaki sayıların toplamının, gruptaki terim sayısına bölümü ile elde edilen sayıya o veri grubunun aritmetik or- talaması denir Bir veri grubu küçükten büyüğe veya büyükten küçüğe doğru sıralanıp baştan ve sondan eşit sayıda veri atıldığında ortada kalan veriye ortanca değer (medyan) denir. Bir veri grubunda diğer verilere göre çok büyük veya çok küçük bir değer olduğunda o veri grubu hakkında yorum yapmak için ortanca (medyan), aritmetik ortalamaya göre daha kullanışlıdır. Aşağıdaki çizgi grafiklerinde dört farklı hastaneye yedi ay boyunca gelen acil vaka sayıları gösterilmiştir.",
       "char_count": 916,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.6.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_81c81788077925",
@@ -34969,11 +34969,11 @@
       "text": "Aylar Ocak Mart Nisan Mayıs Temmuz Haziran Şubat Ocak Mart Nisan Mayıs Temmuz Haziran Şubat Ocak Mart Nisan Mayıs Temmuz Haziran Şubat Ocak Mart Nisan Mayıs Temmuz Haziran Şubat Acil Vaka Sayısı Grafik: Hayat Hastanesine Gelen Aylık Acil Vaka Sayıları Grafik: Sağlık Hastanesine Gelen Aylık Acil Vaka Sayıları Grafik: Özen Hastanesine Gelen Aylık Acil Vaka Sayıları Grafik: Eğitim Hastanesine Gelen Aylık Acil Vaka Sayıları Acil Vaka Sayısı Acil Vaka Sayısı Acil Vaka Sayısı",
       "char_count": 474,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.6.1",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_278888e5464d4c",
@@ -34986,11 +34986,11 @@
       "text": "Aylar Buna göre bu hastanelerden hangisine Ağustos ayında gelecek acil vaka sayısı ile ilgili yorum yapmak için aritme- tik ortalama yerine ortanca kullanılması daha uygun olur? A) Hayat Hastanesi B) Sağlık Hastanesi C) Özen Hastanesi D) Eğitim Hastanesi 6. Ünite: Veri Analizi-Cisimlerin Farklı Yönlerden Görünümleri MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 7. Drone (Uçangöz): Uzaktan kumanda ile kontrol edilen video ve fotoğraf çekebilen hava aracıdır. Bir limanın üstünde dolaşan drone (uçangöz) ile limanda bulunan konteynerlerin fotoğrafları çekilmektedir. Yukarıda bu limanda bulunan konteynerler modellenmiştir. Aşağıdakilerden hangisi drone (uçangöz) tarafından konteynerlerin üzerinden çekilen fotoğraflarından birine göre yapılmış, konteynerlerin üstten görünümüne ait bir model olamaz? A) B) C) D) 6. Ünite: Veri Analizi-Cisimlerin Farklı Yönlerden Görünümleri MEB ● Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü 8. Aleyna altı tane eş küp kullanarak aşağıdaki modeli oluşturmuştur. Sağ Ön Sol Üst Aleyna oluşturduğu bu yapının üstten, sağdan, soldan ve önden görünümlerini bir kağıda aşağıdaki gibi çizmiştir.",
       "char_count": 1156,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.6.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_d5877bad53bba5",
@@ -38777,11 +38777,11 @@
       "text": "10. a bir rasyonel sayı olmak üzere a sayısının; karesine kar- şılık gelen sayı b, küpüne karşılık gelen sayı c ile ifade ediliyor. –4 –3 c –2 –1",
       "char_count": 145,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.1.4",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_a7fa91312a048c",
@@ -38794,11 +38794,11 @@
       "text": "b Yukarıda b ve c rasyonel sayılarının sayı doğrusundaki yerleri gösterilmiştir. Buna göre, a sayısı aşağıdakilerden hangisi olabilir? A)",
       "char_count": 137,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.1.4",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_7d071c9af454cd",
@@ -38811,11 +38811,11 @@
       "text": "1 ’i 7. sınıf ve geriye kalanlar da 8. sınıftır. Bu okulda her birinde eşit sayıda öğrenci bulunan 3 tane 8. sınıf şubesi vardır. Buna göre, 8. sınıf şubelerinden birindeki öğrenci sayısı kaçtır? A) 25 B) 35 C) 36 D) 40",
       "char_count": 219,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.7.5.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "grade": 5,
   "total": 1314,
-  "tagged_count": 1308,
+  "tagged_count": 1313,
   "chunks": [
     {
       "chunk_id": "tb_5bd0a1a5400ee3",
@@ -14250,11 +14250,11 @@
       "text": "0,35 1,9 ÖLÇME VE DEĞERLENDİRME SORULARI 4.TEMA 2) Merve sağlıklı yaşam için her gün yürüyüş yapmaktadır. Yürüyüş yaptığı günlere ilişkin bilgiler aşağıda verilmiştir.",
       "char_count": 167,
       "tema": "4.TEMA",
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.5.6.1",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_79553ebc155f7b",
@@ -21917,11 +21917,11 @@
       "text": "= Yukarıda verilen karşılaştırmalardan hangileri yanlıştır? A) I ve II B) I ve III C) II ve IV D) III ve IV 2018-2019 • MERSİN ÖLÇME VE DEĞERLENDİRME MERKEZİ 5. SINIF MATEMATİK KAZANIM DEĞERLENDİRME TESTİ-3 2018-12-M5-03",
       "char_count": 220,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "Diğer",
+      "content_quality": "noisy"
     },
     {
       "chunk_id": "tb_a97a6781b97474",
@@ -21934,11 +21934,11 @@
       "text": "Yukarıda isimleri yer alan öğrenciler I. sütundaki kesirleri geniletilerek II.sütuna yazmışlardır. Hangi öğrenci hata yapmıştır? A) Aslı B) Kaan C) Mehmet D) Ayşe 13.",
       "char_count": 166,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.5.2.4",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_41d86b5906ac60",
@@ -21951,11 +21951,11 @@
       "text": "g f = = Yukarıda verilen boşluklara sırasıyla yazılabilecek sayılar aşağıdakilerden hangisidir? A) 3 ve 4 B) 6 ve 24 C) 12 ve 24 D) 7 ve 19 14. Aşağıdaki şekillerden hangisinde taranmış kısma karşılık gelen kesir değeri diğerlerinden daha büyüktür? A) B) C) D) 2018-2019 • MERSİN ÖLÇME VE DEĞERLENDİRME MERKEZİ 5. SINIF MATEMATİK KAZANIM DEĞERLENDİRME TESTİ-3 2018-12-M5-03",
       "char_count": 373,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.5.2.1",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_b2237424c3694f",
@@ -21968,11 +21968,11 @@
       "text": "19. Üç arkadaşın yedikleri pasta ile ilgili aşağıdaki bilgiler verilmiştir. • Ayşe pastanın 8 1 ’ini, • Furkan ise pastanın 4 1 ’ini, • geriye kalan kısmını da Fatma yemiştir. Bu bilgilere göre Fatma pastanın kaçta kaçını yemiştir? A)",
       "char_count": 234,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.5.2.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_5ce47c9cd8b3a4",

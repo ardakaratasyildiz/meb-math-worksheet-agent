@@ -1,7 +1,7 @@
 {
   "grade": 4,
   "total": 1426,
-  "tagged_count": 1402,
+  "tagged_count": 1426,
   "chunks": [
     {
       "chunk_id": "tb_ae819c3e779171",
@@ -19836,11 +19836,11 @@
       "text": "D) ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 31. Bir manavda bir günde satılan meyvelerin sayısı nesne grafiğiyle aşağıda verilmiştir. Grafik: Satılan Meyveler Meyve Adı Şeftali Muz Kivi Kayısı Üzüm Not: Her bir görsel 5 meyveyi göstermektedir. Buna göre bu nesne grafiğinin sütun grafiğiyle gösterilmiş hâli aşağıdakilerden hangisidir? A) B) C) D) Meyve Sayısı ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 32. Aşağıda bir kargo şirketine ait araçların aylık yakıt tüketimini gösteren sütun grafiği verilmiştir. Grafiğe göre aşağıdakilerden hangisi yanlıştır? A) Mart ile mayıs aylarında tüketilen yakıt miktarları birbirine eşittir. B) Ocak ile temmuz aylarında tüketilen yakıt miktarları birbirine eşittir. C) Yakıt tüketiminin en fazla olduğu ay temmuz, en az olduğu ay ise şubattır. D) Şubat ile haziran aylarında tüketilen toplam yakıt miktarı, nisan ayından 40 litre daha fazladır. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 35. Tuğba bir fabrikada hafta içi her gün 7 saat çalışmaktadır. Buna göre Tuğba iki ayda toplam kaç saat çalışır? (1 ayı 4 hafta olarak alınız.) A) 260 B) 270 C) 280 D) 290 34. Yüksel ödevlerini saat 09.45’te yapmaya başlamış ve 2 saat 25 dakika sonra ödevlerini bitirmiştir. Buna göre Yüksel ödevlerini saat kaçta bitirmiştir? A) 12.20 B) 12.10 C) 11.20 D) 11.10 33. Aşağıdaki sütun grafiğinde bir çiftçinin yıllara göre ürettiği buğday miktarları gösterilmiştir. Grafiğe göre aşağıdakilerden hangisi yanlıştır? A) 2015 ile 2018 yıllarında üretilen buğday miktarı birbirine eşittir. B) Buğday üretiminin en fazla olduğu yıl 2019, en az olduğu yıl ise 2017’dir. C) 2016’da üretilen buğday miktarı, 2017’de üretilen buğday miktarından 1500 kg daha azdır. D) 2019’da üretilen buğday miktarı, 2017 ile 2015’te üretilen buğday miktarlarının toplamına eşittir. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 39. Bir kutudaki misketlerin 5 18 'i turuncu, 3 18 'i kırmızı, 4 18 'i mavi, kalanı ise sarı renklidir. Buna göre kutudaki misketlerin kaçta kaçı sarı renklidir? A)",
       "char_count": 2049,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "high",
+      "mapped_topic_hint": "İstatistik",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_8198b9fc5675b3",
@@ -19853,11 +19853,11 @@
       "text": "38. Okul bahçesine getirilen 108 fidanın 2 6 ’sı dikilmiştir. Buna göre dikilmeyen fidan sayısı kaçtır? A) 18 B) 36 C) 54 D) 72 37. Aşağıdakilerden hangisi 6 10 kesrinden büyük basit bir kesirdir? A)",
       "char_count": 199,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.2.3",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_adb9782b8fd9d0",
@@ -19870,11 +19870,11 @@
       "text": "36. Seda, satranç kursu için haftada 285 dakika ayırıyor. Buna göre Seda satranç kursuna haftada kaç saat, kaç dakika ayırıyor? A) 4 saat 25 dakika B) 4 saat 35 dakika C) 4 saat 45 dakika D) 4 saat 55 dakika ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 42. − Yukarıda modellenen çıkarma işleminin sonucu kaçtır? A)",
       "char_count": 326,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.3",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_21caf2ff31be68",
@@ -19887,11 +19887,11 @@
       "text": "41. Aşağıdaki çetele tablosunda bir tezgâhtaki sebzelerin kilogram fiyatları verilmiştir. Sebze Türü Kilogram Fiyatı (TL) Havuç Lahana Pırasa Karnabahar Kerem, havuç ve lahanadan birer kilogram, pırasa ve karnabahardan ikişer kilogram satın aldığına göre kaç lira öder? A) 30 B) 44 C) 46 D) 60 40.",
       "char_count": 297,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_4ad006ae8f4383",
@@ -21128,11 +21128,11 @@
       "text": "(7 x 5) x 13 = 13 x ( 5 x ▲) = Yukarıda verilen eşitlikte ▲ ve yerine hangi sayılar gelmelidir? A) ▲ = 13, = 365 B) ▲ = 12, = 365 C) ▲ = 7, = 455 D) ▲ = 5, = 455 62. Çarpımları 36 olan iki doğal sayının toplamı en fazla kaç olabilir? A) 13 B) 20 C) 25 D) 37 59.",
       "char_count": 261,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.4",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_9b916931828820",
@@ -21145,11 +21145,11 @@
       "text": "A B C 4 2 6 4 6 1 9 6 2 4 5 + x Yukarıdaki çarpma işlemine göre A + B + C işleminin sonucu kaçtır? A) 13 B) 14 C) 18 D) 21 60. 28 sınıftan oluşan bir okulun 13 sınıfının her birinde 36 öğrenci, kalan sınıfların her birinde ise 31 öğrenci vardır. Buna göre okuldaki toplam öğrenci sayısı kaçtır? A) 933 B) 853 C) 468 D) 465 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 65. Aşağıda aynı ölçülerdeki iki farklı parkenin fiyatları verilmiştir. 1. parke 2. parke 12 TL 15 TL Cebinde 1200 TL’si olan Ali, bu parkelerden toplam 80 adet satın alacaktır. Buna göre aşağıdakilerden hangisi doğrudur? A) 1 numaralı parkeyi satın alırsa cebinde 240 TL kalır. B) 1 numaralı parkeyi satın alırsa 40 TL daha ödemesi gerekir. C) 2 numaralı parkeyi satın alırsa 100 TL daha ödemesi gerekir. D) 2 numaralı parkeyi satın alırsa cebinde 50 TL kalır. 66. Aşağıda kalansız bir bölme işlemi veriliyor. Bölünen Bölen",
       "char_count": 904,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.4",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "noisy"
     },
     {
       "chunk_id": "tb_aeb567538e2d34",
@@ -21162,11 +21162,11 @@
       "text": "Buna göre bölünen aşağıdakilerden hangisi olabilir? A) 70 B) 80 C) 90 D) 100 63. Ayla, bir kitabın yarısını 14 gün boyunca her gün 9 sayfa okuyarak bitirmiştir. Buna göre kitabın tamamı kaç sayfadır? A) 250 B) 251 C) 252 D) 253 64. Dört basamaklı en küçük doğal sayının 3 katının 50 fazlası kaça eşittir? A) 2500 B) 3000 C) 3050 D) 3500 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 67. İki su deposundan birincisi, her biri 25 litre olan 75 bidon su ile tamamen dolmaktadır. İkinci depo ise birinci depodan 200 litre daha fazla su almaktadır. Buna göre ikinci depo kaç litre su ile dolar? A) 1750 B) 1875 C) 1950 D) 2075 68.",
       "char_count": 636,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.4",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_bc3f0fb313a0aa",
@@ -21179,11 +21179,11 @@
       "text": "18 ÷ = 2 x Yukarıdaki eşitlikle ilgili; I. yerine 3 gelirse 3 olur. II. yerine 9 gelirse 1 olur. III. yerine 6 gelirse 2 olur. verilenlerden hangileri doğrudur? A) I ve II. B) I ve III. C) II ve III. D) I, II ve III. 69. Bir bölme işleminde bölen 14, bölüm 38 ve kalan 9’dur. Buna göre bölünen sayı kaçtır? A) 532 B) 541 C) 554 D) 562 70. 548 kg bulgur, 50 kg’lık ve 16 kg’lık çuvallara hiç artmayacak şekilde doldurulacaktır. Bunun için en az kaç çuval gerekir? A) 12 B) 13 C) 14 D) 16 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 71.",
       "char_count": 547,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.5",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_6c96119cd3f014",
@@ -21332,11 +21332,11 @@
       "text": "işleminde kalanın alabileceği en büyük doğal sayı değeri 38’dir. 55 000 ÷ 100 işleminin sonucu 550’dir. 3 + = 480 ÷ 12 ifadesinde yerine yazılması gereken sayı 1’dir. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 82. Her biri 32 kg olan koliler bir yük asansörüyle binanın en üst katına taşınmak isteniyor. Yük asansörü en fazla 720 kg taşıyabiliyor, daha fazla yük konulursa hareket etmiyor. Buna göre; a. Asansörde kütlesi 79 kg olan bir görevliyle birlikte en fazla kaç koli taşınabilir? İşlemlerinizi gösteriniz. b. Asansörde sadece koliler taşınmak şartıyla 110 koli kaç seferde taşınabilir? İşlemlerinizi gösteriniz. 83. İçinde eşit miktarda özdeş düğmelerin bulunduğu iki kutu aşağıdaki terazide tartıldığında sonuç göstergedeki gibi oluyor. Tartılan kutuların her birinde 45 adet düğme bulunmaktadır. Bir kutunun kütlesi 40 g olduğuna göre 1 adet düğmenin kütlesi kaç gramdır? İşlemlerinizi gösteriniz. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 84. Uzunluğu 480 cm olan tahta, 4 eş parçaya bölünerek 2 raflı bir kitaplık yapılıyor. Daha sonra bu kitaplığın raflarına genişliği 5 cm olan özdeş kitaplar, aralarında boşluk kalmayacak şekilde aşağıdaki gibi diziliyor. 480 cm 1. raf 2. raf 5 cm Buna göre kitaplığa, bu özdeş kitaplardan en fazla kaç tane dizilebilir? İşlemlerinizi gösteriniz. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 85. Aşağıdaki bölme işlemlerini yapınız ve işlemlerin sonucunu örnekteki gibi yazınız. İşlem Sonuç",
       "char_count": 1480,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.5",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_ef298c2256987f",
@@ -21349,11 +21349,11 @@
       "text": "513 18 1267 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 86. Aşağıdaki bölme işlemlerinde bölünen ve böleni en yakın onluğa yuvarlayarak sonucu tahmin ediniz. Tahminlerinizi işlemin sonucu ile karşılaştırınız. Aradaki farkı bulup tabloyu örnekteki gibi doldurunuz. İşlem Tahminim Fark Karşılaştırma",
       "char_count": 310,
       "tema": null,
-      "tagged": false,
+      "tagged": true,
       "kazanim_kod_llm": null,
-      "confidence": null,
-      "mapped_topic_hint": null,
-      "content_quality": null
+      "confidence": "low",
+      "mapped_topic_hint": "Tahmin Etme / Yuvarlama",
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_6390cf4a4245ef",
@@ -21366,11 +21366,11 @@
       "text": "– Tahminim, işlem sonucundan 5 fazladır. 396 18 561 17 476 17 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 87. Bir kütüphanede masa ve sandalyeye ihtiyaç vardır. Bunun için üç farklı mağazadaki ürünlerin fiyatları incelenmiştir. Aşağıdaki tabloda bu mağazalardaki masa ve sandalyelerin fiyatları verilmiştir. Masa (TL) Sandalye (TL) 1. mağaza",
       "char_count": 354,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.4",
+      "confidence": "medium",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_d92ae9a06b252b",
@@ -21383,11 +21383,11 @@
       "text": "Kütüphane için onar adet masa ve sandalye alınacağına göre; a. Masa ve sandalyelerin toplam fiyatının en düşük olduğu mağaza hangisidir? Masa ve sandalyelerin tamamı bu mağazadan satın alınırsa mağazaya kaç lira ödenir? b. Mağazalardaki en ucuz masa ve en ucuz sandalyeden satın alınırsa mağazalara kaç lira ödenir? ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 88. Aşağıda bir sinema salonundaki bilet fiyatları ve hafta içi satılan bilet sayıları verilmiştir. Hafta içi satılan bilet sayısı Öğrenci Bileti",
       "char_count": 518,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_2318f191211b9c",
@@ -21400,11 +21400,11 @@
       "text": "1. Buna göre bu sinema salonunda hafta içi satılan; a) Öğrenci biletlerinden elde edilen gelir kaç liradır? İşlemlerinizi gösteriniz. b) Tam biletlerden elde edilen gelir kaç liradır? İşlemlerinizi gösteriniz. c) Biletlerin tamamından elde edilen gelir kaç liradır? İşlemlerinizi gösteriniz. 2. Bu sinema salonunda hafta sonu bir kampanya yapılarak tüm bilet fiyatları 10 TL olarak belirleniyor. Hafta boyunca satılan biletlerin tamamından elde edilen gelir 5720 TL olduğuna göre hafta sonu kaç bilet satılmıştır? ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 90. Bir fabrikadaki su şişeleri 6’lı paketler haline getiriliyor. Daha sonra her bir kolide 12 paket olacak şekilde depolanıyor. 1 paket 6 adet su şişesi 1 koli 12 paket su şişesi 1. Buna göre 576 adet su şişesini depolamak için kaç adet koliye ihtiyaç vardır? İşlemlerinizi gösteriniz. 2. 15 koli su şişesinin satış fiyatı 1080 TL olduğuna göre 1 adet su şişesinin fiyatı kaç liradır? İşlemlerinizi gösteriniz. 89. Aşağıdaki şemalarda verilen çarpma işlemlerini zihinden yapınız. İşlem sonucunuzu alttaki boş kutucuklara yazınız. x",
       "char_count": 1103,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.5",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_baa4010e0c40ef",
@@ -21417,11 +21417,11 @@
       "text": "x ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 92. Aşağıdaki eşitliklerde verilmeyen doğal sayıların yerine , , sembolleri kullanılmıştır. 988 ÷ 26 =",
       "char_count": 161,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.5",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_f4b1e371905038",
@@ -21434,11 +21434,11 @@
       "text": "91. Ezgi her seferinde 3 kırmızı ve 2 siyah boncuğu, 5’li gruplar hâlinde ipe dizerek bir kolye yapıyor. Aşağıda Ezgi’nin dizdiği boncukların bir kısmı gösteriliyor. Ezgi kolyeyi 140 tane boncukla yaptığına göre kolyede, 1. Kaç tane kırmızı boncuk vardır? 2. Kaç tane siyah boncuk vardır? ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 93. Üstünde işlem yazılı olan aşağıdaki arabalar, bu işlemlerin sonuçlarının bulunduğu otoparklara gidecektir. Buna göre arabaları otoparklarla eşleştiriniz. 100 x 502 34 000 52 x 1000 50 200 34 x 1000 3400 10 x 340 52 000 17 x 1000 1700 17 x 100 17 000 ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 94. Aşağıda ürünlerin paket fiyatları verilmiştir. Bu paketlerdeki her bir ürünün adet fiyatını işlemlerinizi göstererek bulunuz. : ...... kuruş : ...... kuruş : ...... kuruş : ...... kuruş ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 95. Aşağıdaki doğal sayıları, mavi kutucukların içindeki sayılarla zihinden çarparak sonucu sayının karşısındaki kutucuğa yazınız.",
       "char_count": 1034,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.4",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_a7062ba2ba58bb",
@@ -21451,11 +21451,11 @@
       "text": "x 1000 96. Lastik saklanan bir depoda iki raftan oluşan açık bir raf sistemi kullanılıyor. Bu raflar bölmelere ayrılıyor ve her bir bölmede dörtlü gruplanmış lastikler aşağıdaki gibi depolanıyor. Bu açık rafın genişliği 720 cm, bölmelerden her birinin genişliği ise 90 cm’dir. Buna göre açık raf sisteminde, 1. Her bir rafta kaç tane bölme vardır? 2. Toplam kaç tane lastik vardır? ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ CEVAP ANAHTARI 1. D 2. C 3. C 4. A 5. B 6. C 7. B 8. D 9. B 10. C 11. A 12. D 13. B 14. D",
       "char_count": 528,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.1.5",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_a2be78e5e1b319",
@@ -24120,11 +24120,11 @@
       "text": "Aşağıdaki tahtaya birer birim aralıklarla çiviler yerleştirilmiştir ve bu çivilerden bazıları A, B, C, D, E, F ve G harfleri ile isimlendirilmiştir. Daha sonra A, B ve C çivilerine bir lastik takılarak üçgen oluşturulmuştur. A B G F E C D Buna göre lastik, A ve B çivilerindeki yeri değiştirilmeden C çivisinden çıkarılıp aşağıdaki çivilerden hangisine takılırsa bir çeşitkenar üçgen elde edilir? A) D B) E C) F D) G ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 32. Aşağıda eş birimküplerden elde edilen bir yapı verilmiştir. . . . . . . . . . . . . . . . . . . . . . . . . . Buna göre bu yapıdaki birimküpler kullanılarak aşağıdaki yapılardan hangisi oluşturulamaz? A) . . . . . . . . . . . . . . . . . . . . . . . . B) . . . . . . . . . . . . . . . . . . . . . . . . . C) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . D) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 36. Her bir yüzünde farklı bir renk bulunan küpün, farklı yönlerden görünümü aşağıda verilmiştir. Buna göre ''?'' yerine hangi renk gelmelidir? A) B) C) D) 35. 20 m 8 cm uzunluğundaki bir kumaştan, her biri 250 cm uzunluğunda 7 parça kumaş kesilmiştir. Buna göre geriye kalan kumaşın uzunluğu kaç santimetredir? A) 252 B) 258 C) 262 D) 268 34. Bir lastiğin uzunluğu 112 mm’dir. Lastik, iki ucundan tutulup esnetildiğinde lastiğin uzunluğu 15 cm 8 mm oluyor. Buna göre lastik esnetildiğinde ilk hâline göre kaç milimetre uzamıştır? A) 46 B) 58 C) 62 D) 70 33. B C A Yukarıdaki kareli kâğıtta verilen ACB'nın ölçüsü aşağıdakilerden hangisi olabilir? A) 34º B) 88º C) 112º D) 179º ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 37. Aşağıdaki üçgenin köşelerinde bulunan eş çarklar, saat yönünde ve aynı hızda dönmektedir. Çarklar aynı anda dönmeye başlayıp durduğunda, oklar hangi harfleri gösteriyorsa üçgenin köşeleri o harfle isimlendirilmektedir. Bir tam turlarını 24 saniyede tamamlayan çarklar, aynı anda dönmeye başladıktan 60 saniye sonra durduruluyor. Buna göre üçgen, aşağıdakilerden hangisi gibi isimlendirilebilir? A) BGO B) CNG C) DIR D) ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 39.",
       "char_count": 2184,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.4.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_22f6a1b4920060",
@@ -24137,11 +24137,11 @@
       "text": "Esnemeyen kırmızı renkli bir ip ile ABC'nin kenarları aşağıdaki gibi ölçülüyor. A B C A B C A B C Buna göre ABC 'nin kenar uzunlukları aşağıdakilerden hangisi olabilir? A) 5 6 6 B) 8 8 8 C) 7 5 6 D) 7 7 6 38. A) 30 B) 45 C) 60 D) 75 Büşra, 15 cm uzunluğundaki 11 tane çubuğu parçalamadan kullanarak bunlardan dikdörtgen oluşturacaktır. Buna göre bu dikdörtgenin uzun kenarı en fazla kaç santimetre olabilir? AB kenarı (cm) BC kenarı (cm) CA kenarı (cm) ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 41. Aşağıda birimküplerle oluşturulmuş iki yapı veriliyor. Buna göre bu yapılardaki birimküplerin tamamı kullanılarak oluşturulacak yeni bir yapıda kaç birimküp bulunur? A) 18 B) 19 C) 20 D) 21 40. Kalınlığı 5 cm olan bir tahta parçasının çiviyle duvara aşağıdaki gibi sabitlenmesi isteniyor. 5 cm Buna göre bu tahta, aşağıda uzunlukları verilen çivilerden hangisiyle duvara sabitlenebilir? A) 12 mm B) 33 mm C) 46 mm D) 64 mm ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 42. Aşağıdaki saatlerde akrep ile yelkovanın oluşturduğu açıları çeşitlerine göre eşleştiriniz. DAR AÇI ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 43. Bir salyangoz, üzerinde harflerin yazılı olduğu karelere ayrılmış bölgede, aşağıdaki kurallara göre ilerliyor: ●Turuncu ok ile gösterilen kısımdan bölgeye giriş yapıyor. ●Her hareketinde bir kare ilerliyor. ●Üzerinde bulunduğu karenin sağında, solunda, aşağısında ve yukarısında bulunan karelerdeki harflerden hangisi simetrikse o harfin olduğu kareye ilerliyor. Örneğin H harfinin bulunduğu karedeki salyangoz, R ve T harflerinden simetrik olan T harfinin bulunduğu kareye ilerliyor. H R T C Buna göre salyangozun çıkışa ulaşmak için izlediği yolu, üzerinden geçtiği kareleri boyayarak gösteriniz ve oklarla belirtilen çıkışların hangisinden çıktığını işaretleyiniz. H R T C K J L F U N G L P G O Y F N M R N U P E Ö S Z A Ö D H V P I J R N Ö Ü L Y L R B F G F N P L J S I Z F A U D V H R J S Y P R C E T U Y R F P N G L J P S O L G T S M Z V L J S Z H P Z N S N A E G ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 44. Açı ölçülerinin verildiği tabloyu aşağıdaki kurallara göre boyayınız.",
       "char_count": 2159,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.3.2",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_b0c29ed4560456",
@@ -24154,11 +24154,11 @@
       "text": "Tablodaki, ●dar açılar kırmızıya, ●dik açılar sarıya, ●geniş açılar maviye, ●doğru açılar pembeye boyanacaktır. 90o 80o 45o 180o 120o 55o 35o 70o 145o 130o 45. Aşağıda numaralandırılmış kare, dikdörtgen ve üçgenler verilmiştir. Buna göre tabloyu örnekteki gibi doldurunuz. Geometrik Şekil Köşeleri Kenarları Kenar Özellikleri",
       "char_count": 325,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.3.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_7803ead887fd56",
@@ -24171,11 +24171,11 @@
       "text": "Çeşitkenar Üçgen A,B,C AB, BC, CA Tüm kenar uzunlukları farklıdır. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 46. 72 000 cm uzunluğundaki bir caddenin karşılıklı kaldırımlarına çöp tenekeleri koyulacaktır. Çöp tenekeleri kaldırımların başında ve sonunda birer tane olmak koşuluyla eşit aralıklarla yerleştirilecektir. Bu aralıklar kaldırımın birinde 12 m, diğerinde ise 18 m olacaktır. Buna göre caddeye koyulacak çöp kutusu toplam kaç tanedir? İşlemlerinizi gösteriniz. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 47. Aşağıda ölçüsü verilen açıları açıölçer (iletki) yardımıyla çiziniz. Çizdiğiniz açının çeşidini yazınız. 90o Açının çeşidi: 70o Açının çeşidi: 180o Açının çeşidi: 135o Açının çeşidi: 45o Açının çeşidi: ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ a) b) c) d) 48. Aşağıdaki boyalı şekillerin, verilen doğrulara göre simetriğini çiziniz. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 49. Aşağıdaki uzunlukları, istenilen birimler cinsinden örnekteki gibi yazınız. 8 km 260 m 8260 m ....... km ....... m 6000 m ....... km ....... m 7632 m ....... km ....... m 9050 m ....... km ....... m 20 200 m ....... km ....... m 30 003 m 8 cm 2 mm 82 mm ....... cm ....... mm 12 mm ....... cm ....... mm 56 mm ....... cm ....... mm 107 mm ....... cm ....... mm 2018 mm ....... cm ....... mm 250 mm ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 50. Aşağıdaki kareli kâğıda, açıölçer (iletki) kullanarak ölçüleri 30o, 60o, 75o, 120o ve 145o olan açılar çiziniz. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 52. Aşağıda verilen şeklin kaç tane simetri doğrusu vardır? Çizerek gösteriniz. 51. Aşağıda açınımı verilen küplerin karşılıklı yüzlerini aynı renge boyayınız. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 2) Renkli birimküplerden eşit sayılarda kullanılarak oluşturulan bir yapıda en fazla kaç birimküp bulunur? Cevabınızı yazınız. 1) Bu yapılardaki birimküplerin tamamı üç öğrenciye eşit olarak dağıtılıyor. Buna göre öğrencilerden birinde bulunan birimküplerin tamamının kullanılmasıyla oluşturulabilecek bir yapı çiziniz. 53. Aşağıda birimküplerle oluşturulmuş üç yapı veriliyor.",
       "char_count": 2177,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.4.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_269bea4a769e42",
@@ -24188,11 +24188,11 @@
       "text": "ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 55. Aşağıdaki uzunlukları, uygun olan ölçme birimiyle eşleştiriniz. 54. Aşağıdaki kareli kâğıda,",
       "char_count": 153,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.4.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_0252410f5fc9ed",
@@ -24205,11 +24205,11 @@
       "text": "●köşesi C noktası olacak şekilde bir geniş açı çiziniz ve çizdiğiniz açıları isimlendiriniz. A B C Buğday tanesinin kalınlığı Kurşun kalem ucunun kalınlığı Zürafanın boyunun uzunluğu Tornavida ucunun kalınlığı Okul bahçesinin uzunluğu İki şehir arasındaki mesafe Bulaşık makinesinin eni Karıncanın boyunun uzunluğu km m cm mm ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ a) b) c) 56. Aşağıdaki yapıları oluşturan birimküplerin tamamını kullanarak verilen izometrik kâğıtlara yeni yapılar oluşturunuz. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 57. Aşağıda kenar uzunlukları verilen üçgenleri, üçgen çeşitleri ile eşleştiriniz. a) 7 cm−3 cm−7 cm c) 2 cm−2 cm−2 cm d) 23 cm−23 cm−23 cm b) 4 cm−5 cm−6 cm ç) 11 cm−12 cm−11 cm e) 12 cm−15 cm−17 cm Eşkenar Üçgen İkizkenar Üçgen Çeşitkenar Üçgen ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 58. Betül iki tahta parçasının uzunluğunu, 30 cm uzunluğunda esnemeyen bir iple ölçmek istiyor. ●Birinci tahta parçasının uzunluğunu bu iple ölçtüğünde ipin tahtadan daha uzun olduğunu görüyor. ●İkinci tahta parçasının uzunluğunu bu iple ölçtüğünde ipin tahtadan daha kısa olduğunu görüyor. Tahta parçalarının uzunlukları mm cinsinden birer doğal sayı olduğuna göre 1. Birinci tahta parçasının uzunluğu en fazla kaç milimetre olabilir? 2. İkinci tahta parçasının uzunluğu en az kaç milimetre olabilir? ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 59. Aşağıdaki görsellerde verilenlerin gerçek uzunluklarını tahmin ederek tahmininize en uygun olan kutucuğu boyayınız. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 60. Aşağıdaki iletkilerle ölçülen açıları dereceleriyle eşleştiriniz. 45o 60o 90o 140o . . . A B C . . . D E F . . . K L M . . . P R S ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 61. Aşağıdaki tabloda verilenlerden simetrik olanları belirleyerek simetri doğrularını örnekteki gibi çiziniz. Simetrik olmayanların ise üzerine örnekteki gibi \"X\" işareti koyunuz.",
       "char_count": 1982,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.4.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_323d6aa67601b0",
@@ -24222,11 +24222,11 @@
       "text": "İkizkenar Üçgen C, D, E CD, DE, EC İki kenar uzunluğu eşittir. 44. 90o 80o 45o 180o 120o 55o 35o 70o 145o 130o 43. H R T C K J L F U N G L P G O Y F N M R N U P E Ö S Z A Ö D H V P I J R N Ö Ü L Y L R B F G F N P L J S I Z F A U D V H R J S Y P R C E T U Y R F P N G L J P S O L G T S M Z V L J S Z H P Z N S N A E G ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 47. 90o Açının çeşidi: Dik açı 70o Açının çeşidi: Dar açı 180o Açının çeşidi: Doğru açı 135o Açının çeşidi: Geniş açı 45o Açının çeşidi: Dar açı 46. 72 000 cm = 720 m 12 metre aralıklarla koyulan kaldırımda, 720÷12 = 60 tane aralık vardır. Başına ve sonuna da çöp tenekesi koyulduğundan çöp tenekesi sayısı aralık sayısından 1 fazladır. Bu yüzden 60+1 = 61 tane çöp kutusu vardır. 18 metre aralıklarla koyulan kaldırımda, 720÷18 = 40 tane aralık vardır. Başına ve sonuna da çöp tenekesi koyulduğundan çöp tenekesi sayısı aralık sayısından 1 fazladır. Bu yüzden 40+1 = 41 tane çöp kutusu vardır. Toplamda 61+41 = 102 tane çöp kutusu vardır. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 48. a) b) c) d) ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 49. 8 km 260 m 8260 m 6 km 0 m 6000 m 7 km 632 m 7632 m 9 km 50 m 9050 m 20 km 200 m 20 200 m 30 km 3 m 30 003 m 8 cm 2 mm 82 mm 1 cm 2 mm 12 mm 5 cm 6 mm 56 mm 10 cm 7 mm 107 mm 200 cm 18 mm 2018 mm 25 cm 0 mm 250 mm ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 50. 52. 51. 5 tane simetri doğrusu vardır. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 54. Örnek öğrenci cevabı: 53. 1) Örnek öğrenci cevabı: 2) 7 tane yeşil, 5 tane sarı ve 9 tane mavi renkli birimküp var. 5 yeşil, 5 sarı ve 5 mavi birimküp kullanılarak 15 birimküplük bir yapı oluşturulabilir. A B C . E D K L KAL MBN ECD M N ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 56. a) b) c) 55. Buğday tanesinin kalınlığı Kurşun kalem ucunun kalınlığı Zürafanın boyunun uzunluğu Tornavida ucunun kalınlığı Okul bahçesinin uzunluğu İki şehir arasındaki mesafe Bulaşık makinesinin eni Karıncanın boyunun uzunluğu km m cm mm ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 58.",
       "char_count": 2121,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.4.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     },
     {
       "chunk_id": "tb_bf9838e80ade88",
@@ -24239,11 +24239,11 @@
       "text": "1) İpin uzunluğu 30 cm = 300 mm Ölçümde ip uzun geldiği için tahta parçasının boyu 300 mm’den kısadır. Uzunluğu en fazla 299 mm olabilir. 2) Ölçümde ip kısa geldiği için tahta parçasının boyu 300 mm’den uzundur. Uzunluğu en az 301 mm olabilir. 57. a) 7 cm−3 cm−7 cm c) 2 cm−2 cm−2 cm d) 23 cm−23 cm−23 cm b) 4 cm−5 cm−6 cm ç) 11 cm−12 cm−11 cm e) 12 cm−15 cm−17 cm Eşkenar Üçgen İkizkenar Üçgen Çeşitkenar Üçgen ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 59. 60. 45o 60o 90o 140o . . . A B C . . . D E F . . . P R S . . . K L M ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 62. 1) SFKL dikdörtgeni 2) FKLS dikdörtgeni 3) KLSF dikdörtgeni 4) LSFK dikdörtgeni 61. ÖLÇME, DEĞERLENDİRME VE SINAV HİZMETLERİ GENEL MÜDÜRLÜĞÜ 63. 1) 1 br 1 br Sol 2) 1 br 1 br Sol birim birim birim birim Bu çalışma fasikülü, T.C. Millî Eğitim Bakanlığı Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü tarafından Ölçme Değerlendirme Merkezlerinin katkılarıyla hazırlanmıştır.",
       "char_count": 985,
       "tema": null,
-      "tagged": false,
-      "kazanim_kod_llm": null,
-      "confidence": null,
+      "tagged": true,
+      "kazanim_kod_llm": "M.4.4.1",
+      "confidence": "high",
       "mapped_topic_hint": null,
-      "content_quality": null
+      "content_quality": "usable"
     }
   ]
 }
