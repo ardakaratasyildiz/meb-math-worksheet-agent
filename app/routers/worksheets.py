@@ -1,5 +1,7 @@
 import asyncio
 import json
+import logging
+import time
 from datetime import datetime, timezone
 from functools import lru_cache
 from typing import AsyncIterator
@@ -22,6 +24,7 @@ from app.services.agent import AgentError, GeminiAgent
 from app.services.pdf_renderer import render_worksheet_pdf
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=1)
@@ -98,41 +101,57 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             allowed_types=req.question_types,
         )
 
-    try:
-        if req.difficulty_mode == "single":
+    if req.difficulty_mode == "single":
+        try:
             questions = _gen(req.difficulty, req.question_count)
-            trace_for_meta = agent.build_last_trace()
-            worksheet_difficulty = req.difficulty
-        else:
-            buckets = _split_difficulty_buckets(req.question_count)
-            collected: list = []
-            # Her bucket için ayrı agent.generate çağrısı — cache ve few-shot
-            # retrieval her zorluk için bağımsız çalışır.
-            for diff in (_Diff.KOLAY, _Diff.ORTA, _Diff.ZOR):
-                n = buckets.get(diff, 0)
-                if n <= 0:
-                    continue
-                bucket_questions = _gen(diff, n)
-                collected.extend(bucket_questions)
+        except AgentError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+        trace_for_meta = agent.build_last_trace()
+        worksheet_difficulty = req.difficulty
+    else:
+        # Mixed/progressive: kolay/orta/zor 3 ayrı agent.generate çağrısı.
+        # Her çağrı içinde ~3-5 LLM call var → 3 bucket = ~10-15 Gemini çağrısı
+        # saniyeler içinde. Free-tier rate limit / 503 nedeniyle bir bucket
+        # fail edebilir. Bucket-başına hata yakalanır: en az 1 bucket başarılı
+        # olduğu sürece kısmi sonuç döndürülür (tüm istek çökmez). Bucket'lar
+        # arasına kısa gecikme — rate limit burst'ünü yumuşatır.
+        buckets = _split_difficulty_buckets(req.question_count)
+        collected: list = []
+        bucket_errors: list[str] = []
+        bucket_seq = [d for d in (_Diff.KOLAY, _Diff.ORTA, _Diff.ZOR)
+                      if buckets.get(d, 0) > 0]
+        for idx, diff in enumerate(bucket_seq):
+            n = buckets[diff]
+            try:
+                collected.extend(_gen(diff, n))
+            except AgentError as exc:
+                logger.warning(
+                    "Bucket başarısız (diff=%s, n=%s): %s — kısmi sonuçla devam.",
+                    diff.value, n, exc,
+                )
+                bucket_errors.append(f"{diff.value}: {exc}")
+            # Son bucket değilse rate limit burst'ünü yumuşat.
+            if idx < len(bucket_seq) - 1:
+                time.sleep(1.5)
 
-            if req.difficulty_mode == "mixed":
-                # Karıştır — sıralama bilgisi vermesin.
-                import random as _random
-                _random.shuffle(collected)
-            # progressive ise zaten kolay→orta→zor sırasında topladık.
-            # Numaraları sıkı yeniden numarala.
-            from app.models.schemas import Question as _Q
-            questions = [
-                q.model_copy(update={"number": i + 1}) if isinstance(q, _Q)
-                else q
-                for i, q in enumerate(collected)
-            ]
-            trace_for_meta = agent.build_last_trace()  # son call'un trace'i
-            # mixed/progressive'de worksheet.difficulty alanı ne olmalı?
-            # Schemada zorunlu; request.difficulty'i nominal değer olarak tut.
-            worksheet_difficulty = req.difficulty
-    except AgentError as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        if not collected:
+            # Hiçbir bucket başarılı olmadı — gerçek hata.
+            detail = "Üretim başarısız (tüm zorluk grupları hata verdi). "
+            if bucket_errors:
+                detail += "Sebep: " + " | ".join(bucket_errors[:3])
+            raise HTTPException(status_code=502, detail=detail)
+
+        if req.difficulty_mode == "mixed":
+            import random as _random
+            _random.shuffle(collected)
+        # progressive ise zaten kolay→orta→zor sırasında toplandı.
+        from app.models.schemas import Question as _Q
+        questions = [
+            q.model_copy(update={"number": i + 1}) if isinstance(q, _Q) else q
+            for i, q in enumerate(collected)
+        ]
+        trace_for_meta = agent.build_last_trace()
+        worksheet_difficulty = req.difficulty
 
     if not questions:
         raise HTTPException(
