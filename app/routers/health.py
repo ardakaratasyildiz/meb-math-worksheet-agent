@@ -11,6 +11,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Response, status
 
 from app.config import settings
+from app.services.db_connection import is_turso_enabled
 from app.services.retriever import get_retriever
 
 router = APIRouter()
@@ -26,6 +27,13 @@ def readyz(response: Response) -> dict[str, object]:
     checks: dict[str, object] = {}
 
     checks["gemini_api_key"] = bool(settings.gemini_api_key)
+
+    # DB persistence backend — Turso (kalıcı, restart'a dayanıklı) mı yoksa
+    # lokal SQLite (ephemeral diskte; her deploy/cold-start'ta cache+history
+    # sıfırlanır) mı? "Üretim geçmişi göremiyorum" teşhisini Render dashboard'a
+    # girmeden, tek curl ile yapabilmek için. all_ok'u GATING ETMEZ — lokal
+    # SQLite'ta da uygulama çalışır, sadece kalıcılık yoktur (bilgilendirme).
+    checks["db_backend"] = "turso" if is_turso_enabled() else "local-sqlite"
 
     retriever = get_retriever()
     if retriever is None:
