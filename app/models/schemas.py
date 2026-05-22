@@ -10,6 +10,46 @@ from app.models.enums import Difficulty, EducationLevel, QuestionType
 DifficultyMode = Literal["single", "mixed", "progressive"]
 
 
+# --- LaTeX kontrol-karakteri onarımı ------------------------------------------
+# LLM'ler structured-output (JSON) üretirken tek-ters-bölülü bir LaTeX komutu
+# (\frac, \times, \right, \beta, \neq ...) yazar; ters bölüden sonraki harf
+# geçerli bir JSON escape harfiyse (f r t b n) JSON çözümleyici bu ikiliyi
+# sessizce bir kontrol karakterine dönüştürür:
+#   \frac  -> \x0c + "rac"      \right -> \x0d + "ight"
+#   \times -> \x09 + "imes"     \beta  -> \x08 + "eta"     \neq -> \x0a + "eq"
+# (\div \leq \sqrt \cdot bozulmaz: 2. harf escape harfi olmadığından
+# constrained-decoding modeli \\ yazmaya zorlanır.) Bu fonksiyon onu geri alır.
+
+_MATH_SPAN_RE = re.compile(r"\$\$?[^$]+?\$\$?")
+_CTRL_BACKSLASH = {
+    "\x08": "\\b", "\x09": "\\t", "\x0a": "\\n", "\x0c": "\\f", "\x0d": "\\r",
+}
+
+
+def repair_latex_control_chars(text: str) -> str:
+    """JSON escape'i yüzünden kontrol karakterine dönüşmüş LaTeX komutlarını onarır."""
+    if not text or not any(c in text for c in "\x08\x09\x0a\x0c\x0d"):
+        return text
+    # \x0c (form feed = \f) ve \x08 (backspace = \b): çalışma kağıdı metninde
+    # asla meşru olarak bulunmaz → koşulsuz onar.
+    text = text.replace("\x0c", "\\f").replace("\x08", "\\b")
+    # \x09 (tab = \t) ve \x0d (CR = \r): ardından ASCII harf geliyorsa bozulmuş
+    # \times/\theta/\right/\rho... komutudur (gerçek tab/CR'yi harf izlemez).
+    text = re.sub(
+        r"[\x09\x0d](?=[A-Za-z])",
+        lambda m: _CTRL_BACKSLASH[m.group(0)],
+        text,
+    )
+    # \x0a (newline = \n): gerçek satır sonları yaygın olduğundan yalnızca
+    # $...$ / $$...$$ matematik blokları içinde onarılır (orada satır sonu olmaz).
+    if "\x0a" in text:
+        text = _MATH_SPAN_RE.sub(
+            lambda m: m.group(0).replace("\x0a", "\\n"),
+            text,
+        )
+    return text
+
+
 class GradeInfo(BaseModel):
     id: int
     name: str
@@ -143,6 +183,11 @@ class SolutionStep(BaseModel):
         description="O adıma karşılık gelen aritmetik ifade (ör. '3 + 4 = 7'). Sözel adımda boş.",
     )
 
+    @field_validator("description", "computation")
+    @classmethod
+    def _repair_latex(cls, v: str | None) -> str | None:
+        return repair_latex_control_chars(v) if isinstance(v, str) else v
+
 
 _STEP_LEAD_RE = re.compile(
     r"""
@@ -211,6 +256,21 @@ class Question(BaseModel):
     )
     kazanim_kod: str
     question_type: QuestionType
+
+    # JSON escape kaynaklı LaTeX bozulmasını her Question oluşturulurken onar —
+    # taze üretim, generation cache okuması ve /render.pdf girdileri dahil.
+    @field_validator("question", "answer")
+    @classmethod
+    def _repair_latex(cls, v: str) -> str:
+        return repair_latex_control_chars(v)
+
+    @field_validator("solution_steps")
+    @classmethod
+    def _repair_solution_steps(
+        cls, v: "str | list[SolutionStep]"
+    ) -> "str | list[SolutionStep]":
+        # list[SolutionStep] dalı zaten SolutionStep validator'ında onarıldı.
+        return repair_latex_control_chars(v) if isinstance(v, str) else v
 
 
 class AnswerKeyEntry(BaseModel):

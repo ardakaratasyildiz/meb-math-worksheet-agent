@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from app.config import settings
 from app.data.curriculum import Kazanim, get_topic
 from app.models.enums import Difficulty, QuestionType
-from app.models.schemas import Question, SolutionStep
+from app.models.schemas import Question, SolutionStep, repair_latex_control_chars
 from app.prompts.templates import (
     SYSTEM_PROMPT,
     build_retry_prompt,
@@ -854,12 +854,14 @@ class GeminiAgent:
             dedup.add(raw.question)
             steps = raw.solution_steps
             if isinstance(steps, str):
-                steps = steps.strip()
+                # Onarımı strip'ten ÖNCE yap: baştaki \frac gibi bir komut
+                # \x0c'ye dönüşmüşse strip() o ipucunu silerdi.
+                steps = repair_latex_control_chars(steps).strip()
             questions.append(
                 Question(
                     number=starting_number + len(questions),
-                    question=raw.question.strip(),
-                    answer=raw.answer.strip(),
+                    question=repair_latex_control_chars(raw.question).strip(),
+                    answer=repair_latex_control_chars(raw.answer).strip(),
                     solution_steps=steps,
                     kazanim_kod=kod,
                     question_type=raw.question_type,

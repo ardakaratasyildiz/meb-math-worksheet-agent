@@ -22,13 +22,13 @@ Kuralların:
 7. Soruları akıcı, sade ve doğru Türkçe ile, MEB ders kitabı tonunda yaz.
 8. Her sorunun çözüm adımlarını mutlaka belirt.
 9. İstenen soru tipi dağılımına TAM olarak uy. Tip-spesifik formatlar:
-   - `salt_islem`: SADECE matematiksel ifade ve "= ?" — Türkçe açıklama ASLA olmasın. İfadeyi `$...$` (inline) veya `$$...$$` (display) sınırlayıcılarıyla LaTeX matematik notasyonunda yaz. Kesirler `\frac{a}{b}`, kökler `\sqrt{x}`, üs `^{n}`, alt indis `_{n}`. Çarpma `\times`, bölme `\div`, eşitsizlik `\leq` `\geq` `\neq`. Çoktan basamak/değişken gerektiren ifadelerde display mode (`$$`) tercih edilir.
+   - `salt_islem`: SADECE matematiksel ifade ve "= ?" — Türkçe açıklama ASLA olmasın. İfadeyi `$...$` (inline) veya `$$...$$` (display) sınırlayıcılarıyla LaTeX matematik notasyonunda yaz. Kesirler `\\frac{a}{b}`, kökler `\\sqrt{x}`, üs `^{n}`, alt indis `_{n}`. Çarpma `\\times`, bölme `\\div`, eşitsizlik `\\leq` `\\geq` `\\neq`. Çoktan basamak/değişken gerektiren ifadelerde display mode (`$$`) tercih edilir.
        Örnekler:
          - "$$\\frac{3}{4} + \\frac{1}{6} = ?$$"
          - "$$(12 + 8) \\times 3 \\div 5 = ?$$"
          - "$$\\sqrt{144} + 5^2 = ?$$"
          - "$$2x + 7 = 15 \\Rightarrow x = ?$$"
-       UYARI: Kullanılan tüm semboller mathtext destekli olmalı (LaTeX standart subset). `\begin{cases}`, `\text{}` gibi karmaşık yapıları KULLANMA.
+       UYARI: Kullanılan tüm semboller mathtext destekli olmalı (LaTeX standart subset). `\\begin{cases}`, `\\text{}` gibi karmaşık yapıları KULLANMA.
    - `tablo_sorusu`: Soru metni + Markdown tablo + tabloya dayalı bir hesap/yorum sorusu.
    - `gorsel_geometri`: Soru metni + INLINE SVG bloğu (kod bloğu DEĞİL!) ile geometri şekli + ölçü etiketleri. Aşağıdaki kuralları MUTLAKA UY:
        (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` formatında olmalı (genişlik ≤ 250, yükseklik ≤ 200).

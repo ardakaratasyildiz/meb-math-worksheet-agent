@@ -12,40 +12,56 @@ from app.models.enums import Difficulty, QuestionType
 logger = logging.getLogger(__name__)
 
 DIFFICULTY_DISTRIBUTIONS: dict[Difficulty, list[tuple[QuestionType, float]]] = {
-    # Sprint 12-A: Bloom alt seviyelerini ve LGS hazırlığı destekleyen format
-    # tipleri (coktan_secmeli, dogru_yanlis, bosluk_doldurma, eslestirme,
-    # siralama) zorluk bazında karıştırıldı. Sözel/işlem çekirdek korunur.
+    # Format tipleri (coktan_secmeli, dogru_yanlis, bosluk_doldurma, eslestirme,
+    # siralama) Bloom seviyesine göre yerleştirildi; her tip yalnızca pedagojik
+    # olarak anlamlı olduğu zorluklarda varsayılan karışıma girer:
+    #   - dogru_yanlis  → hatırlama/anlama: KOLAY (asıl), ORTA (ikincil). ZOR yok.
+    #   - bosluk_doldurma → hatırlama/uygulama: KOLAY + ORTA. ZOR yok.
+    #   - eslestirme    → anlama: KOLAY + ORTA. ZOR yok.
+    #   - siralama      → anlama/analiz: ORTA + ZOR. KOLAY yok.
+    #   - coktan_secmeli → her seviye (LGS hazırlığı).
+    # Sözel/işlem çekirdek her zaman baskın (%67-78). Kullanıcı UI'dan bir tipi
+    # açıkça seçtiğinde profilde yoksa bile distribute_question_types() taban
+    # (floor) ağırlık verir → seçilen tip yine de üretilir.
     Difficulty.KOLAY: [
-        (QuestionType.ISLEM, 0.35),
-        (QuestionType.KAVRAM_SORUSU, 0.20),
+        # Çekirdek (toplam 0.67) — kazanım pekiştirme ağırlıklı.
+        (QuestionType.ISLEM, 0.30),
+        (QuestionType.KAVRAM_SORUSU, 0.18),
         (QuestionType.SOZEL_PROBLEM, 0.10),
-        (QuestionType.GUNLUK_HAYAT, 0.10),
-        # Yeni format tipleri — kolay seviyede en yüksek pay (kavram pekiştirme).
-        (QuestionType.COKTAN_SECMELI, 0.10),
-        (QuestionType.DOGRU_YANLIS, 0.10),
-        (QuestionType.BOSLUK_DOLDURMA, 0.05),
+        (QuestionType.GUNLUK_HAYAT, 0.09),
+        # Format (toplam 0.33) — kolay seviyede pekiştirmeye en uygun tipler.
+        (QuestionType.COKTAN_SECMELI, 0.11),
+        (QuestionType.DOGRU_YANLIS, 0.09),
+        (QuestionType.BOSLUK_DOLDURMA, 0.08),
+        (QuestionType.ESLESTIRME, 0.05),
     ],
     Difficulty.ORTA: [
-        (QuestionType.ISLEM, 0.25),
-        (QuestionType.SOZEL_PROBLEM, 0.25),
-        (QuestionType.KAVRAM_SORUSU, 0.12),
-        (QuestionType.AKIL_YURUTME, 0.08),
-        (QuestionType.GUNLUK_HAYAT, 0.08),
+        # Çekirdek (toplam 0.72) — sözel problem + işlem ağırlıklı.
+        (QuestionType.SOZEL_PROBLEM, 0.22),
+        (QuestionType.ISLEM, 0.19),
+        (QuestionType.KAVRAM_SORUSU, 0.10),
+        (QuestionType.AKIL_YURUTME, 0.09),
+        (QuestionType.GUNLUK_HAYAT, 0.07),
         (QuestionType.MODELLEME, 0.05),
-        # Format tipleri — orta seviyede çoktan seçmeli (LGS) baskın.
-        (QuestionType.COKTAN_SECMELI, 0.10),
-        (QuestionType.ESLESTIRME, 0.04),
-        (QuestionType.SIRALAMA, 0.03),
+        # Format (toplam 0.28) — çoktan seçmeli (LGS) baskın, beş tip de mevcut.
+        (QuestionType.COKTAN_SECMELI, 0.12),
+        (QuestionType.BOSLUK_DOLDURMA, 0.07),
+        (QuestionType.DOGRU_YANLIS, 0.04),
+        (QuestionType.ESLESTIRME, 0.03),
+        (QuestionType.SIRALAMA, 0.02),
     ],
     Difficulty.ZOR: [
-        (QuestionType.AKIL_YURUTME, 0.30),
-        (QuestionType.SOZEL_PROBLEM, 0.25),
-        (QuestionType.MODELLEME, 0.12),
+        # Çekirdek (toplam 0.78) — akıl yürütme + çok adımlı sözel ağırlıklı.
+        (QuestionType.AKIL_YURUTME, 0.28),
+        (QuestionType.SOZEL_PROBLEM, 0.24),
+        (QuestionType.MODELLEME, 0.13),
         (QuestionType.ISLEM, 0.08),
         (QuestionType.GUNLUK_HAYAT, 0.05),
-        # Zor seviyede çoktan seçmeli (LGS son aşama) + sıralama (karşılaştırma).
+        # Format (toplam 0.22) — çoktan seçmeli (LGS son aşama) + sıralama
+        # (analiz/karşılaştırma). Doğru/yanlış ve eşleştirme zor seviyede
+        # yüzeysel kaldığından varsayılan karışıma alınmadı.
         (QuestionType.COKTAN_SECMELI, 0.15),
-        (QuestionType.SIRALAMA, 0.05),
+        (QuestionType.SIRALAMA, 0.07),
     ],
 }
 
@@ -92,11 +108,12 @@ def distribute_question_types(
     GRAFIK_OKUMA, GORSEL_GEOMETRI, ORUNTU_SEKIL, SALT_ISLEM) belirli bir paya
     sahip olur; geri kalan pay zorluk profili üzerinden dağıtılır.
 
-    `allowed_types` verilirse SADECE bu tipler arası dağıtım yapılır; diğer
-    tipler ağırlık 0 alır. Kullanıcı UI'dan tip filtresi uyguladığında. None
-    (default) → tüm tipler geçerli.
+    `allowed_types` verilirse SADECE bu tipler arası dağıtım yapılır; zorluk
+    profilinde ağırlığı olmayan ama istenen tipler taban (floor) ağırlık alır →
+    seçilen her tip mutlaka temsil edilir. None (default) → tüm tipler geçerli.
 
-    Yuvarlama hatalarını telafi etmek için en yüksek paylı tipe ekleme/çıkarma yapılır.
+    Yuvarlama: en büyük kalan (Hamilton) yöntemi kullanılır — düşük paylı tipler
+    `int()` kırpması yüzünden sistematik olarak elenmez.
     """
     base = DIFFICULTY_DISTRIBUTIONS[difficulty]
     visual_bias = TOPIC_VISUAL_BIAS.get(topic_id or "", {})
@@ -116,45 +133,63 @@ def distribute_question_types(
     else:
         weights = list(base)
 
-    # Kullanıcı tip filtresi — izin verilmeyen tiplerin ağırlığını 0 yap.
-    # Ardından kalan ağırlıkları renormalize et (toplam 1.0). Filtre sonrası
-    # boş kalırsa fail-safe: ISLEM tipi default olarak verilir.
+    # Kullanıcı tip filtresi — yalnızca izin verilen tipler arası dağıtım yapılır.
+    # ÖNEMLİ: Bir tip kullanıcı tarafından açıkça istendiği hâlde seçilen zorluk
+    # profilinde (DIFFICULTY_DISTRIBUTIONS) ağırlığa sahip değilse (örn. ORTA
+    # zorlukta `bosluk_doldurma`), eski kod onu sessizce eler ve hiç üretmezdi.
+    # Artık profilde bulunmayan ama istenen her tipe taban (floor) ağırlık verilir
+    # → kullanıcının seçtiği her tip mutlaka temsil edilir.
     if allowed_types is not None:
-        filtered = [(qt, w) for qt, w in weights if qt in allowed_types]
+        weight_map: dict[QuestionType, float] = {}
+        for qt, w in weights:
+            weight_map[qt] = weight_map.get(qt, 0.0) + w
+        present = {qt: weight_map[qt] for qt in allowed_types if qt in weight_map}
+        # Profilde olmayan istenen tipler için taban ağırlık: eşleşen ağırlıkların
+        # ortalaması (hiç eşleşme yoksa düz 1.0 → tümü eşit dağılır).
+        floor = (sum(present.values()) / len(present)) if present else 1.0
+        filtered = [
+            (qt, present.get(qt, floor))
+            for qt in sorted(allowed_types, key=lambda t: t.value)
+        ]
         total_w = sum(w for _, w in filtered)
-        if total_w <= 0:
-            # Allowed tiplerden hiçbiri base/visual'da yoksa direkt eşit dağıt.
-            n = len(allowed_types) or 1
-            filtered = [(qt, 1.0 / n) for qt in allowed_types]
-        else:
-            filtered = [(qt, w / total_w) for qt, w in filtered]
-        weights = filtered
+        weights = [(qt, w / total_w) for qt, w in filtered]
 
-    raw = [(qt, total * w) for qt, w in weights]
-    counts: dict[QuestionType, int] = {}
-    for qt, v in raw:
-        counts[qt] = counts.get(qt, 0) + int(v)
-    assigned = sum(counts.values())
-    diff = total - assigned
-    if diff != 0:
-        sorted_types = [qt for qt, _ in sorted(weights, key=lambda x: -x[1])]
-        # Aynı QT iki kez gelmesin (visual + base aynı tip olabilir teorik olarak)
-        seen: set[QuestionType] = set()
-        unique_sorted: list[QuestionType] = []
-        for qt in sorted_types:
-            if qt not in seen:
-                seen.add(qt)
-                unique_sorted.append(qt)
+    # Ağırlıkları tipe göre birleştir (base + visual bias aynı tipi iki kez
+    # listeleyebilir) ve toplamı 1.0'a normalize et.
+    weight_by_type: dict[QuestionType, float] = {}
+    for qt, w in weights:
+        if w > 0:
+            weight_by_type[qt] = weight_by_type.get(qt, 0.0) + w
+    total_w = sum(weight_by_type.values())
+    if total_w <= 0:
+        return {}
+    weight_by_type = {qt: w / total_w for qt, w in weight_by_type.items()}
+
+    # En büyük kalan (Hamilton) yöntemi: önce taban (floor) atanır, artan
+    # kontenjanlar en büyük ondalık kalana sahip tiplere verilir. Eski "artığı
+    # en yüksek ağırlıklı tipe ekle" yaklaşımı, düşük ağırlıklı tipleri (örn.
+    # bosluk_doldurma 0.07 → 10 soruda 0.7) her seferinde 0'a düşürüyordu.
+    exact = {qt: total * w for qt, w in weight_by_type.items()}
+    counts: dict[QuestionType, int] = {qt: int(v) for qt, v in exact.items()}
+    diff = total - sum(counts.values())
+    if diff > 0:
+        order = sorted(
+            weight_by_type,
+            key=lambda qt: (exact[qt] - counts[qt], weight_by_type[qt], qt.value),
+            reverse=True,
+        )
+        for qt in order[:diff]:
+            counts[qt] += 1
+    elif diff < 0:
+        # Float hassasiyeti nedeniyle nadiren fazla atanırsa en küçük ağırlıklı
+        # tiplerden geri al.
+        order = sorted(weight_by_type, key=lambda qt: (weight_by_type[qt], qt.value))
         i = 0
-        while diff != 0 and i < 200:
-            qt = unique_sorted[i % len(unique_sorted)]
-            if diff > 0:
-                counts[qt] = counts.get(qt, 0) + 1
-                diff -= 1
-            else:
-                if counts.get(qt, 0) > 0:
-                    counts[qt] -= 1
-                    diff += 1
+        while diff < 0 and i < 1000:
+            qt = order[i % len(order)]
+            if counts.get(qt, 0) > 0:
+                counts[qt] -= 1
+                diff += 1
             i += 1
     return {qt: c for qt, c in counts.items() if c > 0}
 
