@@ -17,6 +17,7 @@ import {
 
 const NAV_LINKS = [
   { href: "/generate", label: "Üretim" },
+  { href: "/history", label: "Geçmiş" },
   { href: "/features", label: "Özellikler" },
   { href: "/pricing", label: "Fiyatlandırma" },
   { href: "/faq", label: "Sıkça Sorulanlar" },
