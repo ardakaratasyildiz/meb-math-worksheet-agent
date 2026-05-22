@@ -122,3 +122,84 @@ def render_latex_to_png(
     except Exception as exc:  # noqa: BLE001
         logger.warning("LaTeX render başarısız (%s): %s", exc, latex[:80])
         return None
+
+
+# ─── Inline LaTeX → düz/Unicode metin ────────────────────────────────────────
+# PDF'te satır içi $...$ ifadeleri görüntü olarak basılınca cümleyi parçalıyordu.
+# Inline math artık akan metne çevrilir; display $$...$$ görüntü olarak kalır.
+
+_LATEX_SYMBOLS = {
+    r"\times": "×", r"\div": "÷", r"\cdot": "·", r"\pm": "±", r"\mp": "∓",
+    r"\leq": "≤", r"\geq": "≥", r"\neq": "≠", r"\le": "≤", r"\ge": "≥",
+    r"\ne": "≠", r"\approx": "≈", r"\equiv": "≡",
+    r"\Rightarrow": "⇒", r"\Leftarrow": "⇐", r"\Leftrightarrow": "⇔",
+    r"\rightarrow": "→", r"\leftarrow": "←", r"\to": "→",
+    r"\circ": "°", r"\degree": "°", r"\infty": "∞",
+    r"\ldots": "…", r"\dots": "…", r"\cdots": "…",
+    r"\pi": "π", r"\alpha": "α", r"\beta": "β", r"\gamma": "γ",
+    r"\theta": "θ", r"\lambda": "λ", r"\mu": "µ", r"\Delta": "Δ",
+}
+_SUPERSCRIPT = {
+    "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵",
+    "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹", "+": "⁺", "-": "⁻", "n": "ⁿ",
+}
+_FRAC_RE = re.compile(r"(?:(\d+)\s*)?\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}")
+_SQRT_RE = re.compile(r"\\sqrt\s*\{([^{}]*)\}")
+_SUP_BRACE_RE = re.compile(r"\^\{([^{}]*)\}")
+_SUP_CHAR_RE = re.compile(r"\^(\w)")
+_SUB_BRACE_RE = re.compile(r"_\{([^{}]*)\}")
+_TEXTCMD_RE = re.compile(r"\\(?:text|mathrm|mathbf|mathit|operatorname)\s*\{([^{}]*)\}")
+
+
+def _to_superscript(body: str) -> str:
+    body = body.strip()
+    if body and all(c in _SUPERSCRIPT for c in body):
+        return "".join(_SUPERSCRIPT[c] for c in body)
+    return f"^({body})" if len(body) > 1 else f"^{body}"
+
+
+def latex_to_inline_text(latex: str) -> str:
+    """Tek bir LaTeX ifadesini okunabilir düz/Unicode metne çevirir.
+
+    `\\frac{3}{4}` → `3/4`, `5\\frac{1}{2}` → `5 1/2`, `\\times` → `×`,
+    `5^2` → `5²`. Karmaşık yapılar için yaklaşıktır — satır içi ifadeler
+    cümleyi bölmesin diye yeterli.
+    """
+    if not latex:
+        return latex
+    s = latex.strip()
+    # \frac{a}{b} → a/b ; önünde tam sayı varsa tam sayılı kesir (5\frac12 → 5 1/2)
+    for _ in range(6):
+        new = _FRAC_RE.sub(
+            lambda m: (f"{m.group(1)} " if m.group(1) else "")
+            + f"{m.group(2).strip()}/{m.group(3).strip()}",
+            s,
+        )
+        if new == s:
+            break
+        s = new
+    s = _SQRT_RE.sub(lambda m: f"√({m.group(1).strip()})", s)
+    s = _SUP_BRACE_RE.sub(lambda m: _to_superscript(m.group(1)), s)
+    s = _SUP_CHAR_RE.sub(lambda m: _to_superscript(m.group(1)), s)
+    s = _SUB_BRACE_RE.sub(lambda m: f"_{m.group(1).strip()}", s)
+    s = _TEXTCMD_RE.sub(r"\1", s)
+    for cmd, sym in _LATEX_SYMBOLS.items():
+        s = s.replace(cmd, sym)
+    s = s.replace(r"\left", "").replace(r"\right", "")
+    s = re.sub(r"\\[a-zA-Z]+", "", s)  # kalan komutları at
+    s = s.replace("\\", "").replace("{", "").replace("}", "")
+    s = re.sub(r"[ \t]+", " ", s).strip()
+    return s
+
+
+def render_latex_inline(text: str) -> str:
+    """Metindeki tüm $...$ / $$...$$ bloklarını okunabilir düz metne çevirir.
+
+    Çevredeki düz metin korunur. PDF'te cevap anahtarı ve çözüm adımları için.
+    """
+    if not text or "$" not in text:
+        return text
+    out: list[str] = []
+    for kind, content, _is_display in split_by_latex(text):
+        out.append(latex_to_inline_text(content) if kind == "latex" else content)
+    return "".join(out)

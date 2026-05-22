@@ -172,6 +172,14 @@ export function GenerateForm() {
       });
       return;
     }
+    // tenant_id (Clerk userId) hazır değilken üretme — aksi halde üretim
+    // hesaba kaydedilmez ("geçmişte göremiyorum" sorununun kök sebebi).
+    if (!userId) {
+      toast.error("Oturum bilgisi henüz yüklenmedi", {
+        description: "Birkaç saniye sonra tekrar deneyin.",
+      });
+      return;
+    }
     startGenerate();
     try {
       const question_types = flattenTypeGroups(typeGroups);

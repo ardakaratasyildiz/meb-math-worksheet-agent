@@ -218,20 +218,29 @@ def _segment_markdown(text: str) -> list[tuple[str, str]]:
         else:
             pre_svg.append(("text", content))
 
-    # Sonra her 'text' parçası içinde LaTeX bloklarını ayrıştır.
-    from app.services.math_renderer import split_by_latex
+    # Sonra her 'text' parçası içinde LaTeX ayrıştır:
+    #   - $$...$$ display → standalone ortalı Image bloğu (matplotlib PNG)
+    #   - $...$  inline   → akan metne çevrilir (görüntü blok cümleyi parçalıyordu)
+    from app.services.math_renderer import latex_to_inline_text, split_by_latex
     pre_latex: list[tuple[str, str]] = []
     for pkind, ptext in pre_svg:
         if pkind != "text":
             pre_latex.append((pkind, ptext))
             continue
-        for lkind, lcontent, _is_display in split_by_latex(ptext):
-            if lkind == "latex":
-                # display/inline ayrımı içerikten parse aşamasında çıkar; PDF
-                # tarafında ikisini de standalone Image olarak embed ediyoruz.
+        buf = ""
+        for lkind, lcontent, is_display in split_by_latex(ptext):
+            if lkind == "latex" and is_display:
+                if buf:
+                    pre_latex.append(("text", buf))
+                    buf = ""
                 pre_latex.append(("latex", lcontent))
+            elif lkind == "latex":
+                # inline math → düz metin, çevre metinle aynı paragrafta akar
+                buf += latex_to_inline_text(lcontent)
             else:
-                pre_latex.append(("text", lcontent))
+                buf += lcontent
+        if buf:
+            pre_latex.append(("text", buf))
 
     # Sonra her 'text' parçası içinde code fence + GFM tablo ayrıştır.
     final: list[tuple[str, str]] = []
@@ -385,7 +394,10 @@ def _render_markdown_blocks(
         elif kind == "latex":
             # Phase C: matplotlib mathtext ile LaTeX → PNG → Image embed.
             from io import BytesIO
-            from app.services.math_renderer import render_latex_to_png
+            from app.services.math_renderer import (
+                latex_to_inline_text,
+                render_latex_to_png,
+            )
             png = render_latex_to_png(content, display=True, font_size=14)
             if png:
                 img = Image(BytesIO(png))
@@ -412,8 +424,9 @@ def _render_markdown_blocks(
                 flow.append(img)
                 flow.append(Spacer(1, 0.15 * cm))
             else:
+                # PNG render başarısız → düz metne düş ("[yüklenemedi]" yerine).
                 flow.append(Paragraph(
-                    f"<i>[Matematik ifadesi yüklenemedi: {content[:40]}]</i>",
+                    _md_inline_to_rl(latex_to_inline_text(content)),
                     styles["qbody"],
                 ))
         elif kind == "code":
@@ -476,23 +489,16 @@ def _question_block(q: Question, styles: dict[str, ParagraphStyle]) -> list:
     return [KeepTogether(flow)]
 
 
-_LATEX_DELIM_RE = re.compile(r"\$\$?(.+?)\$\$?", flags=re.DOTALL)
-
-
 def _clean_answer_for_table(answer: str) -> str:
     """Cevap anahtarı tablo hücresi için sade metin üret.
 
-    LLM bazen answer alanında LaTeX delimiter'larını ($$11/12$$) bırakıyor;
-    tablo Paragraph render'da yine "$$" karakterleri görünüyor. İçeriği
-    çıkar, delimiter'ları at. Aynı zamanda multiline'ları tek satıra
-    indir, fazla boşluk normalize et.
+    answer alanındaki LaTeX ($$...$$ / $...$ sınırlayıcıları ve \\frac, \\times
+    gibi komutlar) okunabilir düz metne çevrilir; çok satırlı içerik tek satıra
+    indirilir, fazla boşluk normalize edilir.
     """
-    a = answer.strip()
-    # Eğer "$...$" veya "$$...$$" sınırlayıcılı tek bloksa içini al
-    m = _LATEX_DELIM_RE.fullmatch(a.replace("\n", " ").strip())
-    if m:
-        a = m.group(1).strip()
-    a = a.replace("\n", " ").replace("\\frac", "").strip()
+    from app.services.math_renderer import render_latex_inline
+    a = render_latex_inline(answer.replace("\n", " ")).strip()
+    a = re.sub(r"\s+", " ", a)
     # Boş kaldıysa orijinal answer'ı geri ver (failsafe)
     return a if a else answer.strip()
 
@@ -557,10 +563,15 @@ def _solutions_section(questions: Iterable[Question], styles: dict[str, Paragrap
         if not parsed:
             flow.append(Paragraph("(çözüm boş)", styles["qbody"]))
         else:
+            from app.services.math_renderer import render_latex_inline
             for s in parsed:
-                line = f"<b>{s.step_no}.</b> {s.description}"
+                # LaTeX'i düz metne çevir, sonra &<> escape — ham $...$ ve
+                # \frac çözüm adımlarında görünmesin.
+                desc = _escape_for_pre(render_latex_inline(s.description))
+                line = f"<b>{s.step_no}.</b> {desc}"
                 if s.computation:
-                    line += f" <font color='#555'>[{s.computation}]</font>"
+                    comp = _escape_for_pre(render_latex_inline(s.computation))
+                    line += f" <font color='#555'>[{comp}]</font>"
                 flow.append(Paragraph(line, styles["qbody"]))
         flow.append(Spacer(1, 0.3 * cm))
     return flow

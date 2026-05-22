@@ -42,10 +42,15 @@ export function HistoryList() {
       try {
         setItems(await listWorksheetHistory(userId));
         setSource("backend");
-      } catch {
-        // Backend erişilemezse sessizce yerel kopyaya düş — sayfa boş kalmasın.
+      } catch (e: unknown) {
+        // Backend erişilemezse yerel kopyaya düş AMA sessiz kalma — hata
+        // maskelenmesin (örn. backend uykuda/503 ise kullanıcı bilsin).
         setItems(listHistory());
         setSource("local");
+        const msg = e instanceof Error ? e.message : "bilinmeyen hata";
+        toast.error("Geçmiş sunucudan alınamadı", {
+          description: `Yerel kopya gösteriliyor (${msg}). Sayfayı yenileyip tekrar deneyin.`,
+        });
       }
     } else {
       setItems(listHistory());

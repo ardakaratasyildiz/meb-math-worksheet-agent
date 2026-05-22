@@ -180,25 +180,38 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
 
     # Kullanıcı (tenant) bazlı geçmiş kaydı — yalnızca giriş yapmış kullanıcı
     # için (tenant_id Clerk userId'sidir). Best-effort: kayıt hatası üretimi
-    # bozmaz, yutulur.
-    if settings.enable_worksheet_history and req.tenant_id:
-        try:
-            WORKSHEET_HISTORY.add(
-                tenant_id=req.tenant_id,
-                request={
-                    "grade": req.grade,
-                    "topic_id": req.topic_id,
-                    "kazanim_kod": req.kazanim_kod,
-                    "difficulty": worksheet_difficulty.value,
-                    "question_count": worksheet.question_count,
-                },
-                response={
-                    "worksheet": worksheet.model_dump(mode="json"),
-                    "metadata": metadata.model_dump(mode="json"),
-                },
+    # bozmaz. Gözlemlenebilirlik: her üretim için tek satır log düşülür.
+    if settings.enable_worksheet_history:
+        if req.tenant_id:
+            try:
+                item = WORKSHEET_HISTORY.add(
+                    tenant_id=req.tenant_id,
+                    request={
+                        "grade": req.grade,
+                        "topic_id": req.topic_id,
+                        "kazanim_kod": req.kazanim_kod,
+                        "difficulty": worksheet_difficulty.value,
+                        "question_count": worksheet.question_count,
+                    },
+                    response={
+                        "worksheet": worksheet.model_dump(mode="json"),
+                        "metadata": metadata.model_dump(mode="json"),
+                    },
+                )
+                logger.info(
+                    "worksheet_history KAYDEDİLDİ: tenant=%s id=%s",
+                    req.tenant_id, item["id"] if item else "?",
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.error(
+                    "worksheet_history KAYIT HATASI: tenant=%s — %s",
+                    req.tenant_id, exc, exc_info=True,
+                )
+        else:
+            logger.warning(
+                "worksheet_history ATLANDI: istekte tenant_id yok "
+                "(frontend Clerk userId göndermemiş — giriş/oturum sorunu)."
             )
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("Worksheet history kaydı başarısız (yutuldu): %s", exc)
 
     return worksheet, metadata
 
