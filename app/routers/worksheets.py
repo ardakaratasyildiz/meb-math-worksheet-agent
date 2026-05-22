@@ -22,6 +22,7 @@ from app.models.schemas import (
 from app.security import limiter, rate_limit_string, require_api_key
 from app.services.agent import AgentError, GeminiAgent
 from app.services.pdf_renderer import render_worksheet_pdf
+from app.services.worksheet_history import WORKSHEET_HISTORY
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -176,6 +177,29 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         model=agent.last_model_used,
         trace=trace_for_meta,
     )
+
+    # Kullanıcı (tenant) bazlı geçmiş kaydı — yalnızca giriş yapmış kullanıcı
+    # için (tenant_id Clerk userId'sidir). Best-effort: kayıt hatası üretimi
+    # bozmaz, yutulur.
+    if settings.enable_worksheet_history and req.tenant_id:
+        try:
+            WORKSHEET_HISTORY.add(
+                tenant_id=req.tenant_id,
+                request={
+                    "grade": req.grade,
+                    "topic_id": req.topic_id,
+                    "kazanim_kod": req.kazanim_kod,
+                    "difficulty": worksheet_difficulty.value,
+                    "question_count": worksheet.question_count,
+                },
+                response={
+                    "worksheet": worksheet.model_dump(mode="json"),
+                    "metadata": metadata.model_dump(mode="json"),
+                },
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Worksheet history kaydı başarısız (yutuldu): %s", exc)
+
     return worksheet, metadata
 
 
@@ -247,6 +271,44 @@ def generate_worksheet_pdf(
         include_answer_key=req.include_answer_key,
         include_solutions=req.include_solutions,
     )
+
+
+# ---- Kullanıcı bazlı geçmiş (Sprint 13) --------------------------------------
+# Cihazlar arası kalıcı geçmiş: kullanıcının ürettiği kağıtlar tenant_id
+# (Clerk userId) ile saklanır. LLM çağrısı yok → rate limit yok, sadece auth.
+
+
+@router.get("/history")
+def get_worksheet_history(
+    tenant_id: str,
+    limit: int = 50,
+    _api_key: str = Depends(require_api_key),
+) -> dict:
+    """Kullanıcının ürettiği çalışma kağıtları — en yeni önce.
+
+    `tenant_id` zorunlu query parametresidir (frontend Clerk userId'sini geçer).
+    Dönen her öğe frontend'in `HistoryItem` yapısındadır.
+    """
+    return {"items": WORKSHEET_HISTORY.list(tenant_id, limit=limit)}
+
+
+@router.delete("/history/{item_id}", status_code=204)
+def delete_worksheet_history(
+    item_id: str,
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> None:
+    """Tek bir geçmiş kaydını siler. tenant_id filtresi → başkasının kaydı silinemez."""
+    WORKSHEET_HISTORY.delete(tenant_id, item_id)
+
+
+@router.delete("/history", status_code=204)
+def clear_worksheet_history(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> None:
+    """Kullanıcının tüm geçmişini siler."""
+    WORKSHEET_HISTORY.clear(tenant_id)
 
 
 @router.post("/render.pdf")

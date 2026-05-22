@@ -3,6 +3,7 @@
  * Lokal: NEXT_PUBLIC_API_URL=http://localhost:8000
  * Prod : Render URL.
  */
+import type { HistoryItem } from "./history";
 import type {
   GenerateWorksheetRequest,
   GenerateWorksheetResponse,
@@ -100,6 +101,38 @@ export async function renderPdf(
     throw new Error(`PDF render başarısız: ${res.status}`);
   }
   return res.blob();
+}
+
+// ---- Worksheet history (kullanıcı bazlı, backend kalıcı) ----------------
+// Geçmiş artık tarayıcı localStorage'ı yerine tenant_id (Clerk userId) ile
+// backend'de saklanır → cihazlar arası erişilebilir.
+
+export async function listWorksheetHistory(
+  tenantId: string,
+): Promise<HistoryItem[]> {
+  const r = await request<{ items: HistoryItem[] }>(
+    `/api/worksheets/history?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+export async function deleteWorksheetHistory(
+  tenantId: string,
+  id: string,
+): Promise<void> {
+  const res = await fetch(
+    `${BASE}/api/worksheets/history/${encodeURIComponent(id)}?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "DELETE", headers: headers() },
+  );
+  if (!res.ok) throw new Error(`Geçmiş kaydı silinemedi: ${res.status}`);
+}
+
+export async function clearWorksheetHistory(tenantId: string): Promise<void> {
+  const res = await fetch(
+    `${BASE}/api/worksheets/history?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "DELETE", headers: headers() },
+  );
+  if (!res.ok) throw new Error(`Geçmiş temizlenemedi: ${res.status}`);
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

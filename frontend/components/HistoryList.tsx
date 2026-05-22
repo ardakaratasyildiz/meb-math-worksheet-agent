@@ -1,15 +1,22 @@
 "use client";
 
 import * as React from "react";
-import { Download, RefreshCw, Trash2, Sparkles } from "lucide-react";
+import { Download, Loader2, RefreshCw, Trash2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-import { downloadBlob, renderPdf } from "@/lib/api";
+import {
+  clearWorksheetHistory,
+  deleteWorksheetHistory,
+  downloadBlob,
+  listWorksheetHistory,
+  renderPdf,
+} from "@/lib/api";
 import {
   clearHistory,
   listHistory,
@@ -21,18 +28,44 @@ import { useGenerateStore } from "@/lib/store";
 export function HistoryList() {
   const router = useRouter();
   const setForm = useGenerateStore((s) => s.setForm);
+  const { isLoaded, userId } = useAuth();
 
   const [items, setItems] = React.useState<HistoryItem[]>([]);
-  const [mounted, setMounted] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  // Kayıtların kaynağı — backend (hesaba bağlı, cihazlar arası) ya da yerel
+  // localStorage kopyası (backend erişilemezse fallback). Alt bilgi metni için.
+  const [source, setSource] = React.useState<"backend" | "local">("backend");
 
-  const refresh = React.useCallback(() => setItems(listHistory()), []);
+  const refresh = React.useCallback(async () => {
+    setLoading(true);
+    if (userId) {
+      try {
+        setItems(await listWorksheetHistory(userId));
+        setSource("backend");
+      } catch {
+        // Backend erişilemezse sessizce yerel kopyaya düş — sayfa boş kalmasın.
+        setItems(listHistory());
+        setSource("local");
+      }
+    } else {
+      setItems(listHistory());
+      setSource("local");
+    }
+    setLoading(false);
+  }, [userId]);
 
   React.useEffect(() => {
-    setMounted(true);
+    if (!isLoaded) return;
     refresh();
-  }, [refresh]);
+  }, [isLoaded, refresh]);
 
-  if (!mounted) return null;
+  if (!isLoaded || loading) {
+    return (
+      <Card className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+        <Loader2 className="h-4 w-4 animate-spin" /> Geçmiş yükleniyor…
+      </Card>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -74,14 +107,32 @@ export function HistoryList() {
     router.push("/generate");
   }
 
-  function onRemove(id: string) {
-    removeHistory(id);
+  async function onRemove(id: string) {
+    if (userId) {
+      try {
+        await deleteWorksheetHistory(userId, id);
+      } catch {
+        toast.error("Kayıt silinemedi");
+        return;
+      }
+    } else {
+      removeHistory(id);
+    }
     refresh();
   }
 
-  function onClearAll() {
+  async function onClearAll() {
     if (!confirm("Tüm üretim geçmişi silinecek. Devam edilsin mi?")) return;
-    clearHistory();
+    if (userId) {
+      try {
+        await clearWorksheetHistory(userId);
+      } catch {
+        toast.error("Geçmiş temizlenemedi");
+        return;
+      }
+    } else {
+      clearHistory();
+    }
     refresh();
   }
 
@@ -89,7 +140,10 @@ export function HistoryList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {items.length} kayıt · cihaza yerel olarak saklanır
+          {items.length} kayıt ·{" "}
+          {source === "backend"
+            ? "hesabınıza kayıtlı (cihazlar arası erişilebilir)"
+            : "cihaza yerel kopya"}
         </p>
         <Button variant="ghost" size="sm" onClick={onClearAll}>
           <Trash2 className="mr-1 h-3 w-3" /> Tümünü sil

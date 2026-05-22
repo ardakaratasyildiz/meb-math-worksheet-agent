@@ -337,6 +337,7 @@ class GeminiAgent:
                 difficulty=difficulty.value,
                 question_count=question_count,
                 exclude_questions=history_seen_norm,
+                allowed_types=allowed_types,
             )
             if cached is not None:
                 # Trace bilgilerini cache hit moduna ayarla.
@@ -794,6 +795,7 @@ class GeminiAgent:
                     difficulty=difficulty.value,
                     question_count=question_count,
                     questions=questions,
+                    allowed_types=allowed_types,
                 )
             except Exception as exc:
                 logger.warning("Cache yazımı başarısız (yutuldu): %s", exc)

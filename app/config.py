@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     enable_history_persist: bool = True
     history_db_path: str = "knowledge_base/history.sqlite3"
 
+    # Kullanıcı (tenant) bazlı çalışma kağıdı geçmişi — /api/worksheets/history
+    enable_worksheet_history: bool = True
+    worksheet_history_max_per_tenant: int = 50
+
     enable_hybrid_retrieval: bool = True
     hybrid_bm25_weight: float = 0.3  # RRF fusion'da BM25'in göreceli ağırlığı
     hybrid_rrf_k: int = 60  # standart Reciprocal Rank Fusion sabiti

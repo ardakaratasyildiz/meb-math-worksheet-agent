@@ -34,8 +34,19 @@ def _cache_key(
     kazanim_kod: str | None,
     difficulty: str,
     question_count: int,
+    allowed_types=None,
 ) -> str:
-    return f"g{grade}|{topic_id}|{kazanim_kod or '__AUTO__'}|{difficulty}|q{question_count}"
+    # allowed_types (kullanıcının seçtiği soru tipi filtresi) anahtara dahil
+    # edilir — aksi halde filtre seçen kullanıcıya filtresiz bir cached set
+    # (veya tersi) dönebilirdi. None/boş → "all".
+    if allowed_types:
+        types = "+".join(sorted(getattr(t, "value", str(t)) for t in allowed_types))
+    else:
+        types = "all"
+    return (
+        f"g{grade}|{topic_id}|{kazanim_kod or '__AUTO__'}|{difficulty}"
+        f"|q{question_count}|t{types}"
+    )
 
 
 class GenerationCache:
@@ -81,17 +92,22 @@ class GenerationCache:
         difficulty: str,
         question_count: int,
         exclude_questions: Iterable[str] = (),
+        allowed_types=None,
     ) -> list[Question] | None:
         """Cached set döndürür ya da None.
 
         exclude_questions: kullanıcının history'sinde olan normalize edilmiş sorular.
         Bir cached set'in herhangi bir sorusu bu kümede ise o set atlanır;
         kalan set yoksa miss.
+
+        allowed_types: kullanıcının soru tipi filtresi — cache anahtarına dahildir.
         """
         from app.services.diversity import normalize_question
 
         excl = set(exclude_questions)
-        key = _cache_key(grade, topic_id, kazanim_kod, difficulty, question_count)
+        key = _cache_key(
+            grade, topic_id, kazanim_kod, difficulty, question_count, allowed_types
+        )
         with self._lock:
             assert self._db is not None
             rows = self._db.execute(
@@ -138,11 +154,14 @@ class GenerationCache:
         difficulty: str,
         question_count: int,
         questions: list[Question],
+        allowed_types=None,
     ) -> None:
         """Yeni set ekler. Aynı key için max_per_key aşıldıysa en eski silinir."""
         if not questions:
             return
-        key = _cache_key(grade, topic_id, kazanim_kod, difficulty, question_count)
+        key = _cache_key(
+            grade, topic_id, kazanim_kod, difficulty, question_count, allowed_types
+        )
         # Pydantic mode="json" → datetime/enum'ları string'e çevirir.
         payload = json.dumps(
             [q.model_dump(mode="json") for q in questions],
