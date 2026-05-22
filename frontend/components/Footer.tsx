@@ -11,9 +11,9 @@ export function Footer() {
             <Image
               src="/logo.png"
               alt="Soru Atölyesi"
-              width={386}
-              height={256}
-              className="h-9 w-auto brightness-0 invert"
+              width={706}
+              height={173}
+              className="h-9 w-auto rounded-md"
             />
             <p className="mt-4 max-w-xs text-sm opacity-70">
               MEB matematik müfredatı kapsamında otomatik çalışma kağıdı üretim

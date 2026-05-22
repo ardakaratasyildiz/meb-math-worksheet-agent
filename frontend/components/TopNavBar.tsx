@@ -23,17 +23,13 @@ const NAV_LINKS = [
 ];
 
 const TopNavBar = () => {
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme } = useTheme();
   const { isLoaded, isSignedIn } = useAuth();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
-
-  // Logo PNG beyaz zeminde tasarlandı; dark mode'da invert filtresi ile
-  // hızlı çözüm (ideal: ayrı dark PNG/SVG).
-  const isDark = mounted && resolvedTheme === "dark";
 
   return (
     <nav className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -42,10 +38,10 @@ const TopNavBar = () => {
           <Image
             src="/logo.png"
             alt="Soru Atölyesi"
-            width={386}
-            height={256}
+            width={706}
+            height={173}
             priority
-            className={`h-9 w-auto ${isDark ? "brightness-0 invert" : ""}`}
+            className="h-8 w-auto rounded-md"
           />
         </Link>
         <div className="hidden items-center gap-7 md:flex">
