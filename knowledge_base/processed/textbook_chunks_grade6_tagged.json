@@ -4016,7 +4016,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "İstatistik",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Chunk, anket tasarımı ve veri toplama metodolojisi ile ilgili. Mevcut kazanımlar (M.6.6.1, M.6.6.2) veri işleme ve yorumlamaya odaklanmış olup, veri toplama yöntemlerini veya anket tasarımını açıkça kapsamamaktadır."
     },
     {
       "chunk_id": "tb_922afde4aaacf7",
@@ -9821,10 +9825,14 @@
       "char_count": 150,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.2.5",
+      "confidence": "medium",
       "mapped_topic_hint": "Ondalık Gösterimlerin Yapısı ve Kesirlerle İlişkisi",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.2.5",
+      "retag_confidence": "medium",
+      "retag_notes": "Chunk, kesir modellerini ondalık gösterime çevirme ve ondalık gösterimleri paydası 10, 100, 1000 olan kesirlerin toplamı biçiminde ifade etme üzerinedir. Bu, ondalık gösterimler ile kesirler arasındaki ilişkiyi kurma becerisini gerektirir. M.6.2.5 kazanımı 'yüzdeyi kesir ve ondalık gösterimle ilişkilendirir' ifadesiyle bu ilişkilendirme becerisine en yakın kazanım olarak değerlendirilmiştir, ancak doğrudan yüzde ile ilgili değildir."
     },
     {
       "chunk_id": "tb_67d06068fc08e2",
@@ -9838,10 +9846,14 @@
       "char_count": 1182,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.2.5",
+      "confidence": "medium",
       "mapped_topic_hint": "Ondalık Gösterimlerde Basamak Değeri ve Sayı Doğrusu",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.2.5",
+      "retag_confidence": "medium",
+      "retag_notes": "Chunk, ondalık gösterimleri sayı doğrusunda belirleme ve basamak değerlerini kullanarak paydası 10, 100, 1000 olan kesirlerin toplamı biçiminde yazma üzerinedir. Bu, ondalık gösterimlerin kesirlerle ilişkisini ve basamak değerini anlamayı içerir. M.6.2.5 kazanımı 'yüzdeyi kesir ve ondalık gösterimle ilişkilendirir' ifadesiyle bu ilişkilendirme becerisine en yakın kazanım olarak değerlendirilmiştir, ancak doğrudan yüzde ile ilgili değildir."
     },
     {
       "chunk_id": "tb_2cddd2ee5e0fe3",
@@ -9858,7 +9870,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Ondalık Sayıları Yuvarlama",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Chunk, ondalık sayıları yuvarlama konusunu işlemektedir. Verilen genişletilmiş kazanım listesinde ondalık sayıları yuvarlama ile ilgili doğrudan bir kazanım bulunmamaktadır."
     },
     {
       "chunk_id": "tb_cf6f1233a2a2cc",
@@ -9875,7 +9891,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Ondalık Sayıları Karşılaştırma ve Sıralama",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin ondalık sayıları karşılaştırma ve sıralama ile ilgili. Verilen kazanım listesinde ondalık sayıları karşılaştırma ve sıralama ile ilgili doğrudan bir kazanım bulunmamaktadır. M.6.2.4 ondalık sayılarla dört işlemden bahseder, karşılaştırma bir işlem değildir."
     },
     {
       "chunk_id": "tb_f747117fcc221a",
@@ -9960,7 +9980,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Kesirlerin Ondalık Gösterimi",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin kesirleri ondalık gösterime çevirme (payı paydaya bölerek) ile ilgilidir. Verilen kazanım listesinde bu konuya doğrudan karşılık gelen bir kazanım bulunmamaktadır. M.6.2.4 ondalık gösterimlerle dört işlemden bahseder, kesri ondalığa çevirme bir işlem değildir."
     },
     {
       "chunk_id": "tb_fc07276fc77b79",
@@ -9977,7 +10001,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Kesirlerin Ondalık Gösterimi",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin kesirleri ondalık gösterime çevirme (payı paydaya bölerek) ile ilgilidir. Verilen kazanım listesinde bu konuya doğrudan karşılık gelen bir kazanım bulunmamaktadır. M.6.2.4 ondalık gösterimlerle dört işlemden bahseder, kesri ondalığa çevirme bir işlem değildir."
     },
     {
       "chunk_id": "tb_29ca2fe0bacadd",
@@ -9994,7 +10022,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Kesirlerin Ondalık Gösterimi",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin kesirleri ondalık gösterime çevirme (payı paydaya bölerek) ile ilgilidir. Verilen kazanım listesinde bu konuya doğrudan karşılık gelen bir kazanım bulunmamaktadır. M.6.2.4 ondalık gösterimlerle dört işlemden bahseder, kesri ondalığa çevirme bir işlem değildir."
     },
     {
       "chunk_id": "tb_1478b180794df4",
@@ -10028,7 +10060,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Kesirlerin Ondalık Gösterimi ve Devirli Ondalık Sayılar",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Chunk, kesirlerin ondalık gösterimlere çevrilmesi ve devirli ondalık sayıların tanıtımı ile ilgilidir. Verilen kazanım listesinde bu konuyu doğrudan karşılayan bir kazanım bulunmamaktadır. M.6.2.4 'Ondalık gösterimlerle dört işlem yapar' kazanımı, ondalık sayılarla işlem yapmayı kapsar, ancak ondalık gösterimlerin nasıl elde edildiğini veya devirli ondalık sayıları tanımlamayı içermez."
     },
     {
       "chunk_id": "tb_3e011e86890e46",
@@ -10045,7 +10081,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Kesirlerin Ondalık Gösterimi ve Devirli Ondalık Sayılar",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Chunk, kesirlerin ondalık gösterimlere çevrilmesi, sonlu ve devirli ondalık gösterimlerin ayırt edilmesi ve devirli ondalık gösterimlerin tanımı ile ilgilidir. Verilen kazanım listesinde bu konuyu doğrudan karşılayan bir kazanım bulunmamaktadır. M.6.2.4 'Ondalık gösterimlerle dört işlem yapar' kazanımı, ondalık sayılarla işlem yapmayı kapsar, ancak ondalık gösterimlerin nasıl elde edildiğini veya devirli ondalık sayıları tanımlamayı içermez."
     },
     {
       "chunk_id": "tb_25e869453147f9",
@@ -10062,7 +10102,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Kesirlerin Ondalık Gösterimi ve Devirli Ondalık Sayılar",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Chunk, kesirlerin devirli ondalık gösterimlere çevrilmesi ve devir çizgisi kullanarak yazılması ile ilgilidir. Verilen kazanım listesinde bu konuyu doğrudan karşılayan bir kazanım bulunmamaktadır. M.6.2.4 'Ondalık gösterimlerle dört işlem yapar' kazanımı, ondalık sayılarla işlem yapmayı kapsar, ancak ondalık gösterimlerin nasıl elde edildiğini veya devirli ondalık sayıları tanımlamayı içermez."
     },
     {
       "chunk_id": "tb_fd30607774c0a9",
@@ -10079,7 +10123,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Kesirlerin Ondalık Gösterimi ve Devirli Ondalık Sayılar",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Chunk, devir çizgisi ile verilen devirli ondalık gösterimlerin açılımlarının yazılması ile ilgilidir. Verilen kazanım listesinde bu konuyu doğrudan karşılayan bir kazanım bulunmamaktadır. M.6.2.4 'Ondalık gösterimlerle dört işlem yapar' kazanımı, ondalık sayılarla işlem yapmayı kapsar, ancak ondalık gösterimlerin nasıl elde edildiğini veya devirli ondalık sayıları tanımlamayı içermez."
     },
     {
       "chunk_id": "tb_7acb39c5064f23",
@@ -11181,10 +11229,14 @@
       "char_count": 656,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.7.1",
+      "confidence": "medium",
       "mapped_topic_hint": "Olasılık",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.7.1",
+      "retag_confidence": "medium",
+      "retag_notes": "Konu olasılık, ancak \"deneysel olasılık\" ve \"yüzde olarak ifade etme\" M.6.7.1'deki \"basit olasılığı kesir olarak ifade eder\" kazanımından biraz daha spesifik bir uygulama. Yine de olasılıkla ilgili tek kazanım bu olduğu için en uygunu."
     },
     {
       "chunk_id": "tb_3474a2a4e13f7c",
@@ -11198,10 +11250,14 @@
       "char_count": 200,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.7.1",
+      "confidence": "medium",
       "mapped_topic_hint": "Olasılık",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.7.1",
+      "retag_confidence": "medium",
+      "retag_notes": "Konu olasılık, ancak \"göreli sıklık\" ve \"gözleme dayalı tahmin etme\" M.6.7.1'deki \"basit olasılığı kesir olarak ifade eder\" kazanımından biraz daha spesifik bir uygulama. Yine de olasılıkla ilgili tek kazanım bu olduğu için en uygunu."
     },
     {
       "chunk_id": "tb_0e88986c041dba",
@@ -11215,10 +11271,14 @@
       "char_count": 503,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.7.1",
+      "confidence": "medium",
       "mapped_topic_hint": "Olasılık",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.7.1",
+      "retag_confidence": "medium",
+      "retag_notes": "Konu olasılık, ancak \"deneysel olasılık\" ve \"yüzde olarak ifade etme\" M.6.7.1'deki \"basit olasılığı kesir olarak ifade eder\" kazanımından biraz daha spesifik bir uygulama. Ayrıca olasılıkları karşılaştırma da içeriyor. Yine de olasılıkla ilgili tek kazanım bu olduğu için en uygunu."
     },
     {
       "chunk_id": "tb_9d9df6b9f05f3b",
@@ -11232,10 +11292,14 @@
       "char_count": 387,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
+      "kazanim_kod_llm": "M.6.7.1",
       "confidence": "high",
       "mapped_topic_hint": "Olasılık",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.7.1",
+      "retag_confidence": "high",
+      "retag_notes": "\"Deneysel olasılık\" kavramını içerse de, sonucun \"kesir olarak bulunması\" doğrudan M.6.7.1 kazanımındaki \"basit olasılığı kesir olarak ifade eder\" kısmıyla örtüşmektedir."
     },
     {
       "chunk_id": "tb_6d76ebd528e105",
@@ -16553,10 +16617,14 @@
       "char_count": 175,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
+      "kazanim_kod_llm": "M.6.6.1",
       "confidence": "medium",
       "mapped_topic_hint": "İstatistik",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.6.1",
+      "retag_confidence": "medium",
+      "retag_notes": "Kök-yaprak gösterimi, veri grubunu görsel olarak düzenleme ve sunma yöntemidir. M.6.6.1 kazanımı sütun ve çizgi grafiklerini içerse de, veri görselleştirme ve oluşturma bağlamında benzer bir amaca hizmet eder."
     },
     {
       "chunk_id": "tb_3a1c788991af81",
@@ -17760,10 +17828,14 @@
       "char_count": 242,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "medium",
+      "kazanim_kod_llm": "M.6.3.1",
+      "confidence": "low",
       "mapped_topic_hint": "Alan Ölçme (Dikdörtgen)",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.3.1",
+      "retag_confidence": "low",
+      "retag_notes": "Chunk, 'Alan Ölçme' ünitesine genel bir giriş niteliğindedir ve belirli bir şeklin alanını hesaplama eylemini içermez. Ancak, 'Alan Ölçme' başlığı altında olduğu için, 6. sınıf müfredatındaki ilk alan hesaplama kazanımı olan paralelkenar alanına yönlendirilmiştir."
     },
     {
       "chunk_id": "tb_3591083f3418d1",
@@ -17811,10 +17883,14 @@
       "char_count": 195,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
+      "kazanim_kod_llm": "M.6.3.1",
       "confidence": "medium",
       "mapped_topic_hint": "Alan Ölçme (Dikdörtgen)",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.3.1",
+      "retag_confidence": "medium",
+      "retag_notes": "Chunk, dikdörtgen şeklindeki bir parçadan bahsetmektedir. Dikdörtgen, paralelkenarın özel bir durumudur ve 'Alan Ölçme' bağlamında M.6.3.1 kazanımı ile ilişkilendirilebilir."
     },
     {
       "chunk_id": "tb_5590d80376a526",
@@ -18443,7 +18519,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Üslü İfadeler",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "null",
+      "retag_notes": "Chunk, üslü ifadeler konusuna aittir. Verilen genişletilmiş 6. sınıf kazanım listesinde üslü ifadelerle ilgili doğrudan bir kazanım bulunmamaktadır."
     },
     {
       "chunk_id": "tb_c267cd12246e91",
@@ -18460,7 +18540,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Üslü İfadeler ve İşlem Önceliği",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "high",
+      "retag_notes": "Metin üslü ifadeler ve işlem önceliği ile ilgili sorular içermektedir. Sağlanan genişletilmiş kazanım listesinde doğal sayılarla üslü ifadeler veya işlem önceliği için doğrudan bir kazanım bulunmamaktadır."
     },
     {
       "chunk_id": "tb_8bc6e263fc03f2",
@@ -18477,7 +18561,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Üslü İfadeler ve İşlem Önceliği",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "high",
+      "retag_notes": "Metin üslü ifadeler ve işlem önceliği ile ilgili sorular içermektedir. Sağlanan genişletilmiş kazanım listesinde doğal sayılarla üslü ifadeler veya işlem önceliği için doğrudan bir kazanım bulunmamaktadır."
     },
     {
       "chunk_id": "tb_2376bca424731c",
@@ -18494,7 +18582,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "İşlem Önceliği",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "high",
+      "retag_notes": "Metin işlem önceliği ile ilgili bir soru içermektedir. Sağlanan genişletilmiş kazanım listesinde doğal sayılarla işlem önceliği için doğrudan bir kazanım bulunmamaktadır."
     },
     {
       "chunk_id": "tb_0f3a11f573f3c8",
@@ -18984,10 +19076,14 @@
       "char_count": 176,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.6.1",
+      "confidence": "medium",
       "mapped_topic_hint": "Oran",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.6.1",
+      "retag_confidence": "medium",
+      "retag_notes": "Metin, öğrenci sayılarının kurslara göre dağılımını gösteren bir tablo sunmaktadır. Bu tablo, veri işleme ve grafik oluşturma/yorumlamanın temelini oluşturur, bu nedenle sütun ve çizgi grafikleri kazanımıyla ilişkilendirilebilir."
     },
     {
       "chunk_id": "tb_55a772218af00d",
@@ -19004,7 +19100,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin 'oran' kavramını içermektedir. Genişletilmiş 6. sınıf kazanım listesinde 'oran' veya 'orantı' ile ilgili doğrudan bir kazanım bulunmamaktadır. Bu nedenle null olarak işaretlenmiştir."
     },
     {
       "chunk_id": "tb_951c1368d27bce",
@@ -19021,7 +19121,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin 'oran' kavramını ve kesirlerin görsel temsilini içermektedir. Genişletilmiş 6. sınıf kazanım listesinde 'oran' veya 'orantı' ile ilgili doğrudan bir kazanım bulunmamaktadır. Kesirlerle işlemler kazanımlarına (M.6.2.x) tam olarak uymamaktadır. Bu nedenle null olarak işaretlenmiştir."
     },
     {
       "chunk_id": "tb_e026478f81a842",
@@ -19038,7 +19142,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin sadece 'Oran' başlığını ve genel bilgileri içermektedir. Genişletilmiş 6. sınıf kazanım listesinde 'oran' veya 'orantı' ile ilgili doğrudan bir kazanım bulunmamaktadır. Bu nedenle null olarak işaretlenmiştir."
     },
     {
       "chunk_id": "tb_88b001fb47ab55",
@@ -19072,7 +19180,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin 'oran' kavramını içermektedir. Genişletilmiş 6. sınıf kazanım listesinde 'oran' veya 'orantı' ile ilgili doğrudan bir kazanım bulunmamaktadır. Bu nedenle null olarak işaretlenmiştir."
     },
     {
       "chunk_id": "tb_cee5c947d83c9f",
@@ -19089,7 +19201,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "The chunk discusses ratios of quantities, which is related to M.6.2.5 (percentages, fractions, decimals) and potentially M.6.5.1 (algebraic expressions) if framed as variables, but it's not a direct match for any specific listed kazanım. It seems more aligned with a 'Ratio and Proportion' topic which is not explicitly detailed in the provided kazanımlar."
     },
     {
       "chunk_id": "tb_e0257a03b412c4",
@@ -19106,7 +19222,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "This chunk involves calculating areas and then finding a ratio of areas. While it touches upon geometric shapes (rectangle) and fractions, it doesn't directly map to a specific kazanım. The calculation of area for a rectangle is typically covered earlier or as a prerequisite. The ratio part is similar to CHUNK 1, not directly covered by the listed kazanımlar."
     },
     {
       "chunk_id": "tb_f3133abe8cc3b5",
@@ -19123,7 +19243,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "The chunk discusses speed (distance/time ratio) which is not explicitly covered in the provided 6th-grade curriculum. It might relate to M.6.5.1 (algebraic expressions) if framed as a variable problem, but the current text is more about direct calculation of a ratio."
     },
     {
       "chunk_id": "tb_65f280ca0a04d6",
@@ -19514,7 +19638,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Alan Ölçme Birimleri Dönüşümleri",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "This chunk deals with area measurement units and calculations. While M.6.3.1, M.6.3.2, and M.6.3.3 cover area calculations for specific shapes, and M.6.4.1 covers liquid measurement conversions, there isn't a direct match for area unit conversions or calculating area from a grid in the provided curriculum. The closest might be M.6.4.2 (volume) but that's for 3D shapes."
     },
     {
       "chunk_id": "tb_c8e38c47fd2953",
@@ -19633,7 +19761,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Diğer",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Bu parça, test cevap anahtarıdır ve doğrudan bir matematik kazanımına karşılık gelmemektedir."
     },
     {
       "chunk_id": "tb_107fd9cd11cbd5",
@@ -19650,7 +19782,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Doğal Sayılar ve İşlemler",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Bu parça, bir ünite başlığıdır ve doğrudan belirli bir kazanımı ifade etmemektedir. Genel olarak \"Doğal Sayılar ve İşlemler\" ünitesine işaret eder."
     },
     {
       "chunk_id": "tb_8d4e23bd113c10",
@@ -19667,7 +19803,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Üslü İfadeler",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Bu parça üslü ifadeler konusuna aittir. Verilen genişletilmiş kazanım listesinde üslü ifadelerle ilgili doğrudan bir kazanım bulunmamaktadır."
     },
     {
       "chunk_id": "tb_e465ba4cbd8333",
@@ -21024,10 +21164,14 @@
       "char_count": 413,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.6.1",
+      "confidence": "medium",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.6.1",
+      "retag_confidence": "medium",
+      "retag_notes": "Parçanın bir kısmı oran-orantı ile ilgili olup bu konuda bir kazanım bulunmamaktadır. Diğer kısmı ise veri tablosu oluşturma ve yorumlama ile ilgili olup, M.6.6.1 kazanımı (sütun ve çizgi grafikleri) ile ilişkilendirilebilir, çünkü tablolar veri işlemenin temelidir."
     },
     {
       "chunk_id": "tb_5e63a8be276920",
@@ -21041,10 +21185,14 @@
       "char_count": 167,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.2.5",
+      "confidence": "medium",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.2.5",
+      "retag_confidence": "medium",
+      "retag_notes": "Bu parça doğrudan 'oran' kavramını ele almaktadır. 'Oran' kavramı, 'yüzde' kavramının temelini oluşturduğundan ve yüzde problemleri kesir ve ondalık gösterimlerle ilişkilendirildiğinden, M.6.2.5 kazanımı ile dolaylı bir bağlantı kurulabilir. Ancak doğrudan 'oran' kazanımı listede bulunmamaktadır."
     },
     {
       "chunk_id": "tb_620fbce0b17858",
@@ -21058,10 +21206,14 @@
       "char_count": 150,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.2.5",
+      "confidence": "medium",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.2.5",
+      "retag_confidence": "medium",
+      "retag_notes": "Bu parça doğrudan 'oran' kavramını ele almaktadır. 'Oran' kavramı, 'yüzde' kavramının temelini oluşturduğundan ve yüzde problemleri kesir ve ondalık gösterimlerle ilişkilendirildiğinden, M.6.2.5 kazanımı ile dolaylı bir bağlantı kurulabilir. Ancak doğrudan 'oran' kazanımı listede bulunmamaktadır."
     },
     {
       "chunk_id": "tb_af2d4183f3ca72",
@@ -21075,10 +21227,14 @@
       "char_count": 215,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.2.5",
+      "confidence": "medium",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.2.5",
+      "retag_confidence": "medium",
+      "retag_notes": "Bu parça, alan hesaplama ve kesirlerle çarpma adımlarını içerse de, ana soru 'oran' kavramı üzerinedir. 'Oran' kavramı, 'yüzde' kavramının temelini oluşturduğundan ve yüzde problemleri kesir ve ondalık gösterimlerle ilişkilendirildiğinden, M.6.2.5 kazanımı ile dolaylı bir bağlantı kurulabilir. Ancak doğrudan 'oran' kazanımı listede bulunmamaktadır."
     },
     {
       "chunk_id": "tb_f32e8856511836",
@@ -21092,10 +21248,14 @@
       "char_count": 182,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.2.5",
+      "confidence": "medium",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.2.5",
+      "retag_confidence": "medium",
+      "retag_notes": "Bu parça 'hız' (bir tür oran) kavramını ve birim dönüşümünü ele almaktadır. 'Oran' kavramı, 'yüzde' kavramının temelini oluşturduğundan ve yüzde problemleri kesir ve ondalık gösterimlerle ilişkilendirildiğinden, M.6.2.5 kazanımı ile dolaylı bir bağlantı kurulabilir. Ancak doğrudan 'oran' veya 'hız' kazanımı listede bulunmamaktadır."
     },
     {
       "chunk_id": "tb_3f02873257c8e0",
@@ -21112,7 +21272,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "low",
+      "retag_notes": "Metin, geometrik şekillerin çevre uzunluklarının oranını bulma üzerine bir problem içermektedir. 'Oran' kavramı genişletilmiş kazanım listesinde doğrudan yer almamaktadır. Ondalık sayılarla işlem yapılsa da (M.6.2.4), bu problemin ana hedefi oran kavramıdır."
     },
     {
       "chunk_id": "tb_7652d839946d88",
@@ -21126,10 +21290,14 @@
       "char_count": 577,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
+      "kazanim_kod_llm": "M.6.5.2",
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.5.2",
+      "retag_confidence": "high",
+      "retag_notes": "Metin, verilen oran bilgisi ve toplam gelir üzerinden bilinmeyen poğaça sayılarını bulmak için birinci dereceden bir bilinmeyenli denklem kurmayı gerektiren bir problem içermektedir. M.6.5.3 de çözüm aşamasında devreye girer."
     },
     {
       "chunk_id": "tb_92cae5d4d1cfb7",
@@ -21143,10 +21311,14 @@
       "char_count": 206,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
+      "kazanim_kod_llm": "M.6.5.1",
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.5.1",
+      "retag_confidence": "high",
+      "retag_notes": "Metin, kalem sayılarının değişimi sonucunda oluşan yeni oranları ifade etmek için değişken içeren cebirsel ifadeler yazmayı ve bu ifadelerle işlem yapmayı gerektirmektedir."
     },
     {
       "chunk_id": "tb_537ad96ba9265f",
@@ -21160,10 +21332,14 @@
       "char_count": 458,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.5.2",
+      "confidence": "medium",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.5.2",
+      "retag_confidence": "medium",
+      "retag_notes": "Metnin ilk problemi, oy oranları ve toplam oy sayısı üzerinden bilinmeyen oy sayılarını bulmak için birinci dereceden bir bilinmeyenli denklem kurmayı gerektirmektedir. İkinci problem ise hız (oran) ve birim dönüşümü içermektedir, ancak birim dönüşümü (km/saat -> m/sn) için doğrudan bir kazanım bulunmamaktadır. İlk problemden dolayı M.6.5.2 ve M.6.5.3 ile eşleştirilmiştir."
     },
     {
       "chunk_id": "tb_2da8d426d162d1",
@@ -21180,7 +21356,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "null",
+      "retag_notes": "Metin oran ve orantı kavramlarını içermektedir, ancak genişletilmiş kazanım listesinde oran/orantı ile ilgili doğrudan bir kazanım bulunmamaktadır. Yüzde kazanımına (M.6.2.5) zorlama bir eşleşme olabilir ancak doğrudan yüzde problemi değildir."
     },
     {
       "chunk_id": "tb_a0c9c0be7d6d27",
@@ -21197,7 +21377,11 @@
       "kazanim_kod_llm": null,
       "confidence": "high",
       "mapped_topic_hint": "Oran ve Orantı",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": null,
+      "retag_confidence": "null",
+      "retag_notes": "Metin oran ve orantı kavramlarını içermektedir, ancak genişletilmiş kazanım listesinde oran/orantı ile ilgili doğrudan bir kazanım bulunmamaktadır. Problem 10 ondalık sayılarla işlem gerektirse de ana soru oranı bulmaktır."
     },
     {
       "chunk_id": "tb_7f400d34712983",
@@ -22792,10 +22976,14 @@
       "char_count": 420,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.2.4",
+      "confidence": "medium",
       "mapped_topic_hint": "Ondalık Gösterimler",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.2.4",
+      "retag_confidence": "medium",
+      "retag_notes": "Ondalık gösterimlerle yuvarlama işlemi, ondalık sayılarla dört işlem yapma kazanımının (M.6.2.4) altında yer alan veya bu kazanımı destekleyen bir beceridir."
     },
     {
       "chunk_id": "tb_6053d699c7f58d",
@@ -22809,10 +22997,14 @@
       "char_count": 163,
       "tema": null,
       "tagged": true,
-      "kazanim_kod_llm": null,
-      "confidence": "high",
+      "kazanim_kod_llm": "M.6.2.4",
+      "confidence": "medium",
       "mapped_topic_hint": "Ondalık Gösterimler",
-      "content_quality": "usable"
+      "content_quality": "usable",
+      "retagged": true,
+      "retag_kazanim_kod": "M.6.2.4",
+      "retag_confidence": "medium",
+      "retag_notes": "Ondalık gösterimlerle yuvarlama işlemi, ondalık sayılarla dört işlem yapma kazanımının (M.6.2.4) altında yer alan veya bu kazanımı destekleyen bir beceridir. Gerçek hayat bağlamında ondalık sayıların kullanımını da göstermektedir."
     },
     {
       "chunk_id": "tb_4f79d5c386127a",
