@@ -116,6 +116,21 @@ class WorksheetHistory:
                 continue
         return items
 
+    def total_count(self) -> int:
+        """Tüm tenant'lardaki toplam kağıt sayısı — /readyz teşhisi için.
+
+        Singleton'ın canlı (yazmada kullanılan) bağlantısı üzerinden okur →
+        Turso replica'sının fiilen OKUNABİLİRLİĞİNİ ve kayıt VARLIĞINI doğrular.
+        0 → hiç kayıt yok (yazma/sync yolu kopuk); >0 → kayıt var, sorun
+        okuma/tenant tarafında.
+        """
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT COUNT(*) FROM worksheet_history"
+            ).fetchone()
+        return int(row[0]) if row else 0
+
     def delete(self, tenant_id: str, item_id: str) -> None:
         """Tek bir kaydı siler. tenant_id filtresi → başkasının kaydı silinemez."""
         if not tenant_id or not item_id:

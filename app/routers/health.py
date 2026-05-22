@@ -13,6 +13,7 @@ from fastapi import APIRouter, Response, status
 from app.config import settings
 from app.services.db_connection import is_turso_enabled
 from app.services.retriever import get_retriever
+from app.services.worksheet_history import WORKSHEET_HISTORY
 
 router = APIRouter()
 
@@ -34,6 +35,15 @@ def readyz(response: Response) -> dict[str, object]:
     # girmeden, tek curl ile yapabilmek için. all_ok'u GATING ETMEZ — lokal
     # SQLite'ta da uygulama çalışır, sadece kalıcılık yoktur (bilgilendirme).
     checks["db_backend"] = "turso" if is_turso_enabled() else "local-sqlite"
+
+    # worksheet_history tablosu canlı bağlantıdan fiilen okunabiliyor mu +
+    # kaç kayıt var? "Üretim geçmişi göremiyorum" teşhisi: 0 → hiç kayıt yok
+    # (yazma/sync yolu kopuk), >0 → kayıt var, sorun okuma/tenant tarafında.
+    # Bilgilendirme amaçlı — all_ok'u GATING ETMEZ (boş tablo geçerli durum).
+    try:
+        checks["worksheet_history_rows"] = WORKSHEET_HISTORY.total_count()
+    except Exception as exc:  # noqa: BLE001
+        checks["worksheet_history_rows"] = {"ok": False, "error": str(exc)[:200]}
 
     retriever = get_retriever()
     if retriever is None:
