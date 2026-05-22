@@ -24,7 +24,6 @@ export function Footer() {
             title="Ürün"
             links={[
               { label: "Üretim", href: "/generate" },
-              { label: "Geçmiş", href: "/history" },
               { label: "Özellikler", href: "/features" },
               { label: "Fiyatlandırma", href: "/pricing" },
               { label: "Sıkça Sorulanlar", href: "/faq" },

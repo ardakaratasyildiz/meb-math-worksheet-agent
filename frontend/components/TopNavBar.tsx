@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Moon, Sun } from "lucide-react";
+import { History, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { UserButton, useAuth } from "@clerk/nextjs";
 
@@ -15,9 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+// Genel (tanıtım + ana iş akışı) navigasyon. "Geçmiş" buraya KONULMAZ —
+// kişisel/korumalı bir görünüm olduğu için UserButton açılır menüsünde.
 const NAV_LINKS = [
   { href: "/generate", label: "Üretim" },
-  { href: "/history", label: "Geçmiş" },
   { href: "/features", label: "Özellikler" },
   { href: "/pricing", label: "Fiyatlandırma" },
   { href: "/faq", label: "Sıkça Sorulanlar" },
@@ -76,7 +77,17 @@ const TopNavBar = () => {
             </DropdownMenu>
           )}
           {isLoaded && isSignedIn && (
-            <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} />
+            <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }}>
+              {/* "Geçmiş" kişisel görünüm → genel navbar yerine avatar menüsünde.
+                  Mobilde de erişilebilir (navbar linkleri md altında gizli). */}
+              <UserButton.MenuItems>
+                <UserButton.Link
+                  label="Geçmiş"
+                  labelIcon={<History className="h-4 w-4" />}
+                  href="/history"
+                />
+              </UserButton.MenuItems>
+            </UserButton>
           )}
           {isLoaded && !isSignedIn && (
             <>
