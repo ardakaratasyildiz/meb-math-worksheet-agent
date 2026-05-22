@@ -1,7 +1,6 @@
 /*
- * TASLAK — yayına almadan önce yapılması gerekenler:
- *   1. Bölüm 10'daki [● ... ●] alanına yetkili mahkeme/icra (il) yazılmalı.
- *   2. Metin bir hukuk danışmanı tarafından gözden geçirilmeli.
+ * TASLAK — yetkili mahkeme şimdilik genel (T.C. mahkemeleri) bırakıldı.
+ * Resmi yayın öncesi metin bir hukuk danışmanı tarafından gözden geçirilmeli.
  */
 import { LegalDocument, type LegalSection } from "@/components/LegalDocument";
 
@@ -76,7 +75,7 @@ const SECTIONS: LegalSection[] = [
     heading: "Değişiklikler ve Uygulanacak Hukuk",
     paragraphs: [
       "Bu Kullanım Koşulları güncellenebilir; güncel sürüm bu sayfada yayımlanır.",
-      "Bu koşullara Türkiye Cumhuriyeti hukuku uygulanır. Doğabilecek uyuşmazlıklarda [● yetkili mahkeme ve icra daireleri: il adı buraya yazılacaktır ●] yetkilidir.",
+      "Bu koşullara Türkiye Cumhuriyeti hukuku uygulanır. Doğabilecek uyuşmazlıkların çözümünde Türkiye Cumhuriyeti mahkemeleri ve icra daireleri yetkilidir.",
     ],
   },
 ];

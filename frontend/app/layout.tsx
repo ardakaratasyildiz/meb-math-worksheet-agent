@@ -30,7 +30,6 @@ export const metadata: Metadata = {
   title: "Soru Atölyesi — MEB matematik çalışma kağıdı üretim sistemi",
   description:
     "MEB matematik müfredatı (1.→7. sınıf) kapsamında, seçilen kazanım koduna göre çalışma kağıdı üreten otomatik sistem. PDF çıktı, cevap anahtarı ve adım adım çözüm dahil.",
-  icons: { icon: "/icon.png" },
 };
 
 export default function RootLayout({
@@ -52,7 +51,7 @@ export default function RootLayout({
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
-            enableSystem
+            enableSystem={false}
             disableTransitionOnChange
           >
             <div className="flex min-h-screen flex-col">

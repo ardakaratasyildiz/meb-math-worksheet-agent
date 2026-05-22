@@ -1,8 +1,7 @@
 /*
- * TASLAK — yayına almadan önce yapılması gerekenler:
- *   1. Bölüm 1'deki [● ... ●] alanına veri sorumlusunun yasal kimliği yazılmalı.
- *   2. Metin bir hukuk danışmanı tarafından gözden geçirilmeli.
- * Standart KVKK aydınlatma bölümleri hazır; yalnızca yukarıdakiler eksik.
+ * TASLAK — veri sorumlusu kimliği şimdilik "Soru Atölyesi" olarak girildi.
+ * Resmi yayın öncesi gerçek tüzel/şahıs kimliği ve adres eklenmeli, metin bir
+ * hukuk danışmanı tarafından gözden geçirilmeli.
  */
 import { LegalDocument, type LegalSection } from "@/components/LegalDocument";
 
@@ -16,7 +15,7 @@ const SECTIONS: LegalSection[] = [
   {
     heading: "Veri Sorumlusu",
     paragraphs: [
-      "Soru Atölyesi (“Platform”), [● işletmeci tüzel kişi unvanı veya şahıs ad-soyadı buraya yazılacaktır ●] (“Veri Sorumlusu”) tarafından işletilmektedir.",
+      "Soru Atölyesi (“Platform”), bu aydınlatma metni kapsamında veri sorumlusu (“Veri Sorumlusu”) sıfatıyla hareket etmektedir.",
       "Veri Sorumlusu’na destek@soruatolyesi.com adresi üzerinden ulaşılabilir.",
     ],
   },

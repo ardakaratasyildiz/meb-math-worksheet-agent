@@ -71,9 +71,6 @@ const TopNavBar = () => {
                 <DropdownMenuItem onClick={() => setTheme("dark")}>
                   Koyu
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                  Sistem
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}

@@ -1,6 +1,6 @@
 /*
- * TASLAK — yayına almadan önce metin bir hukuk danışmanı tarafından gözden
- * geçirilmeli. Doldurulması gereken [● ... ●] alanı için KVKK sayfasına bakınız.
+ * TASLAK — resmi yayın öncesi metin bir hukuk danışmanı tarafından gözden
+ * geçirilmeli.
  */
 import { LegalDocument, type LegalSection } from "@/components/LegalDocument";
 
