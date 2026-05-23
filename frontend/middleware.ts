@@ -1,7 +1,14 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 // Login zorunlu route'lar — diğerleri (landing, sign-in/up) public.
-const isProtectedRoute = createRouteMatcher(["/generate(.*)", "/history(.*)"]);
+// /admin(.*) protected → middleware unauthenticated kullanıcıyı /sign-in'e
+// gönderir. Layout ek olarak role check yapıp admin değilse notFound() çağırır
+// (defense in depth). /api/admin/* route handler'ları kendi içinde de gate'lidir.
+const isProtectedRoute = createRouteMatcher([
+  "/generate(.*)",
+  "/history(.*)",
+  "/admin(.*)",
+]);
 
 // Clerk v7'de auth.protect() unauthenticated kullanıcıyı default olarak 404'e
 // rewrite ediyor (X-Clerk-Auth-Reason: protect-rewrite). Bunun yerine
