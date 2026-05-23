@@ -44,7 +44,7 @@ export default function CachePage() {
         <div>
           <CardTitle>Son üretimler</CardTitle>
           <CardDescription>
-            Son 50 cache set'i — key, ilk soru/cevap önizleme ve üretim zamanı.
+            Son 50 cache set&apos;i — key, ilk soru/cevap önizleme ve üretim zamanı.
           </CardDescription>
         </div>
         <Button variant="outline" size="sm" onClick={load} disabled={loading}>

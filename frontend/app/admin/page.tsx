@@ -190,7 +190,7 @@ function ChromaCard({ health, loading }: { health: HealthCheck | null; loading: 
         <CardTitle>{count.toLocaleString("tr-TR")}</CardTitle>
       </CardHeader>
       <CardContent className="text-xs text-muted-foreground">
-        Embedding'li örnek soru sayısı
+        Embedding&apos;li örnek soru sayısı
       </CardContent>
     </Card>
   );
@@ -207,7 +207,7 @@ function WorksheetCard({ health, loading }: { health: HealthCheck | null; loadin
         <CardTitle>{value}</CardTitle>
       </CardHeader>
       <CardContent className="text-xs text-muted-foreground">
-        Tüm tenant'lar toplamı (Sprint 13)
+        Tüm tenant&apos;lar toplamı (Sprint 13)
       </CardContent>
     </Card>
   );
