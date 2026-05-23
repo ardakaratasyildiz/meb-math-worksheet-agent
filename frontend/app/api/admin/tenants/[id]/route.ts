@@ -1,0 +1,15 @@
+import { checkAdminAccess, proxyToBackend } from "@/lib/admin-proxy";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const gate = await checkAdminAccess();
+  if (!gate.ok) return gate.response;
+  const { id } = await params;
+  const url = new URL(req.url);
+  const limit = url.searchParams.get("limit") ?? "100";
+  return proxyToBackend(
+    `/admin/history/${encodeURIComponent(id)}?limit=${encodeURIComponent(limit)}`,
+    gate.userId,
+  );
+}
