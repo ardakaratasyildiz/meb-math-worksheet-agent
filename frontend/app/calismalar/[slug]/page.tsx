@@ -144,7 +144,7 @@ export default async function CalismaDetailPage({ params }: PageProps) {
             {page.grade}. sınıf {page.topicName.toLowerCase()} çalışma kağıdını hemen üret
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Soru sayısı, zorluk seviyesi ve soru tipini sen belirle. PDF'in birkaç saniyede hazır.
+            Soru sayısı, zorluk seviyesi ve soru tipini sen belirle. PDF&apos;in birkaç saniyede hazır.
           </p>
           <Button asChild size="lg" className="mt-6 gap-2 px-8">
             <Link href={generateHref}>
