@@ -15,6 +15,36 @@ const nextConfig = {
       },
     ];
   },
+  // SEO: eski vercel.app domain'inden gelen istekleri yeni domain'e kalıcı (301)
+  // yönlendir. Google'da indexlenmiş eski URL'ler varsa otoriteyi yeniye taşır
+  // ve duplicate content cezasını önler. Host bazlı match → tüm path'leri taşır.
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "meb-math-worksheet-agent.vercel.app",
+          },
+        ],
+        destination: "https://soruatolyesi.com/:path*",
+        permanent: true,
+      },
+      // www → apex (consistency + SEO canonical net)
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "www.soruatolyesi.com",
+          },
+        ],
+        destination: "https://soruatolyesi.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

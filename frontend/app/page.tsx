@@ -16,11 +16,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
+import { JsonLd, organizationSchema, websiteSchema } from "@/components/JsonLd";
 import { SectionHeader } from "@/components/PageHeader";
 
 export default function LandingPage() {
   return (
     <>
+      <JsonLd id="org-schema" data={organizationSchema()} />
+      <JsonLd id="website-schema" data={websiteSchema()} />
       <Hero />
       <SystemSummary />
       <HowItWorks />
