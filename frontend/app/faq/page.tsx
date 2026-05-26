@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
+import { JsonLd, faqPageSchema } from "@/components/JsonLd";
 import { PageHeader } from "@/components/PageHeader";
 
 export const metadata = {
@@ -85,8 +86,11 @@ const FAQ_CATEGORIES: FaqCategory[] = [
 ];
 
 export default function FaqPage() {
+  // Tüm kategorilerden tek düz liste — schema.org FAQPage tek mainEntity dizisi ister.
+  const allFaqs = FAQ_CATEGORIES.flatMap((c) => c.items);
   return (
     <>
+      <JsonLd id="faq-schema" data={faqPageSchema(allFaqs)} />
       <PageHeader
         eyebrow="Sıkça sorulanlar"
         title="Sistem hakkında sık sorulan sorular"
