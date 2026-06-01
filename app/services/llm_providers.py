@@ -123,6 +123,16 @@ class GeminiProvider:
                 raise ProviderTransientError(f"Gemini {status}: {exc}") from exc
             raise ProviderError(f"Gemini sunucu hatası: {exc}") from exc
         except genai_errors.ClientError as exc:
+            # 429 = RESOURCE_EXHAUSTED (rate limit / kota). HTTP 4xx olduğu için
+            # SDK bunu ClientError olarak fırlatır, ama KALICI değildir: kotanın
+            # dakikalık penceresi sıfırlanınca tekrar denenince geçer. Yüksek
+            # trafikte free-tier'ın baskın hatası budur; kalıcı sayılırsa tüm
+            # (aynı kotayı paylaşan) Gemini fallback zinciri backoff'suz anında
+            # tükenir → kullanıcıya gereksiz 502. Transient'a çevir ki
+            # call_with_chain exponential backoff ile yeniden denesin.
+            status = getattr(exc, "code", None)
+            if status == 429:
+                raise ProviderTransientError(f"Gemini 429 (rate limit): {exc}") from exc
             raise ProviderError(f"Gemini istemci hatası: {exc}") from exc
 
         usage_meta = getattr(response, "usage_metadata", None)
