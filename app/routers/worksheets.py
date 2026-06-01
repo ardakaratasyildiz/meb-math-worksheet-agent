@@ -360,6 +360,7 @@ async def _stream_worksheet_events(
         event: question    — her soru
         event: complete    — final worksheet + metadata
         event: error       — hata
+        : keepalive        — üretim sürerken periyodik ping (SSE yorumu)
     """
 
     def sse(event: str, data: dict | str) -> str:
@@ -375,8 +376,22 @@ async def _stream_worksheet_events(
         "question_count": req.question_count,
     })
 
+    # _build_worksheet ~30-90 sn sürebilir; bu süre boyunca tek bir byte bile
+    # akmazsa araya giren proxy (Render/Nginx) veya tarayıcı bağlantıyı idle
+    # sanıp koparır → kullanıcı "hata" görür ama backend üretimi bitirip geçmişe
+    # yazar. Üretimi ayrı task'ta çalıştırıp BİTENE KADAR her HEARTBEAT_SECONDS'ta
+    # bir SSE yorumu (": keepalive") akıtıyoruz: byte aktığı için bağlantı canlı
+    # kalır, yorum satırı olduğu için istemci onu yok sayar (event tetiklemez).
+    HEARTBEAT_SECONDS = 10.0
+    gen_task = asyncio.ensure_future(asyncio.to_thread(_build_worksheet, req))
+    while not gen_task.done():
+        # wait timeout'ta task'ı İPTAL ETMEZ; sadece beklemeyi bırakır → güvenli.
+        await asyncio.wait({gen_task}, timeout=HEARTBEAT_SECONDS)
+        if not gen_task.done():
+            yield ": keepalive\n\n"
+
     try:
-        worksheet, metadata = await asyncio.to_thread(_build_worksheet, req)
+        worksheet, metadata = gen_task.result()
     except HTTPException as exc:
         yield sse("error", {"detail": exc.detail, "status": exc.status_code})
         return

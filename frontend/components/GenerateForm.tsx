@@ -19,7 +19,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 
 import {
-  generateWorksheet,
+  generateWorksheetStream,
   listGrades,
   listKazanimlar,
   listTopics,
@@ -122,6 +122,7 @@ export function GenerateForm() {
     status,
     setForm,
     startGenerate,
+    setStreamedCount,
     setSuccess,
     setError,
   } = useGenerateStore();
@@ -183,18 +184,25 @@ export function GenerateForm() {
     startGenerate();
     try {
       const question_types = flattenTypeGroups(typeGroups);
-      const res = await generateWorksheet({
-        grade,
-        topic_id: topicId,
-        kazanim_kod: kazanimKod || null,
-        difficulty,
-        question_count: questionCount,
-        tenant_id: userId ?? null,
-        question_types,
-        difficulty_mode: difficultyMode,
-        include_answer_key: includeAnswerKey,
-        include_solutions: includeSolutions,
-      });
+      // SSE streaming: bağlantı her soru event'iyle canlı kalır → uzun üretimde
+      // proxy/tarayıcı idle-timeout'u tetiklenmez ("hata aldım ama geçmişte var"
+      // sorununun kök sebebi). `complete` event'i bloklayan endpoint ile aynı
+      // GenerateWorksheetResponse'u döner.
+      const res = await generateWorksheetStream(
+        {
+          grade,
+          topic_id: topicId,
+          kazanim_kod: kazanimKod || null,
+          difficulty,
+          question_count: questionCount,
+          tenant_id: userId ?? null,
+          question_types,
+          difficulty_mode: difficultyMode,
+          include_answer_key: includeAnswerKey,
+          include_solutions: includeSolutions,
+        },
+        { onQuestion: (_q, index) => setStreamedCount(index + 1) },
+      );
       setSuccess(res);
       addHistory(
         {
