@@ -27,6 +27,7 @@ export function QuestionPreview() {
     result,
     error,
     questionCount,
+    streamedCount,
     includeAnswerKey,
     includeSolutions,
   } = useGenerateStore();
@@ -63,7 +64,10 @@ export function QuestionPreview() {
   if (status === "loading") {
     return (
       <div ref={rootRef}>
-        <GeneratingState questionCount={questionCount} />
+        <GeneratingState
+          questionCount={questionCount}
+          streamedCount={streamedCount}
+        />
       </div>
     );
   }
@@ -166,7 +170,13 @@ const MATH_FACTS = [
   "0 sayısı çiftdir — 2'ye tam bölünür ve çift sayıların tüm tanımlarını sağlar.",
 ];
 
-function GeneratingState({ questionCount }: { questionCount: number }) {
+function GeneratingState({
+  questionCount,
+  streamedCount,
+}: {
+  questionCount: number;
+  streamedCount: number;
+}) {
   const [factIndex, setFactIndex] = React.useState(() =>
     Math.floor(Math.random() * MATH_FACTS.length),
   );
@@ -185,16 +195,25 @@ function GeneratingState({ questionCount }: { questionCount: number }) {
     };
   }, []);
 
-  const phase = elapsed < 8
-    ? "Sorular üretiliyor"
-    : elapsed < 18
-      ? "Aritmetik denetimi yapılıyor"
-      : elapsed < 28
-        ? "Kazanım uyumu denetleniyor"
-        : "Çalışma kağıdı hazırlanıyor";
+  // Backend soruları üretim BİTTİKTEN sonra teker teker akıtır; ilk soru
+  // event'i geldiğinde ağır iş tamam demektir → gerçek sayaca geç.
+  const streaming = streamedCount > 0;
 
-  // 30sn'de %92'ye, 60sn'de %98'e ulaş — hiç %100 olmasın (yanıltıcı olmasın).
-  const progress = Math.min(98, Math.round((1 - Math.exp(-elapsed / 14)) * 100));
+  const phase = streaming
+    ? "Sorular geliyor"
+    : elapsed < 8
+      ? "Sorular üretiliyor"
+      : elapsed < 18
+        ? "Aritmetik denetimi yapılıyor"
+        : elapsed < 28
+          ? "Kazanım uyumu denetleniyor"
+          : "Çalışma kağıdı hazırlanıyor";
+
+  // Akış başladıysa gerçek ilerleme (gelen soru / hedef); değilse zaman-tabanlı
+  // tahmin (30sn→%92, 60sn→%98). Hiçbir durumda %100 gösterme — yanıltıcı olmasın.
+  const progress = streaming
+    ? Math.min(99, Math.round((streamedCount / Math.max(1, questionCount)) * 100))
+    : Math.min(98, Math.round((1 - Math.exp(-elapsed / 14)) * 100));
   const eta = Math.max(0, 30 - elapsed);
 
   return (
@@ -207,8 +226,11 @@ function GeneratingState({ questionCount }: { questionCount: number }) {
           <div className="flex-1">
             <p className="text-sm font-semibold text-foreground">{phase}</p>
             <p className="text-xs text-muted-foreground">
-              {questionCount} soruluk çalışma kağıdı hazırlanıyor
-              {eta > 0 ? ` · ~${eta} sn` : " · birazdan..."}
+              {streaming
+                ? `${streamedCount} / ${questionCount} soru hazır`
+                : `${questionCount} soruluk çalışma kağıdı hazırlanıyor${
+                    eta > 0 ? ` · ~${eta} sn` : " · birazdan..."
+                  }`}
             </p>
           </div>
         </div>

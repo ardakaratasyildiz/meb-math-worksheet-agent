@@ -31,9 +31,12 @@ interface GenerateStore extends FormState {
   status: "idle" | "loading" | "success" | "error";
   error: string | null;
   result: GenerateWorksheetResponse | null;
+  // SSE streaming sırasında gelen soru sayısı — canlı ilerleme göstergesi için.
+  streamedCount: number;
 
   setForm: (patch: Partial<FormState>) => void;
   startGenerate: () => void;
+  setStreamedCount: (n: number) => void;
   setSuccess: (r: GenerateWorksheetResponse) => void;
   setError: (e: string) => void;
   reset: () => void;
@@ -59,12 +62,15 @@ export const useGenerateStore = create<GenerateStore>()(
       status: "idle",
       error: null,
       result: null,
+      streamedCount: 0,
       setForm: (patch) => set((s) => ({ ...s, ...patch })),
       startGenerate: () =>
-        set({ status: "loading", error: null, result: null }),
+        set({ status: "loading", error: null, result: null, streamedCount: 0 }),
+      setStreamedCount: (n) => set({ streamedCount: n }),
       setSuccess: (r) => set({ status: "success", result: r, error: null }),
       setError: (e) => set({ status: "error", error: e }),
-      reset: () => set({ status: "idle", result: null, error: null }),
+      reset: () =>
+        set({ status: "idle", result: null, error: null, streamedCount: 0 }),
     }),
     {
       name: "meb-generate-form",
