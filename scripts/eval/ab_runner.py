@@ -77,6 +77,51 @@ CONFIG_MATRIX: dict[str, dict] = {
     },
 }
 
+# -- Model A/B konfigürasyonları (2026-06) ---------------------------------
+# Soru kalitesi vs maliyet kıyası için: tüm sprint2_full özellikleri AÇIK,
+# yalnızca generator ve/veya critic modeli değişir. A/B bütünlüğü için her
+# config TEK generator modeli test eder (gemini_fallback_models=""): böylece
+# 429/rate-limit bir başka modele düşüp sonucu kirletmez — başarısız iterasyon
+# "error" olarak kaydedilir (güvenilirlik sinyali). critic kendi client'ını
+# kullanır, generator fallback'inden bağımsızdır.
+_FEATURES_ON = {
+    "enable_semantic_dedup": True,
+    "enable_critic": True,
+    "enable_history_persist": True,
+    # KRİTİK: generation cache anahtarı modeli İÇERMEZ → açık kalırsa bir config
+    # diğerinin cache'lenmiş sonucunu çeker ve model A/B'sini bozar. Kapat.
+    "enable_generation_cache": False,
+    "temp_override": None,
+    "use_rng_in_retrieval": True,
+}
+
+
+def _model_cfg(gen: str, critic: str) -> dict:
+    return {
+        **_FEATURES_ON,
+        "gemini_model": gen,
+        "gemini_fallback_models": "",  # tek model — fallback yok (A/B izolasyonu)
+        "critic_model": critic,
+    }
+
+
+CONFIG_MATRIX.update({
+    # Generator kıyası (critic sabit = mevcut prod: flash-lite)
+    "gen_25flash":  _model_cfg("gemini-2.5-flash",      "gemini-2.5-flash-lite"),  # KONTROL = mevcut prod
+    "gen_25pro":    _model_cfg("gemini-2.5-pro",        "gemini-2.5-flash-lite"),
+    "gen_35flash":  _model_cfg("gemini-3.5-flash",      "gemini-2.5-flash-lite"),
+    "gen_3pro":     _model_cfg("gemini-3-pro-preview",  "gemini-2.5-flash-lite"),
+    "gen_31pro":    _model_cfg("gemini-3.1-pro-preview","gemini-2.5-flash-lite"),
+    # Critic kaldıracı (generator sabit = flash)
+    "critic_25flash": _model_cfg("gemini-2.5-flash", "gemini-2.5-flash"),
+    "critic_35flash": _model_cfg("gemini-2.5-flash", "gemini-3.5-flash"),
+    # Latency #2 — over-generation A/B (generator+critic sabit = mevcut prod):
+    "over_off": {**_model_cfg("gemini-2.5-flash", "gemini-2.5-flash-lite"),
+                 "generation_overshoot_ratio": 1.0},  # eski davranış
+    "over_on":  {**_model_cfg("gemini-2.5-flash", "gemini-2.5-flash-lite"),
+                 "generation_overshoot_ratio": 1.3},  # yeni
+})
+
 
 @contextlib.contextmanager
 def patched_settings(overrides: dict) -> Iterator[None]:
@@ -192,7 +237,12 @@ def run_config(
 
     selected_scenarios = scenarios if scenarios is not None else SCENARIOS
     runs: list[IterationRun] = []
-    settings_overrides = {k: v for k, v in cfg.items() if k.startswith("enable_")}
+    _SETTINGS_KEYS = ("gemini_model", "critic_model", "gemini_fallback_models",
+                      "generation_overshoot_ratio")
+    settings_overrides = {
+        k: v for k, v in cfg.items()
+        if k.startswith("enable_") or k in _SETTINGS_KEYS
+    }
     with patched_settings(settings_overrides):
         # Her config için temiz history (cross-config sızıntı engelle)
         GENERATION_HISTORY.clear()
