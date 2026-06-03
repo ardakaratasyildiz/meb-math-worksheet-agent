@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-import time
 from datetime import datetime, timezone
 from functools import lru_cache
 from typing import AsyncIterator
@@ -74,6 +73,31 @@ def _split_difficulty_buckets(total: int) -> dict["Difficulty", int]:
     return {Difficulty.KOLAY: kolay, Difficulty.ORTA: orta, Difficulty.ZOR: zor}
 
 
+def _merge_traces(traces: list):
+    """Paralel bucket trace'lerini tek metadata trace'ine birleştirir.
+
+    Token/maliyet/eleme sayaçları toplanır; model/sağlayıcı/few-shot kaynağı gibi
+    temsilî alanlar ilk başarılı bucket'tan alınır. Boşsa None.
+    """
+    if not traces:
+        return None
+    if len(traces) == 1:
+        return traces[0]
+    base = traces[0]
+    return base.model_copy(update={
+        "prompt_tokens": sum(t.prompt_tokens for t in traces),
+        "completion_tokens": sum(t.completion_tokens for t in traces),
+        "estimated_cost_usd": sum(t.estimated_cost_usd for t in traces),
+        "math_verifier_rejected": sum(t.math_verifier_rejected for t in traces),
+        "critic_rejected": sum(t.critic_rejected for t in traces),
+        "dedup_rejected_string": sum(t.dedup_rejected_string for t in traces),
+        "dedup_rejected_semantic": sum(t.dedup_rejected_semantic for t in traces),
+        "retry_rounds": sum(t.retry_rounds for t in traces),
+        "requested_count": sum(t.requested_count for t in traces),
+        "delivered_count": sum(t.delivered_count for t in traces),
+    })
+
+
 def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, WorksheetMetadata]:
     """Ortak üretim mantığı: hem JSON hem PDF endpoint'leri kullanır.
 
@@ -110,30 +134,67 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         trace_for_meta = agent.build_last_trace()
         worksheet_difficulty = req.difficulty
     else:
-        # Mixed/progressive: kolay/orta/zor 3 ayrı agent.generate çağrısı.
-        # Her çağrı içinde ~3-5 LLM call var → 3 bucket = ~10-15 Gemini çağrısı
-        # saniyeler içinde. Free-tier rate limit / 503 nedeniyle bir bucket
-        # fail edebilir. Bucket-başına hata yakalanır: en az 1 bucket başarılı
-        # olduğu sürece kısmi sonuç döndürülür (tüm istek çökmez). Bucket'lar
-        # arasına kısa gecikme — rate limit burst'ünü yumuşatır.
+        # Mixed/progressive: kolay/orta/zor bucket'ları. Her bucket bağımsız bir
+        # agent.generate (~3-5 LLM call). Bucket-başına hata yakalanır: en az 1
+        # bucket başarılıysa kısmi sonuç döner (tüm istek çökmez).
+        #
+        # LATENCY (#1): bucket'lar paralel koşar (settings.parallel_difficulty_
+        # buckets). Ardışık 3 bucket ~3× süre alıyordu; paralelde ~1× (en yavaş
+        # bucket). Bağımsızlar — her biri farklı difficulty → farklı history_key,
+        # dedup karışmaz; GENERATION_HISTORY/CACHE lock-serialized (thread-safe).
+        # Paralelde her bucket KENDİ GeminiAgent'ıyla çalışır → paylaşılan trace
+        # state (_last_*) yarışı olmaz. 429 burst'ü artık transient-retry/backoff
+        # ile toparlandığından eski time.sleep(1.5) yumuşatması gereksiz.
         buckets = _split_difficulty_buckets(req.question_count)
-        collected: list = []
-        bucket_errors: list[str] = []
         bucket_seq = [d for d in (_Diff.KOLAY, _Diff.ORTA, _Diff.ZOR)
                       if buckets.get(d, 0) > 0]
-        for idx, diff in enumerate(bucket_seq):
-            n = buckets[diff]
+
+        def _gen_bucket(diff: "_Diff"):
+            """Tek bucket üretir. Paralel modda izole agent kullanır."""
+            local_agent = GeminiAgent() if settings.parallel_difficulty_buckets else agent
             try:
-                collected.extend(_gen(diff, n))
-            except AgentError as exc:
+                qs = local_agent.generate(
+                    grade=req.grade,
+                    topic_id=req.topic_id,
+                    kazanim_kod=req.kazanim_kod,
+                    difficulty=diff,
+                    question_count=buckets[diff],
+                    tenant_id=req.tenant_id,
+                    allowed_types=req.question_types,
+                )
+                return diff, qs, local_agent.build_last_trace(), None
+            except Exception as exc:  # noqa: BLE001
+                # AgentError + paralelliğin getirdiği embedding/429 gibi hatalar:
+                # bir bucket'ın hatası tüm kağıdı çökertmesin — kısmi sonuçla
+                # devam et (en az 1 bucket başarılıysa worksheet üretilir).
                 logger.warning(
                     "Bucket başarısız (diff=%s, n=%s): %s — kısmi sonuçla devam.",
-                    diff.value, n, exc,
+                    diff.value, buckets[diff], exc,
                 )
-                bucket_errors.append(f"{diff.value}: {exc}")
-            # Son bucket değilse rate limit burst'ünü yumuşat.
-            if idx < len(bucket_seq) - 1:
-                time.sleep(1.5)
+                return diff, [], None, f"{diff.value}: {type(exc).__name__}: {exc}"
+
+        results: dict = {}
+        if settings.parallel_difficulty_buckets and len(bucket_seq) > 1:
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=len(bucket_seq)) as ex:
+                for diff, qs, tr, err in ex.map(_gen_bucket, bucket_seq):
+                    results[diff] = (qs, tr, err)
+        else:
+            for diff in bucket_seq:
+                d, qs, tr, err = _gen_bucket(diff)
+                results[d] = (qs, tr, err)
+
+        # bucket_seq sırasında topla (progressive: kolay→orta→zor korunur).
+        collected: list = []
+        bucket_errors: list[str] = []
+        bucket_traces: list = []
+        for diff in bucket_seq:
+            qs, tr, err = results[diff]
+            collected.extend(qs)
+            if tr is not None:
+                bucket_traces.append(tr)
+            if err:
+                bucket_errors.append(err)
 
         if not collected:
             # Hiçbir bucket başarılı olmadı — gerçek hata.
@@ -151,7 +212,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             q.model_copy(update={"number": i + 1}) if isinstance(q, _Q) else q
             for i, q in enumerate(collected)
         ]
-        trace_for_meta = agent.build_last_trace()
+        trace_for_meta = _merge_traces(bucket_traces)
         worksheet_difficulty = req.difficulty
 
     if not questions:

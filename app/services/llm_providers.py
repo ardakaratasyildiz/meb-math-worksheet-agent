@@ -25,12 +25,17 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T", bound=BaseModel)
 
 
-# Tahmini fiyatlar (USD per 1M token, 2026 başı). Cost metering loglaması için —
+# Fiyatlar (USD per 1M token, input/output). Cost metering loglaması için —
 # kesin fatura değil; provider faturalarıyla periyodik karşılaştırılmalı.
+# Gemini fiyatları ai.google.dev/gemini-api/docs/pricing (2026-06, ücretli tier,
+# <=200k prompt) ile güncellendi. ÖNCEKİ değerler eskiydi (ör. 2.5-flash
+# 0.075/0.30) → cost-meter ~8× DÜŞÜK raporluyordu.
 PRICING_USD_PER_1M_TOKENS: dict[str, tuple[float, float]] = {
-    "gemini-2.5-flash": (0.075, 0.30),
-    "gemini-2.5-flash-lite": (0.04, 0.15),
-    "gemini-2.5-pro": (1.25, 5.00),
+    "gemini-2.5-flash": (0.30, 2.50),
+    "gemini-2.5-flash-lite": (0.10, 0.40),
+    "gemini-2.5-pro": (1.25, 10.00),
+    "gemini-3.5-flash": (1.50, 9.00),
+    "gemini-3.1-pro-preview": (2.00, 12.00),
     "claude-sonnet-4-6": (3.00, 15.00),
     "claude-opus-4-7": (15.00, 75.00),
     "claude-haiku-4-5-20251001": (0.80, 4.00),

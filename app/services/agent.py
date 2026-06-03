@@ -159,13 +159,25 @@ def _collect_few_shot(
     max_total: int,
     rng: random.Random,
 ) -> tuple[list[dict], str]:
-    """RAG veya statik havuzdan few-shot toplar. İkinci değer kaynak ('rag' / 'static')."""
+    """RAG veya statik havuzdan few-shot toplar. İkinci değer kaynak ('rag' / 'static').
+
+    Fail-open: RAG yolu (query embedding + Chroma) hata verirse — özellikle paralel
+    bucket'larda eşzamanlı embedding çağrıları embedding endpoint'ini 429'layabilir —
+    statik havuza düşülür, üretim çökmez.
+    """
     if settings.use_rag:
         retriever = get_retriever()
         if retriever is not None and retriever.count() > 0:
-            rag_pool = _collect_few_shot_rag(
-                retriever, grade, topic_id, kazanimlar, target_difficulty, max_total, rng
-            )
+            try:
+                rag_pool = _collect_few_shot_rag(
+                    retriever, grade, topic_id, kazanimlar, target_difficulty, max_total, rng
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning(
+                    "RAG few-shot başarısız (embedding/retrieval), statik havuza düşülüyor: %s",
+                    exc,
+                )
+                rag_pool = []
             if rag_pool:
                 return rag_pool, "rag"
     static_pool = _collect_few_shot_static(
@@ -311,8 +323,16 @@ class GeminiAgent:
         allowed_set: set[QuestionType] | None = (
             set(allowed_types) if allowed_types else None
         )
+        # Over-generation (latency): ilk batch'i hedeften fazla iste ki math/critic
+        # elemeleri seri top-up turu açmadan absorbe edilsin. Eleme oranı ~%41
+        # üretimde >0; overshoot bunları tek çağrıda karşılar. question_count
+        # (gerçek hedef) cache anahtarı, retry/top-up durdurma koşulu ve sondaki
+        # kırpma için korunur; yalnızca İLK çağrının dağıtım+prompt hedefi büyür.
+        from math import ceil as _ceil
+        _overshoot = settings.generation_overshoot_ratio or 1.0
+        gen_target = _ceil(question_count * _overshoot) if _overshoot > 1.0 else question_count
         distribution = distribute_question_types(
-            question_count, difficulty, topic_id=topic_id, allowed_types=allowed_set,
+            gen_target, difficulty, topic_id=topic_id, allowed_types=allowed_set,
         )
 
         # History anahtarı — hem cache lookup hem üretim sonrası kayıt için.
@@ -430,7 +450,7 @@ class GeminiAgent:
             topic_name=topic["name"],
             kazanimlar=kazanimlar,
             difficulty=difficulty,
-            question_count=question_count,
+            question_count=gen_target,  # over-generation: ilk çağrı hedefi (sonda kırpılır)
             distribution=distribution,
             few_shot_examples=few_shot,
             context_exclusions=history_contexts,
