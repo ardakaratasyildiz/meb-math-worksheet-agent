@@ -69,6 +69,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  // Google Search Console domain/URL-prefix doğrulaması — token SC'den alınır,
+  // Vercel'de NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION env'ine girilir. Boşsa meta
+  // hiç basılmaz (DNS ile de doğrulanabilir, o durumda gerekmez).
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
   // Sosyal paylaşımda (WhatsApp, Twitter, LinkedIn) zengin önizleme:
   openGraph: {
     type: "website",

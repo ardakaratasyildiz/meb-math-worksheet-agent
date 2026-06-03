@@ -24,6 +24,7 @@ import {
   listKazanimlar,
   listTopics,
 } from "@/lib/api";
+import { track } from "@/lib/analytics";
 import { addHistory } from "@/lib/history";
 import { useGenerateStore, type TypeGroupKey } from "@/lib/store";
 import {
@@ -182,6 +183,15 @@ export function GenerateForm() {
       return;
     }
     startGenerate();
+    // Funnel: aktivasyon adımının başlangıcı.
+    track("worksheet_generate_start", {
+      grade,
+      topic_id: topicId,
+      difficulty,
+      difficulty_mode: difficultyMode,
+      question_count: questionCount,
+    });
+    const t0 = performance.now();
     try {
       const question_types = flattenTypeGroups(typeGroups);
       // SSE streaming: bağlantı her soru event'iyle canlı kalır → uzun üretimde
@@ -204,6 +214,18 @@ export function GenerateForm() {
         { onQuestion: (_q, index) => setStreamedCount(index + 1) },
       );
       setSuccess(res);
+      const trace = res.metadata.trace;
+      // Aktivasyon başarısı + CACHE HIT ORANI ölçümü (kapasite/maliyet kritik).
+      track("worksheet_generate_success", {
+        grade,
+        topic_id: topicId,
+        difficulty_mode: difficultyMode,
+        question_count: res.worksheet.questions.length,
+        cache_hit: !!trace?.cache_hit,
+        model: trace?.model_used ?? "unknown",
+        provider: trace?.provider ?? "unknown",
+        duration_ms: Math.round(performance.now() - t0),
+      });
       addHistory(
         {
           grade,
@@ -214,7 +236,6 @@ export function GenerateForm() {
         },
         res,
       );
-      const trace = res.metadata.trace;
       if (trace?.cache_hit) {
         toast.success("Önbellekten getirildi", {
           description: `${res.worksheet.questions.length} soru — aynı parametrelerle daha önce üretilmişti.`,
@@ -226,6 +247,12 @@ export function GenerateForm() {
       }
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
+      track("worksheet_generate_error", {
+        grade,
+        topic_id: topicId,
+        message: msg.slice(0, 120),
+        duration_ms: Math.round(performance.now() - t0),
+      });
       setError(msg);
       toast.error("Üretim başarısız", { description: msg });
     }
