@@ -159,13 +159,25 @@ def _collect_few_shot(
     max_total: int,
     rng: random.Random,
 ) -> tuple[list[dict], str]:
-    """RAG veya statik havuzdan few-shot toplar. İkinci değer kaynak ('rag' / 'static')."""
+    """RAG veya statik havuzdan few-shot toplar. İkinci değer kaynak ('rag' / 'static').
+
+    Fail-open: RAG yolu (query embedding + Chroma) hata verirse — özellikle paralel
+    bucket'larda eşzamanlı embedding çağrıları embedding endpoint'ini 429'layabilir —
+    statik havuza düşülür, üretim çökmez.
+    """
     if settings.use_rag:
         retriever = get_retriever()
         if retriever is not None and retriever.count() > 0:
-            rag_pool = _collect_few_shot_rag(
-                retriever, grade, topic_id, kazanimlar, target_difficulty, max_total, rng
-            )
+            try:
+                rag_pool = _collect_few_shot_rag(
+                    retriever, grade, topic_id, kazanimlar, target_difficulty, max_total, rng
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning(
+                    "RAG few-shot başarısız (embedding/retrieval), statik havuza düşülüyor: %s",
+                    exc,
+                )
+                rag_pool = []
             if rag_pool:
                 return rag_pool, "rag"
     static_pool = _collect_few_shot_static(
