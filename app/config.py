@@ -27,6 +27,11 @@ class Settings(BaseSettings):
 
     enable_math_verifier: bool = True
 
+    # Latency: ilk üretim batch'ini hedeften fazla iste ki math/critic elemeleri
+    # seri post-filter top-up turu açmadan absorbe edilsin. 1.0 = kapalı (eski
+    # davranış). ~1.3 → ilk çağrı %30 fazla soru ister, sonda hedefe kırpılır.
+    generation_overshoot_ratio: float = 1.3
+
     enable_history_persist: bool = True
     history_db_path: str = "knowledge_base/history.sqlite3"
 
