@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { track } from "@/lib/analytics";
 import { downloadBlob, renderPdf } from "@/lib/api";
 import { buildPdfFilename } from "@/lib/filename";
 import { useGenerateStore } from "@/lib/store";
@@ -97,6 +98,15 @@ export function QuestionPreview() {
         include_solutions: includeSolutions,
       });
       downloadBlob(blob, buildPdfFilename(result.worksheet.title));
+      // Funnel sonu — kullanıcının somut çıktıyı aldığı an (paylaşım/viral döngü
+      // başlangıcı). grade/topic ile hangi içeriğin değer ürettiği görülür.
+      track("pdf_download", {
+        grade: result.worksheet.grade,
+        topic: result.worksheet.topic,
+        question_count: result.worksheet.questions.length,
+        include_answer_key: includeAnswerKey,
+        include_solutions: includeSolutions,
+      });
       toast.success("PDF indirildi", { id: t });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Hata";
