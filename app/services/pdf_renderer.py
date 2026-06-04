@@ -21,6 +21,9 @@ import logging
 import re
 from typing import Iterable
 
+from reportlab.graphics import renderPDF
+from reportlab.graphics.barcode.qr import QrCodeWidget
+from reportlab.graphics.shapes import Drawing
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
@@ -577,6 +580,48 @@ def _solutions_section(questions: Iterable[Question], styles: dict[str, Paragrap
     return flow
 
 
+# ─── Büyüme döngüsü: PDF alt bilgisi (marka + QR) ────────────────────────────
+# Öğretmenler ürettikleri PDF'i WhatsApp/Facebook gruplarında paylaşıyor; her
+# paylaşılan kağıt bir reklam. Alt bilgiye marka + QR koyarak döngüyü kapatırız:
+# QR'ı tarayan yeni kullanıcı siteye gelir. UTM ile GA4'te kaynak ölçülür.
+_SITE_LABEL = "soruatolyesi.com"
+_QR_TARGET = "https://soruatolyesi.com/?utm_source=pdf&utm_medium=qr&utm_campaign=worksheet_footer"
+
+
+def _make_qr(data: str, size: float) -> Drawing:
+    """URL'i verilen kenar uzunluğunda (point) bir QR Drawing'ine çevirir."""
+    widget = QrCodeWidget(data)
+    bx0, by0, bx1, by1 = widget.getBounds()
+    w = (bx1 - bx0) or 1
+    h = (by1 - by0) or 1
+    d = Drawing(size, size, transform=[size / w, 0, 0, size / h, 0, 0])
+    d.add(widget)
+    return d
+
+
+def _draw_footer(canvas, doc) -> None:
+    """Her sayfanın alt bilgisi: sol=marka, orta=sayfa no, sağ=QR."""
+    canvas.saveState()
+    canvas.setFont(_BODY_FONT, 7)
+    canvas.setFillColor(colors.grey)
+    canvas.drawString(
+        2 * cm, 1.0 * cm,
+        f"{_SITE_LABEL} ile üretildi — ücretsiz MEB matematik çalışma kağıdı",
+    )
+    canvas.drawCentredString(A4[0] / 2.0, 1.0 * cm, f"- {doc.page} -")
+    qr_size = 1.1 * cm
+    try:
+        renderPDF.draw(
+            _make_qr(_QR_TARGET, qr_size),
+            canvas,
+            A4[0] - 2 * cm - qr_size,
+            0.5 * cm,
+        )
+    except Exception:  # noqa: BLE001 — QR çizimi PDF üretimini bozmasın
+        pass
+    canvas.restoreState()
+
+
 def render_worksheet_pdf(
     worksheet: Worksheet,
     include_answer_key: bool = True,
@@ -627,5 +672,5 @@ def render_worksheet_pdf(
         flow.append(PageBreak())
         flow.extend(_solutions_section(worksheet.questions, styles))
 
-    doc.build(flow)
+    doc.build(flow, onFirstPage=_draw_footer, onLaterPages=_draw_footer)
     return buf.getvalue()
