@@ -1,0 +1,952 @@
+{
+  "1-sinif-dogal-sayilar": {
+    "grade": 1,
+    "topic_id": "dogal_sayilar",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "20 sayısından başlayarak, her seferinde 5 ekleyerek üç kez devam ettiğimizde hangi sayıya ulaşırız?",
+        "answer": "35",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.1.1.1"
+      },
+      {
+        "question": "Ayşe'nin 7 tane kırmızı kalemi, Elif'in ise 5 tane mavi kalemi vardır. İkisinin toplam kaç kalemi vardır?",
+        "answer": "12 kalem",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.1.1.4"
+      },
+      {
+        "question": "Bir dalda 9 kuş vardı. Kuşlardan 3 tanesi uçup gitti. Dalda kaç kuş kaldı?",
+        "answer": "6 kuş",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.1.1.5"
+      }
+    ]
+  },
+  "1-sinif-geometri": {
+    "grade": 1,
+    "topic_id": "geometri",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir masanın üst tablasının dört kenarı ve dört köşesi vardır. Bu kenarların hepsi aynı uzunluktadır. Bu masanın üst tablası hangi geometrik şekli gösterir?",
+        "answer": "Kare",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.1.3.1"
+      },
+      {
+        "question": "Bir yol levhasının üç kenarı ve üç köşesi bulunmaktadır. Bu yol levhasının ana şekli nedir?",
+        "answer": "Üçgen",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.1.3.1"
+      },
+      {
+        "question": "Bir tabak, yuvarlak ve kenarsız bir görünüme sahiptir. Bu tabak hangi geometrik şekli andırır?",
+        "answer": "Daire",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.1.3.2"
+      }
+    ]
+  },
+  "1-sinif-olcme": {
+    "grade": 1,
+    "topic_id": "olcme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Ela'nın fırçası, Ali'nin fırçasından daha kısadır. Ceren'in fırçası ise Ali'nin fırçasından daha kısa ama Ela'nın fırçasından daha uzundur. Bu üç fırçayı en uzundan en kısaya doğru sıralayınız.",
+        "answer": "Ali'nin fırçası, Ceren'in fırçası, Ela'nın fırçası",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.1.4.1"
+      },
+      {
+        "question": "Deniz, saat 10.00'da resim yapmaya başladı. Resmini saat 13.00'te tamamladı. Deniz kaç saat resim yapmıştır?",
+        "answer": "3 saat",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.1.4.3"
+      },
+      {
+        "question": "Bir çocuk oyun alanında üç farklı kaydırak var: Kırmızı, Mavi ve Sarı. Kırmızı kaydırak, Sarı kaydıraktan daha kısadır. Mavi kaydırak, Kırmızı kaydıraktan daha uzundur. Sarı kaydırak ise Mavi kaydıraktan daha kısadır. Bu üç kaydırağı en uzundan en kısaya doğru sıralayınız.",
+        "answer": "Mavi kaydırak → Sarı kaydırak → Kırmızı kaydırak",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.1.4.1"
+      }
+    ]
+  },
+  "1-sinif-cebir": {
+    "grade": 1,
+    "topic_id": "cebir",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Ayşe, merdivenleri ikişer ikişer çıkarak sayıyor. Saydığı sayılar 6, 8, 10 şeklinde ilerliyor. Ayşe bir sonraki basamağa çıktığında hangi sayıyı söylemelidir? Bu örüntünün nasıl ilerlediğini açıklayınız.",
+        "answer": "12. Örüntü ikişer ikişer artmaktadır.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.1.5.1"
+      },
+      {
+        "question": "15, 20, ?, 30, 35 sayı örüntüsündeki eksik sayı kaçtır?",
+        "answer": "25",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.1.5.2"
+      },
+      {
+        "question": "Elif, oyuncak arabalarını sayarken her seferinde birer birer ekleyerek ilerliyor. Arabaları saydığı sayılar 7, 8, 9 şeklindedir. Elif bir sonraki arabasını saydığında hangi sayıyı söylemelidir?",
+        "answer": "10",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.1.5.1"
+      }
+    ]
+  },
+  "2-sinif-dogal-sayilar": {
+    "grade": 2,
+    "topic_id": "dogal_sayilar",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir fırında sabah 48 poğaça pişirildi. Öğleden sonra 35 poğaça daha pişirildi. Fırında toplam kaç poğaça pişirilmiştir?",
+        "answer": "83 poğaça",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.2.1.3"
+      },
+      {
+        "question": "Bir çiftçi tarlasından 63 tane kabak topladı. Bu kabakların 27 tanesini pazarda sattı. Çiftçinin geriye kaç kabağı kalmıştır?",
+        "answer": "36 kabak",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.2.1.4"
+      },
+      {
+        "question": "6 yüzlük, 9 onluk ve 4 birlikten oluşan sayı kaçtır?",
+        "answer": "694",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.2.1.2"
+      }
+    ]
+  },
+  "2-sinif-geometri": {
+    "grade": 2,
+    "topic_id": "geometri",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Ayşe'nin elinde dikdörtgen biçiminde bir fotoğraf çerçevesi var. Çerçevenin uzun olan tarafı 30 cm, kısa olan tarafı ise 20 cm'dir. Ayşe, çerçevenin geri kalan iki tarafının uzunluklarını merak ediyor. Bu iki tarafın uzunlukları ne kadardır?",
+        "answer": "30 cm ve 20 cm",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.2.3.2"
+      },
+      {
+        "question": "Esra'nın aklında bir geometrik şekil var. Bu şeklin dört tane düz çizgiden oluşan sınırı ve dört tane de birleşme noktası bulunmaktadır. Esra'nın aklındaki şekil hangisi olabilir?",
+        "answer": "Kare veya dikdörtgen",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.2.3.1"
+      },
+      {
+        "question": "Bir üçgenin kaç tane düz çizgisel sınırı ve kaç tane birleşme noktası vardır?",
+        "answer": "3 düz çizgisel sınırı, 3 birleşme noktası",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.2.3.1"
+      }
+    ]
+  },
+  "2-sinif-olcme": {
+    "grade": 2,
+    "topic_id": "olcme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir uzunluğu metre biriminden santimetre birimine dönüştürmek istediğimizde hangi sayıyla çarpmalıyız? Bu iki birim arasındaki ilişkiyi açıklayınız.",
+        "answer": "100 ile çarpmalıyız. 1 metre 100 santimetreye eşittir.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.2.4.1"
+      },
+      {
+        "question": "Elif'in yüzme dersi saat 6'ya on beş dakika varken başlıyor. Dersin başladığı zamanı rakamlarla nasıl ifade ederiz?",
+        "answer": "05.45",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.2.4.2"
+      },
+      {
+        "question": "Bir çuval patates 25 kilogram, bir çuval soğan ise 18 kilogram gelmektedir. Patates çuvalı, soğan çuvalından kaç kilogram daha ağırdır?",
+        "answer": "7 kilogram",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.2.4.3"
+      }
+    ]
+  },
+  "2-sinif-cebir": {
+    "grade": 2,
+    "topic_id": "cebir",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Aşağıdaki şekil örüntüsünde kuralı bularak eksik bırakılan yerlere gelmesi gereken şekilleri sırasıyla bulunuz.\n\n🔴 🔵 🔵 🔴 🔵 🔵 ? 🔵 ?",
+        "answer": "🔴; 🔵",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.2.5.2"
+      },
+      {
+        "question": "Aşağıdaki sayı örüntüsünün kuralını yazınız ve örüntüyü iki adım daha genişletiniz.\n\n3, 7, 11, 15, ...",
+        "answer": "Kural: Sayılar dörder artmaktadır. Genişletilmiş örüntü: 3, 7, 11, 15, 19, 23",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.2.5.1"
+      },
+      {
+        "question": "Bir çiftçi, her hafta yeni diktiği ağaç sayısını artırıyor. İlk hafta 10 ağaç, ikinci hafta 13 ağaç ve üçüncü hafta 16 ağaç diktiğine göre, çiftçi dördüncü ve beşinci haftalarda kaçar ağaç dikecektir?",
+        "answer": "Dördüncü hafta 19 ağaç, beşinci hafta 22 ağaç",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.2.5.1"
+      }
+    ]
+  },
+  "3-sinif-dogal-sayilar": {
+    "grade": 3,
+    "topic_id": "dogal_sayilar",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Dört basamaklı bir sayının binler hanesi 6'dır. Yüzler hanesi, binler hanesinden 4 eksiktir. Onlar hanesi 1'dir. Birler hanesi ise yüzler hanesindeki rakamın yarısıdır. Bu sayıyı bulunuz ve birler hanesindeki rakamı söyleyiniz.",
+        "answer": "6211; 1",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.3.1.1"
+      },
+      {
+        "question": "Bir oyun firması, yılın ilk çeyreğinde 2748 adet oyuncak araba üretti. İkinci çeyrekte ise 3567 adet oyuncak araba daha üretti. Bu firmanın yılın ilk yarısında toplam kaç adet oyuncak araba ürettiğini hesaplayınız.",
+        "answer": "6315 adet",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.3.1.2"
+      },
+      {
+        "question": "Bir çiftlikte başlangıçta 4352 adet tavuk bulunmaktaydı. Bir ay içinde bu tavuklardan 1789 tanesi başka bir çiftliğe gönderildi. Çiftlikte geriye kaç adet tavuk kaldığını bulunuz.",
+        "answer": "2563 adet",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.3.1.3"
+      }
+    ]
+  },
+  "3-sinif-kesirler": {
+    "grade": 3,
+    "topic_id": "kesirler",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Yedide beş kesrinde pay hangi sayıdır ve payda hangi sayıdır?",
+        "answer": "Pay: 5, Payda: 7",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.3.2.3"
+      },
+      {
+        "question": "Bir tepsi börek, önce ortadan iki eş parçaya ayrılıyor. Daha sonra bu iki eş parçanın her biri tekrar ortadan iki eş parçaya ayrılıyor. Bu durumda bir bütün tepsi börek kaç eş parçaya ayrılmış olur ve oluşan her bir parça bütünün hangi kısmını belirtir?",
+        "answer": "4 eş parça; Çeyrek",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.3.2.1"
+      },
+      {
+        "question": "Ahmet'in 15 tane misketi vardır. Arkadaşı Can'a bu misketlerin 5 tanesini verdi. Ahmet, misketlerinin kaçta kaçını Can'a vermiştir?",
+        "answer": "5/15",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.3.2.2"
+      }
+    ]
+  },
+  "3-sinif-geometri": {
+    "grade": 3,
+    "topic_id": "geometri",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir panonun uzun tarafı 45 cm, kısa tarafı 20 cm'dir. Bu panonun etrafına şerit çekilmek istenirse, kaç santimetre şeride ihtiyaç olur?",
+        "answer": "130 santimetre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.3.3.1"
+      },
+      {
+        "question": "Bir kare oyun alanının bir tarafının uzunluğu 35 metredir. Bu oyun alanının çevresine 2 sıra tel çekilirse toplam kaç metre tel gerekir?",
+        "answer": "280 metre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.3.3.1"
+      },
+      {
+        "question": "Eşkenar üçgen ve kare şekillerinin simetri ekseni sayılarını karşılaştırınız. Hangi şeklin simetri ekseni sayısı daha azdır? Kaç tane daha az olduğunu belirtiniz.",
+        "answer": "Eşkenar üçgenin 3, karenin ise 4 simetri ekseni vardır. Eşkenar üçgenin simetri ekseni sayısı kareden 1 tane daha azdır.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.3.3.2"
+      }
+    ]
+  },
+  "3-sinif-olcme": {
+    "grade": 3,
+    "topic_id": "olcme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir ağaç fidanı dikildikten sonra boyu 1 metre 25 santimetre olarak ölçülmüştür. Bu fidanın boyu toplam kaç santimetredir?",
+        "answer": "125 santimetre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.3.4.1"
+      },
+      {
+        "question": "Bir çizgi film 145 dakika sürmüştür. Bu çizgi film kaç saat kaç dakikadır?",
+        "answer": "2 saat 25 dakika",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.3.4.2"
+      },
+      {
+        "question": "Her gün düzenli olarak 40 dakika kitap okuyan bir öğrenci, bir haftada toplam kaç saat kaç dakika kitap okumuş olur?",
+        "answer": "4 saat 40 dakika",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.3.4.2"
+      }
+    ]
+  },
+  "3-sinif-cebir": {
+    "grade": 3,
+    "topic_id": "cebir",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Sayı örüntüsü: 75, 69, __, 57, 51. Boş bırakılan yere hangi sayı gelmelidir? Bu örüntünün kuralını sözel olarak ifade ediniz.",
+        "answer": "63 gelmelidir. Kural: Her adımda 6 azalıyor.",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.3.5.1"
+      },
+      {
+        "question": "Kuralı 'Her seferinde 8 artır' olan bir sayı örüntüsü 24 sayısından başlamaktadır. Bu örüntünün ilk 4 terimini yazınız.",
+        "answer": "24, 32, 40, 48",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.3.5.2"
+      },
+      {
+        "question": "Esra'nın oyuncak kutusunda başlangıçta 42 topu vardır. Her hafta 3 topu arkadaşına veriyor. İlk hafta sonunda 39 topu, ikinci hafta sonunda 36 topu kalmıştır. Esra aynı kurala göre top vermeye devam ederse, üçüncü hafta sonunda kaç topu kalır? Bu örüntünün kuralı nedir?",
+        "answer": "33 topu kalır. Kural: Her hafta 3 top azalıyor.",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.3.5.1"
+      }
+    ]
+  },
+  "4-sinif-dogal-sayilar": {
+    "grade": 4,
+    "topic_id": "dogal_sayilar",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "752.381 sayısındaki yüz binler basamağında bulunan rakamın basamak değeri kaçtır?",
+        "answer": "700000",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.4.1.1"
+      },
+      {
+        "question": "Bir otobüste başlangıçta 48 yolcu vardı. İlk durakta 15 yolcu indi, 23 yolcu bindi. İkinci durakta ise 12 yolcu indi, 7 yolcu bindi. Son durumda otobüste kaç yolcu vardır?",
+        "answer": "51 yolcu",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.4.1.3"
+      },
+      {
+        "question": "Bir şehirde yapılan nüfus sayımında, beş haneli bir sayıyla ifade edilen bir mahallenin toplam nüfusu belirlenmiştir. Bu sayının birler basamağındaki rakam 2'dir. Onlar basamağındaki rakam, birler basamağındaki rakamın 3 katıdır. Yüzler basamağındaki rakam, onlar basamağındaki rakamdan 4 eksiktir. Binler basamağındaki rakam, yüzler basamağındaki rakamın 2 katıdır. On binler basamağındaki rakam ise birler basamağındaki rakamın 2 katıdır. Buna göre bu mahallenin nüfusu kaçtır?",
+        "answer": "44262",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.4.1.1"
+      }
+    ]
+  },
+  "4-sinif-kesirler": {
+    "grade": 4,
+    "topic_id": "kesirler",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Aşağıdaki kesirleri basit kesir, bileşik kesir veya tam sayılı kesir olarak gruplandırınız: 3/7, 9/4, 2 tam 1/5, 7/7, 10/3.",
+        "answer": "Basit Kesir: 3/7. Bileşik Kesir: 9/4, 7/7, 10/3. Tam Sayılı Kesir: 2 tam 1/5.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.4.2.1"
+      },
+      {
+        "question": "Bir bahçıvan, bahçesinin bir bölümüne güller, başka bir bölümüne laleler ve kalan bölümüne papatyalar ekmiştir. Bahçenin 3/9'una güller, 1/3'üne laleler ve 2/5'ine papatyalar ekildiğine göre, hangi iki çiçek türü için ayrılan alanlar eş büyüklüktedir? Bu kesirlerin eşitliğini açıklayınız.",
+        "answer": "Güller ve laleler için ayrılan alanlar eş büyüklüktedir.",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.4.2.2"
+      },
+      {
+        "question": "Aşağıdaki birim kesirleri küçükten büyüğe doğru sıralayınız: 1/5, 1/3, 1/10.",
+        "answer": "1/10 < 1/5 < 1/3",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.4.2.3"
+      }
+    ]
+  },
+  "4-sinif-geometri": {
+    "grade": 4,
+    "topic_id": "geometri",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir açıölçer ile ölçüldüğünde 120° olarak belirlenen bir açı, hangi tür açıya örnektir?",
+        "answer": "Geniş açı",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.4.3.1"
+      },
+      {
+        "question": "Bahçelerindeki kare şeklindeki oyun alanının çevresi 64 metre olan bir aile, bu oyun alanının bir kenarına çit çekmek istiyor. Çit çekilecek bir kenarın uzunluğu kaç metredir?",
+        "answer": "16 metre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.4.3.2"
+      },
+      {
+        "question": "Bir odanın zemini dikdörtgen şeklindedir. Odanın uzun kenarı 9 birim, kısa kenarı ise 7 birimdir. Bu odanın zemini birim karelerle tamamen kaplanırsa kaç tane birim kareye ihtiyaç duyulur?",
+        "answer": "63 birim kare",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.4.3.3"
+      }
+    ]
+  },
+  "4-sinif-olcme": {
+    "grade": 4,
+    "topic_id": "olcme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir odanın zeminini kaplamak için mi, yoksa bir kitabın kapağını kaplamak için mi metrekare (m²) birimi daha uygun olur? Nedenini açıklayınız.",
+        "answer": "Odanın zemini için metrekare, kitabın kapağı için santimetrekare daha uygun olur.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.4.4.2"
+      },
+      {
+        "question": "Bir terzi, bir elbise için 2 metre 30 santimetre kumaş kullandı. Aynı terzi, başka bir elbise için ise ilk elbiseden 45 santimetre daha az kumaş kullandı. Terzi toplamda kaç santimetre kumaş kullanmıştır?",
+        "answer": "415 santimetre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.4.4.1"
+      },
+      {
+        "question": "Bir bahçıvan, 5 metrekarelik bir çiçek bahçesinin etrafına dekoratif taşlar döşeyecektir. Eğer bahçıvan, her bir taşı yerleştirirken alanı santimetrekare cinsinden düşünmesi gerekseydi, bu düşünce biçiminin ona nasıl bir fayda sağlayacağını ve neden böyle bir dönüşüme ihtiyaç duyabileceğini açıklayınız.",
+        "answer": "Santimetrekare cinsinden düşünmek, her bir dekoratif taşın boyutları ve bahçenin küçük detayları üzerinde daha hassas çalışmasını sağlar. Metrekare büyük alanlar için uygunken, taş döşeme gibi daha ince işçilik gerektiren durumlarda santimetrekare daha detaylı ölçüm yapma imkanı sunar ve hata payını azaltır.",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.4.4.2"
+      }
+    ]
+  },
+  "4-sinif-cebir": {
+    "grade": 4,
+    "topic_id": "cebir",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir sayı örüntüsü 8 ile başlamakta ve her adımda 7 artmaktadır. Bu örüntünün 6. terimi kaçtır?",
+        "answer": "43",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.4.5.1"
+      },
+      {
+        "question": "34 + ? = 65 - 12 eşitliğinde '?' yerine hangi sayı yazılmalıdır?",
+        "answer": "19",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.4.5.2"
+      },
+      {
+        "question": "Bir fidan ilk dikildiğinde 15 cm boyundadır. Her ay 5 cm uzamaktadır. Bu fidanın 8 ay sonraki boyu kaç cm olur?",
+        "answer": "55 cm",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.4.5.1"
+      }
+    ]
+  },
+  "5-sinif-dogal-sayilar": {
+    "grade": 5,
+    "topic_id": "dogal_sayilar",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "$$120 \\div (15 - 3) \\times 2 + 5$$ işleminin sonucunu bulmak için hangi işlem adımlarını sırasıyla uygulamanız gerektiğini açıklayınız ve sonucu hesaplayınız.",
+        "answer": "25",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.5.1.4"
+      },
+      {
+        "question": "Bir şehirde geçen yıl 145.789 kişi yaşıyordu. Bu yıl şehre 23.567 kişi taşındı ve 11.234 kişi başka şehirlere göç etti. Buna göre, bu yıl şehirdeki toplam nüfus kaç olmuştur?",
+        "answer": "158.122",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.1.2"
+      },
+      {
+        "question": "Sekiz yüz yetmiş üç milyon dört yüz altmış iki bin yüz beş doğal sayısını rakamlarla yazınız. Bu sayının milyonlar basamağındaki rakamın basamak değerini bulunuz.",
+        "answer": "873.462.105; 3.000.000",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.5.1.1"
+      }
+    ]
+  },
+  "5-sinif-kesirler": {
+    "grade": 5,
+    "topic_id": "kesirler",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Aşağıdaki birim kesirleri büyükten küçüğe doğru sıralayınız:\n- 1/9\n- 1/4\n- 1/12\n- 1/6",
+        "answer": "1/4 → 1/6 → 1/9 → 1/12",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.5.2.1"
+      },
+      {
+        "question": "4 tam 1/6 kesrini bileşik kesre dönüştürünüz.",
+        "answer": "25/6",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.5.2.2"
+      },
+      {
+        "question": "Bir bahçıvan, tarlasının 4/11'üne domates, 3/11'üne biber ekti. Daha sonra tarlasının 2/11'ine de salatalık ekmeye karar verdi. Bahçıvanın ektiği toplam alan, tarlasının kaçta kaçıdır?",
+        "answer": "9/11",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.2.3"
+      }
+    ]
+  },
+  "5-sinif-geometri": {
+    "grade": 5,
+    "topic_id": "geometri",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Kare şeklinde bir odanın zemini 196 birim kare halı ile kaplanmıştır. Bu odanın bir duvarının uzunluğu kaç birimdir?",
+        "answer": "14 birim",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.3.4"
+      },
+      {
+        "question": "Üçgen şeklinde bir parkın çevresine toplam 225 metre çit çekilmiştir. Bu parkın tüm kenarları eşit uzunlukta olduğuna göre, bir kenarının uzunluğu kaç metredir?",
+        "answer": "75 metre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.3.3"
+      },
+      {
+        "question": "Dikdörtgen şeklindeki bir oyun alanının zemini 240 birim kare kaplama ile döşenmiştir. Oyun alanının uzun kenarı 20 birim olduğuna göre, kısa kenarının uzunluğu kaç birimdir?",
+        "answer": "12 birim",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.3.4"
+      }
+    ]
+  },
+  "5-sinif-olcme": {
+    "grade": 5,
+    "topic_id": "olcme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Sıvı ölçme birimlerinden litre (L) ve mililitre (mL) arasındaki ilişkiyi açıklayınız. 4 litre 750 mililitre kaç mililitreye eşittir?",
+        "answer": "1 litre = 1000 mililitre; 4750 mililitre",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.5.4.2"
+      },
+      {
+        "question": "Bir inşaat projesinde, ilk hafta 2 kilometre 500 metre yol yapılmıştır. İkinci hafta ise ilk haftadan 750 metre daha az yol yapılmıştır. İki haftada toplam kaç metre yol yapılmıştır?",
+        "answer": "4250 metre",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.5.4.1"
+      },
+      {
+        "question": "Ayşe teyze bir kaba 1 litre 800 mililitre süt koydu. Daha sonra bu kaba 2 litre 450 mililitre daha süt ekledi. Ayşe teyzenin kabında toplam kaç mililitre süt vardır?",
+        "answer": "4250 mililitre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.4.2"
+      }
+    ]
+  },
+  "5-sinif-cebir": {
+    "grade": 5,
+    "topic_id": "cebir",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir miktar kalemi olan Emre, kalemlerinden 15 tanesini arkadaşına verdiğinde kalem sayısı 28 olmuştur. Emre'nin başlangıçta kaç kalemi vardı?",
+        "answer": "43 kalem",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.5.2"
+      },
+      {
+        "question": "Zeynep'in biriktirdiği pullara 24 pul daha eklendiğinde toplam 75 pulu olmuştur. Zeynep'in önceden kaç pulu vardı?",
+        "answer": "51 pul",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.5.2"
+      },
+      {
+        "question": "Bir sayının 18 eksiğinin 55'e eşit olması durumunu gösteren cebirsel ifadeyi yazınız. Sayıyı 'y' ile belirtiniz.",
+        "answer": "y - 18 = 55",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.5.5.2"
+      }
+    ]
+  },
+  "5-sinif-veri-isleme": {
+    "grade": 5,
+    "topic_id": "veri_isleme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Aşağıdaki sütun grafiği, bir okulda açılan öğrenci kulüplerine katılan öğrenci sayılarını göstermektedir.\n\n<svg viewBox=\"0 0 300 180\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect x=\"30\" y=\"85\" width=\"40\" height=\"75\" fill=\"#3b82f6\"/>\n  <rect x=\"90\" y=\"115\" width=\"40\" height=\"45\" fill=\"#10b981\"/>\n  <rect x=\"150\" y=\"100\" width=\"40\" height=\"60\" fill=\"#f59e0b\"/>\n  <rect x=\"210\" y=\"70\" width=\"40\" height=\"90\" fill=\"#ef4444\"/>\n  <line x1=\"20\" y1=\"160\" x2=\"270\" y2=\"160\" stroke=\"black\" stroke-width=\"1\"/>\n  <text x=\"50\" y=\"175\" font-size=\"11\" text-anchor=\"middle\">Müzik</text>\n  <text x=\"110\" y=\"175\" font-size=\"11\" text-anchor=\"middle\">Resim</text>\n  <text x=\"170\" y=\"175\" font-size=\"11\" text-anchor=\"middle\">Satranç</text>\n  <text x=\"230\" y=\"175\" font-size=\"11\" text-anchor=\"middle\">Spor</text>\n  <text x=\"50\" y=\"80\" font-size=\"12\" text-anchor=\"middle\">25</text>\n  <text x=\"110\" y=\"110\" font-size=\"12\" text-anchor=\"middle\">15</text>\n  <text x=\"170\" y=\"95\" font-size=\"12\" text-anchor=\"middle\">20</text>\n  <text x=\"230\" y=\"65\" font-size=\"12\" text-anchor=\"middle\">30</text>\n</svg>\n\nBu grafiğe göre, Spor kulübüne katılan öğrenci sayısı, Resim kulübüne katılan öğrenci sayısından kaç fazladır? Müzik ve Satranç kulüplerine katılan toplam öğrenci sayısı kaçtır?",
+        "answer": "Spor kulübü 15 öğrenci fazladır; Müzik ve Satranç kulüpleri toplam 45 öğrencidir.",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.5.6.1"
+      },
+      {
+        "question": "Belirli bir konu hakkında toplanan verilerin her bir kategorisinin kaç kez tekrarlandığını gösteren tabloya ne ad verilir? Bu tablodaki verileri çubuklarla görsel olarak ifade eden grafiğe ne denir?",
+        "answer": "Sıklık tablosu; sütun grafiği",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.5.6.1"
+      },
+      {
+        "question": "Bir içecek mağazasında bir günde satılan su adedi 35, meyve suyu adedi 28 ve süt adedi 17'dir. Buna göre, mağazada bir günde toplam kaç içecek satılmıştır? Meyve suyu, sütten kaç adet fazla satılmıştır?",
+        "answer": "Toplam 80 içecek satılmıştır; Meyve suyu 11 adet fazla satılmıştır.",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.5.6.1"
+      }
+    ]
+  },
+  "6-sinif-dogal-sayilar": {
+    "grade": 6,
+    "topic_id": "dogal_sayilar",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Mutlak değeri 12 olan tam sayıların toplamı kaçtır?",
+        "answer": "0",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.6.1.2"
+      },
+      {
+        "question": "Yüzden büyük, hem 2'ye hem de 3'e tam bölünebilen en küçük doğal sayıyı bulunuz.",
+        "answer": "102",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.6.1.7"
+      },
+      {
+        "question": "Bir termometre öğlen +5°C'yi göstermekteyken, akşam sıcaklık 9°C düşmüştür. Akşam sıcaklığı kaç derece olmuştur?",
+        "answer": "-4°C",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.1.3"
+      }
+    ]
+  },
+  "6-sinif-kesirler": {
+    "grade": 6,
+    "topic_id": "kesirler",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir sürahi doluyken 5/6'sı su ile doludur. Önce bu suyun 1/3'ü kullanılıyor, daha sonra kalan suyun 1/4'ü daha kullanılıyor. Buna göre, sürahide başlangıçtaki suyun kaçta kaçı kalmıştır?",
+        "answer": "5/12",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.6.2.1"
+      },
+      {
+        "question": "Bir terzi, elindeki 7/8 metre uzunluğundaki kumaşın her bir parçası 1/16 metre olacak şekilde küçük parçalara ayırmak istiyor. Terzi bu kumaştan kaç parça elde eder?",
+        "answer": "14 parça",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.2.3"
+      },
+      {
+        "question": "Bir çiftçi tarlasının 2/5'ine patates, 1/4'üne soğan ekmiştir. Tarlanın ekili olmayan kısmı tarlanın kaçta kaçıdır?",
+        "answer": "7/20",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.2.1"
+      }
+    ]
+  },
+  "6-sinif-geometri": {
+    "grade": 6,
+    "topic_id": "geometri",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir paralelkenar biçimindeki masa örtüsünün kapladığı yüzey 156 cm²'dir. Eğer bu masa örtüsünün taban kenarı 13 cm ise, bu tabana ait yüksekliği kaç cm'dir?",
+        "answer": "12 cm",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.3.1"
+      },
+      {
+        "question": "Bir çiftçi, üçgen şeklindeki tarlasının bir bölümünü 180 m² olarak ayırmıştır. Eğer bu tarlanın taban kenar uzunluğu 24 metre ise, bu tabana ait yüksekliğin kaç metre olduğunu bulunuz.",
+        "answer": "15 metre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.3.2"
+      },
+      {
+        "question": "Birbirini kesen iki doğru parçasının oluşturduğu dört açıdan birinin ölçüsü 68 derecedir. Bu açının komşu bütünler açısının ölçüsü kaç derecedir?",
+        "answer": "112 derece",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.6.3.4"
+      }
+    ]
+  },
+  "6-sinif-olcme": {
+    "grade": 6,
+    "topic_id": "olcme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir meyve suyu fabrikasında, bir şişe 25 santilitre (cL) meyve suyu ile doldurulmaktadır. Bu şişelerden 300 tanesi doldurulduğunda, toplamda kaç dekalitre (daL) meyve suyu üretilmiş olur?",
+        "answer": "7.5 dekalitre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.4.1"
+      },
+      {
+        "question": "Bir su deposu 72000 santimetreküp (cm³) su alabilmektedir. Deponun taban ayrıtları 80 cm ve 60 cm olduğuna göre, bu deponun yüksekliği kaç santimetredir?",
+        "answer": "15 santimetre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.4.2"
+      },
+      {
+        "question": "Bir veteriner kliniğinde, iki farklı ilaç şişesi bulunmaktadır. Birinci şişede 0,7 desilitre (dL) ilaç, ikinci şişede ise 60 mililitre (mL) ilaç vardır. Hangi şişedeki ilaç diğerinden daha fazladır ve aralarındaki fark kaç santilitre (cL)dir?",
+        "answer": "Birinci şişe; 1 santilitre",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.6.4.1"
+      }
+    ]
+  },
+  "6-sinif-cebir": {
+    "grade": 6,
+    "topic_id": "cebir",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir sayının 5 katının 12 eksiği ifadesini bir değişken (örneğin 'a') kullanarak cebirsel olarak yazınız.",
+        "answer": "5a - 12",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.6.5.1"
+      },
+      {
+        "question": "Bir otobüsteki yolcu sayısının 3 katının 7 fazlası, 55 yolcuya eşittir. Bu otobüste başlangıçta kaç yolcu vardır?",
+        "answer": "16 yolcu",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.5.3"
+      },
+      {
+        "question": "Zeynep'in kumbarasında bulunan paranın 2 katının 20 TL eksiği, 80 TL'ye eşittir. Zeynep'in kumbarasında kaç TL vardır?",
+        "answer": "50 TL",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.5.3"
+      }
+    ]
+  },
+  "6-sinif-veri-isleme": {
+    "grade": 6,
+    "topic_id": "veri_isleme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir kasabadaki beş farklı mahallede bulunan çocuk parkı sayıları şöyledir: Yeşil Mahalle 7, Mavi Mahalle 10, Sarı Mahalle 6, Kırmızı Mahalle 9, Beyaz Mahalle 8. Bu verilere uygun bir sütun grafiği oluşturulduğunda, en az çocuk parkı olan mahalle ile en çok çocuk parkı olan mahallenin toplam park sayısı kaç olur?",
+        "answer": "16 park",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.6.1"
+      },
+      {
+        "question": "Bir marangoz atölyesinde üretilen 7 ahşap sandalyenin bitirme süreleri (dakika cinsinden) şu şekildedir: 45, 50, 48, 55, 45, 52, 60. Bu veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplayınız. Sandalye üretim sürelerinin dağılımı hakkında bu ölçütlerin her birinin ayrı ayrı ne tür bilgiler verdiğini açıklayınız.",
+        "answer": "Aritmetik Ortalama: 50.71 dakika, Ortanca: 50 dakika, Tepe Değeri: 45 dakika. Ortalama üretim süresi 50.71 dakika, en sık rastlanan süre 45 dakika, sürelerin yarısı 50 dakikadan az, diğer yarısı ise 50 dakikadan fazladır.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.6.6.2"
+      },
+      {
+        "question": "Bir pastanede bir hafta içinde satılan kurabiye çeşitleri ve sayıları şöyledir: Çikolatalı 120 adet, Fındıklı 90 adet, Üzümlü 75 adet, Tarçınlı 105 adet. Bu satış verileri bir çizgi grafiği ile gösterilseydi, en az satılan kurabiye çeşidi ile en çok satılan kurabiye çeşidinin satış sayıları arasındaki fark kaç adet olurdu?",
+        "answer": "45 adet",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.6.1"
+      }
+    ]
+  },
+  "6-sinif-olasilik": {
+    "grade": 6,
+    "topic_id": "olasilik",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir çarkın üzerinde 1'den 15'e kadar doğal sayılar yazılıdır. Bu çark rastgele çevrildiğinde, ibrenin tek bir sayı üzerinde durma şansı nedir?",
+        "answer": "8/15",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.6.7.1"
+      },
+      {
+        "question": "Bir haftada 7 gün olması olayının olasılık durumunu açıklayınız.",
+        "answer": "Kesin olay",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.6.7.1"
+      },
+      {
+        "question": "Bir torbada 7 sarı, 5 kırmızı ve 8 mavi misket bulunmaktadır. Torbadan rastgele çekilen bir misketin sarı renkte olması ihtimalini kesir olarak ifade ediniz.",
+        "answer": "7/20",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.6.7.1"
+      }
+    ]
+  },
+  "7-sinif-dogal-sayilar": {
+    "grade": 7,
+    "topic_id": "dogal_sayilar",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir denizaltı, her 15 dakikada bir 12 metre aşağıya inmektedir. Başlangıçta deniz seviyesinde (0 metre) olan denizaltı 45 dakika sonra deniz seviyesinin kaç metre altında olur?",
+        "answer": "36 metre altında",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.1.1"
+      },
+      {
+        "question": "Bir otelin rezervasyon departmanı, yılın ilk 4 ayında toplam 2800 TL'lik iptal cezası ödemek zorunda kalmıştır. Bu otelin aylık ortalama iptal cezası tutarını tam sayı olarak ifade ediniz.",
+        "answer": "-700 TL",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.1.2"
+      },
+      {
+        "question": "Aşağıdaki $$[(-20) + 4 \\times (-5)] \\times (-3) \\neq ?$$ işleminin sonucunu işlem önceliği kurallarına uyarak bulunuz. Her adımda hangi işlemin yapıldığını belirtiniz.",
+        "answer": "120",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.7.1.3"
+      }
+    ]
+  },
+  "7-sinif-kesirler": {
+    "grade": 7,
+    "topic_id": "kesirler",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "$-\\frac{7}{4}$ rasyonel sayısı sayı doğrusu üzerinde hangi iki ardışık tam sayı arasında yer alır? Açıklayınız.",
+        "answer": "-2 ile -1 arasında",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.7.2.1"
+      },
+      {
+        "question": "Bir terzi elindeki $5\\frac{1}{4}$ metre kumaşın tamamını, her bir elbise için $\\frac{3}{4}$ metre kumaş kullanarak elbiseler dikecektir. Terzi bu kumaşla kaç adet elbise dikebilir?",
+        "answer": "7 adet",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.2.4"
+      },
+      {
+        "question": "Bir sürahi $ \\frac{5}{6} $ litre portakal suyu ile doludur. Bu sürahiye $ \\frac{1}{3} $ litre daha portakal suyu eklendikten sonra, misafirlere $ \\frac{1}{2} $ litre portakal suyu ikram edilmiştir. Son durumda sürahide kaç litre portakal suyu kalmıştır?",
+        "answer": "2/3 litre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.2.3"
+      }
+    ]
+  },
+  "7-sinif-geometri": {
+    "grade": 7,
+    "topic_id": "geometri",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir çemberin yarıçapı 15 cm ise, çapı kaç cm olur? Çember üzerindeki iki noktayı birleştiren ve çemberin merkezinden geçmeyen bir doğru parçasına ne ad verilir?",
+        "answer": "Çap 30 cm'dir; Kiriş",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.7.3.1"
+      },
+      {
+        "question": "Bir dairenin merkez açısı 120° olan bir dilimi bulunmaktadır. Bu daire diliminin alanı, tüm dairenin alanının kaçta kaçıdır?",
+        "answer": "1/3",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.7.3.5"
+      },
+      {
+        "question": "Çapı 14 metre olan dairesel bir koşu parkurunun çevre uzunluğu kaç metredir? (π sayısını 22/7 alınız.)",
+        "answer": "44 metre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.3.3"
+      }
+    ]
+  },
+  "7-sinif-olcme": {
+    "grade": 7,
+    "topic_id": "olcme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir su deposu, taban ayrıtları 5 metre ve 4 metre olan bir dikdörtgenler prizması biçimindedir. Deponun toplam hacmi 80 metreküp olduğuna göre, deponun yüksekliği kaç metredir?",
+        "answer": "4 metre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.4.1"
+      },
+      {
+        "question": "Bir ahşap blok, ayrıt uzunlukları 15 cm, 10 cm ve 8 cm olan bir dikdörtgenler prizmasıdır. Bu bloğun dışını boyamak için toplam kaç cm² boya kullanılması gerekir?",
+        "answer": "700 cm²",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.4.2"
+      },
+      {
+        "question": "Bir kare prizmanın taban ayrıtı 7 cm, yüksekliği ise 12 cm'dir. Bu prizmanın taban alanları toplamını ve yanal yüzey alanını ayrı ayrı hesaplayarak, elde ettiğiniz değerleri toplayarak prizmanın toplam dış alanını bulunuz.",
+        "answer": "434 cm²",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.7.4.2"
+      }
+    ]
+  },
+  "7-sinif-cebir": {
+    "grade": 7,
+    "topic_id": "cebir",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir eşitlikte, sol taraftaki bir ifadeyi 4'e böldüğümüzde eşitliğin bozulmaması için sağ taraftaki ifadeye hangi matematiksel işlem yapılmalıdır? Cevabınızı gerekçesiyle birlikte belirtiniz.",
+        "answer": "Sağ taraftaki ifade de 4'e bölünmelidir.",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.7.5.1"
+      },
+      {
+        "question": "$$2x - 7 \\leq 13$$ eşitsizliğinin çözüm kümesinin sayı doğrusunda nasıl gösterileceğini açıklayınız ve bu eşitsizliği sağlayan en büyük tam sayıyı bulunuz.",
+        "answer": "Eşitsizliğin çözüm kümesi sayı doğrusunda 10 ve 10'dan küçük tüm sayıları kapsayan bir aralık olarak gösterilir; 10 noktasının içi dolu, sol tarafı ok ile işaretlenir. Eşitsizliği sağlayan en büyük tam sayı 10'dur.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.7.5.3"
+      },
+      {
+        "question": "Ayşe'nin kumbarasında belirli bir miktar para bulunmaktadır. Fatma'nın kumbarasında ise Ayşe'nin parasının 2 katından 25 TL eksik para vardır. Eğer Ayşe kumbarasına 15 TL daha eklerse, Ayşe ve Fatma'nın paraları eşit oluyor. Buna göre, başlangıçta Ayşe'nin kumbarasında kaç TL vardı?",
+        "answer": "40 TL",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.5.2"
+      }
+    ]
+  },
+  "7-sinif-veri-isleme": {
+    "grade": 7,
+    "topic_id": "veri_isleme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir belediyenin \"Çevre Dostu Yaşam\" seminerine katılan kişilerin meslek gruplarına göre katılım oranları aşağıdaki gibidir:\n\n| Meslek Grubu        | Oran (%) |\n|---------------------|----------|\n| Öğretmen            | 35       |\n| Mühendis            | 25       |\n| Sağlık Çalışanı     | ?        |\n| Diğer Meslek Grupları | 10       |\n\nSeminere toplam 240 kişi katıldığına göre, sağlık çalışanı olan kaç kişi seminerde yer almıştır?",
+        "answer": "72 kişi",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.6.1"
+      },
+      {
+        "question": "Bir mobilya mağazasının bir ay içindeki satışlarının ürün türlerine göre yüzdelik oranları verilmiştir: Oturma grupları %30, yemek odaları %25, yatak odaları %15. Geriye kalan satış oranı ise genç odalarından oluşmaktadır.\nMağaza bu ay 45 adet yemek odası takımı sattığına göre, kaç adet genç odası takımı satmıştır?",
+        "answer": "54 adet",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.7.6.1"
+      },
+      {
+        "question": "Bir sınıftan seçilen dört öğrencinin Türkçe yazılısından aldıkları puanlar şöyledir: 70, 80, X, 90. Bu veri grubunun ortancası 82,5 olduğuna göre, X değeri kaçtır? X değerini bulduktan sonra, bu veri grubunun tepe değeri ve aritmetik ortalamasını da hesaplayarak elde ettiğiniz merkezi eğilim ölçülerini kısaca yorumlayınız.",
+        "answer": "X = 85. Tepe değeri yoktur. Aritmetik ortalama = 81.25. Ortanca (82.5), veri grubunun orta noktasını temsil ederken, aritmetik ortalama tüm değerlerin matematiksel ortalamasıdır. Tepe değeri ise en sık tekrarlanan değerdir ve bu grupta bulunmamaktadır.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.7.6.2"
+      }
+    ]
+  },
+  "7-sinif-olasilik": {
+    "grade": 7,
+    "topic_id": "olasilik",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "\"MATEMATİK\" kelimesindeki harfler tek tek kartlara yazılıp bir kutuya atılıyor. Bu kutudan çekilen bir kartın üzerindeki harfin sessiz harf gelme ihtimalini kesir ve yüzde olarak ifade ediniz.",
+        "answer": "Kesir: 5/9, Yüzde: %55,56",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.7.7.1"
+      },
+      {
+        "question": "Bir olayın gerçekleşme ihtimali en küçük ve en büyük hangi sayısal değerleri alabilir? Bu durumları örneklerle açıklayınız.",
+        "answer": "En küçük 0, En büyük 1",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.7.7.1"
+      },
+      {
+        "question": "Bir kalem kutusunda 8 kurşun kalem, 5 tükenmez kalem ve 7 renkli kalem mevcuttur. Kutudan gelişi güzel seçilen bir kalemin tükenmez kalem gelme ihtimalini kesir ve ondalık olarak hesaplayınız.",
+        "answer": "Kesir: 1/4, Ondalık: 0.25",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.7.7.1"
+      }
+    ]
+  }
+}

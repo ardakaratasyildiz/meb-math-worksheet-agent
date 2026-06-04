@@ -6,6 +6,7 @@ import { ArrowRight, BookOpen, CheckCircle2, FileText, GraduationCap, Sparkles }
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, learningResourceSchema } from "@/components/JsonLd";
+import { SampleQuestions } from "@/components/SampleQuestions";
 import { CURRICULUM_PAGES, getCurriculumPageBySlug } from "@/lib/curriculum";
 
 const SITE_URL =
@@ -137,6 +138,14 @@ export default async function CalismaDetailPage({ params }: PageProps) {
           />
         </div>
       </section>
+
+      {/* Login'siz örnek soru önizlemesi — SEO için gerçek içerik + dönüşüm. */}
+      <SampleQuestions
+        slug={page.slug}
+        grade={page.grade}
+        topicId={page.topicId}
+        topicName={page.topicName}
+      />
 
       <section className="bg-card py-16">
         <div className="container max-w-3xl text-center">
