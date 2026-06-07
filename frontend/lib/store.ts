@@ -25,6 +25,9 @@ export interface FormState {
   difficultyMode: DifficultyMode;
   includeAnswerKey: boolean;
   includeSolutions: boolean;
+  // White-label PDF üst bilgisi — bir kez girilir, kalıcı (kurum/öğretmen + alt satır).
+  brandName: string;
+  brandSubtitle: string;
 }
 
 interface GenerateStore extends FormState {
@@ -53,6 +56,8 @@ const DEFAULT_FORM: FormState = {
   difficultyMode: "single",
   includeAnswerKey: true,
   includeSolutions: true,
+  brandName: "",
+  brandSubtitle: "",
 };
 
 export const useGenerateStore = create<GenerateStore>()(
@@ -84,6 +89,8 @@ export const useGenerateStore = create<GenerateStore>()(
         difficultyMode: s.difficultyMode,
         includeAnswerKey: s.includeAnswerKey,
         includeSolutions: s.includeSolutions,
+        brandName: s.brandName,
+        brandSubtitle: s.brandSubtitle,
       }),
     },
   ),

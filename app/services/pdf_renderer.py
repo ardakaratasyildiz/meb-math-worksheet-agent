@@ -599,33 +599,58 @@ def _make_qr(data: str, size: float) -> Drawing:
     return d
 
 
-def _draw_footer(canvas, doc) -> None:
-    """Her sayfanın alt bilgisi: sol=marka, orta=sayfa no, sağ=QR."""
-    canvas.saveState()
-    canvas.setFont(_BODY_FONT, 7)
-    canvas.setFillColor(colors.grey)
-    canvas.drawString(
-        2 * cm, 1.0 * cm,
-        f"{_SITE_LABEL} ile üretildi — ücretsiz MEB matematik çalışma kağıdı",
-    )
-    canvas.drawCentredString(A4[0] / 2.0, 1.0 * cm, f"- {doc.page} -")
-    qr_size = 1.1 * cm
-    try:
-        renderPDF.draw(
-            _make_qr(_QR_TARGET, qr_size),
-            canvas,
-            A4[0] - 2 * cm - qr_size,
-            0.5 * cm,
+def _page_furniture(brand_name: str | None = None, brand_subtitle: str | None = None):
+    """Her sayfaya çizilen onPage callback'i üretir.
+
+    Üst bilgi (white-label, opsiyonel): kurum/öğretmen adı (sol) + alt satır
+    (sağ, ör. sınıf). brand_* boşsa header çizilmez → mevcut davranış korunur.
+    Alt bilgi (büyüme döngüsü): site etiketi + sayfa no + QR.
+    """
+    def _draw(canvas, doc) -> None:
+        canvas.saveState()
+        # --- Üst bilgi: white-label marka ---
+        if brand_name or brand_subtitle:
+            top_y = A4[1] - 1.15 * cm
+            if brand_name:
+                canvas.setFont(_BOLD_FONT, 9)
+                canvas.setFillColor(colors.HexColor("#1e3a8a"))
+                canvas.drawString(2 * cm, top_y, brand_name[:80])
+            if brand_subtitle:
+                canvas.setFont(_BODY_FONT, 8)
+                canvas.setFillColor(colors.grey)
+                canvas.drawRightString(A4[0] - 2 * cm, top_y, brand_subtitle[:60])
+            canvas.setStrokeColor(colors.HexColor("#d0d7e2"))
+            canvas.setLineWidth(0.5)
+            canvas.line(2 * cm, top_y - 0.18 * cm, A4[0] - 2 * cm, top_y - 0.18 * cm)
+        # --- Alt bilgi: site + sayfa no + QR ---
+        canvas.setFont(_BODY_FONT, 7)
+        canvas.setFillColor(colors.grey)
+        canvas.drawString(
+            2 * cm, 1.0 * cm,
+            f"{_SITE_LABEL} ile üretildi — ücretsiz MEB matematik çalışma kağıdı",
         )
-    except Exception:  # noqa: BLE001 — QR çizimi PDF üretimini bozmasın
-        pass
-    canvas.restoreState()
+        canvas.drawCentredString(A4[0] / 2.0, 1.0 * cm, f"- {doc.page} -")
+        qr_size = 1.1 * cm
+        try:
+            renderPDF.draw(
+                _make_qr(_QR_TARGET, qr_size),
+                canvas,
+                A4[0] - 2 * cm - qr_size,
+                0.5 * cm,
+            )
+        except Exception:  # noqa: BLE001 — QR çizimi PDF üretimini bozmasın
+            pass
+        canvas.restoreState()
+
+    return _draw
 
 
 def render_worksheet_pdf(
     worksheet: Worksheet,
     include_answer_key: bool = True,
     include_solutions: bool = True,
+    brand_name: str | None = None,
+    brand_subtitle: str | None = None,
 ) -> bytes:
     """Bir Worksheet'i PDF byte'larına render eder.
 
@@ -672,5 +697,6 @@ def render_worksheet_pdf(
         flow.append(PageBreak())
         flow.extend(_solutions_section(worksheet.questions, styles))
 
-    doc.build(flow, onFirstPage=_draw_footer, onLaterPages=_draw_footer)
+    furniture = _page_furniture(brand_name, brand_subtitle)
+    doc.build(flow, onFirstPage=furniture, onLaterPages=furniture)
     return buf.getvalue()

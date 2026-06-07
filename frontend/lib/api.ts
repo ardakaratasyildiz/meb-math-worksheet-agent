@@ -192,11 +192,19 @@ export async function generateWorksheetStream(
  */
 export async function renderPdf(
   worksheet: Worksheet,
-  opts: { include_answer_key?: boolean; include_solutions?: boolean } = {},
+  opts: {
+    include_answer_key?: boolean;
+    include_solutions?: boolean;
+    brand_name?: string;
+    brand_subtitle?: string;
+  } = {},
 ): Promise<Blob> {
   const params = new URLSearchParams();
   if (opts.include_answer_key === false) params.set("include_answer_key", "false");
   if (opts.include_solutions === false) params.set("include_solutions", "false");
+  // White-label: kurum/öğretmen adı + alt satır PDF üst bilgisine basılır.
+  if (opts.brand_name?.trim()) params.set("brand_name", opts.brand_name.trim());
+  if (opts.brand_subtitle?.trim()) params.set("brand_subtitle", opts.brand_subtitle.trim());
   const qs = params.toString();
   const url = `${BASE}/api/worksheets/render.pdf${qs ? `?${qs}` : ""}`;
   const res = await fetch(url, {
