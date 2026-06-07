@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { CURRICULUM_PAGES } from "@/lib/curriculum";
+import { KAZANIM_PAGES } from "@/lib/kazanimlar";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://soruatolyesi.com";
@@ -37,5 +38,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...curriculumPages];
+  // Kazanım-seviyesi sayfalar (programatik SEO — 123 long-tail landing).
+  const kazanimPages: MetadataRoute.Sitemap = KAZANIM_PAGES.map((k) => ({
+    url: `${SITE_URL}/calismalar/${k.topicSlug}/${k.kazanimSlug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...curriculumPages, ...kazanimPages];
 }

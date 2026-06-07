@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import { JsonLd, learningResourceSchema } from "@/components/JsonLd";
 import { SampleQuestions } from "@/components/SampleQuestions";
 import { CURRICULUM_PAGES, getCurriculumPageBySlug } from "@/lib/curriculum";
+import { getKazanimlarByTopic } from "@/lib/kazanimlar";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://soruatolyesi.com";
@@ -66,6 +67,9 @@ export default async function CalismaDetailPage({ params }: PageProps) {
   const sameTopicOtherGrades = CURRICULUM_PAGES.filter(
     (p) => p.topicId === page.topicId && p.grade !== page.grade,
   );
+
+  // Bu konunun kazanımları — kazanım-seviyesi landing'lere iç link (SEO crawl).
+  const kazanimlar = getKazanimlarByTopic(slug);
 
   const generateHref = `/generate?grade=${page.grade}&topic=${page.topicId}`;
 
@@ -146,6 +150,34 @@ export default async function CalismaDetailPage({ params }: PageProps) {
         topicId={page.topicId}
         topicName={page.topicName}
       />
+
+      {kazanimlar.length > 0 && (
+        <section className="py-16">
+          <div className="container max-w-4xl">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+              Bu konunun MEB kazanımları
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              Her kazanıma özel çalışma kağıdı üretebilirsin. Kazanıma tıkla,
+              detayını gör ve o kazanıma hizalı soruları oluştur.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {kazanimlar.map((k) => (
+                <Link
+                  key={k.kazanimSlug}
+                  href={`/calismalar/${k.topicSlug}/${k.kazanimSlug}`}
+                  className="rounded-lg border bg-card p-3 text-sm transition-colors hover:border-primary/50"
+                >
+                  <span className="font-mono text-xs text-primary">{k.kod}</span>
+                  <span className="mt-1 block text-foreground">
+                    {k.metin.length > 80 ? k.metin.slice(0, 80) + "…" : k.metin}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="bg-card py-16">
         <div className="container max-w-3xl text-center">

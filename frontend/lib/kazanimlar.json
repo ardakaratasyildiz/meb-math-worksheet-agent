@@ -1,0 +1,1724 @@
+[
+  {
+    "topicSlug": "1-sinif-dogal-sayilar",
+    "grade": 1,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-1-1-1",
+    "kod": "M.1.1.1",
+    "metin": "100'e kadar olan nesneleri birer, ikişer, beşer ve onar gruplayarak sayar.",
+    "hints": {
+      "kolay": "20'ye kadar birer birer sayma; tek adım.",
+      "orta": "50'ye kadar ikişer veya beşer ritmik sayma; verilen sayıdan başlayıp devam.",
+      "zor": "100'e kadar onar sayma veya iki farklı ritmi karşılaştırma; muhakeme gerekir."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-dogal-sayilar",
+    "grade": 1,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-1-1-2",
+    "kod": "M.1.1.2",
+    "metin": "100'e kadar olan doğal sayıları okur ve yazar.",
+    "hints": {
+      "kolay": "20'ye kadar sayıların okunuşu veya yazılışı; tek adım.",
+      "orta": "50'ye kadar sayıların yazılışı; okunuştan rakama geçiş.",
+      "zor": "100'e kadar sayılarda basamak bilgisiyle yazma."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-dogal-sayilar",
+    "grade": 1,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-1-1-3",
+    "kod": "M.1.1.3",
+    "metin": "Onluk ve birlik kavramlarını kullanarak iki basamaklı sayıları çözümler.",
+    "hints": {
+      "kolay": "Verilen sayıyı onluk ve birliklerine ayırma (örn. 47 = 4 onluk 7 birlik).",
+      "orta": "Onluk-birlik verilip sayıyı bulma; küçük toplama ile birleşik.",
+      "zor": "Onluk/birlik sayılarının karşılaştırılması veya eksik bilgi içeren ayrıştırma."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-dogal-sayilar",
+    "grade": 1,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-1-1-4",
+    "kod": "M.1.1.4",
+    "metin": "Toplamları en çok 20 olan iki doğal sayıyı zihinden veya yazılı olarak toplar.",
+    "hints": {
+      "kolay": "Tek basamaklı + tek basamaklı, sonuç 10'u geçmez.",
+      "orta": "Sonuç 10-15 arası; kısa bir günlük hayat bağlamı olabilir.",
+      "zor": "Sonuç 15-20 arası; sözel problem, muhtemelen iki adımlı çıkarım."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-dogal-sayilar",
+    "grade": 1,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-1-1-5",
+    "kod": "M.1.1.5",
+    "metin": "10'dan küçük doğal sayılarla çıkarma işlemi yapar.",
+    "hints": {
+      "kolay": "Tek basamaklı doğrudan çıkarma, sonuç 3+.",
+      "orta": "Sözel problem, tek adımlı çıkarma.",
+      "zor": "Verilenden hareketle hangi sayının çıkarıldığını bulma."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-geometri",
+    "grade": 1,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-1-3-1",
+    "kod": "M.1.3.1",
+    "metin": "Kare, üçgen, daire ve dikdörtgen şekillerini tanır ve adlandırır.",
+    "hints": {
+      "kolay": "Şekil verilince adını söyleme.",
+      "orta": "Kenar-köşe özelliği verilip şekli belirleme.",
+      "zor": "Birden fazla özelliği birleştirerek hangi şekil olduğunu bulma."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-geometri",
+    "grade": 1,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-1-3-2",
+    "kod": "M.1.3.2",
+    "metin": "Çevresindeki nesneleri geometrik şekillerle eşleştirir.",
+    "hints": {
+      "kolay": "Tek nesneyi tek şekle eşleme (tekerlek → daire).",
+      "orta": "Nesnenin ana yüzeyinin hangi şekle benzediği.",
+      "zor": "Birden fazla şekil içeren nesnelerin baskın şeklini tespit."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-olcme",
+    "grade": 1,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-1-4-1",
+    "kod": "M.1.4.1",
+    "metin": "İki nesnenin uzunluklarını kısa-uzun, ince-kalın olarak karşılaştırır.",
+    "hints": {
+      "kolay": "İki nesnenin basit karşılaştırması.",
+      "orta": "Üç nesne arasında sıralama.",
+      "zor": "Dolaylı karşılaştırma (A>B, B>C → A, B, C sıralaması)."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-olcme",
+    "grade": 1,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-1-4-2",
+    "kod": "M.1.4.2",
+    "metin": "Standart olmayan uzunluk birimleri (karış, adım) ile ölçme yapar.",
+    "hints": {
+      "kolay": "Tek birimle tek nesnenin ölçümü.",
+      "orta": "Aynı nesne için iki farklı birim arasındaki fark.",
+      "zor": "Birim sayılarıyla dolaylı nesne karşılaştırması."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-olcme",
+    "grade": 1,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-1-4-3",
+    "kod": "M.1.4.3",
+    "metin": "Saatleri tam olarak okur.",
+    "hints": {
+      "kolay": "Verilen akrep-yelkovan konumunda tam saati okuma.",
+      "orta": "İki tam saat arasındaki fark.",
+      "zor": "Verilen tam saatin akrep-yelkovan konumunu tanımlama."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-cebir",
+    "grade": 1,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-1-5-1",
+    "kod": "M.1.5.1",
+    "metin": "Birer ve ikişer ritmik sayarak basit sayı örüntülerini tanır.",
+    "hints": {
+      "kolay": "Birer artan örüntünün bir sonraki terimi.",
+      "orta": "İkişer veya beşer artan örüntüde sıradaki terim.",
+      "zor": "Onar örüntü veya farklı adımla başlayan ritmik sayma."
+    }
+  },
+  {
+    "topicSlug": "1-sinif-cebir",
+    "grade": 1,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-1-5-2",
+    "kod": "M.1.5.2",
+    "metin": "Basit bir örüntüde eksik bırakılan sayıyı veya şekli belirler.",
+    "hints": {
+      "kolay": "Sonda tek eksik terim.",
+      "orta": "Ortada tek eksik terim.",
+      "zor": "İki eksik terim veya örüntü kuralının tersten uygulanması."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-dogal-sayilar",
+    "grade": 2,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-2-1-1",
+    "kod": "M.2.1.1",
+    "metin": "1000'e kadar olan doğal sayıları okur ve yazar.",
+    "hints": {
+      "kolay": "100-500 arası sayıların okunuşu/yazılışı.",
+      "orta": "500-1000 arası; rakamla/yazıyla dönüşüm.",
+      "zor": "Verilen basamak bilgisinden sayı oluşturma."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-dogal-sayilar",
+    "grade": 2,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-2-1-2",
+    "kod": "M.2.1.2",
+    "metin": "Üç basamaklı doğal sayıları basamak değerlerine göre çözümler.",
+    "hints": {
+      "kolay": "Verilen sayının basamak değerlerini yazma.",
+      "orta": "Basamak değeri verilip sayıyı bulma.",
+      "zor": "Sayıyı tersten oluşturma veya basamak değerlerini karşılaştırma."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-dogal-sayilar",
+    "grade": 2,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-2-1-3",
+    "kod": "M.2.1.3",
+    "metin": "Toplamları en çok 100 olan iki doğal sayıyı toplar.",
+    "hints": {
+      "kolay": "İki basamaklı + tek basamaklı, eldesiz.",
+      "orta": "Eldeli toplama; sonuç 50-100 arası.",
+      "zor": "İki adımlı sözel problemde toplama."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-dogal-sayilar",
+    "grade": 2,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-2-1-4",
+    "kod": "M.2.1.4",
+    "metin": "İki basamaklı doğal sayılarla çıkarma işlemi yapar.",
+    "hints": {
+      "kolay": "Onluk bozmadan çıkarma.",
+      "orta": "Onluk bozma gerektiren çıkarma.",
+      "zor": "Çok adımlı sözel problemde çıkarma."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-dogal-sayilar",
+    "grade": 2,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-2-1-5",
+    "kod": "M.2.1.5",
+    "metin": "Çarpma işlemini tekrarlı toplama olarak açıklar ve 5'e kadar olan sayılarla çarpar.",
+    "hints": {
+      "kolay": "2 veya 3 ile tek basamaklı çarpma.",
+      "orta": "4 veya 5 ile tek basamaklı çarpma; kısa bağlam.",
+      "zor": "Çarpmayı tekrarlı toplamaya çevirerek ters yönde çözme."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-geometri",
+    "grade": 2,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-2-3-1",
+    "kod": "M.2.3.1",
+    "metin": "Geometrik şekillerin kenar ve köşe sayılarını belirler.",
+    "hints": {
+      "kolay": "Tanınan şeklin kenar/köşe sayısı.",
+      "orta": "Verilen kenar/köşe sayısından şekli bulma.",
+      "zor": "Farklı şekilleri kenar-köşe özellikleriyle ayırt etme."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-geometri",
+    "grade": 2,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-2-3-2",
+    "kod": "M.2.3.2",
+    "metin": "Karenin tüm kenarlarının eşit, dikdörtgenin karşılıklı kenarlarının eşit olduğunu fark eder.",
+    "hints": {
+      "kolay": "Kare/dikdörtgen için tek özellik ifade etme.",
+      "orta": "Bir kenar verilip diğer kenarların uzunluğunu bulma.",
+      "zor": "Kare ve dikdörtgeni kenar özelliklerine göre karşılaştırma."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-olcme",
+    "grade": 2,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-2-4-1",
+    "kod": "M.2.4.1",
+    "metin": "Metre ve santimetreyi tanır, uzunlukları bu birimlerle ölçer.",
+    "hints": {
+      "kolay": "Metre veya santimetre ile tek adım ölçüm.",
+      "orta": "m'yi cm'ye (veya tersine) dönüştürme.",
+      "zor": "Karışık birim (2 m 30 cm) problemi."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-olcme",
+    "grade": 2,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-2-4-2",
+    "kod": "M.2.4.2",
+    "metin": "Saat ve dakika kavramlarını kullanarak yarım ve çeyrek saatleri okur.",
+    "hints": {
+      "kolay": "Yarım saati okuma.",
+      "orta": "Çeyrek saatleri okuma (3'ü çeyrek geçiyor).",
+      "zor": "Verilen iki saat arasındaki fark (yarım-çeyrek dahil)."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-olcme",
+    "grade": 2,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-2-4-3",
+    "kod": "M.2.4.3",
+    "metin": "Kilogram birimi ile cisimlerin kütlesini ölçer ve karşılaştırır.",
+    "hints": {
+      "kolay": "İki nesnenin kg bazında toplamı.",
+      "orta": "İki nesnenin kütle farkı.",
+      "zor": "Üç veya daha fazla nesne arasında kütle karşılaştırması."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-cebir",
+    "grade": 2,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-2-5-1",
+    "kod": "M.2.5.1",
+    "metin": "Bir örüntüdeki ilişkiyi belirler ve örüntüyü genişletir.",
+    "hints": {
+      "kolay": "Sonraki terimi tahmin etme.",
+      "orta": "Kuralı sözel ifade ederek genişletme.",
+      "zor": "Azalan veya farklı sabit artışlı örüntüyü sürdürme."
+    }
+  },
+  {
+    "topicSlug": "2-sinif-cebir",
+    "grade": 2,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-2-5-2",
+    "kod": "M.2.5.2",
+    "metin": "Sayı ve şekil örüntülerinde kuralı belirleyip eksik öğeleri tamamlar.",
+    "hints": {
+      "kolay": "Tek eksik terim.",
+      "orta": "İki eksik terim; kural sözel.",
+      "zor": "Şekilsel örüntüde kural bulma."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-dogal-sayilar",
+    "grade": 3,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-3-1-1",
+    "kod": "M.3.1.1",
+    "metin": "10.000'e kadar olan doğal sayıları okur, yazar ve basamaklarına göre çözümler.",
+    "hints": {
+      "kolay": "Dört basamaklı sayı yazma/okuma.",
+      "orta": "Basamak değerlerini bulma ya da oluşturma.",
+      "zor": "Sayıyı farklı basamak değerlerinin toplamı olarak ifade etme."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-dogal-sayilar",
+    "grade": 3,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-3-1-2",
+    "kod": "M.3.1.2",
+    "metin": "En çok dört basamaklı iki doğal sayıyı toplar.",
+    "hints": {
+      "kolay": "Eldesiz veya tek eldeli toplama.",
+      "orta": "İki-üç eldeli toplama; kısa problem.",
+      "zor": "Çok adımlı problem; birden fazla toplama."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-dogal-sayilar",
+    "grade": 3,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-3-1-3",
+    "kod": "M.3.1.3",
+    "metin": "En çok dört basamaklı doğal sayılarla çıkarma işlemi yapar.",
+    "hints": {
+      "kolay": "Onluk bozmadan üç-dört basamaklı çıkarma.",
+      "orta": "Onluk bozmalı çıkarma.",
+      "zor": "Toplama ve çıkarmayı birleştiren sözel problem."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-dogal-sayilar",
+    "grade": 3,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-3-1-4",
+    "kod": "M.3.1.4",
+    "metin": "İki basamaklı doğal sayılarla çarpma işlemi yapar.",
+    "hints": {
+      "kolay": "İki basamaklı × tek basamaklı, eldesiz.",
+      "orta": "İki basamaklı × iki basamaklı.",
+      "zor": "Çarpma sonucunu kullanarak karşılaştırma yapma."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-dogal-sayilar",
+    "grade": 3,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-3-1-5",
+    "kod": "M.3.1.5",
+    "metin": "İki basamaklı bir doğal sayıyı bir basamaklı sayıya böler.",
+    "hints": {
+      "kolay": "Kalansız tam bölme.",
+      "orta": "Kalanlı bölme; kalan tek basamaklı.",
+      "zor": "Bölme sonucunu yorumlayarak günlük hayat problemi çözme."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-kesirler",
+    "grade": 3,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-3-2-1",
+    "kod": "M.3.2.1",
+    "metin": "Bütün, yarım ve çeyrek kavramlarını model üzerinde gösterir.",
+    "hints": {
+      "kolay": "Yarım veya çeyreği 1/2, 1/4 olarak yazma.",
+      "orta": "Model verilip kesri belirleme.",
+      "zor": "Bir bütünün kaç çeyrekten oluştuğu ve yarım ile ilişkisi."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-kesirler",
+    "grade": 3,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-3-2-2",
+    "kod": "M.3.2.2",
+    "metin": "Bir bütünü eşit parçalara ayırarak parça-bütün ilişkisini açıklar.",
+    "hints": {
+      "kolay": "Eşit parçalardan birini kesir olarak yazma.",
+      "orta": "Bir kısmın toplam kesrini ifade etme.",
+      "zor": "Verilen kesre karşılık gelen parça sayısını bulma (ters yönde)."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-kesirler",
+    "grade": 3,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-3-2-3",
+    "kod": "M.3.2.3",
+    "metin": "Pay ve payda kavramlarını kullanarak basit kesirleri yazar.",
+    "hints": {
+      "kolay": "Pay ve payda verilip kesri yazma.",
+      "orta": "Kesri okuyup pay ve paydasını ayırt etme.",
+      "zor": "Verilen ipuçlarından (taranan parça sayısı, toplam parça) kesir oluşturma."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-geometri",
+    "grade": 3,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-3-3-1",
+    "kod": "M.3.3.1",
+    "metin": "Düzgün çokgenlerin çevre uzunluklarını hesaplar.",
+    "hints": {
+      "kolay": "Kare veya eşkenar üçgenin çevresi (tek kenar verili).",
+      "orta": "Dikdörtgenin çevresi.",
+      "zor": "Çevresi verilip bir kenar uzunluğunu bulma."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-geometri",
+    "grade": 3,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-3-3-2",
+    "kod": "M.3.3.2",
+    "metin": "Bir şeklin simetri eksenini belirler ve simetrik şekiller oluşturur.",
+    "hints": {
+      "kolay": "Kare, üçgen için simetri ekseni sayısı.",
+      "orta": "Verilen şekil için simetri ekseninin konumunu belirtme.",
+      "zor": "Birden fazla simetri ekseni olan şekillerin karşılaştırılması."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-olcme",
+    "grade": 3,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-3-4-1",
+    "kod": "M.3.4.1",
+    "metin": "Kilometre, metre, santimetre ve milimetre arasındaki dönüşümleri yapar.",
+    "hints": {
+      "kolay": "Tek adım birim dönüşümü (m → cm veya km → m).",
+      "orta": "Karışık birim (2 km 300 m) toplamı metreye çevirme.",
+      "zor": "İki farklı birim arasında karşılaştırma gerektiren problem."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-olcme",
+    "grade": 3,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-3-4-2",
+    "kod": "M.3.4.2",
+    "metin": "Saat, dakika ve saniye arasındaki ilişkiyi kullanarak zaman ölçme problemleri çözer.",
+    "hints": {
+      "kolay": "Dakikayı saniyeye veya saatleri dakikaya çevirme.",
+      "orta": "Belirli bir süreyi saatlere ve dakikalara ayırma.",
+      "zor": "Başlangıç ve bitiş zamanından toplam süre hesaplama."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-cebir",
+    "grade": 3,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-3-5-1",
+    "kod": "M.3.5.1",
+    "metin": "Sayı ve şekil örüntülerindeki kuralı belirler.",
+    "hints": {
+      "kolay": "Sabit artışlı örüntünün kuralı.",
+      "orta": "Sabit azalışlı örüntü veya kural sözel ifade.",
+      "zor": "Sabit çarpanlı örüntü (2, 4, 8, 16...) kuralını bulma."
+    }
+  },
+  {
+    "topicSlug": "3-sinif-cebir",
+    "grade": 3,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-3-5-2",
+    "kod": "M.3.5.2",
+    "metin": "Verilen kurala göre sayı ve şekil örüntüsü oluşturur.",
+    "hints": {
+      "kolay": "Başlangıç ve kural verilip ilk 4 terim.",
+      "orta": "İlk ve son terim verilip aradaki terimleri bulma.",
+      "zor": "Kural karmaşık (örn. her adımda önce ekle sonra çıkar)."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-dogal-sayilar",
+    "grade": 4,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-4-1-1",
+    "kod": "M.4.1.1",
+    "metin": "En çok altı basamaklı doğal sayıları okur, yazar ve basamak değerlerini belirtir.",
+    "hints": {
+      "kolay": "Beş basamaklı sayıların okunuşu/yazılışı.",
+      "orta": "Altı basamaklı sayılarda basamak değeri hesaplama.",
+      "zor": "Basamak değerlerinin toplamı verilip sayıyı oluşturma."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-dogal-sayilar",
+    "grade": 4,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-4-1-2",
+    "kod": "M.4.1.2",
+    "metin": "Doğal sayıları sıralar ve karşılaştırır.",
+    "hints": {
+      "kolay": "İki sayıyı >, <, = ile karşılaştırma.",
+      "orta": "Üç-dört sayıyı küçükten büyüğe sıralama.",
+      "zor": "Eksik rakamlı sayılarda sıralama koşulu."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-dogal-sayilar",
+    "grade": 4,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-4-1-3",
+    "kod": "M.4.1.3",
+    "metin": "En çok dört basamaklı doğal sayılarla toplama ve çıkarma işlemi yapar.",
+    "hints": {
+      "kolay": "Tek eldeli toplama veya basit çıkarma.",
+      "orta": "İki-üç eldeli toplama veya onluk bozmalı çıkarma.",
+      "zor": "Çok adımlı sözel problem (toplama + çıkarma)."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-dogal-sayilar",
+    "grade": 4,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-4-1-4",
+    "kod": "M.4.1.4",
+    "metin": "Üç basamaklı bir doğal sayıyı iki basamaklı bir doğal sayı ile çarpar.",
+    "hints": {
+      "kolay": "Üç basamaklı × tek basamaklı.",
+      "orta": "Üç basamaklı × iki basamaklı.",
+      "zor": "Çarpma sonucunu sözel problemin iki adımından birinde kullanma."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-dogal-sayilar",
+    "grade": 4,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-4-1-5",
+    "kod": "M.4.1.5",
+    "metin": "Üç basamaklı bir doğal sayıyı iki basamaklı bir doğal sayıya böler.",
+    "hints": {
+      "kolay": "Kalansız tam bölme.",
+      "orta": "Kalanlı bölme.",
+      "zor": "Bölme işleminin kalanını yorumlayan problem."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-kesirler",
+    "grade": 4,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-4-2-1",
+    "kod": "M.4.2.1",
+    "metin": "Basit, bileşik ve tam sayılı kesirleri tanır.",
+    "hints": {
+      "kolay": "Verilen kesrin türünü söyleme.",
+      "orta": "Kesir türünden örnek üretme.",
+      "zor": "Farklı türlerdeki kesirleri kıyaslama."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-kesirler",
+    "grade": 4,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-4-2-2",
+    "kod": "M.4.2.2",
+    "metin": "Eşit kesirleri model üzerinde gösterir ve örnekler verir.",
+    "hints": {
+      "kolay": "Verilen kesre eşit başka bir kesir yazma.",
+      "orta": "Üç kesir arasından ikisinin eşit olduğunu bulma.",
+      "zor": "Pay ya da payda kısmen gizlenmiş eşit kesir problemi."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-kesirler",
+    "grade": 4,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-4-2-3",
+    "kod": "M.4.2.3",
+    "metin": "Paydaları eşit veya pay/paydası eşit kesirleri sıralar.",
+    "hints": {
+      "kolay": "Paydaları eşit kesirleri sıralama.",
+      "orta": "Birim kesirleri sıralama.",
+      "zor": "Hem basit hem bileşik kesir bulunan bir grubun sıralanması."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-kesirler",
+    "grade": 4,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-4-2-4",
+    "kod": "M.4.2.4",
+    "metin": "Kesirleri ondalık gösterimle ifade eder (ör. 1/2 = 0,5).",
+    "hints": {
+      "kolay": "Paydası 10 olan kesri ondalığa çevirme.",
+      "orta": "Paydası 2, 4, 5 olan kesri ondalığa çevirme.",
+      "zor": "Ondalıktan kesre dönüşüm ve sadeleştirme."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-geometri",
+    "grade": 4,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-4-3-1",
+    "kod": "M.4.3.1",
+    "metin": "Açıları dar, dik, geniş ve doğru açı olarak sınıflandırır.",
+    "hints": {
+      "kolay": "Verilen ölçüye göre açı türünü söyleme.",
+      "orta": "Açı türü verilip olası bir ölçü örneği vermesi.",
+      "zor": "Bir üçgenin açıları verilip her birinin türünü belirleme."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-geometri",
+    "grade": 4,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-4-3-2",
+    "kod": "M.4.3.2",
+    "metin": "Üçgen ve dörtgenlerin çevrelerini hesaplar.",
+    "hints": {
+      "kolay": "Kenar uzunlukları verilen üçgen/dörtgenin çevresi.",
+      "orta": "Eşit kenarlı şekilde verilen çevreden kenarı bulma.",
+      "zor": "Farklı kenarlı bir şeklin çevresinden bir kenarı hesaplama."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-geometri",
+    "grade": 4,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-4-3-3",
+    "kod": "M.4.3.3",
+    "metin": "Birim kareler kullanarak şekillerin alanını belirler.",
+    "hints": {
+      "kolay": "Karelajla gösterilmiş dikdörtgenin alanı.",
+      "orta": "Verilen kenar uzunluklarıyla alan hesaplama.",
+      "zor": "Birleşik şekil alanı (iki dikdörtgenin toplamı)."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-olcme",
+    "grade": 4,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-4-4-1",
+    "kod": "M.4.4.1",
+    "metin": "Uzunluk birimleri arasında dönüşüm yapar ve problem çözer.",
+    "hints": {
+      "kolay": "Tek adım birim dönüşümü.",
+      "orta": "İki dönüşüm gerektiren problem.",
+      "zor": "Farklı birimlerden gelen uzunluklar üzerinde toplama/çıkarma."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-olcme",
+    "grade": 4,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-4-4-2",
+    "kod": "M.4.4.2",
+    "metin": "Alan ölçü birimi olarak metrekare ve santimetrekareyi tanır.",
+    "hints": {
+      "kolay": "m²'yi cm²'ye çevirmenin tanımı.",
+      "orta": "Verilen m² değerini cm²'ye çevirme (veya tersi).",
+      "zor": "Alan karşılaştırması için birim dönüşümü gerekli problem."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-cebir",
+    "grade": 4,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-4-5-1",
+    "kod": "M.4.5.1",
+    "metin": "Sayı örüntülerindeki kuralı bulur ve örüntünün herhangi bir adımını belirler.",
+    "hints": {
+      "kolay": "Bir sonraki terimi bulma.",
+      "orta": "n. terimi kuralla hesaplama.",
+      "zor": "Verilen terimlerden kuralı çıkarıp farklı bir n. terim bulma."
+    }
+  },
+  {
+    "topicSlug": "4-sinif-cebir",
+    "grade": 4,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-4-5-2",
+    "kod": "M.4.5.2",
+    "metin": "Eşitlik kavramını kullanarak basit denklikler oluşturur.",
+    "hints": {
+      "kolay": "a + ? = b biçiminde tek bilinmeyenli denklik.",
+      "orta": "Eşitliğin bir tarafında iki işlem (örn. a + b = c − d).",
+      "zor": "Denkliği bozan/koruyan işlemleri belirleme."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-dogal-sayilar",
+    "grade": 5,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-5-1-1",
+    "kod": "M.5.1.1",
+    "metin": "En çok dokuz basamaklı doğal sayıları okur, yazar ve çözümler.",
+    "hints": {
+      "kolay": "6-7 basamaklı sayıların okunuşu.",
+      "orta": "8-9 basamaklı sayıların çözümü.",
+      "zor": "Basamak değerlerinin farkı/toplamı üzerinden problem."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-dogal-sayilar",
+    "grade": 5,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-5-1-2",
+    "kod": "M.5.1.2",
+    "metin": "Doğal sayılarla toplama ve çıkarma işlemlerini yapar.",
+    "hints": {
+      "kolay": "Dört basamaklı tek eldeli toplama/çıkarma.",
+      "orta": "Beş-altı basamaklı eldeli/bozmalı işlem.",
+      "zor": "İki bilgiden hareketle üçüncüyü bulma (zincir problem)."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-dogal-sayilar",
+    "grade": 5,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-5-1-3",
+    "kod": "M.5.1.3",
+    "metin": "En çok üç basamaklı iki doğal sayının çarpma ve bölme işlemlerini yapar.",
+    "hints": {
+      "kolay": "İki basamaklı × iki basamaklı çarpma veya kalansız bölme.",
+      "orta": "Üç basamaklı × iki basamaklı veya üç basamaklı ÷ iki basamaklı.",
+      "zor": "Çarpma ve bölmeyi birleştiren iki adımlı problem."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-dogal-sayilar",
+    "grade": 5,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-5-1-4",
+    "kod": "M.5.1.4",
+    "metin": "Doğal sayılarla yapılan işlemlerde işlem önceliğini dikkate alır.",
+    "hints": {
+      "kolay": "Parantezsiz 3 işlemli hesap.",
+      "orta": "Parantezli ve 4 işlemli hesap.",
+      "zor": "Parantez + üssüz çarpan + işlem önceliği birleşik ifade."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-dogal-sayilar",
+    "grade": 5,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-5-1-5",
+    "kod": "M.5.1.5",
+    "metin": "Bölme işleminde kalanı yorumlar ve günlük hayat problemleri çözer.",
+    "hints": {
+      "kolay": "Bölme sonucunu + kalan bulma.",
+      "orta": "Kalanı yorumlayarak 'kaç tam' sorusuna cevap verme.",
+      "zor": "Kalan kullanılarak ek kaynak/araç hesaplaması."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-kesirler",
+    "grade": 5,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-5-2-1",
+    "kod": "M.5.2.1",
+    "metin": "Birim kesirleri sayı doğrusunda gösterir ve sıralar.",
+    "hints": {
+      "kolay": "Birim kesri sayı doğrusunda belirtme.",
+      "orta": "Üç birim kesri sıralama.",
+      "zor": "Sayı doğrusundaki gösterimden kesri yazma."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-kesirler",
+    "grade": 5,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-5-2-2",
+    "kod": "M.5.2.2",
+    "metin": "Tam sayılı kesri bileşik kesre, bileşik kesri tam sayılı kesre dönüştürür.",
+    "hints": {
+      "kolay": "Tek yönlü basit dönüşüm.",
+      "orta": "İki yönlü dönüşüm.",
+      "zor": "Dönüşümün ara adımını kullanarak sıralama."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-kesirler",
+    "grade": 5,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-5-2-3",
+    "kod": "M.5.2.3",
+    "metin": "Paydaları eşit kesirlerle toplama ve çıkarma işlemleri yapar.",
+    "hints": {
+      "kolay": "Paydaları eşit iki kesir toplama veya çıkarma.",
+      "orta": "Üç kesri art arda toplama/çıkarma.",
+      "zor": "Bileşik kesir sonucunu sadeleştirerek yorumlama."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-kesirler",
+    "grade": 5,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-5-2-4",
+    "kod": "M.5.2.4",
+    "metin": "Paydaları eşit olmayan en çok iki kesrin toplama ve çıkarma işlemini yapar.",
+    "hints": {
+      "kolay": "Paydalardan biri diğerinin katı olan toplama.",
+      "orta": "Farklı paydalı kesirlerde ortak payda bulma ve işlem.",
+      "zor": "Toplama + çıkarmanın birleşik olduğu problem."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-kesirler",
+    "grade": 5,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-5-2-5",
+    "kod": "M.5.2.5",
+    "metin": "Yüzdeyi tanır, yüzde sembolünü kullanarak basit yüzde hesapları yapar.",
+    "hints": {
+      "kolay": "Bir bütünün %25/%50/%75'ini bulma; yüzdelik kesir karşılığı.",
+      "orta": "Verilen sayının verilen yüzdesini hesaplama (160'ın %20'si).",
+      "zor": "Yüzdeyi günlük hayat bağlamında uygulama (indirim, KDV, tasarruf)."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-geometri",
+    "grade": 5,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-5-3-1",
+    "kod": "M.5.3.1",
+    "metin": "Üçgenleri kenar ve açı özelliklerine göre sınıflandırır.",
+    "hints": {
+      "kolay": "Kenar özelliğine göre üçgen türünü söyleme.",
+      "orta": "Verilen iki açıyla üçüncüyü bulup türü belirleme.",
+      "zor": "Kenar ve açı bilgisini birleştirerek tür belirleme."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-geometri",
+    "grade": 5,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-5-3-2",
+    "kod": "M.5.3.2",
+    "metin": "Dörtgen türlerini (kare, dikdörtgen, paralelkenar, eşkenar dörtgen, yamuk) tanır.",
+    "hints": {
+      "kolay": "Verilen bir özelliğe uyan dörtgeni bulma.",
+      "orta": "Dörtgen türlerini birbirinden ayıran özellikleri listeleme.",
+      "zor": "Verilen özelliklerin birden fazla dörtgen türüne uyup uymadığını muhakeme."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-geometri",
+    "grade": 5,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-5-3-3",
+    "kod": "M.5.3.3",
+    "metin": "Üçgen ve dörtgenlerin çevre uzunluklarını hesaplar.",
+    "hints": {
+      "kolay": "Kenarları verilen şeklin çevresi.",
+      "orta": "Çevre verilip bir kenarı bulma.",
+      "zor": "Karmaşık şeklin çevresini parçalarla hesaplama."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-geometri",
+    "grade": 5,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-5-3-4",
+    "kod": "M.5.3.4",
+    "metin": "Dikdörtgen ve karenin alanını birim kare cinsinden hesaplar.",
+    "hints": {
+      "kolay": "Kenarları verilen dikdörtgen/karenin alanı.",
+      "orta": "Alan verilip bir kenarı bulma.",
+      "zor": "Birleşik şeklin alanını iki dikdörtgen olarak hesaplama."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-geometri",
+    "grade": 5,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-5-3-5",
+    "kod": "M.5.3.5",
+    "metin": "Temel geometrik kavramları (nokta, doğru, ışın, doğru parçası, paralel ve dik doğrular) tanır ve sembolle gösterir.",
+    "hints": {
+      "kolay": "Şekil verilince doğru/ışın/doğru parçasını ayırt etme; sembol yazma.",
+      "orta": "Verilen kavramları sembolle ifade etme; paralel/dik durumu belirleme.",
+      "zor": "Birden fazla doğru içeren konfigürasyonda paralellik ve diklik ilişkilerini muhakeme."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-olcme",
+    "grade": 5,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-5-4-1",
+    "kod": "M.5.4.1",
+    "metin": "Uzunluk birimleri arasındaki dönüşümleri yapar ve problem çözer.",
+    "hints": {
+      "kolay": "Tek adım birim dönüşümü.",
+      "orta": "Karışık birim içeren toplam/farktan metre bulma.",
+      "zor": "Üç farklı birimdeki uzunlukları kıyaslama."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-olcme",
+    "grade": 5,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-5-4-2",
+    "kod": "M.5.4.2",
+    "metin": "Litre ve mililitreyi tanır, sıvı miktarlarını ölçer ve dönüştürür.",
+    "hints": {
+      "kolay": "L'yi mL'ye veya tersine çevirme.",
+      "orta": "Karışık birimde (2 L 500 mL) toplam hesabı.",
+      "zor": "Oransal kullanım problemi (örn. 4 kutunun toplam hacmi)."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-olcme",
+    "grade": 5,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-5-4-3",
+    "kod": "M.5.4.3",
+    "metin": "Sıvı ölçme birimlerini kullanarak günlük hayat problemleri çözer.",
+    "hints": {
+      "kolay": "Tek adımlı günlük hayat problemi.",
+      "orta": "İki adımlı (dolum + kullanım) problem.",
+      "zor": "Oran gerektiren ölçekleme problemi (tarif miktarını artırma)."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-cebir",
+    "grade": 5,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-5-5-1",
+    "kod": "M.5.5.1",
+    "metin": "Bir bilinmeyen içeren basit denklemleri (x + a = b, x − a = b biçiminde) çözer.",
+    "hints": {
+      "kolay": "x + a = b biçiminde doğrudan çözüm.",
+      "orta": "x − a = b veya a − x = b çözümü.",
+      "zor": "Bilinmeyeni bulduktan sonra ek bir küçük hesap yapma."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-cebir",
+    "grade": 5,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-5-5-2",
+    "kod": "M.5.5.2",
+    "metin": "Sözel olarak ifade edilen durumu cebirsel denklem olarak yazar.",
+    "hints": {
+      "kolay": "Tek adımlı sözel ifadenin denkleme çevrilmesi.",
+      "orta": "Denklemi kurup çözüme ulaşma.",
+      "zor": "Ters yönde: denklem verilip uygun bir sözel bağlam üretme."
+    }
+  },
+  {
+    "topicSlug": "5-sinif-veri-isleme",
+    "grade": 5,
+    "topicId": "veri_isleme",
+    "topicName": "Veri İşleme ve İstatistik",
+    "kazanimSlug": "m-5-6-1",
+    "kod": "M.5.6.1",
+    "metin": "Veri toplar; sıklık tablosu ve sütun grafiği oluşturup yorumlar.",
+    "hints": {
+      "kolay": "Verilen sıklık tablosundaki bir değeri okuma.",
+      "orta": "Sütun grafiğinden iki kategoriyi karşılaştıran soru.",
+      "zor": "Sıklık tablosu + sütun grafiği üzerinden çok adımlı yorum (toplam, fark, oran)."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-dogal-sayilar",
+    "grade": 6,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-6-1-1",
+    "kod": "M.6.1.1",
+    "metin": "Tam sayıları tanır ve sayı doğrusunda gösterir.",
+    "hints": {
+      "kolay": "Verilen tam sayıyı sayı doğrusunda konumlandırma.",
+      "orta": "Üç-dört tam sayıyı sıralayarak gösterme.",
+      "zor": "İki tam sayı arasındaki tam sayıları sözel tarif etme."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-dogal-sayilar",
+    "grade": 6,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-6-1-2",
+    "kod": "M.6.1.2",
+    "metin": "Bir tam sayının mutlak değerini belirler ve yorumlar.",
+    "hints": {
+      "kolay": "Basit mutlak değer hesabı |−a|.",
+      "orta": "|x| = a tipinde iki çözüm bulma.",
+      "zor": "Mutlak değer içeren karşılaştırma problemi."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-dogal-sayilar",
+    "grade": 6,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-6-1-3",
+    "kod": "M.6.1.3",
+    "metin": "Tam sayılarla toplama ve çıkarma işlemleri yapar.",
+    "hints": {
+      "kolay": "Aynı işaretli tam sayıların toplamı.",
+      "orta": "Farklı işaretli toplama veya çıkarma.",
+      "zor": "Üç veya daha fazla tam sayılı ifadede işlem sonucu."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-dogal-sayilar",
+    "grade": 6,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-6-1-4",
+    "kod": "M.6.1.4",
+    "metin": "Tam sayıları büyüklük açısından karşılaştırır ve sıralar.",
+    "hints": {
+      "kolay": "İki tam sayı karşılaştırması.",
+      "orta": "Karışık (negatif + pozitif) tam sayıları sıralama.",
+      "zor": "Sıralamadan eşitsizlik koşulu oluşturma."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-dogal-sayilar",
+    "grade": 6,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-6-1-5",
+    "kod": "M.6.1.5",
+    "metin": "Çarpan, kat ve asal sayı kavramlarını açıklar; bir sayının çarpanlarını ve katlarını listeler.",
+    "hints": {
+      "kolay": "Verilen sayının çarpanlarını listeleme; ilk birkaç katını yazma.",
+      "orta": "Bir sayının asal olup olmadığını belirleme; asal çarpanlara ayırma.",
+      "zor": "Bir sayının çarpan/kat ilişkisini başka bir sayıyla karşılaştıran muhakeme problemi."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-dogal-sayilar",
+    "grade": 6,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-6-1-6",
+    "kod": "M.6.1.6",
+    "metin": "İki sayının ortak bölenlerini ve katlarını bulur; OBEB ve OKEK kavramlarını uygular.",
+    "hints": {
+      "kolay": "İki küçük sayının OBEB veya OKEK'ini liste yöntemiyle bulma.",
+      "orta": "Asal çarpanlara ayırarak OBEB veya OKEK hesaplama.",
+      "zor": "Günlük hayat problemi (örüntü çakışması, paylaştırma) ile OBEB/OKEK kullanımı."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-dogal-sayilar",
+    "grade": 6,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-6-1-7",
+    "kod": "M.6.1.7",
+    "metin": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile bölünebilme kurallarını uygular.",
+    "hints": {
+      "kolay": "Verilen sayının bir bölene tam bölünüp bölünmediğini söyleme.",
+      "orta": "Birden çok bölünebilme kuralını birleştirip ortak özellik bulma.",
+      "zor": "Eksik basamaklı sayıyı belirli bir sayıya bölünebilir yapacak rakamı bulma."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-kesirler",
+    "grade": 6,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-6-2-1",
+    "kod": "M.6.2.1",
+    "metin": "Paydaları farklı kesirlerle toplama ve çıkarma işlemi yapar.",
+    "hints": {
+      "kolay": "Paydalardan biri diğerinin katı.",
+      "orta": "Ortak paydayı bulmayı gerektiren iki kesirli işlem.",
+      "zor": "Üç kesirli veya tam sayılı kesirli karışık işlem."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-kesirler",
+    "grade": 6,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-6-2-2",
+    "kod": "M.6.2.2",
+    "metin": "Kesirlerle çarpma işlemini açıklar ve yapar.",
+    "hints": {
+      "kolay": "İki basit kesrin çarpımı.",
+      "orta": "Tam sayılı kesirin başka bir kesirle çarpımı.",
+      "zor": "Sonucu sadeleştirme ve tam sayılı kesre çevirme."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-kesirler",
+    "grade": 6,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-6-2-3",
+    "kod": "M.6.2.3",
+    "metin": "Kesirlerle bölme işlemini açıklar ve yapar.",
+    "hints": {
+      "kolay": "Bir tam sayının bir birim kesre bölümü.",
+      "orta": "İki kesrin bölümü.",
+      "zor": "Çok adımlı problemde kesirli bölme kullanımı."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-kesirler",
+    "grade": 6,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-6-2-4",
+    "kod": "M.6.2.4",
+    "metin": "Ondalık gösterimlerle dört işlem yapar.",
+    "hints": {
+      "kolay": "Ondalık toplama veya çıkarma (tek basamak).",
+      "orta": "Ondalıklı çarpma veya bölme.",
+      "zor": "İki adımlı problem ile dört işlemin birleşimi."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-kesirler",
+    "grade": 6,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-6-2-5",
+    "kod": "M.6.2.5",
+    "metin": "Yüzde ile ilgili problemleri çözer; yüzdeyi kesir ve ondalık gösterimle ilişkilendirir.",
+    "hints": {
+      "kolay": "Bir sayının verilen yüzdesini bulma (320'nin %15'i).",
+      "orta": "İndirim/zam problemleri (KDV, kâr-zarar tek adım).",
+      "zor": "Çift aşamalı yüzde problemleri (önce indirim sonra zam veya tasarruf hesabı)."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-geometri",
+    "grade": 6,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-6-3-1",
+    "kod": "M.6.3.1",
+    "metin": "Paralelkenarın alanını hesaplar.",
+    "hints": {
+      "kolay": "Taban ve yükseklik verilip alan.",
+      "orta": "Alan verilip taban veya yüksekliği bulma.",
+      "zor": "İki paralelkenar arasındaki alan farkı problemi."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-geometri",
+    "grade": 6,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-6-3-2",
+    "kod": "M.6.3.2",
+    "metin": "Üçgenin alanını hesaplar.",
+    "hints": {
+      "kolay": "Taban ve yükseklikten alan bulma.",
+      "orta": "Alan verilip bilinmeyen kenarı bulma.",
+      "zor": "Dikdörtgenden oluşturulan iki üçgenin alanlarını kıyaslama."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-geometri",
+    "grade": 6,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-6-3-3",
+    "kod": "M.6.3.3",
+    "metin": "Yamuk şeklin alanını hesaplar.",
+    "hints": {
+      "kolay": "Paralel kenarlar ve yükseklikten yamuk alanı.",
+      "orta": "Yamuğun alanı verilip bir paralel kenarı bulma.",
+      "zor": "Birleşik alanı (yamuk + dikdörtgen) bulma."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-geometri",
+    "grade": 6,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-6-3-4",
+    "kod": "M.6.3.4",
+    "metin": "Açıları çeşitlerine göre tanır; tümler, bütünler, komşu ve ters açıları kullanır.",
+    "hints": {
+      "kolay": "Verilen bir açının tümlerini veya bütünlerini bulma.",
+      "orta": "Komşu veya ters açı ilişkisi içeren konfigürasyonda bilinmeyen açıyı hesaplama.",
+      "zor": "Birden fazla doğrunun kesişiminde tüm açıları muhakemeyle belirleme."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-geometri",
+    "grade": 6,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-6-3-5",
+    "kod": "M.6.3.5",
+    "metin": "Çember ve dairenin temel elemanlarını (merkez, yarıçap, çap) tanır; çember uzunluğunu yorumlar.",
+    "hints": {
+      "kolay": "Yarıçap-çap ilişkisini kullanarak verilenden diğerini bulma.",
+      "orta": "Çember içindeki kiriş veya yay elemanlarını adlandırma; basit hesap.",
+      "zor": "Birleşik çember/daire konfigürasyonunda elemanları muhakeme eden problem."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-olcme",
+    "grade": 6,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-6-4-1",
+    "kod": "M.6.4.1",
+    "metin": "Sıvı ölçme birimleri arasındaki dönüşümleri yapar.",
+    "hints": {
+      "kolay": "L↔mL basit dönüşüm.",
+      "orta": "İki birim arasında toplama/çıkarma.",
+      "zor": "Ölçekli problem (kaç tane 250 mL 1 L eder)."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-olcme",
+    "grade": 6,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-6-4-2",
+    "kod": "M.6.4.2",
+    "metin": "Dikdörtgenler prizmasının hacmini birim küp cinsinden hesaplar.",
+    "hints": {
+      "kolay": "Üç boyut verilip hacim bulma.",
+      "orta": "Hacim verilip bir boyutu bulma.",
+      "zor": "Hacim değişimi problemi (su eklenmesi/çıkarılması)."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-cebir",
+    "grade": 6,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-6-5-1",
+    "kod": "M.6.5.1",
+    "metin": "Bir değişken içeren cebirsel ifadeleri yazar ve değerini hesaplar.",
+    "hints": {
+      "kolay": "x değeri verilip 2x + 3 hesaplama.",
+      "orta": "Sözel durumu cebirsel ifadeye çevirme.",
+      "zor": "Değişken yerine farklı iki değer koyup sonuçları karşılaştırma."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-cebir",
+    "grade": 6,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-6-5-2",
+    "kod": "M.6.5.2",
+    "metin": "Birinci dereceden bir bilinmeyenli denklemleri kurar.",
+    "hints": {
+      "kolay": "Tek adımlı sözel ifadeden denklem kurma.",
+      "orta": "İki adımlı problem için denklem (ax + b = c).",
+      "zor": "İki bilinmeyenin birbirine bağlı tanımlandığı denklem kurma."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-cebir",
+    "grade": 6,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-6-5-3",
+    "kod": "M.6.5.3",
+    "metin": "Birinci dereceden bir bilinmeyenli denklemleri çözer.",
+    "hints": {
+      "kolay": "ax = b veya x + a = b türü çözüm.",
+      "orta": "ax + b = c çözümü.",
+      "zor": "Her iki tarafta değişken içeren denklem çözümü."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-cebir",
+    "grade": 6,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-6-5-4",
+    "kod": "M.6.5.4",
+    "metin": "Bir günlük hayat veya matematik problemini adımlara ayırarak algoritma veya akış şeması ile ifade eder.",
+    "hints": {
+      "kolay": "Verilen 3-4 adımlı işlemi sırasıyla yazma.",
+      "orta": "Bir problemin çözümünü adımlar halinde yazıp koşullu (eğer-ise) ifade ekleme.",
+      "zor": "Tekrarlayan bir adım veya birden fazla koşul içeren akış şeması üretme."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-veri-isleme",
+    "grade": 6,
+    "topicId": "veri_isleme",
+    "topicName": "Veri İşleme ve İstatistik",
+    "kazanimSlug": "m-6-6-1",
+    "kod": "M.6.6.1",
+    "metin": "Sütun ve çizgi grafiklerini oluşturur, okur ve yorumlar.",
+    "hints": {
+      "kolay": "Verilen sütun grafiğinden tek bir değer okuma.",
+      "orta": "Sütun veya çizgi grafiğinden iki kategoriyi karşılaştırma; toplam veya fark hesaplama.",
+      "zor": "Grafikten elde edilen veriden çıkarım yapma; örüntü yorumlama."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-veri-isleme",
+    "grade": 6,
+    "topicId": "veri_isleme",
+    "topicName": "Veri İşleme ve İstatistik",
+    "kazanimSlug": "m-6-6-2",
+    "kod": "M.6.6.2",
+    "metin": "Bir veri grubunun aritmetik ortalamasını, ortancasını ve tepe değerini hesaplar ve yorumlar.",
+    "hints": {
+      "kolay": "Verilen sayı dizisi için aritmetik ortalama veya tepe değer bulma.",
+      "orta": "Aynı veri için ortalama, ortanca ve tepe değerini birlikte yorumlama.",
+      "zor": "Eksik veriyi bulmak için ortalama ya da ortancayı tersine kullanma."
+    }
+  },
+  {
+    "topicSlug": "6-sinif-olasilik",
+    "grade": 6,
+    "topicId": "olasilik",
+    "topicName": "Olasılık",
+    "kazanimSlug": "m-6-7-1",
+    "kod": "M.6.7.1",
+    "metin": "Bir olayın olası, kesin, imkansız ve eş olası durumlarını ayırt eder; basit olasılığı kesir olarak ifade eder.",
+    "hints": {
+      "kolay": "Bir olayın kesin/imkansız/olası olduğunu sözel olarak belirleme.",
+      "orta": "Eş olası durumlardan oluşan deneyde basit olasılığı kesir olarak yazma.",
+      "zor": "Birden fazla olası sonucu olan deneyde belirli bir olayın olasılığını karşılaştırarak yorumlama."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-dogal-sayilar",
+    "grade": 7,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-7-1-1",
+    "kod": "M.7.1.1",
+    "metin": "Tam sayılarla çarpma işlemini yapar.",
+    "hints": {
+      "kolay": "Aynı işaretli iki tam sayının çarpımı.",
+      "orta": "Farklı işaretli tam sayılarla çarpma.",
+      "zor": "Üçlü çarpım veya işaret kuralını muhakeme gerektiren problem."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-dogal-sayilar",
+    "grade": 7,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-7-1-2",
+    "kod": "M.7.1.2",
+    "metin": "Tam sayılarla bölme işlemini yapar.",
+    "hints": {
+      "kolay": "Aynı işaretli iki tam sayıda kalansız bölme.",
+      "orta": "Farklı işaretli bölme.",
+      "zor": "Çarpma + bölmeyi birleştiren sözel problem."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-dogal-sayilar",
+    "grade": 7,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-7-1-3",
+    "kod": "M.7.1.3",
+    "metin": "Tam sayılarla yapılan işlemlerde işlem önceliğini uygular.",
+    "hints": {
+      "kolay": "Üç işlemli parantezsiz ifade.",
+      "orta": "Parantezli ve 4 işlemli ifade.",
+      "zor": "Negatif üslü veya parantez içinde parantez bulunan ifade."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-dogal-sayilar",
+    "grade": 7,
+    "topicId": "dogal_sayilar",
+    "topicName": "Doğal Sayılar ve İşlemler",
+    "kazanimSlug": "m-7-1-4",
+    "kod": "M.7.1.4",
+    "metin": "Tam sayıların kuvvetlerini hesaplar.",
+    "hints": {
+      "kolay": "(+a)² veya (+a)³ basit hesap.",
+      "orta": "(−a)² veya (−a)³ işaret kuralıyla.",
+      "zor": "Üslü ifadelerin toplamı/çarpımı."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-kesirler",
+    "grade": 7,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-7-2-1",
+    "kod": "M.7.2.1",
+    "metin": "Rasyonel sayıyı tanır ve sayı doğrusunda gösterir.",
+    "hints": {
+      "kolay": "Verilen kesir/ondalığın sayı doğrusundaki yeri.",
+      "orta": "Negatif rasyonel sayıları sıralama.",
+      "zor": "Verilen iki rasyonel sayı arasında üçüncüyü bulma."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-kesirler",
+    "grade": 7,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-7-2-2",
+    "kod": "M.7.2.2",
+    "metin": "Rasyonel sayıları farklı biçimlerde (kesir, ondalık) ifade eder.",
+    "hints": {
+      "kolay": "Paydası 10/100 olan kesri ondalığa çevirme.",
+      "orta": "Rasyonel sayıyı sadeleştirilmiş kesre çevirme.",
+      "zor": "Devirli ondalık ↔ kesir dönüşümü."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-kesirler",
+    "grade": 7,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-7-2-3",
+    "kod": "M.7.2.3",
+    "metin": "Rasyonel sayılarla toplama ve çıkarma işlemi yapar.",
+    "hints": {
+      "kolay": "Aynı paydalı iki rasyonel sayıda işlem.",
+      "orta": "Farklı paydalı ve işaretli rasyonel sayılar.",
+      "zor": "Üç rasyonel sayılı karışık işlem."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-kesirler",
+    "grade": 7,
+    "topicId": "kesirler",
+    "topicName": "Kesirler ve Ondalık Sayılar",
+    "kazanimSlug": "m-7-2-4",
+    "kod": "M.7.2.4",
+    "metin": "Rasyonel sayılarla çarpma ve bölme işlemi yapar.",
+    "hints": {
+      "kolay": "İki basit rasyonel sayının çarpımı.",
+      "orta": "Bölmeyi çarpmaya çevirerek hesap.",
+      "zor": "İşlem önceliği + rasyonel dört işlem karma."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-geometri",
+    "grade": 7,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-7-3-1",
+    "kod": "M.7.3.1",
+    "metin": "Çemberin temel elemanlarını (yarıçap, çap, kiriş) tanır.",
+    "hints": {
+      "kolay": "Temel elemanı tanımlama.",
+      "orta": "Yarıçap ↔ çap ilişkisi kullanarak hesap.",
+      "zor": "Kiriş ile yarıçap arasındaki eşitsizlikleri muhakeme."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-geometri",
+    "grade": 7,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-7-3-2",
+    "kod": "M.7.3.2",
+    "metin": "Çember ve daire arasındaki farkı açıklar.",
+    "hints": {
+      "kolay": "Çember ve daire tanımlarını ayırt etme.",
+      "orta": "Günlük hayattan çember/daire örnekleri.",
+      "zor": "Çember uzunluğu ile daire alanı arasındaki kavramsal fark."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-geometri",
+    "grade": 7,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-7-3-3",
+    "kod": "M.7.3.3",
+    "metin": "Çemberin uzunluğunu π sayısını kullanarak hesaplar.",
+    "hints": {
+      "kolay": "Yarıçap verilip çember uzunluğu (π = 22/7 veya 3).",
+      "orta": "Çap verilip uzunluk, veya uzunluktan yarıçap.",
+      "zor": "Çember uzunluğu verilip farklı bir nicelik (döngü sayısı) bulma."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-geometri",
+    "grade": 7,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-7-3-4",
+    "kod": "M.7.3.4",
+    "metin": "Dairenin alanını hesaplar.",
+    "hints": {
+      "kolay": "Yarıçap verilip daire alanı (π = 3).",
+      "orta": "Çap verilip alan veya alan verilip yarıçap.",
+      "zor": "Daire alanı ile kare alanı karşılaştırması."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-geometri",
+    "grade": 7,
+    "topicId": "geometri",
+    "topicName": "Geometri",
+    "kazanimSlug": "m-7-3-5",
+    "kod": "M.7.3.5",
+    "metin": "Merkez açı ile gördüğü daire diliminin alanı arasındaki ilişkiyi kullanır.",
+    "hints": {
+      "kolay": "Basit oran (90° = 1/4 daire).",
+      "orta": "Merkez açı verilip dilim alanı.",
+      "zor": "Dilim alanı verilip merkez açıyı bulma."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-olcme",
+    "grade": 7,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-7-4-1",
+    "kod": "M.7.4.1",
+    "metin": "Dikdörtgenler prizması, kare prizma ve küpün hacmini hesaplar.",
+    "hints": {
+      "kolay": "Verilen boyutlarla hacim.",
+      "orta": "Hacim verilip bilinmeyen bir boyutu bulma.",
+      "zor": "Farklı prizmaların hacimlerini kıyaslama."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-olcme",
+    "grade": 7,
+    "topicId": "olcme",
+    "topicName": "Ölçme",
+    "kazanimSlug": "m-7-4-2",
+    "kod": "M.7.4.2",
+    "metin": "Prizmaların yüzey alanını hesaplar.",
+    "hints": {
+      "kolay": "Küpün yüzey alanı.",
+      "orta": "Dikdörtgenler prizmasının yüzey alanı.",
+      "zor": "Yüzey alanı verilip bir boyutu bulma."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-cebir",
+    "grade": 7,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-7-5-1",
+    "kod": "M.7.5.1",
+    "metin": "Eşitliğin korunumunu kullanarak denklem çözmeye temel oluşturur.",
+    "hints": {
+      "kolay": "Her iki tarafa aynı sayıyı ekleme/çıkarma örneği.",
+      "orta": "Her iki tarafı aynı sayıyla çarpma/bölme uygulaması.",
+      "zor": "Koruma ilkesini karşılaştırarak hangi işlemin doğru olduğunu seçme."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-cebir",
+    "grade": 7,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-7-5-2",
+    "kod": "M.7.5.2",
+    "metin": "Birinci dereceden bir bilinmeyenli denklemleri çözer.",
+    "hints": {
+      "kolay": "ax + b = c biçiminde çözüm.",
+      "orta": "Her iki tarafta x bulunan denklem.",
+      "zor": "Kesirli katsayılı veya parantezli denklem."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-cebir",
+    "grade": 7,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-7-5-3",
+    "kod": "M.7.5.3",
+    "metin": "Birinci dereceden bir bilinmeyenli eşitsizlikleri çözer ve sayı doğrusunda gösterir.",
+    "hints": {
+      "kolay": "x + a < b türü tek adımlı eşitsizlik.",
+      "orta": "ax + b ≥ c çözümü.",
+      "zor": "Katsayının negatif olması nedeniyle yönün değişmesi."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-cebir",
+    "grade": 7,
+    "topicId": "cebir",
+    "topicName": "Cebir ve Denklemler",
+    "kazanimSlug": "m-7-5-4",
+    "kod": "M.7.5.4",
+    "metin": "Oran ve orantı kavramlarını kullanarak günlük hayat problemleri çözer.",
+    "hints": {
+      "kolay": "Doğru orantı tek adım (ikili oran).",
+      "orta": "Doğru veya ters orantı problemi.",
+      "zor": "Birden fazla oranı birleştiren problem (dört terimli orantı)."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-veri-isleme",
+    "grade": 7,
+    "topicId": "veri_isleme",
+    "topicName": "Veri İşleme ve İstatistik",
+    "kazanimSlug": "m-7-6-1",
+    "kod": "M.7.6.1",
+    "metin": "Veri gruplarını grafiklerle gösterir; daire grafiğini oluşturur, okur ve yorumlar.",
+    "hints": {
+      "kolay": "Verilen daire grafiğinden tek bir kategoriyi yüzde olarak okuma.",
+      "orta": "İki grafiği karşılaştırma; eksik kategoriyi yüzde toplamından bulma.",
+      "zor": "Daire grafiği + tablo birlikte kullanılarak nicel sonuçlar (toplam veri, kategori sayısı) çıkarma."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-veri-isleme",
+    "grade": 7,
+    "topicId": "veri_isleme",
+    "topicName": "Veri İşleme ve İstatistik",
+    "kazanimSlug": "m-7-6-2",
+    "kod": "M.7.6.2",
+    "metin": "Bir veri grubunun aritmetik ortalama, ortanca ve tepe değerini ileri düzeyde yorumlar.",
+    "hints": {
+      "kolay": "Sayı dizisinden ortalama veya ortanca bulma.",
+      "orta": "Eksik veriyi ortalama veya ortancadan tersine bulma.",
+      "zor": "Aynı veri grubunda iki merkezi eğilim ölçüsünü karşılaştırarak çıkarım yapma."
+    }
+  },
+  {
+    "topicSlug": "7-sinif-olasilik",
+    "grade": 7,
+    "topicId": "olasilik",
+    "topicName": "Olasılık",
+    "kazanimSlug": "m-7-7-1",
+    "kod": "M.7.7.1",
+    "metin": "Bir rastlantı olayının olasılığını kesir, ondalık veya yüzde olarak hesaplar; sonucu yorumlar.",
+    "hints": {
+      "kolay": "Eş olası örnek uzayda istenen olayın olasılığı (zar, madeni para, top torbası).",
+      "orta": "Olasılığı kesir, ondalık ve yüzde gösterimleriyle ifade etme.",
+      "zor": "Birleşik veya ayrık olayların olasılığını karşılaştırarak yorum yapma."
+    }
+  }
+]
