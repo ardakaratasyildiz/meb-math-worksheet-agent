@@ -15,6 +15,7 @@ from app.models.schemas import (
     AnswerKeyEntry,
     GenerateWorksheetRequest,
     GenerateWorksheetResponse,
+    RegenerateQuestionRequest,
     Worksheet,
     WorksheetMetadata,
 )
@@ -414,6 +415,62 @@ def render_existing_worksheet(
         brand_name=brand_name,
         brand_subtitle=brand_subtitle,
     )
+
+
+# ---- Tek soru yeniden üretimi ("Soruyu Değiştir") ---------------------------
+
+
+def _resolve_topic_id(grade: int, kazanim_kod: str) -> str | None:
+    """grade + kazanim_kod'tan topic_id'yi müfredattan çözer.
+
+    Her kazanım kodu tek bir (grade, topic)'e aittir → frontend topic_id
+    göndermez, soruyu tutarlı şekilde aynı konuda yeniden üretiriz.
+    """
+    from app.data.curriculum import CURRICULUM
+    for topic_id, topic in CURRICULUM.get(grade, {}).items():
+        if any(k["kod"] == kazanim_kod for k in topic["kazanimlar"]):
+            return topic_id
+    return None
+
+
+@router.post("/regenerate-question")
+@limiter.limit(rate_limit_string())
+def regenerate_question(
+    request: Request,
+    req: RegenerateQuestionRequest,
+    _api_key: str = Depends(require_api_key),
+) -> dict:
+    """Tek bir soruyu, aynı kazanım + tip + zorlukta yeniden üretir.
+
+    Tüm kağıdı baştan üretmek yerine kullanıcı beğenmediği soruyu tek tek
+    değiştirebilir. LLM çağrısı yapar → rate limit + auth uygulanır. Yeni soru
+    tenant geçmişine göre dedup'lanır (mevcut sorulardan farklı gelir).
+    """
+    topic_id = _resolve_topic_id(req.grade, req.kazanim_kod)
+    if topic_id is None:
+        raise HTTPException(
+            status_code=400,
+            detail=f"'{req.kazanim_kod}' kodu {req.grade}. sınıf müfredatında bulunamadı.",
+        )
+    agent = _agent()
+    try:
+        questions = agent.generate(
+            grade=req.grade,
+            topic_id=topic_id,
+            kazanim_kod=req.kazanim_kod,
+            difficulty=req.difficulty,
+            question_count=1,
+            tenant_id=req.tenant_id,
+            allowed_types=[req.question_type],
+        )
+    except AgentError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    if not questions:
+        raise HTTPException(
+            status_code=502,
+            detail="Yeni soru üretilemedi; lütfen tekrar deneyin.",
+        )
+    return {"question": questions[0].model_dump(mode="json")}
 
 
 # ---- SSE streaming endpoint (Sprint 7) ----------------------------------

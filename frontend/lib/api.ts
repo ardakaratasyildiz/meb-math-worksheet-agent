@@ -5,11 +5,13 @@
  */
 import type { HistoryItem } from "./history";
 import type {
+  Difficulty,
   GenerateWorksheetRequest,
   GenerateWorksheetResponse,
   GradeInfo,
   KazanimInfo,
   Question,
+  QuestionType,
   TopicInfo,
   Worksheet,
 } from "./types";
@@ -216,6 +218,24 @@ export async function renderPdf(
     throw new Error(`PDF render başarısız: ${res.status}`);
   }
   return res.blob();
+}
+
+/**
+ * "Soruyu Değiştir" — tek soruyu aynı kazanım + tip + zorlukta yeniden üretir.
+ * topic_id sunucuda kazanım kodundan çözülür. LLM çağrısı (~10-30 sn).
+ */
+export async function regenerateQuestion(body: {
+  grade: number;
+  kazanim_kod: string;
+  difficulty: Difficulty;
+  question_type: QuestionType;
+  tenant_id?: string | null;
+}): Promise<Question> {
+  const r = await request<{ question: Question }>(
+    "/api/worksheets/regenerate-question",
+    { method: "POST", body: JSON.stringify(body) },
+  );
+  return r.question;
 }
 
 // ---- Worksheet history (kullanıcı bazlı, backend kalıcı) ----------------

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useAuth } from "@clerk/nextjs";
 import {
   Download,
   FileText,
@@ -17,9 +18,10 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { track } from "@/lib/analytics";
-import { downloadBlob, renderPdf } from "@/lib/api";
+import { downloadBlob, regenerateQuestion, renderPdf } from "@/lib/api";
 import { buildPdfFilename } from "@/lib/filename";
 import { useGenerateStore } from "@/lib/store";
+import type { Question } from "@/lib/types";
 import { QuestionCard } from "./QuestionCard";
 
 export function QuestionPreview() {
@@ -33,7 +35,11 @@ export function QuestionPreview() {
     includeSolutions,
     brandName,
     brandSubtitle,
+    replaceQuestion,
   } = useGenerateStore();
+
+  const { userId } = useAuth();
+  const [regenNumber, setRegenNumber] = React.useState<number | null>(null);
 
   // Üretim başlatıldığında (idle → loading veya success → loading) preview
   // alanını otomatik görüntüye kaydır — form'un altında olduğu için kullanıcı
@@ -118,6 +124,35 @@ export function QuestionPreview() {
     }
   }
 
+  async function handleRegenerate(q: Question) {
+    if (!userId) {
+      toast.error("Oturum bilgisi henüz yüklenmedi");
+      return;
+    }
+    setRegenNumber(q.number);
+    try {
+      const nq = await regenerateQuestion({
+        grade: worksheet.grade,
+        kazanim_kod: q.kazanim_kod,
+        difficulty: worksheet.difficulty,
+        question_type: q.question_type,
+        tenant_id: userId,
+      });
+      replaceQuestion(q.number, nq);
+      track("question_regenerate", {
+        grade: worksheet.grade,
+        kazanim_kod: q.kazanim_kod,
+        question_type: q.question_type,
+      });
+      toast.success(`${q.number}. soru yenilendi`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Hata";
+      toast.error("Soru yenilenemedi", { description: msg });
+    } finally {
+      setRegenNumber(null);
+    }
+  }
+
   return (
     <div ref={rootRef} className="space-y-3">
       {/* Header */}
@@ -143,7 +178,12 @@ export function QuestionPreview() {
       {/* Questions */}
       <div className="space-y-3">
         {worksheet.questions.map((q) => (
-          <QuestionCard key={q.number} q={q} />
+          <QuestionCard
+            key={q.number}
+            q={q}
+            onRegenerate={() => handleRegenerate(q)}
+            regenerating={regenNumber === q.number}
+          />
         ))}
       </div>
 

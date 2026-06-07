@@ -10,6 +10,7 @@ import type {
   Difficulty,
   DifficultyMode,
   GenerateWorksheetResponse,
+  Question,
 } from "./types";
 
 export type TypeGroupKey = "open_ended" | "visual" | "format";
@@ -42,6 +43,9 @@ interface GenerateStore extends FormState {
   setStreamedCount: (n: number) => void;
   setSuccess: (r: GenerateWorksheetResponse) => void;
   setError: (e: string) => void;
+  // "Soruyu Değiştir": numarası verilen soruyu yenisiyle değiştirir (numara korunur)
+  // ve cevap anahtarı girişini günceller.
+  replaceQuestion: (number: number, q: Question) => void;
   reset: () => void;
 }
 
@@ -74,6 +78,26 @@ export const useGenerateStore = create<GenerateStore>()(
       setStreamedCount: (n) => set({ streamedCount: n }),
       setSuccess: (r) => set({ status: "success", result: r, error: null }),
       setError: (e) => set({ status: "error", error: e }),
+      replaceQuestion: (number, q) =>
+        set((s) => {
+          if (!s.result) return {};
+          const nq = { ...q, number };
+          const ws = s.result.worksheet;
+          return {
+            result: {
+              ...s.result,
+              worksheet: {
+                ...ws,
+                questions: ws.questions.map((x) =>
+                  x.number === number ? nq : x,
+                ),
+                answer_key: ws.answer_key.map((a) =>
+                  a.number === number ? { number, answer: q.answer } : a,
+                ),
+              },
+            },
+          };
+        }),
       reset: () =>
         set({ status: "idle", result: null, error: null, streamedCount: 0 }),
     }),
