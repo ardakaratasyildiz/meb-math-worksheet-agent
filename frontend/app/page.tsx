@@ -7,6 +7,7 @@ import {
   FileCheck,
   GraduationCap,
   Hash,
+  ListChecks,
   ShieldCheck,
   Sparkles,
   Users,
@@ -18,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/JsonLd";
 import { SectionHeader } from "@/components/PageHeader";
+import sampleData from "@/lib/sample-questions.json";
 
 export default function LandingPage() {
   return (
@@ -25,6 +27,7 @@ export default function LandingPage() {
       <JsonLd id="org-schema" data={organizationSchema()} />
       <JsonLd id="website-schema" data={websiteSchema()} />
       <Hero />
+      <Showroom />
       <SystemSummary />
       <HowItWorks />
       <UseCases />
@@ -55,25 +58,25 @@ function Hero() {
           1.→7. sınıf · MEB matematik müfredatı
         </Badge>
         <h1 className="max-w-4xl text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          MEB kazanım kodu bazlı{" "}
+          Matematik çalışma kağıtlarını{" "}
           <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
-            çalışma kağıdı
+            saniyeler içinde
           </span>{" "}
-          üretim sistemi
+          hazırlayın
         </h1>
         <p className="max-w-2xl text-balance text-lg text-muted-foreground sm:text-xl">
-          Sınıf, konu ve kazanım kodu seçilir. Sistem soru üretir, aritmetik
-          denetimden ve kazanım uyumu kontrolünden geçirir; sonucu A4 PDF
-          olarak teslim eder.
+          Sınıf ve konuyu seçin; MEB kazanımlarına uygun sorular, cevap anahtarı
+          ve adım adım çözümüyle hazır PDF birkaç saniyede elinizde. İndirin,
+          yazdırın, öğrencilerinizle paylaşın.
         </p>
         <div className="flex flex-col items-center gap-3 sm:flex-row">
           <Button asChild size="lg" className="gap-2 px-7">
             <Link href="/sign-up">
-              Hesap aç <ArrowRight className="h-4 w-4" />
+              Ücretsiz dene <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="px-7">
-            <Link href="#how">Sistem nasıl çalışır</Link>
+            <Link href="#ornekler">Örnek soruları gör</Link>
           </Button>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
@@ -95,6 +98,104 @@ function TrustBullet({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ─── SHOWROOM — gerçek örnek çıktı ───────────────────────────────────────────
+// "Güçlü motor ama showroom yok" sorununu çözer: Googlebot ve ziyaretçi, sistemin
+// GERÇEKTEN ürettiği soruları ana sayfada görür. Veri scripts/gen_samples.py
+// (PR #8). Sınıf çeşitliliği için farklı slug'lardan birer temiz soru seçilir.
+
+interface _SampleQ {
+  question: string;
+  answer: string;
+  question_type: string;
+  kazanim_kod: string;
+}
+interface _SampleEntry {
+  grade: number;
+  topic_id: string;
+  difficulty: string;
+  questions: _SampleQ[];
+}
+const _SAMPLES = sampleData as unknown as Record<string, _SampleEntry>;
+
+const _SHOWROOM_SLUGS: [string, string][] = [
+  ["2-sinif-dogal-sayilar", "2. sınıf · Doğal sayılar"],
+  ["5-sinif-cebir", "5. sınıf · Cebir"],
+  ["6-sinif-veri-isleme", "6. sınıf · Veri işleme"],
+  ["3-sinif-dogal-sayilar", "3. sınıf · Doğal sayılar"],
+  ["4-sinif-olcme", "4. sınıf · Ölçme"],
+  ["7-sinif-veri-isleme", "7. sınıf · Veri işleme"],
+];
+
+function _pickShowroom(): { label: string; q: _SampleQ }[] {
+  const out: { label: string; q: _SampleQ }[] = [];
+  for (const [slug, label] of _SHOWROOM_SLUGS) {
+    if (out.length >= 3) break;
+    const entry = _SAMPLES[slug];
+    const q = entry?.questions?.find(
+      (x) => !/[$\\]/.test(x.question) && x.question.length <= 220,
+    );
+    if (q) out.push({ label, q });
+  }
+  return out;
+}
+
+function Showroom() {
+  const items = _pickShowroom();
+  if (!items.length) return null;
+  return (
+    <section id="ornekler" className="py-20">
+      <div className="container max-w-4xl">
+        <SectionHeader
+          eyebrow="Gerçek çıktı"
+          title="Sistemin ürettiği örnek sorular"
+          body="Aşağıdakiler sistemin gerçekten ürettiği sorulardan bir kesit. Hazır PDF'te ayrıca cevap anahtarı ve adım adım çözüm sayfası bulunur."
+        />
+        <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {items.map(({ label, q }, i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-3 rounded-xl border bg-card p-5"
+            >
+              <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                {label}
+              </span>
+              <p className="flex-1 text-sm leading-relaxed text-foreground">
+                {q.question}
+              </p>
+              <details className="group">
+                <summary className="cursor-pointer list-none text-sm font-medium text-primary hover:underline">
+                  Cevabı göster
+                </summary>
+                <p className="mt-2 rounded-md bg-accent/40 p-3 text-sm text-foreground">
+                  {q.answer}
+                </p>
+              </details>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            <ListChecks className="h-4 w-4 text-primary" /> Sorular
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <FileCheck className="h-4 w-4 text-primary" /> Cevap anahtarı
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <CheckCircle2 className="h-4 w-4 text-primary" /> Adım adım çözüm
+          </span>
+        </div>
+        <div className="mt-8 flex justify-center">
+          <Button asChild size="lg" className="gap-2 px-7">
+            <Link href="/sign-up">
+              Kendi kağıdını oluştur <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── SYSTEM SUMMARY ──────────────────────────────────────────────────────────
 
 function SystemSummary() {
@@ -106,16 +207,16 @@ function SystemSummary() {
             Soru Atölyesi nedir
           </p>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
-            MEB matematik müfredatı kapsamında otomatik çalışma kağıdı üretimi
+            Öğretmenler ve veliler için MEB uyumlu çalışma kağıdı hazırlayıcı
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            Soru Atölyesi; 1.→7. sınıf MEB matematik müfredatı kapsamında,
-            seçilen kazanım koduna göre çalışma kağıdı üreten bir yazılım
-            sistemidir. Üretilen her soru, kullanıcıya sunulmadan önce iki
-            aşamalı bir denetimden geçer: önce sembolik hesap motoru ile
-            aritmetik denetim, ardından ikinci bir model tarafından kazanım
-            uyumu denetimi. Üretim sonucu A4 PDF formatında — sorular, cevap
-            anahtarı ve adım adım çözüm — şeklinde teslim edilir.
+            1.→7. sınıf MEB matematik müfredatına uygun çalışma kağıtlarını
+            dakikalar değil saniyeler içinde hazırlar. Üretilen her soru sana
+            gösterilmeden önce <strong>iki kez kontrol edilir</strong>: önce
+            matematiği doğru mu, sonra seçtiğin konuya/kazanıma uyuyor mu. Yanlış
+            veya konu dışı sorular otomatik elenir — yani elindeki PDF'e
+            güvenebilirsin. Çıktı baskıya hazır: sorular, cevap anahtarı ve adım
+            adım çözüm.
           </p>
         </div>
       </div>
@@ -128,20 +229,20 @@ function SystemSummary() {
 const STEPS = [
   {
     n: "1",
-    title: "Parametre seçimi",
-    body: "Sınıf, konu ve isteğe bağlı olarak kazanım kodu seçilir. Zorluk düzeyi (kolay/orta/zor) ve soru sayısı (5–20) belirlenir.",
+    title: "Sınıf ve konuyu seç",
+    body: "Sınıf, konu ve istersen kazanım kodunu seç; zorluk düzeyini ve soru sayısını (5–20) belirle. Hepsi birkaç tıkla.",
     icon: <BookOpen className="h-6 w-6" />,
   },
   {
     n: "2",
-    title: "Üretim ve denetim",
-    body: "Sistem MEB ders kitaplarından bağlam çekerek soruları üretir. Üretilen her soru aritmetik denetimden ve kazanım uyumu denetiminden geçer; denetimleri geçemeyenler elenir.",
+    title: "Sorular hazırlansın",
+    body: "Sistem MEB kazanımına uygun soruları üretir ve her birinin matematiğini + konuya uygunluğunu otomatik kontrol eder. Hatalı sorular sana hiç gösterilmeden elenir.",
     icon: <Sparkles className="h-6 w-6" />,
   },
   {
     n: "3",
-    title: "PDF teslimi",
-    body: "Sorular, cevap anahtarı ve adım adım çözüm; tek bir A4 PDF dosyası olarak indirilebilir hale getirilir. Ortalama süre 30 saniyedir.",
+    title: "İndir ve paylaş",
+    body: "Sorular, cevap anahtarı ve adım adım çözüm tek bir A4 PDF'te — yaklaşık 30 saniyede. İndir, yazdır, öğrencilerinle paylaş.",
     icon: <Zap className="h-6 w-6" />,
   },
 ];
@@ -151,9 +252,9 @@ function HowItWorks() {
     <section id="how" className="bg-card py-20">
       <div className="container">
         <SectionHeader
-          eyebrow="Üretim akışı"
-          title="Üç aşamada çalışma kağıdı"
-          body="Üretim talebi gönderildiğinde sistem aşağıdaki adımları sırasıyla yürütür."
+          eyebrow="Nasıl çalışır"
+          title="Üç adımda hazır çalışma kağıdı"
+          body="Birkaç tıkla, baskıya hazır PDF elinde."
         />
         <div className="mt-14 grid gap-8 md:grid-cols-3">
           {STEPS.map((s) => (
@@ -405,15 +506,15 @@ function FinalCta() {
       <div className="container">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border bg-card p-12 text-center shadow-sm">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Sistemi kullanmak için
+            İlk çalışma kağıdını 5 dakikada hazırla
           </h2>
           <p className="text-base text-muted-foreground">
-            Hesap açmak için yalnızca e-posta adresi yeterlidir. Aylık 100
-            soru kotası tüm kullanıcılara açıktır.
+            Hesap açmak için yalnızca e-posta yeterli, ödeme bilgisi istenmez.
+            Aylık 100 soru tüm kullanıcılara ücretsiz.
           </p>
           <Button asChild size="lg" className="gap-2 px-8">
             <Link href="/sign-up">
-              Hesap aç <ArrowRight className="h-4 w-4" />
+              Ücretsiz dene <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </div>
