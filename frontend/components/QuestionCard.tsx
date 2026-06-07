@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2, RefreshCw } from "lucide-react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -151,7 +151,15 @@ function isStepList(v: string | SolutionStep[]): v is SolutionStep[] {
   return Array.isArray(v);
 }
 
-export function QuestionCard({ q }: { q: Question }) {
+export function QuestionCard({
+  q,
+  onRegenerate,
+  regenerating,
+}: {
+  q: Question;
+  onRegenerate?: () => void;
+  regenerating?: boolean;
+}) {
   const [showAnswer, setShowAnswer] = React.useState(false);
 
   return (
@@ -168,6 +176,23 @@ export function QuestionCard({ q }: { q: Question }) {
             {TYPE_LABELS[q.question_type] ?? q.question_type}
           </Badge>
         </div>
+        {onRegenerate ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onRegenerate}
+            disabled={regenerating}
+            className="h-7 shrink-0 gap-1 text-xs text-muted-foreground"
+            title="Bu soruyu aynı kazanım ve tipte yeniden üret"
+          >
+            {regenerating ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3 w-3" />
+            )}
+            {regenerating ? "Üretiliyor…" : "Yeniden üret"}
+          </Button>
+        ) : null}
       </div>
 
       <MarkdownQuestion text={q.question} />

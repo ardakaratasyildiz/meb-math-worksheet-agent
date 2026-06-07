@@ -175,6 +175,26 @@ class GenerateWorksheetRequest(BaseModel):
         return v or None
 
 
+class RegenerateQuestionRequest(BaseModel):
+    """Tek bir soruyu yeniden üretme isteği ("Soruyu Değiştir").
+
+    topic_id sunucuda (grade, kazanim_kod)'tan çözülür → frontend göndermez.
+    Yeni soru aynı kazanım + aynı tip + worksheet zorluğunda üretilir.
+    """
+    grade: int = Field(..., ge=1, le=12)
+    kazanim_kod: str = Field(..., min_length=1)
+    difficulty: Difficulty = Difficulty.ORTA
+    question_type: QuestionType
+    tenant_id: str | None = None
+
+    @field_validator("tenant_id")
+    @classmethod
+    def _norm_tenant(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        return v.strip() or None
+
+
 class SolutionStep(BaseModel):
     step_no: int = Field(..., description="Adım sırası (1'den başlar)")
     description: str = Field(..., description="Adımın kısa açıklaması")
