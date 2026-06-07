@@ -315,11 +315,15 @@ def _pdf_response(
     worksheet: Worksheet,
     include_answer_key: bool = True,
     include_solutions: bool = True,
+    brand_name: str | None = None,
+    brand_subtitle: str | None = None,
 ) -> Response:
     pdf_bytes = render_worksheet_pdf(
         worksheet,
         include_answer_key=include_answer_key,
         include_solutions=include_solutions,
+        brand_name=brand_name,
+        brand_subtitle=brand_subtitle,
     )
     filename = _build_pdf_filename(worksheet)
     return Response(
@@ -390,6 +394,8 @@ def render_existing_worksheet(
     worksheet: Worksheet,
     include_answer_key: bool = True,
     include_solutions: bool = True,
+    brand_name: str | None = None,
+    brand_subtitle: str | None = None,
     _api_key: str = Depends(require_api_key),
 ) -> Response:
     """Önceden üretilmiş bir worksheet JSON'unu PDF'e çevirir.
@@ -397,11 +403,16 @@ def render_existing_worksheet(
     LLM çağrısı YAPMAZ → rate limit yok; sadece auth kontrolü.
     Frontend hızlı tekrar PDF üretebilir. Toggle'lar query parametresi olarak
     geçer: ?include_answer_key=false&include_solutions=false (sınav modu).
+
+    White-label: brand_name (kurum/öğretmen) + brand_subtitle (ör. sınıf) verilirse
+    PDF üst bilgisine basılır. Boşsa header çizilmez.
     """
     return _pdf_response(
         worksheet,
         include_answer_key=include_answer_key,
         include_solutions=include_solutions,
+        brand_name=brand_name,
+        brand_subtitle=brand_subtitle,
     )
 
 

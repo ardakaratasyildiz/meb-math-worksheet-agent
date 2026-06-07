@@ -31,6 +31,8 @@ export function QuestionPreview() {
     streamedCount,
     includeAnswerKey,
     includeSolutions,
+    brandName,
+    brandSubtitle,
   } = useGenerateStore();
 
   // Üretim başlatıldığında (idle → loading veya success → loading) preview
@@ -96,6 +98,8 @@ export function QuestionPreview() {
       const blob = await renderPdf(result.worksheet, {
         include_answer_key: includeAnswerKey,
         include_solutions: includeSolutions,
+        brand_name: brandName,
+        brand_subtitle: brandSubtitle,
       });
       downloadBlob(blob, buildPdfFilename(result.worksheet.title));
       // Funnel sonu — kullanıcının somut çıktıyı aldığı an (paylaşım/viral döngü

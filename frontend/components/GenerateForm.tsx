@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -120,6 +121,8 @@ export function GenerateForm() {
     difficultyMode,
     includeAnswerKey,
     includeSolutions,
+    brandName,
+    brandSubtitle,
     status,
     setForm,
     startGenerate,
@@ -145,8 +148,16 @@ export function GenerateForm() {
     if (!typeGroups.open_ended || !typeGroups.visual || !typeGroups.format) n++;
     if (!includeAnswerKey) n++;
     if (!includeSolutions) n++;
+    if (brandName.trim() || brandSubtitle.trim()) n++;
     return n;
-  }, [difficultyMode, typeGroups, includeAnswerKey, includeSolutions]);
+  }, [
+    difficultyMode,
+    typeGroups,
+    includeAnswerKey,
+    includeSolutions,
+    brandName,
+    brandSubtitle,
+  ]);
 
   React.useEffect(() => {
     listGrades().then(setGrades).catch(() => setGrades([]));
@@ -535,6 +546,36 @@ export function GenerateForm() {
                     checked={includeSolutions}
                     onCheckedChange={(v) => setForm({ includeSolutions: v })}
                     aria-label="Çözüm adımları sayfası"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* PDF markalama (white-label) */}
+            <div className="space-y-2.5">
+              <SectionTitle
+                title="PDF markalama (kurum/öğretmen)"
+                hint="PDF'in üst bilgisine kurum veya öğretmen adı eklenir. Bir kez girince kaydedilir."
+              />
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="brandName">Kurum / öğretmen adı</Label>
+                  <Input
+                    id="brandName"
+                    value={brandName}
+                    maxLength={80}
+                    placeholder="ör. Atatürk Ortaokulu"
+                    onChange={(e) => setForm({ brandName: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="brandSubtitle">Alt satır (opsiyonel)</Label>
+                  <Input
+                    id="brandSubtitle"
+                    value={brandSubtitle}
+                    maxLength={60}
+                    placeholder="ör. 5-A Sınıfı · Ahmet Öğretmen"
+                    onChange={(e) => setForm({ brandSubtitle: e.target.value })}
                   />
                 </div>
               </div>
