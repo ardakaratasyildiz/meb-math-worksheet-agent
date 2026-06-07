@@ -76,8 +76,13 @@ export default function CalismalarHubPage() {
                     <p className="mt-1 text-xs text-muted-foreground">
                       {t.description}
                     </p>
-                    <div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition group-hover:opacity-100">
-                      Detay <ArrowRight className="h-3 w-3" />
+                    <div className="mt-3 flex items-center justify-between text-xs">
+                      <span className="font-medium text-primary">
+                        {t.kazanimCount} kazanım
+                      </span>
+                      <span className="inline-flex items-center gap-1 font-medium text-primary opacity-0 transition group-hover:opacity-100">
+                        Kazanımları gör <ArrowRight className="h-3 w-3" />
+                      </span>
                     </div>
                   </Link>
                 ))}
