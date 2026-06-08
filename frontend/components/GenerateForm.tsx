@@ -287,15 +287,12 @@ export function GenerateForm() {
         },
         res,
       );
-      if (trace?.cache_hit) {
-        toast.success("Önbellekten getirildi", {
-          description: `${res.worksheet.questions.length} soru — aynı parametrelerle daha önce üretilmişti.`,
-        });
-      } else {
-        toast.success("Üretim tamamlandı", {
-          description: `${res.worksheet.questions.length} soru üretildi ve denetimden geçti.`,
-        });
-      }
+      // Cache durumu kullanıcıya gösterilmez — yanıltıcı olabiliyordu (kısmi
+      // cache hit'te yine de uzun bekleyip "Önbellekten" görmek hoş değil).
+      // cache_hit yalnız GA4'e (kapasite ölçümü) gider.
+      toast.success("Üretim tamamlandı", {
+        description: `${res.worksheet.questions.length} soru üretildi ve denetimden geçti.`,
+      });
     } catch (e: unknown) {
       // Akış kesildiyse (bağlantı/timeout — özellikle mobil/uygulama-içi tarayıcı):
       // backend üretimi bitirip geçmişe kaydetmiş olabilir → loading'de kalıp

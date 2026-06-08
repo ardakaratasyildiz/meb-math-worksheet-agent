@@ -96,6 +96,9 @@ def _merge_traces(traces: list):
         "retry_rounds": sum(t.retry_rounds for t in traces),
         "requested_count": sum(t.requested_count for t in traces),
         "delivered_count": sum(t.delivered_count for t in traces),
+        # cache_hit yalnız TÜM bucket'lar cache'ten geldiyse true. Aksi halde en
+        # az bir bucket üretildi (yavaş) → "cache hit" demek yanıltıcı olur.
+        "cache_hit": all(t.cache_hit for t in traces),
     })
 
 

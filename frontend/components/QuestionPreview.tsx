@@ -8,11 +8,9 @@ import {
   Lightbulb,
   Loader2,
   Sparkles,
-  Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -94,8 +92,7 @@ export function QuestionPreview() {
 
   if (!result) return null;
 
-  const { worksheet, metadata } = result;
-  const cacheHit = metadata.trace?.cache_hit ?? false;
+  const { worksheet } = result;
 
   async function onDownloadPdf() {
     if (!result) return;
@@ -164,11 +161,6 @@ export function QuestionPreview() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {cacheHit && (
-            <Badge variant="outline" className="border-primary/40 text-primary">
-              <Zap className="mr-1 h-3 w-3" /> Önbellekten
-            </Badge>
-          )}
           <Button onClick={onDownloadPdf} className="gap-2">
             <Download className="h-4 w-4" /> PDF indir
           </Button>
