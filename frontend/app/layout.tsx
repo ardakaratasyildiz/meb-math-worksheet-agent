@@ -75,7 +75,8 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
-  // Sosyal paylaşımda (WhatsApp, Twitter, LinkedIn) zengin önizleme:
+  // Sosyal paylaşımda (WhatsApp, LinkedIn vb.) zengin önizleme. Twitter/X kartı
+  // bilinçli eklenmedi; X paylaşımlarında platform OpenGraph'a fallback yapar.
   openGraph: {
     type: "website",
     locale: "tr_TR",
@@ -85,11 +86,6 @@ export const metadata: Metadata = {
     description: SITE_DESC,
     // og:image — frontend/app/opengraph-image.tsx Next.js tarafından otomatik
     // bu URL'e map edilir (manuel images: [...] belirtmeye gerek yok).
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE_NAME} — MEB matematik çalışma kağıdı üretici`,
-    description: SITE_DESC,
   },
   // Default robots — public sayfalar index'lenir, admin/api ayrı robots.ts'te
   // disallow ediliyor.
