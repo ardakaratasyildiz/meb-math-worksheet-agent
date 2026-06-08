@@ -35,6 +35,7 @@ from app.services.llm_providers import (
 from app.services.math_verifier import verify_batch as verify_math_batch
 from app.services.history import DEFAULT_TENANT, GENERATION_HISTORY, HistoryKey
 from app.services.retriever import ExampleRetriever, get_retriever
+from app.services.svg_utils import process_chart_directives
 
 logger = logging.getLogger(__name__)
 
@@ -882,7 +883,9 @@ class GeminiAgent:
             questions.append(
                 Question(
                     number=starting_number + len(questions),
-                    question=repair_latex_control_chars(raw.question).strip(),
+                    question=process_chart_directives(
+                        repair_latex_control_chars(raw.question).strip()
+                    ),
                     answer=repair_latex_control_chars(raw.answer).strip(),
                     solution_steps=steps,
                     kazanim_kod=kod,
