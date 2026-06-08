@@ -20,10 +20,12 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 
 import {
+  StreamIncompleteError,
   generateWorksheetStream,
   listGrades,
   listKazanimlar,
   listTopics,
+  listWorksheetHistory,
 } from "@/lib/api";
 import { track } from "@/lib/analytics";
 import { addHistory } from "@/lib/history";
@@ -32,11 +34,49 @@ import {
   QUESTION_TYPE_GROUPS,
   type Difficulty,
   type DifficultyMode,
+  type GenerateWorksheetResponse,
   type GradeInfo,
   type KazanimInfo,
   type QuestionType,
   type TopicInfo,
 } from "@/lib/types";
+
+// Akış kesildiğinde (mobil/uygulama-içi tarayıcı timeout'u) backend üretimi
+// thread'de bitirip geçmişe kaydetmiş olabilir. Kısa süre geçmişi yoklayıp aynı
+// parametrelerle yeni kaydı bul → kağıdı kurtar. Böylece "akış kesildi" hatası
+// çoğu durumda sessizce başarıya döner.
+async function recoverFromHistory(
+  tenantId: string,
+  req: {
+    grade: number;
+    topic_id: string;
+    difficulty: Difficulty;
+    question_count: number;
+  },
+): Promise<GenerateWorksheetResponse | null> {
+  for (let i = 0; i < 8; i++) {
+    await new Promise((r) => setTimeout(r, 4000));
+    let items;
+    try {
+      items = await listWorksheetHistory(tenantId);
+    } catch {
+      continue;
+    }
+    const now = Date.now();
+    const match = items.find((it) => {
+      const r = it.request;
+      return (
+        r?.grade === req.grade &&
+        r?.topic_id === req.topic_id &&
+        r?.difficulty === req.difficulty &&
+        r?.question_count === req.question_count &&
+        now - new Date(it.saved_at).getTime() < 180000 // son ~3 dk
+      );
+    });
+    if (match?.response) return match.response;
+  }
+  return null;
+}
 
 const DIFFICULTIES: { value: Difficulty; label: string }[] = [
   { value: "kolay", label: "Kolay" },
@@ -257,6 +297,33 @@ export function GenerateForm() {
         });
       }
     } catch (e: unknown) {
+      // Akış kesildiyse (bağlantı/timeout — özellikle mobil/uygulama-içi tarayıcı):
+      // backend üretimi bitirip geçmişe kaydetmiş olabilir → loading'de kalıp
+      // geçmişten kurtarmayı dene. Başarısızsa gerçek hata göster.
+      if (e instanceof StreamIncompleteError && userId) {
+        const recovered = await recoverFromHistory(userId, {
+          grade,
+          topic_id: topicId,
+          difficulty,
+          question_count: questionCount,
+        });
+        if (recovered) {
+          setSuccess(recovered);
+          addHistory(
+            { grade, topic_id: topicId, kazanim_kod: kazanimKod, difficulty, question_count: questionCount },
+            recovered,
+          );
+          track("worksheet_generate_recovered", {
+            grade,
+            topic_id: topicId,
+            duration_ms: Math.round(performance.now() - t0),
+          });
+          toast.success("Üretim tamamlandı", {
+            description: `Bağlantı bir an koptu ama ${recovered.worksheet.questions.length} soruluk çalışma kağıdın hazır.`,
+          });
+          return;
+        }
+      }
       const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
       track("worksheet_generate_error", {
         grade,
@@ -265,7 +332,12 @@ export function GenerateForm() {
         duration_ms: Math.round(performance.now() - t0),
       });
       setError(msg);
-      toast.error("Üretim başarısız", { description: msg });
+      toast.error("Üretim başarısız", {
+        description:
+          e instanceof StreamIncompleteError
+            ? "Bağlantı koptu ve kağıt bulunamadı. Geçmiş sayfanı kontrol et veya tekrar dene."
+            : msg,
+      });
     }
   }
 

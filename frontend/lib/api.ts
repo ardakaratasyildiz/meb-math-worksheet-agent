@@ -78,6 +78,18 @@ export async function generateWorksheet(
   });
 }
 
+/**
+ * SSE akışı `complete` event'i gelmeden kapandığında fırlatılır (bağlantı kesildi).
+ * Çağıran taraf bunu yakalayıp geçmişten kurtarma deneyebilir — backend üretimi
+ * arka planda bitirip kaydetmiş olabilir.
+ */
+export class StreamIncompleteError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "StreamIncompleteError";
+  }
+}
+
 export interface GenerateStreamCallbacks {
   /** Akış başında bir kez — request echo'su (grade/topic/count …). */
   onMeta?: (meta: unknown) => void;
@@ -179,7 +191,12 @@ export async function generateWorksheetStream(
 
   if (streamError) throw new Error(streamError);
   if (!final) {
-    throw new Error("Üretim tamamlanamadı (akış beklenmedik şekilde kesildi).");
+    // `complete` gelmeden akış kapandı → genelde bağlantı kesildi (mobil/uygulama-içi
+    // tarayıcı uzun isteği timeout'ladı). Backend üretimi thread'de bitirip geçmişe
+    // kaydetmiş olabilir → çağıran taraf geçmişten kurtarmayı denesin.
+    throw new StreamIncompleteError(
+      "Üretim tamamlanamadı (akış beklenmedik şekilde kesildi).",
+    );
   }
   return final;
 }
