@@ -44,8 +44,21 @@ export function Footer() {
                 label: "destek@soruatolyesi.com",
                 href: "mailto:destek@soruatolyesi.com",
               },
-              { label: "Twitter / X", href: "#", disabled: true },
-              { label: "Instagram", href: "#", disabled: true },
+              {
+                label: "Instagram",
+                href: "https://www.instagram.com/soruatolyesi.com2026",
+                external: true,
+              },
+              {
+                label: "Pinterest",
+                href: "https://pin.it/34V3999cs",
+                external: true,
+              },
+              {
+                label: "YouTube",
+                href: "https://www.youtube.com/@soruatolyesi-s2g",
+                external: true,
+              },
             ]}
           />
         </div>
@@ -61,7 +74,12 @@ export function Footer() {
   );
 }
 
-type FooterLink = { label: string; href: string; disabled?: boolean };
+type FooterLink = {
+  label: string;
+  href: string;
+  disabled?: boolean;
+  external?: boolean;
+};
 
 function FooterColumn({
   title,
@@ -80,6 +98,15 @@ function FooterColumn({
               <span aria-disabled="true" className="cursor-not-allowed opacity-50">
                 {l.label}
               </span>
+            ) : l.external ? (
+              <a
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-100"
+              >
+                {l.label}
+              </a>
             ) : (
               <Link href={l.href} className="hover:opacity-100">
                 {l.label}
