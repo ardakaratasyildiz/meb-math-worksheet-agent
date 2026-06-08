@@ -342,6 +342,33 @@ def _escape_for_pre(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+def _normalize_svg_fonts(svg: str) -> str:
+    """SVG metin fontunu kayıtlı gövde fontuna (DejaVu) çevirir.
+
+    svglib, SVG <text>'i font-family'si tanınmazsa Helvetica'ya düşürür; Helvetica
+    Türkçe ı/ğ/ş gliflerini içermez → daire grafiği etiketlerinde 'Gıda'→'G■da'
+    gibi ■ (tofu) çıkar. Gövde metni zaten DejaVu (Türkçe tam) kullandığından,
+    SVG metnini de aynı fonta sabitleriz. _BODY_FONT, _register_fonts'tan sonra
+    DejaVu (Render/Linux) veya Helvetica (DejaVu yoksa) olur.
+    """
+    import re
+    font = _BODY_FONT
+    # style/CSS biçimi: font-family: X
+    svg = re.sub(r"font-family\s*:\s*[^;\"'<>}]+", f"font-family:{font}", svg)
+    # attribute biçimi: font-family="X" / 'X' → değeri değiştir
+    svg = re.sub(r'font-family\s*=\s*"[^"]*"', f'font-family="{font}"', svg)
+    svg = re.sub(r"font-family\s*=\s*'[^']*'", f'font-family="{font}"', svg)
+
+    # font-family taşımayan <text>/<tspan> tag'lerine ekle
+    def _inject(m: "re.Match[str]") -> str:
+        tag = m.group(0)
+        if "font-family" in tag:
+            return tag
+        return tag[:-1] + f' font-family="{font}"' + tag[-1]
+
+    return re.sub(r"<(?:text|tspan)\b[^>]*>", _inject, svg)
+
+
 def _render_svg_block(svg_str: str, max_width_cm: float = 12.0) -> object | None:
     """SVG string'i svglib ile reportlab Drawing'e çevirir.
 
@@ -356,6 +383,8 @@ def _render_svg_block(svg_str: str, max_width_cm: float = 12.0) -> object | None
     try:
         from io import BytesIO
         from svglib.svglib import svg2rlg
+        # Türkçe ■ sorununu önle: SVG metnini kayıtlı DejaVu fontuna sabitle.
+        svg_str = _normalize_svg_fonts(svg_str)
         drawing = svg2rlg(BytesIO(svg_str.encode("utf-8")))
         if drawing is None:
             return None
