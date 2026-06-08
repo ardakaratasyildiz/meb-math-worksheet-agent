@@ -214,7 +214,7 @@ function SystemSummary() {
             dakikalar değil saniyeler içinde hazırlar. Üretilen her soru sana
             gösterilmeden önce <strong>iki kez kontrol edilir</strong>: önce
             matematiği doğru mu, sonra seçtiğin konuya/kazanıma uyuyor mu. Yanlış
-            veya konu dışı sorular otomatik elenir — yani elindeki PDF'e
+            veya konu dışı sorular otomatik elenir — yani elindeki PDF&apos;e
             güvenebilirsin. Çıktı baskıya hazır: sorular, cevap anahtarı ve adım
             adım çözüm.
           </p>
