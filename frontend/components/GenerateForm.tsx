@@ -28,7 +28,7 @@ import {
   listWorksheetHistory,
 } from "@/lib/api";
 import { track } from "@/lib/analytics";
-import { addHistory } from "@/lib/history";
+import { addHistory, type HistoryItem } from "@/lib/history";
 import { useGenerateStore, type TypeGroupKey } from "@/lib/store";
 import {
   QUESTION_TYPE_GROUPS,
@@ -56,7 +56,7 @@ async function recoverFromHistory(
 ): Promise<GenerateWorksheetResponse | null> {
   for (let i = 0; i < 8; i++) {
     await new Promise((r) => setTimeout(r, 4000));
-    let items;
+    let items: HistoryItem[];
     try {
       items = await listWorksheetHistory(tenantId);
     } catch {
