@@ -48,9 +48,9 @@ export function organizationSchema() {
       "MEB matematik müfredatı (1.-7. sınıf) için kazanım koduna göre otomatik çalışma kağıdı üretim sistemi.",
     email: "destek@soruatolyesi.com",
     sameAs: [
-      // Sosyal medya hesapları açıldıkça ekle:
-      // "https://twitter.com/soruatolyesi",
-      // "https://instagram.com/soruatolyesi",
+      "https://www.instagram.com/soruatolyesi.com2026",
+      "https://pin.it/34V3999cs",
+      "https://www.youtube.com/@soruatolyesi-s2g",
     ],
     contactPoint: {
       "@type": "ContactPoint",
