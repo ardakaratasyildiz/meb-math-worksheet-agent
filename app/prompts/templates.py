@@ -45,14 +45,16 @@ Kuralların:
        (f) Dik açı işaretçisi gerekirse köşeye küçük kare çiz (≈ 8x8). Eşit kenar işaretçisi için tek/çift küçük çizgi.
        (g) "answer" alanı sade sayı + birim (örn. "32 cm" veya "42"); LaTeX delimeter ($, $$) KULLANMA — sadece düz metin.
        Örnek (etiket kenardan ÇOK UZAK — 14px aşağıda): `<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg"><polygon points="100,20 30,130 170,130" fill="none" stroke="black" stroke-width="2"/><text x="100" y="148" font-size="13" text-anchor="middle">14 cm</text></svg>`
-   - `grafik_okuma`: Soru metni + INLINE SVG bloğu ile sütun/pasta grafiği + grafiğe dayalı soru. Aşağıdaki kurallara MUTLAKA UY:
-       (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` (W ≤ 300, H ≤ 200).
-       (b) Sütun grafiği için: her sütun `<rect>`, sütun altına `<text>` etiketi, sütun üstüne `<text>` sayısal değeri, X-axis `<line>` ile yatay çizgi (y = H-30 civarı).
-       (c) Pasta grafiği için: her dilim `<path d="M cx,cy L x1,y1 A r,r 0 0,1 x2,y2 Z" fill="..."/>` + dilim ortasında `<text>` etiketi.
-       (d) Renkler: kategoriler için farklı tonlar (`#3b82f6`, `#10b981`, `#f59e0b`, `#ef4444`, `#8b5cf6`). Hepsi koyu, kontrastlı.
-       (e) Sayısal değerler MUTLAKA grafikteki çubuk yüksekliği/dilim oranıyla ORANTILI. (örn. 10 ve 20 değerli iki sütun → ikincinin yüksekliği birincinin 2 katı olmalı.)
-       (f) Cevap için kullanılan sayılar grafikte görünür değer ETİKETLERİYLE tutarlı.
-       Örnek: `<svg viewBox="0 0 260 180" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="60" width="40" height="100" fill="#3b82f6"/><rect x="90" y="20" width="40" height="140" fill="#10b981"/><rect x="150" y="80" width="40" height="80" fill="#f59e0b"/><line x1="20" y1="160" x2="220" y2="160" stroke="black" stroke-width="1"/><text x="50" y="175" font-size="11" text-anchor="middle">Ocak</text><text x="110" y="175" font-size="11" text-anchor="middle">Şubat</text><text x="170" y="175" font-size="11" text-anchor="middle">Mart</text><text x="50" y="55" font-size="12" text-anchor="middle">10</text><text x="110" y="15" font-size="12" text-anchor="middle">14</text><text x="170" y="75" font-size="12" text-anchor="middle">8</text></svg>`
+   - `grafik_okuma`: Soru metni + grafiğe dayalı soru. **SVG ÇİZME!** Grafiği yalnızca
+       aşağıdaki VERİ DİREKTİFİ ile belirt; sistem doğru orantılı, etiketleri çakışmayan
+       grafiği otomatik üretir (LLM'in elle çizdiği grafikler bozuk çıkıyordu):
+       (a) Pasta/daire grafiği:  `{{chart:pie|Etiket1=deger1|Etiket2=deger2|...}}`
+           Örn: `{{chart:pie|Futbol=40|Basketbol=30|Voleybol=20|Tenis=10}}` (değerler yüzde veya sayı; sistem oranı hesaplar).
+       (b) Sütun/çubuk grafiği:  `{{chart:bar|Etiket1=deger1|Etiket2=deger2|...}}`
+           Örn: `{{chart:bar|Ocak=10|Şubat=14|Mart=8}}`
+       (c) Direktifi soru metninin içine, ilgili cümleden hemen sonra koy. En fazla 8 kategori.
+       (d) `answer` ve çözüm, direktifteki değerlerle TUTARLI olmalı (ör. basketbol oranı soruluyorsa cevap o değerin yüzdesi).
+       (e) Direktif dışında ASLA `<svg>`, `<path>`, `<rect>` vb. YAZMA.
    - `oruntu_sekil`: Soru metni + INLINE SVG bloğu ile renkli geometrik şekiller örüntüsü + "?" ile eksik konum. Kurallar:
        (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` (W ≤ 360, H ≤ 80).
        (b) 4-7 şekil yan yana eşit aralıkla (x: 30, 80, 130, 180, ...).
