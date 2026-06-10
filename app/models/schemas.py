@@ -563,3 +563,58 @@ class AttemptResult(BaseModel):
     per_kazanim: list[KazanimBreakdown]
     results: list[QuestionResult]
     completed_at: str
+
+
+# ── Quiz geçmişi (geçmiş denemeleri tekrar gözden geçirme) ───────────────────
+
+
+class AttemptHistoryItem(BaseModel):
+    """Geçmiş listesi satırı (hafif — sorular yok)."""
+
+    attempt_id: str
+    quiz_id: str
+    title: str
+    grade: int | None = None
+    topic_id: str
+    difficulty: str
+    score: int
+    total: int
+    completed_at: str
+    has_detail: bool  # soru-bazlı detay reconstruct edilebilir mi
+
+
+class AttemptHistoryResponse(BaseModel):
+    items: list[AttemptHistoryItem]
+
+
+class AttemptReviewItem(BaseModel):
+    """Geçmiş detayında tek soru: doğru cevap + çözüm + kullanıcının cevabı."""
+
+    number: int
+    question: str
+    question_type: QuestionType
+    kazanim_kod: str
+    options: list[str] | None = None
+    is_correct: bool
+    correct_answer: str
+    correct_index: int | None = None
+    solution_steps: str | list[SolutionStep]
+    submitted: SubmittedAnswer | None = None
+
+
+class AttemptDetail(BaseModel):
+    """Geçmiş bir denemenin tam gözden geçirmesi."""
+
+    attempt_id: str
+    quiz_id: str
+    title: str
+    grade: int | None = None
+    topic_id: str
+    difficulty: str
+    score: int
+    total: int
+    duration_seconds: int | None = None
+    completed_at: str
+    per_kazanim: list[KazanimBreakdown] = []
+    review: list[AttemptReviewItem] = []
+    has_detail: bool = True

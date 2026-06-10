@@ -3,15 +3,19 @@
 import * as React from "react";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
-import { Check, Loader2, Sparkles, X } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MarkdownQuestion } from "@/components/MarkdownQuestion";
 import { ScoreRing } from "@/components/ScoreRing";
+import {
+  OPTION_LETTERS,
+  QuestionReview,
+  stripInlineOptions,
+} from "@/components/QuestionReview";
 
 import { getQuiz, submitAttempt } from "@/lib/api";
 import { rollupByTopic } from "@/lib/curriculum";
@@ -19,7 +23,6 @@ import type {
   AttemptResult,
   QuestionResult,
   QuizPublic,
-  SolutionStep,
   SubmittedAnswer,
 } from "@/lib/types";
 
@@ -27,49 +30,6 @@ interface AnswerState {
   selectedIndex?: number;
   boolAnswer?: boolean;
   texts?: string[];
-}
-
-const OPTION_LETTERS = ["A", "B", "C", "D", "E"];
-
-// MCQ soru metni şıkları gömülü içerebilir ("... A) 4 B) 5"). Radio butonlarla
-// tekrar göstermemek için, en az 2 şık işareti varsa metni ilk işaretten keser.
-function stripInlineOptions(text: string): string {
-  const marker = /\s+[A-E]\s*[\)\.]\s+/g;
-  const matches = text.match(marker);
-  if (!matches || matches.length < 2) return text;
-  const idx = text.search(/\s+[A-E]\s*[\)\.]\s+/);
-  return idx > 0 ? text.slice(0, idx).trim() : text;
-}
-
-function SolutionView({
-  steps,
-}: {
-  steps: string | SolutionStep[];
-}) {
-  if (typeof steps === "string") {
-    if (!steps.trim()) return null;
-    return (
-      <div className="mt-2 rounded-md bg-muted/50 p-3 text-xs">
-        <MarkdownQuestion text={steps} />
-      </div>
-    );
-  }
-  if (!steps.length) return null;
-  return (
-    <ol className="mt-2 space-y-1 rounded-md bg-muted/50 p-3 text-xs">
-      {steps.map((s) => (
-        <li key={s.step_no} className="flex gap-2">
-          <span className="font-medium text-muted-foreground">{s.step_no}.</span>
-          <span>
-            {s.description}
-            {s.computation ? (
-              <span className="ml-1 font-mono text-primary">{s.computation}</span>
-            ) : null}
-          </span>
-        </li>
-      ))}
-    </ol>
-  );
 }
 
 export function QuizSolver({ quizId }: { quizId: string }) {
@@ -81,6 +41,9 @@ export function QuizSolver({ quizId }: { quizId: string }) {
   const [answers, setAnswers] = React.useState<Record<number, AnswerState>>({});
   const [submitting, setSubmitting] = React.useState(false);
   const [result, setResult] = React.useState<AttemptResult | null>(null);
+  const [submittedPayload, setSubmittedPayload] = React.useState<
+    SubmittedAnswer[]
+  >([]);
   const startedAtRef = React.useRef<number>(0);
 
   React.useEffect(() => {
@@ -133,6 +96,7 @@ export function QuizSolver({ quizId }: { quizId: string }) {
         answers: payload,
         duration_seconds: duration,
       });
+      setSubmittedPayload(payload);
       setResult(res);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e: unknown) {
@@ -166,7 +130,9 @@ export function QuizSolver({ quizId }: { quizId: string }) {
   }
 
   if (result) {
-    return <ResultsView quiz={quiz} result={result} />;
+    return (
+      <ResultsView quiz={quiz} result={result} submitted={submittedPayload} />
+    );
   }
 
   const answeredCount = quiz.questions.filter((q) => {
@@ -307,15 +273,20 @@ export function QuizSolver({ quizId }: { quizId: string }) {
 function ResultsView({
   quiz,
   result,
+  submitted,
 }: {
   quiz: QuizPublic;
   result: AttemptResult;
+  submitted: SubmittedAnswer[];
 }) {
   const pct = result.total
     ? Math.round((result.score / result.total) * 100)
     : 0;
   const byNumber = new Map<number, QuestionResult>(
     result.results.map((r): [number, QuestionResult] => [r.number, r]),
+  );
+  const submittedByNumber = new Map<number, SubmittedAnswer>(
+    submitted.map((s): [number, SubmittedAnswer] => [s.number, s]),
   );
 
   // Kazanım kodları yerine KONU bazında kırılım (anlaşılırlık).
@@ -395,33 +366,19 @@ function ResultsView({
       <ol className="space-y-3">
         {quiz.questions.map((q) => {
           const r = byNumber.get(q.number);
-          const correct = r?.is_correct ?? false;
+          if (!r) return null;
           return (
-            <Card key={q.number} className="space-y-2 p-5">
-              <div className="flex items-start gap-2">
-                <span
-                  className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-white ${
-                    correct ? "bg-emerald-500" : "bg-red-500"
-                  }`}
-                >
-                  {correct ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    <X className="h-4 w-4" />
-                  )}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <MarkdownQuestion text={q.question} />
-                </div>
-              </div>
-              {r ? (
-                <div className="pl-8 text-sm">
-                  <Badge variant={correct ? "secondary" : "outline"}>
-                    Doğru cevap: {r.correct_answer}
-                  </Badge>
-                  <SolutionView steps={r.solution_steps} />
-                </div>
-              ) : null}
+            <Card key={q.number} className="p-5">
+              <QuestionReview
+                number={q.number}
+                question={q.question}
+                questionType={r.question_type}
+                options={r.options}
+                isCorrect={r.is_correct}
+                correctAnswer={r.correct_answer}
+                solutionSteps={r.solution_steps}
+                submitted={submittedByNumber.get(q.number)}
+              />
             </Card>
           );
         })}
