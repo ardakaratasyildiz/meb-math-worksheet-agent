@@ -27,6 +27,11 @@ import {
   listTopics,
   listWorksheetHistory,
 } from "@/lib/api";
+import {
+  getGradesLocal,
+  getKazanimlarLocal,
+  getTopicsLocal,
+} from "@/lib/curriculum";
 import { track } from "@/lib/analytics";
 import { addHistory, type HistoryItem } from "@/lib/history";
 import { useGenerateStore, type TypeGroupKey } from "@/lib/store";
@@ -173,9 +178,17 @@ export function GenerateForm() {
 
   const { userId } = useAuth();
 
-  const [grades, setGrades] = React.useState<GradeInfo[]>([]);
-  const [topics, setTopics] = React.useState<TopicInfo[]>([]);
-  const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>([]);
+  // Dropdown verisi lokal müfredat snapshot'ından başlatılır → seçenekler ilk
+  // render'da hazır gelir, Render backend'inin cold-start'ını beklemez (eski
+  // "30-40 sn boş kalıyor" sorununun kök sebebi). Backend yine arka planda
+  // yoklanıp olası drift'i düzeltir (aşağıdaki effect'ler).
+  const [grades, setGrades] = React.useState<GradeInfo[]>(getGradesLocal);
+  const [topics, setTopics] = React.useState<TopicInfo[]>(() =>
+    getTopicsLocal(grade),
+  );
+  const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>(() =>
+    topicId ? getKazanimlarLocal(grade, topicId) : [],
+  );
   // Progressive disclosure: gelişmiş ayarlar varsayılan kapalı. İlk kullanıcı
   // 5 alanlı (sınıf/konu/kazanım/zorluk/sayı) sade ekranla karşılaşır;
   // detay isteyen "▾ Gelişmiş ayarlar"ı açar.
@@ -199,19 +212,37 @@ export function GenerateForm() {
     brandSubtitle,
   ]);
 
+  // Aşağıdaki üç effect lokal listeyi backend'le senkronlar. Backend boş/hatalı
+  // dönerse (ör. cold-start sırasında) lokal snapshot korunur — seçenekler asla
+  // boşalmaz. Yalnız dolu bir yanıt geldiğinde üzerine yazılır.
   React.useEffect(() => {
-    listGrades().then(setGrades).catch(() => setGrades([]));
+    listGrades()
+      .then((g) => {
+        if (g.length) setGrades(g);
+      })
+      .catch(() => {});
   }, []);
 
   React.useEffect(() => {
-    listTopics(grade).then(setTopics).catch(() => setTopics([]));
+    setTopics(getTopicsLocal(grade));
+    listTopics(grade)
+      .then((t) => {
+        if (t.length) setTopics(t);
+      })
+      .catch(() => {});
   }, [grade]);
 
   React.useEffect(() => {
-    if (!topicId) return;
+    if (!topicId) {
+      setKazanimlar([]);
+      return;
+    }
+    setKazanimlar(getKazanimlarLocal(grade, topicId));
     listKazanimlar(grade, topicId)
-      .then(setKazanimlar)
-      .catch(() => setKazanimlar([]));
+      .then((k) => {
+        if (k.length) setKazanimlar(k);
+      })
+      .catch(() => {});
   }, [grade, topicId]);
 
   const isLoading = status === "loading";
