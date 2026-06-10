@@ -67,13 +67,14 @@ jobs:
           import app.services.grading
           import app.services.progress
           import app.services.attempt_review
+          import app.services.gamification
           import app.routers.quizzes
           import app.routers.me
           import scripts.eval.ab_runner
           import scripts.eval.check_regression
           print('imports OK')
           "
-      - name: Unit tests (yapısal cevap + quiz store + puanlama + ilerleme + geçmiş — LLM'siz, saf)
+      - name: Unit tests (yapısal + quiz store + puanlama + ilerleme + geçmiş + oyunlaştırma — saf)
         env:
           PYTHONIOENCODING: "utf-8"
           GEMINI_API_KEY: "fake-key-for-import-only"
@@ -83,6 +84,7 @@ jobs:
           python tests/test_grading.py
           python tests/test_progress.py
           python tests/test_attempt_review.py
+          python tests/test_gamification.py
 
   # 2. PR gate: hızlı eval (~1-2 dk) — sadece PR'lar ve manual dispatch'te
   quick-eval:

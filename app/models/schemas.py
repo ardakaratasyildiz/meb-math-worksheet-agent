@@ -427,6 +427,18 @@ class ProgressResponse(BaseModel):
     daily_trend: list[DailyTrendPoint] = []  # son 30 gün, gün-bazlı (eski→yeni)
 
 
+class GamificationResponse(BaseModel):
+    """Oyunlaştırma — XP/seviye/seri (rozetler frontend'de mastery'den türetilir)."""
+
+    xp: int
+    level: int
+    xp_in_level: int  # mevcut seviyede kazanılan XP
+    xp_for_next: int  # sonraki seviyeye toplam gereken XP (seviye genişliği)
+    streak_current: int
+    streak_longest: int
+    total_active_days: int
+
+
 # ── Çözülebilir quiz (öğrenme döngüsü, Adım 1) ───────────────────────────────
 # Mevcut worksheet akışından AYRI: yalnız otomatik-puanlanabilir tipler, site
 # içinde çözülür, cevaplar istemciye SIZMAZ (anti-kopya).
