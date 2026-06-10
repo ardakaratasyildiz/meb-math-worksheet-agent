@@ -84,6 +84,16 @@ class QuizStore:
             "CREATE INDEX IF NOT EXISTS idx_attempts_solver "
             "ON attempts(solver_tenant_id, completed_at DESC)"
         )
+        # Migration: quiz bağlam snapshot'ı (geçmiş, quiz FIFO-trim'lense bile
+        # bozulmasın). Idempotent — sütun yoksa eklenir.
+        cols = {
+            r[1]
+            for r in self._db.execute("PRAGMA table_info(attempts)").fetchall()
+        }
+        if "quiz_snapshot_json" not in cols:
+            self._db.execute(
+                "ALTER TABLE attempts ADD COLUMN quiz_snapshot_json TEXT"
+            )
         self._db.execute(
             """
             CREATE TABLE IF NOT EXISTS mastery_state (
@@ -188,17 +198,27 @@ class QuizStore:
         total: int,
         duration_seconds: int | None,
         per_kazanim: list[dict],
+        quiz_snapshot: dict | None = None,
     ) -> dict:
-        """Çözüm denemesini kaydeder. {id, completed_at} döner."""
+        """Çözüm denemesini kaydeder. {id, completed_at} döner.
+
+        quiz_snapshot: {title, grade, topic_id, difficulty, questions:[...]} —
+        denemeyi self-contained yapar; quiz FIFO-trim'lense bile geçmiş çalışır.
+        """
         attempt_id = uuid.uuid4().hex
         now = time.time()
         completed_at = datetime.now(tz=timezone.utc).isoformat()
+        snapshot_json = (
+            json.dumps(quiz_snapshot, ensure_ascii=False)
+            if quiz_snapshot is not None
+            else None
+        )
         with self._lock:
             assert self._db is not None
             self._db.execute(
                 "INSERT INTO attempts (id, quiz_id, solver_tenant_id, answers_json, "
-                "score, total, duration_seconds, per_kazanim_json, completed_at) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "score, total, duration_seconds, per_kazanim_json, completed_at, "
+                "quiz_snapshot_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     attempt_id,
                     quiz_id,
@@ -209,10 +229,127 @@ class QuizStore:
                     duration_seconds,
                     json.dumps(per_kazanim, ensure_ascii=False),
                     now,
+                    snapshot_json,
                 ),
+            )
+            # FIFO trim — snapshot satırları büyüttüğü için attempts de sınırlanır.
+            self._db.execute(
+                """
+                DELETE FROM attempts
+                WHERE solver_tenant_id = ?
+                  AND id NOT IN (
+                    SELECT id FROM attempts
+                    WHERE solver_tenant_id = ?
+                    ORDER BY completed_at DESC
+                    LIMIT ?
+                  )
+                """,
+                (solver_tenant_id, solver_tenant_id, self._max),
             )
             self._db.commit()
         return {"id": attempt_id, "completed_at": completed_at}
+
+    def list_attempts(self, solver_tenant_id: str, limit: int = 50) -> list[dict]:
+        """Kullanıcının çözüm denemeleri — en yeni önce (quiz geçmişi listesi).
+
+        Meta snapshot'tan okunur; eski (snapshot'sız) kayıtlar için quizzes'e
+        LEFT JOIN ile geri düşülür. has_detail = soru detayı reconstruct edilebilir mi.
+        """
+        if not solver_tenant_id:
+            return []
+        lim = max(1, min(self._max, limit))
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                """
+                SELECT a.id, a.quiz_id, a.score, a.total, a.completed_at,
+                       a.quiz_snapshot_json,
+                       q.title, q.grade, q.topic_id, q.difficulty
+                FROM attempts a
+                LEFT JOIN quizzes q
+                       ON q.id = a.quiz_id AND q.owner_tenant_id = a.solver_tenant_id
+                WHERE a.solver_tenant_id = ?
+                ORDER BY a.completed_at DESC
+                LIMIT ?
+                """,
+                (solver_tenant_id, lim),
+            ).fetchall()
+        out: list[dict] = []
+        for r in rows:
+            snap = None
+            if r[5]:
+                try:
+                    snap = json.loads(r[5])
+                except json.JSONDecodeError:
+                    snap = None
+            has_quiz = r[6] is not None
+            has_detail = snap is not None or has_quiz
+            out.append(
+                {
+                    "attempt_id": r[0],
+                    "quiz_id": r[1],
+                    "title": (snap or {}).get("title") or r[6] or "Quiz",
+                    "grade": (snap or {}).get("grade") if snap else r[7],
+                    "topic_id": (snap or {}).get("topic_id") or r[8] or "",
+                    "difficulty": (snap or {}).get("difficulty") or r[9] or "orta",
+                    "score": r[2],
+                    "total": r[3],
+                    "completed_at": datetime.fromtimestamp(
+                        r[4], tz=timezone.utc
+                    ).isoformat(),
+                    "has_detail": has_detail,
+                }
+            )
+        return out
+
+    def get_attempt(self, attempt_id: str, solver_tenant_id: str) -> dict | None:
+        """Tek denemeyi sahibine getirir (cevaplar + quiz snapshot). Sahip değilse None.
+
+        snapshot None ise (eski kayıt) quizzes'ten best-effort doldurulur.
+        """
+        if not attempt_id or not solver_tenant_id:
+            return None
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT id, quiz_id, score, total, duration_seconds, completed_at, "
+                "answers_json, quiz_snapshot_json FROM attempts "
+                "WHERE id = ? AND solver_tenant_id = ?",
+                (attempt_id, solver_tenant_id),
+            ).fetchone()
+        if not row:
+            return None
+        try:
+            answers = json.loads(row[6]) if row[6] else []
+        except json.JSONDecodeError:
+            answers = []
+        snapshot = None
+        if row[7]:
+            try:
+                snapshot = json.loads(row[7])
+            except json.JSONDecodeError:
+                snapshot = None
+        if snapshot is None:
+            # Eski kayıt: quiz hâlâ duruyorsa oradan reconstruct et.
+            quiz = self.get(row[1], solver_tenant_id)
+            if quiz is not None:
+                snapshot = {
+                    "title": quiz["title"],
+                    "grade": quiz["grade"],
+                    "topic_id": quiz["topic_id"],
+                    "difficulty": quiz["difficulty"],
+                    "questions": quiz["questions"],
+                }
+        return {
+            "attempt_id": row[0],
+            "quiz_id": row[1],
+            "score": row[2],
+            "total": row[3],
+            "duration_seconds": row[4],
+            "completed_at": datetime.fromtimestamp(row[5], tz=timezone.utc).isoformat(),
+            "answers": answers,
+            "snapshot": snapshot,
+        }
 
     def update_mastery(self, tenant_id: str, per_kazanim: list[dict]) -> None:
         """Kazanım-bazlı doğru/toplam sayaçlarını kümülatif günceller (UPSERT)."""

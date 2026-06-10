@@ -279,6 +279,14 @@ def submit_attempt(
         total=total,
         duration_seconds=req.duration_seconds,
         per_kazanim=per_kazanim_dicts,
+        # Snapshot: geçmiş, quiz FIFO-trim'lense bile self-contained kalsın.
+        quiz_snapshot={
+            "title": record["title"],
+            "grade": record["grade"],
+            "topic_id": record["topic_id"],
+            "difficulty": record["difficulty"],
+            "questions": [q.model_dump() for q in stored],
+        },
     )
     # Mastery güncelle — best-effort, puanlama sonucu kullanıcıya yine döner.
     try:

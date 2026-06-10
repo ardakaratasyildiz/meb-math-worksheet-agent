@@ -5,6 +5,8 @@
  */
 import type { HistoryItem } from "./history";
 import type {
+  AttemptDetail,
+  AttemptHistoryItem,
   AttemptResult,
   CreateQuizRequest,
   Difficulty,
@@ -331,6 +333,27 @@ export async function submitAttempt(
 export async function getProgress(tenantId: string): Promise<ProgressResponse> {
   return request<ProgressResponse>(
     `/api/me/progress?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Kullanıcının geçmiş çözüm denemeleri (en yeni önce). */
+export async function listMyAttempts(
+  tenantId: string,
+  limit = 50,
+): Promise<AttemptHistoryItem[]> {
+  const r = await request<{ items: AttemptHistoryItem[] }>(
+    `/api/me/attempts?tenant_id=${encodeURIComponent(tenantId)}&limit=${limit}`,
+  );
+  return r.items;
+}
+
+/** Geçmiş bir denemenin tam gözden geçirmesi (soru + doğru cevap + senin cevabın). */
+export async function getMyAttempt(
+  attemptId: string,
+  tenantId: string,
+): Promise<AttemptDetail> {
+  return request<AttemptDetail>(
+    `/api/me/attempts/${encodeURIComponent(attemptId)}?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 

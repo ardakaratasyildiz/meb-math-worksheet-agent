@@ -144,8 +144,73 @@ def test_advanced_options_helpers() -> None:
     check(_split_buckets(3) == {Difficulty.ORTA: 3}, "az soru tek seviye (orta)")
 
 
+def test_attempt_history() -> None:
+    print("attempt geçmişi — snapshot + trim-proof + legacy")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        store = QuizStore(db_path=str(Path(tmp) / "t.sqlite3"))
+        try:
+            qs = _sample_questions()
+            quiz = store.create(
+                owner_tenant_id="u1", title="Geçmiş Quiz", grade=5,
+                topic_id="dogal_sayilar", difficulty="orta",
+                questions=[q.model_dump() for q in qs],
+            )
+            snapshot = {
+                "title": "Geçmiş Quiz", "grade": 5, "topic_id": "dogal_sayilar",
+                "difficulty": "orta", "questions": [q.model_dump() for q in qs],
+            }
+            att = store.record_attempt(
+                quiz_id=quiz["id"], solver_tenant_id="u1",
+                answers=[{"number": 1, "selected_index": 1}],
+                score=3, total=4, duration_seconds=30,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 3, "total": 4}],
+                quiz_snapshot=snapshot,
+            )
+            # list_attempts
+            lst = store.list_attempts("u1")
+            check(len(lst) == 1, f"1 deneme listede: {len(lst)}")
+            check(lst[0]["title"] == "Geçmiş Quiz" and lst[0]["score"] == 3, "liste meta+skor")
+            check(lst[0]["has_detail"] is True, "snapshot → has_detail True")
+            # get_attempt
+            got = store.get_attempt(att["id"], "u1")
+            check(got is not None and got["snapshot"] is not None, "get_attempt snapshot var")
+            check(len(got["snapshot"]["questions"]) == 4, "snapshot 4 soru")
+            check(got["answers"][0]["selected_index"] == 1, "kullanıcı cevabı saklı")
+            # Ownership
+            check(store.get_attempt(att["id"], "u2") is None, "başka tenant erişemez")
+            check(store.list_attempts("u2") == [], "başka tenant boş liste")
+
+            # TRIM-PROOF: quiz silinse bile geçmiş çalışır (snapshot sayesinde)
+            store._db.execute("DELETE FROM quizzes")  # type: ignore[union-attr]
+            store._db.commit()  # type: ignore[union-attr]
+            lst2 = store.list_attempts("u1")
+            check(len(lst2) == 1 and lst2[0]["has_detail"] is True, "quiz silinse de liste+detay")
+            got2 = store.get_attempt(att["id"], "u1")
+            check(got2["snapshot"] is not None, "quiz silinse de snapshot reconstruct")
+
+            # LEGACY: snapshot'sız (NULL) kayıt + quiz yok → has_detail False
+            store._db.execute(  # type: ignore[union-attr]
+                "INSERT INTO attempts (id, quiz_id, solver_tenant_id, answers_json, "
+                "score, total, duration_seconds, per_kazanim_json, completed_at, "
+                "quiz_snapshot_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)",
+                ("legacy1", "goneQuiz", "u1", "[]", 2, 5, None, "[]", 9999999999.0),
+            )
+            store._db.commit()  # type: ignore[union-attr]
+            legacy = next(x for x in store.list_attempts("u1") if x["attempt_id"] == "legacy1")
+            check(legacy["has_detail"] is False, "legacy NULL-snapshot + quiz yok → has_detail False")
+            lg = store.get_attempt("legacy1", "u1")
+            check(lg is not None and lg["snapshot"] is None, "legacy get_attempt snapshot None")
+        finally:
+            store.close()
+
+
 def main() -> int:
-    for fn in (test_store_crud, test_to_public_anti_copy, test_advanced_options_helpers):
+    for fn in (
+        test_store_crud,
+        test_to_public_anti_copy,
+        test_advanced_options_helpers,
+        test_attempt_history,
+    ):
         fn()
     print()
     if _failures:

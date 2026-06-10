@@ -226,6 +226,50 @@ export interface AttemptResult {
   completed_at: string;
 }
 
+// ── Quiz geçmişi ───────────────────────────────────────────────────────────
+
+export interface AttemptHistoryItem {
+  attempt_id: string;
+  quiz_id: string;
+  title: string;
+  grade?: number | null;
+  topic_id: string;
+  difficulty: string;
+  score: number;
+  total: number;
+  completed_at: string;
+  has_detail: boolean;
+}
+
+export interface AttemptReviewItem {
+  number: number;
+  question: string;
+  question_type: QuestionType;
+  kazanim_kod: string;
+  options?: string[] | null;
+  is_correct: boolean;
+  correct_answer: string;
+  correct_index?: number | null;
+  solution_steps: string | SolutionStep[];
+  submitted?: SubmittedAnswer | null;
+}
+
+export interface AttemptDetail {
+  attempt_id: string;
+  quiz_id: string;
+  title: string;
+  grade?: number | null;
+  topic_id: string;
+  difficulty: string;
+  score: number;
+  total: number;
+  duration_seconds?: number | null;
+  completed_at: string;
+  per_kazanim: KazanimBreakdown[];
+  review: AttemptReviewItem[];
+  has_detail: boolean;
+}
+
 // ── İlerleme panosu ────────────────────────────────────────────────────────
 
 export interface KazanimProgress {

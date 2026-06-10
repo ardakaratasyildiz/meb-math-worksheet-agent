@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
+import { ArrowRight, History, Sparkles, TrendingUp } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 
@@ -14,7 +14,7 @@ export default function CozHubPage() {
         </p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-3">
         <Link href="/coz/yeni" className="group">
           <Card className="flex h-full flex-col gap-3 p-6 transition-colors hover:border-primary/40 hover:bg-accent/20">
             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
@@ -47,6 +47,24 @@ export default function CozHubPage() {
             </div>
             <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
               Görüntüle
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Card>
+        </Link>
+
+        <Link href="/coz/history" className="group">
+          <Card className="flex h-full flex-col gap-3 p-6 transition-colors hover:border-primary/40 hover:bg-accent/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <History className="h-5 w-5" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="font-semibold">Geçmiş quizlerim</h2>
+              <p className="text-sm text-muted-foreground">
+                Çözdüğün quizleri, doğru cevapları ve kendi cevaplarını incele.
+              </p>
+            </div>
+            <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
+              Aç
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </Card>
