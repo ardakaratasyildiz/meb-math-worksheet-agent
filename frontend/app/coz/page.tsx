@@ -34,18 +34,23 @@ export default function CozHubPage() {
           </Card>
         </Link>
 
-        <Card className="flex h-full flex-col gap-3 p-6 opacity-70">
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
-            <TrendingUp className="h-5 w-5" />
-          </div>
-          <div className="space-y-1">
-            <h2 className="font-semibold">İlerlemem</h2>
-            <p className="text-sm text-muted-foreground">
-              Kazanım bazlı gelişimin, zayıf konuların ve çözüm geçmişin —
-              <span className="font-medium"> çok yakında.</span>
-            </p>
-          </div>
-        </Card>
+        <Link href="/coz/ilerleme" className="group">
+          <Card className="flex h-full flex-col gap-3 p-6 transition-colors hover:border-primary/40 hover:bg-accent/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <TrendingUp className="h-5 w-5" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="font-semibold">İlerlemem</h2>
+              <p className="text-sm text-muted-foreground">
+                Kazanım bazlı gelişimin, zayıf konuların ve genel doğru oranın.
+              </p>
+            </div>
+            <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
+              Görüntüle
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Card>
+        </Link>
       </div>
     </div>
   );

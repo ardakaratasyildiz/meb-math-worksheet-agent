@@ -1,0 +1,26 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
+import { ProgressDashboard } from "@/components/ProgressDashboard";
+
+export default function CozIlerlemePage() {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <Link
+          href="/coz"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Çöz &amp; Geliş
+        </Link>
+        <h1 className="text-2xl font-semibold tracking-tight">İlerlemem</h1>
+        <p className="text-sm text-muted-foreground">
+          Kazanım bazlı gelişimin, zayıf konuların ve genel doğru oranın.
+        </p>
+      </div>
+
+      <ProgressDashboard />
+    </div>
+  );
+}

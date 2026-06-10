@@ -238,6 +238,18 @@ class QuizStore:
                 )
             self._db.commit()
 
+    def count_attempts(self, tenant_id: str) -> int:
+        """Kullanıcının toplam çözüm denemesi sayısı (ilerleme özeti)."""
+        if not tenant_id:
+            return 0
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT COUNT(*) FROM attempts WHERE solver_tenant_id = ?",
+                (tenant_id,),
+            ).fetchone()
+        return int(row[0]) if row else 0
+
     def get_mastery(self, tenant_id: str) -> list[dict]:
         """Kullanıcının kazanım-bazlı ustalık durumu (Adım 3 ilerleme panosu)."""
         if not tenant_id:

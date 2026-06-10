@@ -385,6 +385,31 @@ class ErrorResponse(BaseModel):
     detail: str
 
 
+# ── İlerleme panosu (öğrenme döngüsü — Adım 3) ───────────────────────────────
+
+
+class KazanimProgress(BaseModel):
+    kazanim_kod: str
+    correct: int
+    total: int
+    ratio: float  # correct / total (0.0–1.0)
+    last_seen_at: str
+
+
+class ProgressSummary(BaseModel):
+    total_answered: int
+    total_correct: int
+    accuracy: float  # genel doğru oranı (0.0–1.0)
+    kazanim_count: int
+    quizzes_solved: int  # toplam çözüm denemesi (attempts)
+
+
+class ProgressResponse(BaseModel):
+    summary: ProgressSummary
+    mastery: list[KazanimProgress]  # tümü, zayıf→güçlü sırada
+    weak: list[KazanimProgress]      # eşik altı + yeterli veri olan kazanımlar
+
+
 # ── Çözülebilir quiz (öğrenme döngüsü, Adım 1) ───────────────────────────────
 # Mevcut worksheet akışından AYRI: yalnız otomatik-puanlanabilir tipler, site
 # içinde çözülür, cevaplar istemciye SIZMAZ (anti-kopya).
