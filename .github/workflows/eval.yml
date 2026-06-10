@@ -62,10 +62,15 @@ jobs:
           import app.services.history
           import app.services.critic
           import app.services.retriever
+          import app.services.structured
           import scripts.eval.ab_runner
           import scripts.eval.check_regression
           print('imports OK')
           "
+      - name: Unit tests (yapısal cevap — LLM'siz, saf)
+        env:
+          PYTHONIOENCODING: "utf-8"
+        run: python tests/test_structured.py
 
   # 2. PR gate: hızlı eval (~1-2 dk) — sadece PR'lar ve manual dispatch'te
   quick-eval:

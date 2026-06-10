@@ -277,6 +277,27 @@ class Question(BaseModel):
     kazanim_kod: str
     question_type: QuestionType
 
+    # ── Yapısal cevap alanları (Adım 0 — etkileşimli çözme) ───────────────────
+    # Yalnız "çözülebilir" tiplerde dolar; açık-uçlu/PDF akışında None kalır.
+    # Eski kod ve PDF render bu alanları YOK SAYAR → tam geriye uyumlu. Sayısal
+    # (salt_islem) tip ek alan istemez: `answer` + SymPy ile puanlanır.
+    options: list[str] | None = Field(
+        None,
+        description="Çoktan seçmeli şıkları (A,B,C,D… sırasıyla). Yalnız coktan_secmeli.",
+    )
+    correct_index: int | None = Field(
+        None,
+        description="Çoktan seçmeli doğru şıkkın 0-tabanlı indeksi.",
+    )
+    blanks: list[str] | None = Field(
+        None,
+        description="Boşluk doldurma: metindeki boşlukların sıralı doğru cevapları.",
+    )
+    correct_bool: bool | None = Field(
+        None,
+        description="Doğru/Yanlış sorusunda doğru önerme mi (True=Doğru, False=Yanlış).",
+    )
+
     # JSON escape kaynaklı LaTeX bozulmasını her Question oluşturulurken onar —
     # taze üretim, generation cache okuması ve /render.pdf girdileri dahil.
     @field_validator("question", "answer")
@@ -291,6 +312,15 @@ class Question(BaseModel):
     ) -> "str | list[SolutionStep]":
         # list[SolutionStep] dalı zaten SolutionStep validator'ında onarıldı.
         return repair_latex_control_chars(v) if isinstance(v, str) else v
+
+    @field_validator("options", "blanks")
+    @classmethod
+    def _repair_list(cls, v: list[str] | None) -> list[str] | None:
+        # Yapısal metin alanları da LaTeX bozulmasından korunur (şık/boşluk
+        # cevabı matematik içerebilir).
+        if v is None:
+            return v
+        return [repair_latex_control_chars(x) if isinstance(x, str) else x for x in v]
 
 
 class AnswerKeyEntry(BaseModel):

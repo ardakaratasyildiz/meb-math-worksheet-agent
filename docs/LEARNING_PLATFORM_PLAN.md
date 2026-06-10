@@ -246,6 +246,81 @@ quizzes/attempts modeli, çöz ekranı, otomatik puanlama, anında geri bildirim
 
 ---
 
+## 15. v1 kapsam kararı (2026-06-10, bağlayıcı)
+
+Plan sahibiyle yapılan ikinci hizalama turunda v1 kapsamı **"Kişisel Öğrenme
+Döngüsü"** olarak daraltıldı. Bağlayıcı kararlar:
+
+1. **Önce kişisel döngü, paylaşım ertelendi.** v1 = çöz → puanla → kazanım-bazlı
+   eksik → hedefli öneri → ilerleme. Paylaşım (link + uygulama-içi, eski Faz 2/4)
+   v1 dışında; veri/değer toplandıktan sonra eklenecek.
+2. **Değerlendirme sayım-bazlı, LLM'siz.** Kazanım doğru-oranı + hedefli quiz
+   önerisi. AI kavram-yanılgısı raporu (Faz 5) v1 dışında.
+3. **Gelişim ekranı sade ilerleme panosu.** Kazanım ustalık %, çözülen quiz
+   geçmişi, zayıf konular. XP/seviye/streak/rozet (Faz 3 oyunlaştırma) v1 dışında.
+
+### v1 inşa sırası (her adım = ayrı PR, tek başına test edilebilir)
+
+- **Adım 0 — Yapısal cevap şeması (ön koşul).** `Question`'a opsiyonel
+  `options`/`correct_index`, `blanks`, `pairs`, `correct_order`. Yalnız çözülebilir
+  tiplerde doldurulur; PDF/açık-uçlu akışı etkilenmez. Critic'e doğru-cevap
+  tutarlılık kontrolü. (Bkz. §5 "yapısal cevap şeması", seçenek B.)
+- **Adım 1 — Veri modeli + üret/kaydet.** Turso `quizzes`, `attempts`,
+  `mastery_state` (shares/gamification YOK). `POST /api/quizzes`,
+  `GET /api/quizzes/{id}` (cevapsız).
+- **Adım 2 — Çöz ekranı + otomatik puanlama.** `POST /api/quizzes/{id}/attempt`
+  (sunucu-taraflı normalize+SymPy+yapısal puanlama). Frontend çöz ekranı + skor +
+  kazanım kırılımı. Üretim formuna "PDF kağıt" / "Site içinde çöz" modu.
+- **Adım 3 — İlerleme + eksik + öneri.** `GET /api/me/progress`, ilerleme panosu,
+  zayıf-kazanım → hedefli üretim önerisi.
+
+> Ertelenenler (v1 sonrası): link/uygulama-içi paylaşım + sonuç panosu,
+> oyunlaştırma (XP/seviye/streak/rozet), AI kavram-yanılgısı raporu. §7-§12'deki
+> ilgili endpoint/tablolar o zaman devreye alınır.
+
+---
+
+## 16. Bilgi mimarisi — yüzey ayrımı (2026-06-10, bağlayıcı)
+
+Karar: öğrenme döngüsü mevcut PDF akışına **karışmaz**; ayrı bir rotada yaşar.
+"İki kapı, ortak motor": her iki yüzey aynı üretim hattını çağırır, ama zihinsel
+model / çıktı / veri tabloları ayrıdır.
+
+| | `/generate` (MEVCUT) | `/coz` (YENİ) |
+|---|---|---|
+| Amaç | Üret → PDF indir | Üret → Çöz → Geliş |
+| Tipler | Tümü (açık-uçlu dahil) | Yalnız çözülebilir |
+| Çıktı | PDF | Ekranda quiz + skor |
+| Kullanım | Gel-al, tek seferlik | Kişisel, login zorunlu, kalıcı |
+
+**Rota haritası (yeni):**
+```
+/coz              → hub (login zorunlu): "Yeni quiz çöz" + "İlerlemem" kartları
+/coz/yeni         → sade çözülebilir-quiz üretim formu (PDF/markalama/gelişmiş ayar YOK)
+/coz/quiz/[id]    → çözme ekranı: soru soru → anlık doğru/yanlış + çözüm → skor + kazanım kırılımı
+/coz/ilerleme     → gelişim panosu: kazanım ustalık %, geçmiş, zayıf konular → hedefli öneri
+```
+`app/coz/layout.tsx` nested layout + sekme çubuğu (Çöz · İlerleme), Clerk
+`<SignedIn>` ile sarılı. `app/layout.tsx`'e dokunulmaz.
+
+**Navigasyon:** `TopNavBar.NAV_LINKS`'e `{ href: "/coz", label: "Çöz & Geliş" }`.
+Landing'e ikincil CTA "Çözerek çalış →" (ana "Üret" CTA korunur). `/history`
+(PDF geçmişi) ve `/coz/ilerleme` (öğrenme geçmişi) ayrı kalır.
+
+**Form kararı: ayrı `SolveForm` — GenerateForm'a SIFIR dokunuş.** /coz için yeni,
+sade bir form yazılır; sınıf/konu/kazanım seçiciyi lokal `getGradesLocal/
+getTopicsLocal/getKazanimlarLocal` (curriculum.ts) besler. Ortak komponente
+refactor REDDEDİLDİ (regresyon riski).
+
+**Mevcutu bozmama sınırları (somut):** `app/generate/page.tsx`, `GenerateForm.tsx`,
+`/api/worksheets/*`, `worksheet_history`, PDF render → **sıfır değişiklik**. Tek
+geriye-uyumlu dokunuş: `Question`'a *opsiyonel* yapısal alanlar (eski kod/PDF
+görmezden gelir). Yeni her şey izole: `/coz/*` rotaları, yeni komponentler, yeni
+Turso tabloları, `/api/quizzes/*` + `/api/me/progress` endpoint'leri. `/coz`
+tümüyle silinse `/generate` etkilenmez.
+
+---
+
 ## Ek: bu doküman `implementation_plan.md`'nin ötesinde yeni bir bölümdür
 Eski plan "web frontend / PDF kapsam dışı" diyordu; ikisi de artık canlı. Bu plan,
 canlı ürünün üzerine **öğrenme döngüsü** katmanını tarif eder.
