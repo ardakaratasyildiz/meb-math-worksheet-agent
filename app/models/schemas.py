@@ -444,3 +444,60 @@ class QuizPublic(BaseModel):
     question_count: int
     questions: list[QuizQuestionPublic]
     created_at: str
+
+
+# ── Çözüm denemesi + puanlama (Adım 2) ───────────────────────────────────────
+
+
+class SubmittedAnswer(BaseModel):
+    """Bir soruya verilen cevap. Soru tipine göre ilgili alan doldurulur."""
+
+    number: int
+    selected_index: int | None = None  # coktan_secmeli — seçilen şık (0-tabanlı)
+    bool_answer: bool | None = None     # dogru_yanlis
+    texts: list[str] | None = None      # bosluk_doldurma (sıralı) / salt_islem ([tek])
+
+
+class SubmitAttemptRequest(BaseModel):
+    tenant_id: str = Field(..., min_length=1, max_length=64)
+    answers: list[SubmittedAnswer] = Field(default_factory=list)
+    duration_seconds: int | None = Field(None, ge=0)
+
+    @field_validator("tenant_id")
+    @classmethod
+    def _strip_tenant(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("tenant_id boş olamaz.")
+        return v
+
+
+class QuestionResult(BaseModel):
+    """Tek sorunun puanlama sonucu — çözüm SONRASI tam geri bildirim (cevap açılır)."""
+
+    number: int
+    is_correct: bool
+    kazanim_kod: str
+    question_type: QuestionType
+    correct_answer: str
+    solution_steps: str | list[SolutionStep]
+    # Zengin geri bildirim (tipe göre): doğru şık / şıklar.
+    options: list[str] | None = None
+    correct_index: int | None = None
+
+
+class KazanimBreakdown(BaseModel):
+    kazanim_kod: str
+    correct: int
+    total: int
+
+
+class AttemptResult(BaseModel):
+    attempt_id: str
+    quiz_id: str
+    score: int
+    total: int
+    duration_seconds: int | None = None
+    per_kazanim: list[KazanimBreakdown]
+    results: list[QuestionResult]
+    completed_at: str

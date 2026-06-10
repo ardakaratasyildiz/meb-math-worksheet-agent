@@ -176,6 +176,89 @@ class QuizStore:
             "questions": body.get("questions", []),
         }
 
+    # ── Attempts + mastery (Adım 2) ──────────────────────────────────────────
+
+    def record_attempt(
+        self,
+        *,
+        quiz_id: str,
+        solver_tenant_id: str,
+        answers: list[dict],
+        score: int,
+        total: int,
+        duration_seconds: int | None,
+        per_kazanim: list[dict],
+    ) -> dict:
+        """Çözüm denemesini kaydeder. {id, completed_at} döner."""
+        attempt_id = uuid.uuid4().hex
+        now = time.time()
+        completed_at = datetime.now(tz=timezone.utc).isoformat()
+        with self._lock:
+            assert self._db is not None
+            self._db.execute(
+                "INSERT INTO attempts (id, quiz_id, solver_tenant_id, answers_json, "
+                "score, total, duration_seconds, per_kazanim_json, completed_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    attempt_id,
+                    quiz_id,
+                    solver_tenant_id,
+                    json.dumps(answers, ensure_ascii=False),
+                    score,
+                    total,
+                    duration_seconds,
+                    json.dumps(per_kazanim, ensure_ascii=False),
+                    now,
+                ),
+            )
+            self._db.commit()
+        return {"id": attempt_id, "completed_at": completed_at}
+
+    def update_mastery(self, tenant_id: str, per_kazanim: list[dict]) -> None:
+        """Kazanım-bazlı doğru/toplam sayaçlarını kümülatif günceller (UPSERT)."""
+        if not tenant_id or not per_kazanim:
+            return
+        now = time.time()
+        with self._lock:
+            assert self._db is not None
+            for item in per_kazanim:
+                kod = item.get("kazanim_kod")
+                if not kod:
+                    continue
+                self._db.execute(
+                    """
+                    INSERT INTO mastery_state (tenant_id, kazanim_kod, correct, total, last_seen_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(tenant_id, kazanim_kod) DO UPDATE SET
+                        correct = correct + excluded.correct,
+                        total   = total   + excluded.total,
+                        last_seen_at = excluded.last_seen_at
+                    """,
+                    (tenant_id, kod, int(item.get("correct", 0)), int(item.get("total", 0)), now),
+                )
+            self._db.commit()
+
+    def get_mastery(self, tenant_id: str) -> list[dict]:
+        """Kullanıcının kazanım-bazlı ustalık durumu (Adım 3 ilerleme panosu)."""
+        if not tenant_id:
+            return []
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                "SELECT kazanim_kod, correct, total, last_seen_at FROM mastery_state "
+                "WHERE tenant_id = ? ORDER BY kazanim_kod",
+                (tenant_id,),
+            ).fetchall()
+        return [
+            {
+                "kazanim_kod": r[0],
+                "correct": r[1],
+                "total": r[2],
+                "last_seen_at": datetime.fromtimestamp(r[3], tz=timezone.utc).isoformat(),
+            }
+            for r in rows
+        ]
+
     def close(self) -> None:
         """Bağlantıyı kapatır (test temizliği / graceful shutdown)."""
         with self._lock:

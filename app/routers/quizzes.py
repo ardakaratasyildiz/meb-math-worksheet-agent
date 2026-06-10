@@ -19,13 +19,16 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from app.data.curriculum import get_topic
 from app.models.enums import Difficulty, QuestionType
 from app.models.schemas import (
+    AttemptResult,
     CreateQuizRequest,
     Question,
     QuizPublic,
     QuizQuestionPublic,
+    SubmitAttemptRequest,
 )
 from app.security import limiter, rate_limit_string, require_api_key
 from app.services.agent import AgentError, GeminiAgent
+from app.services.grading import grade_quiz
 from app.services.quiz_store import QUIZ_STORE
 from app.services.structured import derive_structured_fields, validate_structured
 
@@ -188,4 +191,54 @@ def get_quiz(
         difficulty=Difficulty(record["difficulty"]),
         created_at=record["created_at"],
         questions=questions,
+    )
+
+
+@router.post("/{quiz_id}/attempt", response_model=AttemptResult)
+def submit_attempt(
+    quiz_id: str,
+    req: SubmitAttemptRequest,
+    _api_key: str = Depends(require_api_key),
+) -> AttemptResult:
+    """Cevapları gönder → sunucuda LLM'siz puanla → sonuç + kazanım kırılımı.
+
+    Puanlama sunucuda yapılır (cevaplar istemcide yok). Sonuçta doğru cevap +
+    çözüm açığa çıkar (çözüm sonrası geri bildirim). Deneme + mastery kaydedilir.
+    """
+    record = QUIZ_STORE.get(quiz_id, req.tenant_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Quiz bulunamadı.")
+    stored = [Question(**q) for q in record["questions"]]
+
+    results, score, total, per_kazanim = grade_quiz(stored, req.answers)
+    per_kazanim_dicts = [k.model_dump() for k in per_kazanim]
+
+    attempt = QUIZ_STORE.record_attempt(
+        quiz_id=quiz_id,
+        solver_tenant_id=req.tenant_id,
+        answers=[a.model_dump() for a in req.answers],
+        score=score,
+        total=total,
+        duration_seconds=req.duration_seconds,
+        per_kazanim=per_kazanim_dicts,
+    )
+    # Mastery güncelle — best-effort, puanlama sonucu kullanıcıya yine döner.
+    try:
+        QUIZ_STORE.update_mastery(req.tenant_id, per_kazanim_dicts)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("mastery güncelleme hatası (tenant=%s): %s", req.tenant_id, exc)
+
+    logger.info(
+        "attempt: tenant=%s quiz=%s skor=%d/%d",
+        req.tenant_id, quiz_id, score, total,
+    )
+    return AttemptResult(
+        attempt_id=attempt["id"],
+        quiz_id=quiz_id,
+        score=score,
+        total=total,
+        duration_seconds=req.duration_seconds,
+        per_kazanim=per_kazanim,
+        results=results,
+        completed_at=attempt["completed_at"],
     )
