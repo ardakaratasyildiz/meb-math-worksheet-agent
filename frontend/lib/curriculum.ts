@@ -10,6 +10,14 @@
  * 38 (sınıf × konu) kombinasyonu — sitemap + programmatic landing page için.
  */
 
+import { KAZANIM_PAGES } from "./kazanimlar";
+import type {
+  EducationLevel,
+  GradeInfo,
+  KazanimInfo,
+  TopicInfo,
+} from "./types";
+
 export interface CurriculumPage {
   grade: number;
   topicId: string;
@@ -62,4 +70,51 @@ export const CURRICULUM_PAGES: CurriculumPage[] = [
 
 export function getCurriculumPageBySlug(slug: string): CurriculumPage | undefined {
   return CURRICULUM_PAGES.find((p) => p.slug === slug);
+}
+
+// ── Form dropdown verisi (lokal, anında) ───────────────────────────────────
+// GenerateForm'daki sınıf/konu/kazanım seçenekleri eskiden her açılışta Render
+// backend'ine gidiyordu; backend free-tier'da uykuya geçince ilk istek 30-40 sn
+// sürüyor ve seçenekler boş kalıyordu. Müfredat statik olduğu için aşağıdaki
+// builder'lar bu listeleri lokal snapshot'tan (CURRICULUM_PAGES + KAZANIM_PAGES)
+// üretir → seçenekler cold-start'a bağımlı olmadan anında gelir. Backend yine
+// arka planda yoklanıp olası drift'i düzeltir.
+
+const GRADE_LEVELS: Record<number, EducationLevel> = {
+  1: "İlkokul",
+  2: "İlkokul",
+  3: "İlkokul",
+  4: "İlkokul",
+  5: "Ortaokul",
+  6: "Ortaokul",
+  7: "Ortaokul",
+};
+
+export function getGradesLocal(): GradeInfo[] {
+  return Object.keys(GRADE_LEVELS)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map((grade) => ({
+      id: grade,
+      name: `${grade}. Sınıf`,
+      level: GRADE_LEVELS[grade],
+    }));
+}
+
+export function getTopicsLocal(grade: number): TopicInfo[] {
+  return CURRICULUM_PAGES.filter((p) => p.grade === grade).map((p) => ({
+    id: p.topicId,
+    name: p.topicName,
+    description: p.description,
+    kazanim_count: p.kazanimCount,
+  }));
+}
+
+export function getKazanimlarLocal(
+  grade: number,
+  topicId: string,
+): KazanimInfo[] {
+  return KAZANIM_PAGES.filter(
+    (k) => k.grade === grade && k.topicId === topicId,
+  ).map((k) => ({ kod: k.kod, metin: k.metin }));
 }
