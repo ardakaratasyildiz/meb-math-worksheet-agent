@@ -2,14 +2,18 @@ import Link from "next/link";
 import {
   ArrowRight,
   Backpack,
+  BarChart3,
   BookOpen,
   CheckCircle2,
   FileCheck,
   GraduationCap,
   Hash,
   ListChecks,
+  PencilLine,
   ShieldCheck,
   Sparkles,
+  Target,
+  Trophy,
   Users,
   Zap,
 } from "lucide-react";
@@ -19,7 +23,14 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/JsonLd";
 import { SectionHeader } from "@/components/PageHeader";
+import { CURRICULUM_PAGES } from "@/lib/curriculum";
+import { KAZANIM_PAGES } from "@/lib/kazanimlar";
 import sampleData from "@/lib/sample-questions.json";
+
+// Gerçek müfredat kapsamı (statik snapshot'tan dinamik sayılır — uydurma değil).
+const KAZANIM_COUNT = KAZANIM_PAGES.length;
+const WORKAREA_COUNT = CURRICULUM_PAGES.length; // sınıf × konu
+const TOPIC_COUNT = new Set(CURRICULUM_PAGES.map((p) => p.topicId)).size;
 
 export default function LandingPage() {
   return (
@@ -27,7 +38,9 @@ export default function LandingPage() {
       <JsonLd id="org-schema" data={organizationSchema()} />
       <JsonLd id="website-schema" data={websiteSchema()} />
       <Hero />
+      <SocialProof />
       <Showroom />
+      <SolveAndGrow />
       <SystemSummary />
       <HowItWorks />
       <UseCases />
@@ -69,10 +82,15 @@ function Hero() {
           ve adım adım çözümüyle hazır PDF birkaç saniyede elinizde. İndirin,
           yazdırın, öğrencilerinizle paylaşın.
         </p>
-        <div className="flex flex-col items-center gap-3 sm:flex-row">
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
           <Button asChild size="lg" className="gap-2 px-7">
             <Link href="/sign-up">
               Ücretsiz dene <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="secondary" className="gap-2 px-7">
+            <Link href="/coz">
+              Çözerek çalış <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="px-7">
@@ -95,6 +113,107 @@ function TrustBullet({ children }: { children: React.ReactNode }) {
       <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
       {children}
     </span>
+  );
+}
+
+// ─── SOCIAL PROOF — gerçek müfredat kapsamı (uydurma metrik DEĞİL) ────────────
+
+function SocialProof() {
+  const stats = [
+    { value: String(KAZANIM_COUNT), label: "MEB kazanımı" },
+    { value: "1–7", label: "sınıf kapsamı" },
+    { value: String(TOPIC_COUNT), label: "konu başlığı" },
+    { value: String(WORKAREA_COUNT), label: "sınıf × konu çalışma alanı" },
+  ];
+  return (
+    <section className="border-y bg-card/50">
+      <div className="container grid grid-cols-2 gap-6 py-10 sm:grid-cols-4">
+        {stats.map((s) => (
+          <div key={s.label} className="text-center">
+            <p className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              {s.value}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+              {s.label}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ─── ÇÖZ & GELİŞ TANITIMI — öğrenme döngüsü ──────────────────────────────────
+
+const SOLVE_FEATURES = [
+  {
+    icon: <PencilLine className="h-5 w-5" />,
+    title: "Site içinde çöz",
+    body: "Üretilen quizi test gibi çöz: çoktan seçmeli, doğru/yanlış, boşluk doldurma ve işlem.",
+  },
+  {
+    icon: <BarChart3 className="h-5 w-5" />,
+    title: "Anında puan + konu raporu",
+    body: "Kaç doğru kaç yanlış, konu bazında kırılım — kazanım eksiğini hemen gör.",
+  },
+  {
+    icon: <Target className="h-5 w-5" />,
+    title: "Eksiğine göre pratik",
+    body: "Zayıf kazanımına tek tıkla yeni test; öğrenme döngüsünü kapat.",
+  },
+  {
+    icon: <Trophy className="h-5 w-5" />,
+    title: "Gelişim + rozetler",
+    body: "30 günlük gelişim grafiği, seviye, seri ve konu rozetleriyle motive ol.",
+  },
+];
+
+function SolveAndGrow() {
+  return (
+    <section className="bg-card py-20">
+      <div className="container">
+        <div className="mx-auto max-w-2xl text-center">
+          <Badge
+            variant="outline"
+            className="border-primary/30 bg-accent text-accent-foreground"
+          >
+            <Sparkles className="mr-1.5 h-3 w-3" />
+            Yeni · Çöz &amp; Geliş
+          </Badge>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Sadece üretme — site içinde çöz, gelişimini gör
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            Üret → test gibi çöz → anında kaç doğru/yanlış → kazanım eksiğine
+            göre pratik. Çalışma kağıdı üreticisinin yanında artık tam bir
+            öğrenme döngüsü.
+          </p>
+        </div>
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {SOLVE_FEATURES.map((f, i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-3 rounded-xl border bg-background/50 p-5"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+                {f.icon}
+              </div>
+              <h3 className="text-base font-semibold text-foreground">
+                {f.title}
+              </h3>
+              <p className="text-sm text-muted-foreground">{f.body}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 flex justify-center">
+          <Button asChild size="lg" className="gap-2 px-7">
+            <Link href="/coz">
+              Çözerek çalış <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </section>
   );
 }
 
