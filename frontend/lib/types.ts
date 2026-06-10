@@ -154,3 +154,71 @@ export interface GenerateWorksheetResponse {
   worksheet: Worksheet;
   metadata: WorksheetMetadata;
 }
+
+// ── Çözülebilir quiz + puanlama (öğrenme döngüsü) ──────────────────────────
+
+export interface CreateQuizRequest {
+  grade: number;
+  topic_id: string;
+  kazanim_kod?: string | null;
+  difficulty: Difficulty;
+  question_count: number;
+  tenant_id: string;
+}
+
+// Çözme için soru — CEVAPSIZ. options = çoktan seçmeli şıkları (cevap değil);
+// blank_count = boşluk doldurmada kaç giriş gerektiği.
+export interface QuizQuestionPublic {
+  number: number;
+  question: string;
+  question_type: QuestionType;
+  kazanim_kod: string;
+  options?: string[] | null;
+  blank_count?: number | null;
+}
+
+export interface QuizPublic {
+  id: string;
+  title: string;
+  grade: number;
+  topic_id: string;
+  difficulty: Difficulty;
+  question_count: number;
+  questions: QuizQuestionPublic[];
+  created_at: string;
+}
+
+export interface SubmittedAnswer {
+  number: number;
+  selected_index?: number | null;
+  bool_answer?: boolean | null;
+  texts?: string[] | null;
+}
+
+export interface QuestionResult {
+  number: number;
+  is_correct: boolean;
+  kazanim_kod: string;
+  question_type: QuestionType;
+  correct_answer: string;
+  solution_steps: string | SolutionStep[];
+  options?: string[] | null;
+  correct_index?: number | null;
+}
+
+export interface KazanimBreakdown {
+  kazanim_kod: string;
+  correct: number;
+  total: number;
+}
+
+export interface AttemptResult {
+  attempt_id: string;
+  quiz_id: string;
+  score: number;
+  total: number;
+  duration_seconds?: number | null;
+  per_kazanim: KazanimBreakdown[];
+  results: QuestionResult[];
+  completed_at: string;
+}

@@ -5,6 +5,8 @@
  */
 import type { HistoryItem } from "./history";
 import type {
+  AttemptResult,
+  CreateQuizRequest,
   Difficulty,
   GenerateWorksheetRequest,
   GenerateWorksheetResponse,
@@ -12,6 +14,8 @@ import type {
   KazanimInfo,
   Question,
   QuestionType,
+  QuizPublic,
+  SubmittedAnswer,
   TopicInfo,
   Worksheet,
 } from "./types";
@@ -285,6 +289,41 @@ export async function clearWorksheetHistory(tenantId: string): Promise<void> {
     { method: "DELETE", headers: headers() },
   );
   if (!res.ok) throw new Error(`Geçmiş temizlenemedi: ${res.status}`);
+}
+
+// ---- Çözülebilir quiz (öğrenme döngüsü) ---------------------------------
+
+/** Çözülebilir quiz üret + kaydet. Cevapsız QuizPublic döner. */
+export async function createQuiz(body: CreateQuizRequest): Promise<QuizPublic> {
+  return request<QuizPublic>("/api/quizzes", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+/** Quiz'i çözmek için getir (cevapsız, owner-only). */
+export async function getQuiz(
+  quizId: string,
+  tenantId: string,
+): Promise<QuizPublic> {
+  return request<QuizPublic>(
+    `/api/quizzes/${encodeURIComponent(quizId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Cevapları gönder → sunucuda puanlanır → sonuç + kazanım kırılımı döner. */
+export async function submitAttempt(
+  quizId: string,
+  body: {
+    tenant_id: string;
+    answers: SubmittedAnswer[];
+    duration_seconds?: number;
+  },
+): Promise<AttemptResult> {
+  return request<AttemptResult>(
+    `/api/quizzes/${encodeURIComponent(quizId)}/attempt`,
+    { method: "POST", body: JSON.stringify(body) },
+  );
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

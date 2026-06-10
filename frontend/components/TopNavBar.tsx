@@ -19,6 +19,7 @@ import {
 // kişisel/korumalı bir görünüm olduğu için UserButton açılır menüsünde.
 const NAV_LINKS = [
   { href: "/generate", label: "Üretim" },
+  { href: "/coz", label: "Çöz & Geliş" },
   { href: "/features", label: "Özellikler" },
   { href: "/pricing", label: "Fiyatlandırma" },
   { href: "/faq", label: "Sıkça Sorulanlar" },
