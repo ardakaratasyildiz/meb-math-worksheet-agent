@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { History, Moon, Sun } from "lucide-react";
+import { History, Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { UserButton, useAuth } from "@clerk/nextjs";
 
@@ -59,6 +59,23 @@ const TopNavBar = () => {
           ))}
         </div>
         <div className="flex items-center gap-2">
+          {/* Mobil menü — navbar linkleri md altında gizli; burada açılır. */}
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Menü">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {NAV_LINKS.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link href={link.href}>{link.label}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           {mounted && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
