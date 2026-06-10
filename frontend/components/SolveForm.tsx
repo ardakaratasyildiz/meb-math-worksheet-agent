@@ -3,9 +3,10 @@
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { Loader2, Sparkles } from "lucide-react";
+import { ChevronDown, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -16,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 
 import { createQuiz } from "@/lib/api";
 import {
@@ -25,10 +27,18 @@ import {
 } from "@/lib/curriculum";
 import type {
   Difficulty,
+  DifficultyMode,
   GradeInfo,
   KazanimInfo,
   TopicInfo,
 } from "@/lib/types";
+
+// Çözülebilir 4 tip — dar union (QuestionType'tan türetmiyoruz; o genişletirdi).
+type SolvableType =
+  | "coktan_secmeli"
+  | "dogru_yanlis"
+  | "bosluk_doldurma"
+  | "salt_islem";
 
 const DIFFICULTIES: { value: Difficulty; label: string }[] = [
   { value: "kolay", label: "Kolay" },
@@ -36,7 +46,28 @@ const DIFFICULTIES: { value: Difficulty; label: string }[] = [
   { value: "zor", label: "Zor" },
 ];
 
+const DIFFICULTY_MODES: { value: DifficultyMode; label: string }[] = [
+  { value: "single", label: "Tek seviye" },
+  { value: "mixed", label: "Karışık" },
+  { value: "progressive", label: "Progresyon" },
+];
+
+// Çözülebilir 4 tip — gelişmiş panelde tek tek açılıp kapatılır.
+const SOLVABLE_TYPES: { value: SolvableType; label: string; hint: string }[] = [
+  { value: "coktan_secmeli", label: "Çoktan seçmeli", hint: "4 şıklı, tek doğru" },
+  { value: "dogru_yanlis", label: "Doğru / Yanlış", hint: "Tek önerme" },
+  { value: "bosluk_doldurma", label: "Boşluk doldurma", hint: "____ ile boşluk" },
+  { value: "salt_islem", label: "İşlem", hint: "Sayısal sonuç" },
+];
+
 const KAZANIM_AUTO = "__AUTO__";
+
+const ALL_TYPES_ON: Record<SolvableType, boolean> = {
+  coktan_secmeli: true,
+  dogru_yanlis: true,
+  bosluk_doldurma: true,
+  salt_islem: true,
+};
 
 // Çözülebilir quiz üretim formu — /generate'in sade kardeşi. PDF/markalama/
 // gelişmiş ayar YOK; çıktı PDF değil, çözülecek quiz. Dropdownlar lokal müfredat
@@ -58,6 +89,19 @@ export function SolveForm() {
   const [difficulty, setDifficulty] = React.useState<Difficulty>("orta");
   const [questionCount, setQuestionCount] = React.useState(10);
   const [submitting, setSubmitting] = React.useState(false);
+
+  // Gelişmiş (varsayılan kapalı): tip seçimi + zorluk modu.
+  const [advancedOpen, setAdvancedOpen] = React.useState(false);
+  const [types, setTypes] = React.useState<Record<SolvableType, boolean>>(
+    ALL_TYPES_ON,
+  );
+  const [difficultyMode, setDifficultyMode] =
+    React.useState<DifficultyMode>("single");
+
+  const enabledTypes = SOLVABLE_TYPES.filter((t) => types[t.value]);
+  const advancedChangeCount =
+    (difficultyMode !== "single" ? 1 : 0) +
+    (enabledTypes.length !== SOLVABLE_TYPES.length ? 1 : 0);
 
   const [grades] = React.useState<GradeInfo[]>(getGradesLocal);
   const [topics, setTopics] = React.useState<TopicInfo[]>(() =>
@@ -84,8 +128,19 @@ export function SolveForm() {
       });
       return;
     }
+    if (enabledTypes.length === 0) {
+      toast.error("Soru tipi seçimi", {
+        description: "En az bir çözülebilir tip açık olmalı.",
+      });
+      return;
+    }
     setSubmitting(true);
     try {
+      // Tümü açıksa null (sunucu varsayılanı = 4 tip); alt küme ise listeyi gönder.
+      const question_types =
+        enabledTypes.length === SOLVABLE_TYPES.length
+          ? null
+          : enabledTypes.map((t) => t.value);
       const quiz = await createQuiz({
         grade,
         topic_id: topicId,
@@ -93,6 +148,8 @@ export function SolveForm() {
         difficulty,
         question_count: questionCount,
         tenant_id: userId,
+        question_types,
+        difficulty_mode: difficultyMode,
       });
       router.push(`/coz/quiz/${quiz.id}`);
     } catch (e: unknown) {
@@ -177,23 +234,31 @@ export function SolveForm() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label>Zorluk</Label>
-          <div className="grid grid-cols-3 gap-2">
-            {DIFFICULTIES.map((d) => (
-              <Button
-                key={d.value}
-                type="button"
-                variant={difficulty === d.value ? "default" : "outline"}
-                onClick={() => setDifficulty(d.value)}
-                size="sm"
-              >
-                {d.label}
-              </Button>
-            ))}
+      {/* Zorluk butonları yalnız tek-seviye modda; karışık/progresyonda gizlenir
+          (zorluk seçimi anlamsız), soru sayısı tek başına genişler. */}
+      <div
+        className={`grid gap-4 ${
+          difficultyMode === "single" ? "md:grid-cols-2" : "md:grid-cols-1"
+        }`}
+      >
+        {difficultyMode === "single" ? (
+          <div className="space-y-1.5">
+            <Label>Zorluk</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {DIFFICULTIES.map((d) => (
+                <Button
+                  key={d.value}
+                  type="button"
+                  variant={difficulty === d.value ? "default" : "outline"}
+                  onClick={() => setDifficulty(d.value)}
+                  size="sm"
+                >
+                  {d.label}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
@@ -213,6 +278,106 @@ export function SolveForm() {
         </div>
       </div>
 
+      {/* ── Gelişmiş ayarlar (varsayılan kapalı) ───────────────────────── */}
+      <div className="space-y-3">
+        <button
+          type="button"
+          onClick={() => setAdvancedOpen((v) => !v)}
+          aria-expanded={advancedOpen}
+          className="flex w-full items-center justify-between gap-3 rounded-md border bg-background px-4 py-3 text-sm transition-colors hover:bg-accent/30"
+        >
+          <span className="flex items-center gap-2 font-medium">
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${
+                advancedOpen ? "rotate-180" : ""
+              }`}
+            />
+            Gelişmiş ayarlar
+            {advancedChangeCount > 0 ? (
+              <Badge variant="secondary" className="ml-1 text-[10px]">
+                {advancedChangeCount} değişiklik
+              </Badge>
+            ) : null}
+          </span>
+          <span className="hidden text-[11px] text-muted-foreground sm:inline">
+            Soru tipleri · Zorluk modu
+          </span>
+        </button>
+
+        {advancedOpen ? (
+          <div className="space-y-6 rounded-md border bg-accent/10 p-4">
+            {/* Zorluk modu */}
+            <div className="space-y-1.5">
+              <Label>Zorluk modu</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {DIFFICULTY_MODES.map((m) => (
+                  <Button
+                    key={m.value}
+                    type="button"
+                    variant={difficultyMode === m.value ? "default" : "outline"}
+                    onClick={() => setDifficultyMode(m.value)}
+                    size="sm"
+                  >
+                    {m.label}
+                  </Button>
+                ))}
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Karışık/progresyon kolay-orta-zor dağıtır; en az 5 soru önerilir.
+              </p>
+            </div>
+
+            {/* Soru tipleri */}
+            <div className="space-y-2.5">
+              <div className="space-y-1">
+                <Label className="text-sm font-semibold">Soru tipleri</Label>
+                <p className="text-[11px] text-muted-foreground">
+                  Hangi çözülebilir tipler üretilsin? En az bir tip açık olmalı.
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {SOLVABLE_TYPES.map((t) => (
+                  <div
+                    key={t.value}
+                    role="presentation"
+                    onClick={() =>
+                      setTypes((prev) => ({
+                        ...prev,
+                        [t.value]: !prev[t.value],
+                      }))
+                    }
+                    className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-md border bg-background p-3 text-left transition-colors hover:bg-accent/30 ${
+                      types[t.value] ? "border-primary/40 bg-accent/20" : ""
+                    }`}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium leading-tight">
+                        {t.label}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground">
+                        {t.hint}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={types[t.value]}
+                      onCheckedChange={(v) =>
+                        setTypes((prev) => ({ ...prev, [t.value]: v }))
+                      }
+                      aria-label={t.label}
+                    />
+                  </div>
+                ))}
+              </div>
+              {enabledTypes.length === 0 ? (
+                <p className="text-[11px] text-destructive">
+                  Üretim için en az bir tip açık olmalı.
+                </p>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+      </div>
+
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[11px] text-muted-foreground">
           Çözülebilir tipler üretilir (çoktan seçmeli, doğru/yanlış, boşluk
@@ -220,7 +385,7 @@ export function SolveForm() {
         </p>
         <Button
           onClick={onStart}
-          disabled={submitting || !topicId}
+          disabled={submitting || !topicId || enabledTypes.length === 0}
           size="lg"
           className="gap-2 sm:min-w-[200px]"
         >

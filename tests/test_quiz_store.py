@@ -23,7 +23,11 @@ os.environ.setdefault("GEMINI_API_KEY", "fake-key-for-tests")
 
 from app.models.enums import Difficulty, QuestionType  # noqa: E402
 from app.models.schemas import Question  # noqa: E402
-from app.routers.quizzes import _to_public  # noqa: E402
+from app.routers.quizzes import (  # noqa: E402
+    _resolve_solvable_types,
+    _split_buckets,
+    _to_public,
+)
 from app.services.quiz_store import QuizStore  # noqa: E402
 
 _failures: list[str] = []
@@ -122,8 +126,26 @@ def test_to_public_anti_copy() -> None:
     check(pub.question_count == 4, "question_count=4")
 
 
+def test_advanced_options_helpers() -> None:
+    print("gelişmiş seçenek helper'ları (tip filtresi + bucket)")
+    # None → 4 çözülebilir tip
+    check(len(_resolve_solvable_types(None)) == 4, "None → 4 tip")
+    # Çözülebilir olmayan tip elenir
+    mixed = _resolve_solvable_types(
+        [QuestionType.COKTAN_SECMELI, QuestionType.SOZEL_PROBLEM]
+    )
+    check(mixed == [QuestionType.COKTAN_SECMELI], f"sözel elendi: {mixed}")
+    # Hiç çözülebilir yoksa boş (router 400 döner)
+    check(_resolve_solvable_types([QuestionType.SOZEL_PROBLEM]) == [], "çözülebilir yoksa boş")
+    # Bucket dağılımı
+    b10 = _split_buckets(10)
+    check(sum(b10.values()) == 10, f"bucket toplamı 10: {b10}")
+    check(len(b10) == 3, "10 soru 3 zorluğa bölünür")
+    check(_split_buckets(3) == {Difficulty.ORTA: 3}, "az soru tek seviye (orta)")
+
+
 def main() -> int:
-    for fn in (test_store_crud, test_to_public_anti_copy):
+    for fn in (test_store_crud, test_to_public_anti_copy, test_advanced_options_helpers):
         fn()
     print()
     if _failures:

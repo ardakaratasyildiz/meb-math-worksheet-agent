@@ -164,6 +164,9 @@ export interface CreateQuizRequest {
   difficulty: Difficulty;
   question_count: number;
   tenant_id: string;
+  // Gelişmiş (opsiyonel): çözülebilir tip alt kümesi + zorluk modu.
+  question_types?: QuestionType[] | null;
+  difficulty_mode?: DifficultyMode;
 }
 
 // Çözme için soru — CEVAPSIZ. options = çoktan seçmeli şıkları (cevap değil);
