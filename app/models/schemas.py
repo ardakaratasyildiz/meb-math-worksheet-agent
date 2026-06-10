@@ -404,10 +404,18 @@ class ProgressSummary(BaseModel):
     quizzes_solved: int  # toplam çözüm denemesi (attempts)
 
 
+class AttemptSummary(BaseModel):
+    completed_at: str
+    score: int
+    total: int
+    ratio: float  # score / total (0.0–1.0)
+
+
 class ProgressResponse(BaseModel):
     summary: ProgressSummary
     mastery: list[KazanimProgress]  # tümü, zayıf→güçlü sırada
     weak: list[KazanimProgress]      # eşik altı + yeterli veri olan kazanımlar
+    recent: list[AttemptSummary] = []  # son denemeler (eski→yeni), trend için
 
 
 # ── Çözülebilir quiz (öğrenme döngüsü, Adım 1) ───────────────────────────────

@@ -11,8 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MarkdownQuestion } from "@/components/MarkdownQuestion";
+import { ScoreRing } from "@/components/ScoreRing";
 
 import { getQuiz, submitAttempt } from "@/lib/api";
+import { rollupByTopic } from "@/lib/curriculum";
 import type {
   AttemptResult,
   QuestionResult,
@@ -316,40 +318,71 @@ function ResultsView({
     result.results.map((r): [number, QuestionResult] => [r.number, r]),
   );
 
+  // Kazanım kodları yerine KONU bazında kırılım (anlaşılırlık).
+  const topics = rollupByTopic(result.per_kazanim).sort((a, b) => a.ratio - b.ratio);
+  const wrongCount = result.total - result.score;
+  // Bu quiz'te en çok zorlanılan konu(lar) — "neyi yanlış yaptın" özeti.
+  const weakTopics = topics.filter((t) => t.ratio < 1 && t.total > 0);
+
   return (
     <div className="space-y-6">
-      <Card className="space-y-3 p-6 text-center">
-        <p className="text-sm text-muted-foreground">{quiz.title}</p>
-        <p className="text-4xl font-bold tabular-nums">
-          {result.score}
-          <span className="text-2xl text-muted-foreground">/{result.total}</span>
-        </p>
-        <p className="text-sm font-medium">
-          %{pct} doğru
-          {result.duration_seconds != null
-            ? ` · ${result.duration_seconds} sn`
-            : ""}
-        </p>
+      {/* Skor halkası + özet */}
+      <Card className="flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4">
+          <ScoreRing pct={pct} label="doğru" />
+          <div className="space-y-1">
+            <p className="text-sm text-muted-foreground">{quiz.title}</p>
+            <p className="text-2xl font-bold tabular-nums">
+              {result.score}
+              <span className="text-lg text-muted-foreground">
+                /{result.total}
+              </span>{" "}
+              <span className="text-base font-normal text-muted-foreground">
+                doğru
+              </span>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {wrongCount} yanlış
+              {result.duration_seconds != null
+                ? ` · ${result.duration_seconds} sn`
+                : ""}
+            </p>
+          </div>
+        </div>
+        {weakTopics.length ? (
+          <div className="w-full max-w-xs rounded-md bg-amber-50 p-3 text-xs dark:bg-amber-950/30 sm:w-auto">
+            <p className="font-medium text-amber-700 dark:text-amber-400">
+              En çok zorlandığın:
+            </p>
+            <p className="mt-0.5 text-amber-700/90 dark:text-amber-400/90">
+              {weakTopics
+                .slice(0, 2)
+                .map((t) => `${t.topicName} (${t.correct}/${t.total})`)
+                .join(", ")}
+            </p>
+          </div>
+        ) : null}
       </Card>
 
-      {result.per_kazanim.length ? (
+      {/* Konu bazlı kırılım */}
+      {topics.length ? (
         <Card className="space-y-3 p-5">
-          <h2 className="text-sm font-semibold">Kazanım kırılımı</h2>
-          <div className="space-y-2">
-            {result.per_kazanim.map((k) => {
-              const kpct = k.total ? Math.round((k.correct / k.total) * 100) : 0;
+          <h2 className="text-sm font-semibold">Konu bazında</h2>
+          <div className="space-y-2.5">
+            {topics.map((t) => {
+              const tpct = Math.round(t.ratio * 100);
               return (
-                <div key={k.kazanim_kod} className="space-y-1">
+                <div key={t.topicId} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-primary">{k.kazanim_kod}</span>
+                    <span className="font-medium">{t.topicName}</span>
                     <span className="tabular-nums text-muted-foreground">
-                      {k.correct}/{k.total}
+                      {t.correct}/{t.total} · %{tpct}
                     </span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                     <div
-                      className={`h-full ${kpct >= 60 ? "bg-emerald-500" : "bg-amber-500"}`}
-                      style={{ width: `${kpct}%` }}
+                      className={`h-full ${tpct >= 60 ? "bg-emerald-500" : "bg-amber-500"}`}
+                      style={{ width: `${tpct}%` }}
                     />
                   </div>
                 </div>

@@ -10,6 +10,7 @@ LLM yok, deterministik → router'dan ayrı tutuldu ki birim test edilebilsin.
 from __future__ import annotations
 
 from app.models.schemas import (
+    AttemptSummary,
     KazanimProgress,
     ProgressResponse,
     ProgressSummary,
@@ -21,8 +22,12 @@ WEAK_RATIO_THRESHOLD = 0.6
 WEAK_MIN_TOTAL = 3
 
 
-def build_progress(mastery_rows: list[dict], quizzes_solved: int) -> ProgressResponse:
-    """mastery_state satırları + attempt sayısından ProgressResponse üretir."""
+def build_progress(
+    mastery_rows: list[dict],
+    quizzes_solved: int,
+    recent_attempts: list[dict] | None = None,
+) -> ProgressResponse:
+    """mastery_state satırları + attempt sayısı + son denemelerden ProgressResponse."""
     items: list[KazanimProgress] = []
     total_answered = 0
     total_correct = 0
@@ -51,6 +56,18 @@ def build_progress(mastery_rows: list[dict], quizzes_solved: int) -> ProgressRes
         if x.total >= WEAK_MIN_TOTAL and x.ratio < WEAK_RATIO_THRESHOLD
     ]
 
+    recent = [
+        AttemptSummary(
+            completed_at=a.get("completed_at", ""),
+            score=int(a.get("score", 0)),
+            total=int(a.get("total", 0)),
+            ratio=(int(a.get("score", 0)) / int(a["total"]))
+            if a.get("total")
+            else 0.0,
+        )
+        for a in (recent_attempts or [])
+    ]
+
     summary = ProgressSummary(
         total_answered=total_answered,
         total_correct=total_correct,
@@ -58,4 +75,4 @@ def build_progress(mastery_rows: list[dict], quizzes_solved: int) -> ProgressRes
         kazanim_count=len(items),
         quizzes_solved=quizzes_solved,
     )
-    return ProgressResponse(summary=summary, mastery=items, weak=weak)
+    return ProgressResponse(summary=summary, mastery=items, weak=weak, recent=recent)

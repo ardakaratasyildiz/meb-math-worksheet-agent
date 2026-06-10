@@ -244,8 +244,16 @@ export interface ProgressSummary {
   quizzes_solved: number;
 }
 
+export interface AttemptSummary {
+  completed_at: string;
+  score: number;
+  total: number;
+  ratio: number;
+}
+
 export interface ProgressResponse {
   summary: ProgressSummary;
   mastery: KazanimProgress[];
   weak: KazanimProgress[];
+  recent: AttemptSummary[];
 }

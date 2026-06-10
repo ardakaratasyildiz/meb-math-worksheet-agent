@@ -250,6 +250,30 @@ class QuizStore:
             ).fetchone()
         return int(row[0]) if row else 0
 
+    def recent_attempts(self, tenant_id: str, limit: int = 10) -> list[dict]:
+        """Son N çözüm denemesi — eski→yeni sırada (trend grafiği için)."""
+        if not tenant_id:
+            return []
+        lim = max(1, min(50, limit))
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                "SELECT score, total, completed_at FROM attempts "
+                "WHERE solver_tenant_id = ? ORDER BY completed_at DESC LIMIT ?",
+                (tenant_id, lim),
+            ).fetchall()
+        # DESC çekildi → eski→yeni için ters çevir.
+        out = [
+            {
+                "score": r[0],
+                "total": r[1],
+                "completed_at": datetime.fromtimestamp(r[2], tz=timezone.utc).isoformat(),
+            }
+            for r in rows
+        ]
+        out.reverse()
+        return out
+
     def get_mastery(self, tenant_id: str) -> list[dict]:
         """Kullanıcının kazanım-bazlı ustalık durumu (Adım 3 ilerleme panosu)."""
         if not tenant_id:

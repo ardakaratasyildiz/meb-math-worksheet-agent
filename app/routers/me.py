@@ -23,4 +23,5 @@ def get_progress(
     """Kullanıcının kazanım ustalığı + zayıf konuları + genel özeti."""
     mastery_rows = QUIZ_STORE.get_mastery(tenant_id)
     quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
-    return build_progress(mastery_rows, quizzes_solved)
+    recent = QUIZ_STORE.recent_attempts(tenant_id, limit=10)
+    return build_progress(mastery_rows, quizzes_solved, recent)

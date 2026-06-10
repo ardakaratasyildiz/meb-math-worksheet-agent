@@ -72,11 +72,23 @@ def test_empty() -> None:
     print("boş veri")
     p = build_progress([], quizzes_solved=0)
     check(p.summary.accuracy == 0.0 and p.summary.total_answered == 0, "boş özet 0")
-    check(p.mastery == [] and p.weak == [], "boş listeler")
+    check(p.mastery == [] and p.weak == [] and p.recent == [], "boş listeler")
+
+
+def test_recent_trend() -> None:
+    print("trend (recent attempts)")
+    recent = [
+        {"completed_at": "2026-06-08T00:00:00+00:00", "score": 2, "total": 10},
+        {"completed_at": "2026-06-09T00:00:00+00:00", "score": 7, "total": 10},
+    ]
+    p = build_progress([_row("M.5.1.1", 9, 20)], quizzes_solved=2, recent_attempts=recent)
+    check(len(p.recent) == 2, f"2 deneme: {len(p.recent)}")
+    check(abs(p.recent[0].ratio - 0.2) < 1e-9, f"ilk deneme oranı 0.2: {p.recent[0].ratio}")
+    check(abs(p.recent[1].ratio - 0.7) < 1e-9, f"son deneme oranı 0.7: {p.recent[1].ratio}")
 
 
 def main() -> int:
-    for fn in (test_summary, test_weak_sort_and_filter, test_empty):
+    for fn in (test_summary, test_weak_sort_and_filter, test_empty, test_recent_trend):
         fn()
     print()
     if _failures:

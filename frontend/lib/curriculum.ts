@@ -133,3 +133,38 @@ export function findKazanimByKod(
     metin: k.metin,
   };
 }
+
+export interface TopicRollup {
+  topicId: string;
+  topicName: string;
+  correct: number;
+  total: number;
+  ratio: number;
+}
+
+// Kazanım-bazlı doğru/toplam sayıları KONU bazında toplar — raporlarda kazanım
+// kodları (M.5.2.1) yerine anlaşılır konu ("Kesirler %80") göstermek için.
+export function rollupByTopic(
+  items: { kazanim_kod: string; correct: number; total: number }[],
+): TopicRollup[] {
+  const map = new Map<
+    string,
+    { topicName: string; correct: number; total: number }
+  >();
+  for (const it of items) {
+    const info = findKazanimByKod(it.kazanim_kod);
+    const topicId = info?.topicId ?? "diger";
+    const topicName = info?.topicName ?? "Diğer";
+    const cur = map.get(topicId) ?? { topicName, correct: 0, total: 0 };
+    cur.correct += it.correct;
+    cur.total += it.total;
+    map.set(topicId, cur);
+  }
+  return Array.from(map.entries()).map(([topicId, v]) => ({
+    topicId,
+    topicName: v.topicName,
+    correct: v.correct,
+    total: v.total,
+    ratio: v.total ? v.correct / v.total : 0,
+  }));
+}
