@@ -16,6 +16,7 @@ proportional font'ta yamuk, tablo pipe'lı ham metin olarak basılırdı.
 """
 from __future__ import annotations
 
+import base64
 import io
 import logging
 import re
@@ -628,29 +629,72 @@ def _make_qr(data: str, size: float) -> Drawing:
     return d
 
 
-def _page_furniture(brand_name: str | None = None, brand_subtitle: str | None = None):
+def _decode_logo(brand_logo: str | None):
+    """base64 data-URL logoyu ReportLab ImageReader'a çevirir. Bozuksa None
+    (PDF üretimini asla bozmaz)."""
+    if not brand_logo or not brand_logo.strip():
+        return None
+    try:
+        from reportlab.lib.utils import ImageReader
+
+        data = brand_logo.strip()
+        if data.lower().startswith("data:") and "," in data:
+            data = data.split(",", 1)[1]
+        raw = base64.b64decode(data)
+        return ImageReader(io.BytesIO(raw))
+    except Exception:  # noqa: BLE001 — bozuk logo PDF'i bozmasın
+        logger.warning("brand_logo çözülemedi — logo atlanıyor")
+        return None
+
+
+def _page_furniture(
+    brand_name: str | None = None,
+    brand_subtitle: str | None = None,
+    brand_logo: str | None = None,
+):
     """Her sayfaya çizilen onPage callback'i üretir.
 
-    Üst bilgi (white-label, opsiyonel): kurum/öğretmen adı (sol) + alt satır
-    (sağ, ör. sınıf). brand_* boşsa header çizilmez → mevcut davranış korunur.
+    Üst bilgi (white-label, opsiyonel): kurum/öğretmen logosu (sol) + adı + alt
+    satır (sağ). brand_* boşsa header çizilmez → mevcut davranış korunur.
     Alt bilgi (büyüme döngüsü): site etiketi + sayfa no + QR.
     """
+    logo_reader = _decode_logo(brand_logo)
+
     def _draw(canvas, doc) -> None:
         canvas.saveState()
         # --- Üst bilgi: white-label marka ---
-        if brand_name or brand_subtitle:
+        if brand_name or brand_subtitle or logo_reader is not None:
             top_y = A4[1] - 1.15 * cm
+            name_x = 2 * cm
+            if logo_reader is not None:
+                try:
+                    iw, ih = logo_reader.getSize()
+                    logo_h = 1.0 * cm
+                    logo_w = (logo_h * iw / ih) if ih else logo_h
+                    logo_w = min(logo_w, 4 * cm)
+                    canvas.drawImage(
+                        logo_reader,
+                        2 * cm,
+                        top_y - 0.28 * cm,
+                        width=logo_w,
+                        height=logo_h,
+                        mask="auto",
+                        preserveAspectRatio=True,
+                    )
+                    name_x = 2 * cm + logo_w + 0.35 * cm
+                except Exception:  # noqa: BLE001
+                    name_x = 2 * cm
             if brand_name:
                 canvas.setFont(_BOLD_FONT, 9)
                 canvas.setFillColor(colors.HexColor("#1e3a8a"))
-                canvas.drawString(2 * cm, top_y, brand_name[:80])
+                canvas.drawString(name_x, top_y, brand_name[:80])
             if brand_subtitle:
                 canvas.setFont(_BODY_FONT, 8)
                 canvas.setFillColor(colors.grey)
                 canvas.drawRightString(A4[0] - 2 * cm, top_y, brand_subtitle[:60])
             canvas.setStrokeColor(colors.HexColor("#d0d7e2"))
             canvas.setLineWidth(0.5)
-            canvas.line(2 * cm, top_y - 0.18 * cm, A4[0] - 2 * cm, top_y - 0.18 * cm)
+            canvas.line(2 * cm, top_y - 0.45 * cm, A4[0] - 2 * cm, top_y - 0.45 * cm)
         # --- Alt bilgi: site + sayfa no + QR ---
         canvas.setFont(_BODY_FONT, 7)
         canvas.setFillColor(colors.grey)
@@ -680,6 +724,7 @@ def render_worksheet_pdf(
     include_solutions: bool = True,
     brand_name: str | None = None,
     brand_subtitle: str | None = None,
+    brand_logo: str | None = None,
 ) -> bytes:
     """Bir Worksheet'i PDF byte'larına render eder.
 
@@ -726,6 +771,6 @@ def render_worksheet_pdf(
         flow.append(PageBreak())
         flow.extend(_solutions_section(worksheet.questions, styles))
 
-    furniture = _page_furniture(brand_name, brand_subtitle)
+    furniture = _page_furniture(brand_name, brand_subtitle, brand_logo)
     doc.build(flow, onFirstPage=furniture, onLaterPages=furniture)
     return buf.getvalue()

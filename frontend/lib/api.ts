@@ -210,12 +210,9 @@ export async function generateWorksheetStream(
 }
 
 /**
- * PDF olarak doğrudan üretim — JSON sonuç dönmez.
- * İhtiyacımıza göre: önce JSON üret, sonra render.pdf'e gönder (cache hit'lerde
- * de aynı PDF üretilir, ek LLM çağrısı yapılmaz).
- *
- * Sprint 12-A: include_answer_key / include_solutions toggle'ları query
- * parametresi olarak gider (false → cevap anahtarı / çözüm sayfası atlanır).
+ * Önceden üretilmiş worksheet'i PDF'e render eder. Tüm alanlar BODY'de gider
+ * (brand_logo base64 olabildiği için query'ye sığmaz). White-label: kurum/öğretmen
+ * adı + alt satır + opsiyonel logo PDF üst bilgisine basılır.
  */
 export async function renderPdf(
   worksheet: Worksheet,
@@ -224,20 +221,20 @@ export async function renderPdf(
     include_solutions?: boolean;
     brand_name?: string;
     brand_subtitle?: string;
+    brand_logo?: string;
   } = {},
 ): Promise<Blob> {
-  const params = new URLSearchParams();
-  if (opts.include_answer_key === false) params.set("include_answer_key", "false");
-  if (opts.include_solutions === false) params.set("include_solutions", "false");
-  // White-label: kurum/öğretmen adı + alt satır PDF üst bilgisine basılır.
-  if (opts.brand_name?.trim()) params.set("brand_name", opts.brand_name.trim());
-  if (opts.brand_subtitle?.trim()) params.set("brand_subtitle", opts.brand_subtitle.trim());
-  const qs = params.toString();
-  const url = `${BASE}/api/worksheets/render.pdf${qs ? `?${qs}` : ""}`;
-  const res = await fetch(url, {
+  const res = await fetch(`${BASE}/api/worksheets/render.pdf`, {
     method: "POST",
     headers: headers(),
-    body: JSON.stringify(worksheet),
+    body: JSON.stringify({
+      worksheet,
+      include_answer_key: opts.include_answer_key ?? true,
+      include_solutions: opts.include_solutions ?? true,
+      brand_name: opts.brand_name?.trim() || null,
+      brand_subtitle: opts.brand_subtitle?.trim() || null,
+      brand_logo: opts.brand_logo || null,
+    }),
   });
   if (!res.ok) {
     throw new Error(`PDF render başarısız: ${res.status}`);

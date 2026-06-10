@@ -168,6 +168,7 @@ export function GenerateForm() {
     includeSolutions,
     brandName,
     brandSubtitle,
+    brandLogo,
     status,
     setForm,
     startGenerate,
@@ -201,7 +202,7 @@ export function GenerateForm() {
     if (!typeGroups.open_ended || !typeGroups.visual || !typeGroups.format) n++;
     if (!includeAnswerKey) n++;
     if (!includeSolutions) n++;
-    if (brandName.trim() || brandSubtitle.trim()) n++;
+    if (brandName.trim() || brandSubtitle.trim() || brandLogo) n++;
     return n;
   }, [
     difficultyMode,
@@ -210,6 +211,7 @@ export function GenerateForm() {
     includeSolutions,
     brandName,
     brandSubtitle,
+    brandLogo,
   ]);
 
   // Aşağıdaki üç effect lokal listeyi backend'le senkronlar. Backend boş/hatalı
@@ -248,6 +250,33 @@ export function GenerateForm() {
   const isLoading = status === "loading";
   const anyTypeGroupOn =
     typeGroups.open_ended || typeGroups.visual || typeGroups.format;
+
+  const logoInputRef = React.useRef<HTMLInputElement>(null);
+
+  function onLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // aynı dosya tekrar seçilebilsin
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Geçersiz dosya", {
+        description: "Lütfen bir görsel (PNG/JPG) seçin.",
+      });
+      return;
+    }
+    if (file.size > 500 * 1024) {
+      toast.error("Logo çok büyük", {
+        description: "En fazla 500 KB. Daha küçük bir görsel seçin.",
+      });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () =>
+      setForm({
+        brandLogo: typeof reader.result === "string" ? reader.result : "",
+      });
+    reader.onerror = () => toast.error("Logo okunamadı");
+    reader.readAsDataURL(file);
+  }
 
   async function onGenerate() {
     if (!anyTypeGroupOn) {
@@ -678,6 +707,50 @@ export function GenerateForm() {
                     onChange={(e) => setForm({ brandSubtitle: e.target.value })}
                   />
                 </div>
+              </div>
+
+              {/* Logo (opsiyonel) — PDF üst bilgisinde adın yanında görünür. */}
+              <div className="space-y-1.5">
+                <Label>Logo (opsiyonel)</Label>
+                <div className="flex flex-wrap items-center gap-3">
+                  {brandLogo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={brandLogo}
+                      alt="Logo önizleme"
+                      className="h-10 w-auto max-w-[120px] rounded border bg-white object-contain p-1"
+                    />
+                  ) : null}
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={onLogoChange}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => logoInputRef.current?.click()}
+                  >
+                    {brandLogo ? "Logoyu değiştir" : "Logo seç"}
+                  </Button>
+                  {brandLogo ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setForm({ brandLogo: "" })}
+                    >
+                      Kaldır
+                    </Button>
+                  ) : null}
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  PNG/JPG, en fazla 500 KB. Cihazında saklanır, her PDF&apos;e
+                  basılır.
+                </p>
               </div>
             </div>
           </div>
