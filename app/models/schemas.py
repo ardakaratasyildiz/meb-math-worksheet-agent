@@ -383,3 +383,64 @@ class GenerateWorksheetResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     detail: str
+
+
+# ── Çözülebilir quiz (öğrenme döngüsü, Adım 1) ───────────────────────────────
+# Mevcut worksheet akışından AYRI: yalnız otomatik-puanlanabilir tipler, site
+# içinde çözülür, cevaplar istemciye SIZMAZ (anti-kopya).
+
+
+class CreateQuizRequest(BaseModel):
+    """Çözülebilir quiz üretim isteği (POST /api/quizzes).
+
+    GenerateWorksheetRequest'in çekirdek alt kümesi; PDF/markalama/zorluk-modu
+    yok. tenant_id ZORUNLU — quiz kişiseldir (giriş gerekli).
+    """
+
+    grade: int = Field(..., ge=1, le=7)
+    topic_id: str = Field(..., description="Konu kimliği (curriculum.py)")
+    kazanim_kod: str | None = Field(
+        None, description="Opsiyonel: belirli kazanım. Boşsa konu geneli."
+    )
+    difficulty: Difficulty = Difficulty.ORTA
+    question_count: int = Field(10, ge=1, le=20)
+    tenant_id: str = Field(..., min_length=1, max_length=64)
+
+    @field_validator("topic_id")
+    @classmethod
+    def _strip_topic(cls, v: str) -> str:
+        return v.strip().lower()
+
+    @field_validator("tenant_id")
+    @classmethod
+    def _strip_tenant(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("tenant_id boş olamaz (quiz kişiseldir).")
+        return v
+
+
+class QuizQuestionPublic(BaseModel):
+    """Çözme için soru — CEVAPSIZ. answer/solution_steps/correct_index/blanks/
+    correct_bool kasıtlı olarak yoktur (kopya önleme). options = çoktan seçmeli
+    şıkları (cevap değil); blank_count = boşluk doldurmada kaç giriş gerektiği."""
+
+    number: int
+    question: str
+    question_type: QuestionType
+    kazanim_kod: str
+    options: list[str] | None = None
+    blank_count: int | None = None
+
+
+class QuizPublic(BaseModel):
+    """Çözülebilir quiz — cevapsız soru listesi + meta."""
+
+    id: str
+    title: str
+    grade: int
+    topic_id: str
+    difficulty: Difficulty
+    question_count: int
+    questions: list[QuizQuestionPublic]
+    created_at: str
