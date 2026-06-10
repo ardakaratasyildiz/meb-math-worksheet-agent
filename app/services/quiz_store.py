@@ -411,6 +411,27 @@ class QuizStore:
         out.reverse()
         return out
 
+    def attempts_since(self, tenant_id: str, since_epoch: float) -> list[dict]:
+        """Belirli epoch'tan sonraki denemeler — eski→yeni (30 günlük trend için)."""
+        if not tenant_id:
+            return []
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                "SELECT score, total, completed_at FROM attempts "
+                "WHERE solver_tenant_id = ? AND completed_at >= ? "
+                "ORDER BY completed_at ASC",
+                (tenant_id, since_epoch),
+            ).fetchall()
+        return [
+            {
+                "score": r[0],
+                "total": r[1],
+                "completed_at": datetime.fromtimestamp(r[2], tz=timezone.utc).isoformat(),
+            }
+            for r in rows
+        ]
+
     def get_mastery(self, tenant_id: str) -> list[dict]:
         """Kullanıcının kazanım-bazlı ustalık durumu (Adım 3 ilerleme panosu)."""
         if not tenant_id:
