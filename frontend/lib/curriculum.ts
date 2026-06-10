@@ -118,3 +118,18 @@ export function getKazanimlarLocal(
     (k) => k.grade === grade && k.topicId === topicId,
   ).map((k) => ({ kod: k.kod, metin: k.metin }));
 }
+
+// İlerleme panosu: kazanım kodundan (mastery_state yalnız kod tutar) okunabilir
+// metni + sınıf/konuyu çözer → "bu kazanımda pratik yap" derin-linki kurulabilir.
+export function findKazanimByKod(
+  kod: string,
+): { grade: number; topicId: string; topicName: string; metin: string } | undefined {
+  const k = KAZANIM_PAGES.find((x) => x.kod === kod);
+  if (!k) return undefined;
+  return {
+    grade: k.grade,
+    topicId: k.topicId,
+    topicName: k.topicName,
+    metin: k.metin,
+  };
+}

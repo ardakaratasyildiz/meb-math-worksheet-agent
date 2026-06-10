@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -44,17 +44,24 @@ const KAZANIM_AUTO = "__AUTO__";
 export function SolveForm() {
   const router = useRouter();
   const { userId } = useAuth();
+  // "Bu kazanımda pratik yap" derin-linki: /coz/yeni?grade=&topic=&kazanim=
+  const searchParams = useSearchParams();
+  const initialGrade = Number(searchParams.get("grade")) || 5;
+  const initialTopic = searchParams.get("topic") ?? "";
+  const initialKazanim = searchParams.get("kazanim");
 
-  const [grade, setGrade] = React.useState(5);
-  const [topicId, setTopicId] = React.useState("");
-  const [kazanimKod, setKazanimKod] = React.useState<string | null>(null);
+  const [grade, setGrade] = React.useState(initialGrade);
+  const [topicId, setTopicId] = React.useState(initialTopic);
+  const [kazanimKod, setKazanimKod] = React.useState<string | null>(
+    initialKazanim,
+  );
   const [difficulty, setDifficulty] = React.useState<Difficulty>("orta");
   const [questionCount, setQuestionCount] = React.useState(10);
   const [submitting, setSubmitting] = React.useState(false);
 
   const [grades] = React.useState<GradeInfo[]>(getGradesLocal);
   const [topics, setTopics] = React.useState<TopicInfo[]>(() =>
-    getTopicsLocal(5),
+    getTopicsLocal(initialGrade),
   );
   const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>([]);
 

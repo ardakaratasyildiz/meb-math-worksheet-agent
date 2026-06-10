@@ -12,6 +12,7 @@ import type {
   GenerateWorksheetResponse,
   GradeInfo,
   KazanimInfo,
+  ProgressResponse,
   Question,
   QuestionType,
   QuizPublic,
@@ -323,6 +324,13 @@ export async function submitAttempt(
   return request<AttemptResult>(
     `/api/quizzes/${encodeURIComponent(quizId)}/attempt`,
     { method: "POST", body: JSON.stringify(body) },
+  );
+}
+
+/** Kullanıcının kazanım-bazlı ilerlemesi + zayıf konuları + genel özeti. */
+export async function getProgress(tenantId: string): Promise<ProgressResponse> {
+  return request<ProgressResponse>(
+    `/api/me/progress?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 

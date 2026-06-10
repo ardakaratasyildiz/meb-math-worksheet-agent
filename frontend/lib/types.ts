@@ -222,3 +222,27 @@ export interface AttemptResult {
   results: QuestionResult[];
   completed_at: string;
 }
+
+// ── İlerleme panosu ────────────────────────────────────────────────────────
+
+export interface KazanimProgress {
+  kazanim_kod: string;
+  correct: number;
+  total: number;
+  ratio: number;
+  last_seen_at: string;
+}
+
+export interface ProgressSummary {
+  total_answered: number;
+  total_correct: number;
+  accuracy: number;
+  kazanim_count: number;
+  quizzes_solved: number;
+}
+
+export interface ProgressResponse {
+  summary: ProgressSummary;
+  mastery: KazanimProgress[];
+  weak: KazanimProgress[];
+}

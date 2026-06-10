@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -22,7 +23,9 @@ export default function CozYeniPage() {
       </div>
 
       <div className="rounded-xl border bg-card p-6 shadow-sm">
-        <SolveForm />
+        <Suspense fallback={null}>
+          <SolveForm />
+        </Suspense>
       </div>
     </div>
   );
