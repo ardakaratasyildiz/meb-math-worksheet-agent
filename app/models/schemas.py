@@ -418,8 +418,9 @@ class ProgressResponse(BaseModel):
 class CreateQuizRequest(BaseModel):
     """Çözülebilir quiz üretim isteği (POST /api/quizzes).
 
-    GenerateWorksheetRequest'in çekirdek alt kümesi; PDF/markalama/zorluk-modu
-    yok. tenant_id ZORUNLU — quiz kişiseldir (giriş gerekli).
+    GenerateWorksheetRequest'in çekirdek alt kümesi; PDF/markalama yok.
+    tenant_id ZORUNLU — quiz kişiseldir (giriş gerekli). question_types +
+    difficulty_mode = gelişmiş (opsiyonel); verilmezse 4 tip / tek seviye.
     """
 
     grade: int = Field(..., ge=1, le=7)
@@ -430,11 +431,39 @@ class CreateQuizRequest(BaseModel):
     difficulty: Difficulty = Difficulty.ORTA
     question_count: int = Field(10, ge=1, le=20)
     tenant_id: str = Field(..., min_length=1, max_length=64)
+    # Gelişmiş (opsiyonel) — kapalıyken None/single → 4 çözülebilir tip, tek seviye.
+    question_types: list[QuestionType] | None = Field(
+        None,
+        description="Opsiyonel: yalnız bu çözülebilir tiplerden üret. None → 4 tip. "
+        "Çözülebilir olmayan tipler sunucuda elenir; hiç kalmazsa 400.",
+    )
+    difficulty_mode: DifficultyMode = Field(
+        "single",
+        description="single = tek `difficulty`. mixed = kolay/orta/zor karışık. "
+        "progressive = aynı dağılım, sıra kolay→zor.",
+    )
 
     @field_validator("topic_id")
     @classmethod
     def _strip_topic(cls, v: str) -> str:
         return v.strip().lower()
+
+    @field_validator("question_types")
+    @classmethod
+    def _validate_qtypes(
+        cls, v: list[QuestionType] | None
+    ) -> list[QuestionType] | None:
+        if v is None:
+            return None
+        if not v:
+            raise ValueError("question_types boş liste olamaz; None bırakın.")
+        seen: set[QuestionType] = set()
+        out: list[QuestionType] = []
+        for t in v:
+            if t not in seen:
+                seen.add(t)
+                out.append(t)
+        return out
 
     @field_validator("tenant_id")
     @classmethod

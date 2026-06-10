@@ -12,6 +12,8 @@ Mevcut /api/worksheets akışından tamamen ayrıdır; PDF üretimi etkilenmez.
 from __future__ import annotations
 
 import logging
+import random
+from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -51,30 +53,86 @@ def _agent() -> GeminiAgent:
     return GeminiAgent()
 
 
-def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
-    """Çözülebilir mod üretim: yalnız 4 tip, derive + validate'den geçenler kalır.
+def _resolve_solvable_types(
+    requested: list[QuestionType] | None,
+) -> list[QuestionType]:
+    """İstenen tipleri çözülebilir havuza indir. None → 4 tip. Filtre sonrası boş
+    olabilir (çağıran 400 döner)."""
+    if not requested:
+        return list(_SOLVABLE_TYPES)
+    solvable = set(_SOLVABLE_TYPES)
+    return [t for t in requested if t in solvable]
 
-    Dönüş: (geçerli sorular [1..n numaralı], konu adı).
-    """
+
+def _split_buckets(total: int) -> dict[Difficulty, int]:
+    """Karışık/progresyon için zorluk dağılımı (kolay 30 / orta 40 / zor 30).
+    Toplam < 5'te anlamlı bölünmez → tek seviye (orta)."""
+    if total < 5:
+        return {Difficulty.ORTA: total}
+    kolay = max(1, total * 3 // 10)
+    zor = max(1, total * 3 // 10)
+    orta = total - kolay - zor
+    if orta < 1:
+        return {Difficulty.ORTA: total}
+    return {Difficulty.KOLAY: kolay, Difficulty.ORTA: orta, Difficulty.ZOR: zor}
+
+
+def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
+    """Çözülebilir mod üretim: seçili tipler + zorluk modu; derive+validate'den
+    geçenler kalır. Dönüş: (geçerli sorular [1..n numaralı], konu adı)."""
     topic = get_topic(req.grade, req.topic_id)
     if topic is None:
         raise HTTPException(
             status_code=404,
             detail=f"{req.grade}. sınıfta '{req.topic_id}' konusu bulunmuyor.",
         )
-    agent = _agent()
-    try:
-        raw = agent.generate(
+    allowed = _resolve_solvable_types(req.question_types)
+    if not allowed:
+        raise HTTPException(
+            status_code=400,
+            detail="Seçilen tipler çözülebilir değil; en az bir çözülebilir tip seçin.",
+        )
+
+    def _gen(agent: GeminiAgent, diff: Difficulty, count: int) -> list[Question]:
+        return agent.generate(
             grade=req.grade,
             topic_id=req.topic_id,
             kazanim_kod=req.kazanim_kod,
-            difficulty=req.difficulty,
-            question_count=req.question_count,
+            difficulty=diff,
+            question_count=count,
             tenant_id=req.tenant_id,
-            allowed_types=_SOLVABLE_TYPES,
+            allowed_types=allowed,
         )
-    except AgentError as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    raw: list[Question] = []
+    if req.difficulty_mode == "single":
+        try:
+            raw = _gen(_agent(), req.difficulty, req.question_count)
+        except AgentError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+    else:
+        # Karışık/progresyon: kolay/orta/zor bucket'ları paralel üret (latency).
+        buckets = _split_buckets(req.question_count)
+        seq = [d for d in (Difficulty.KOLAY, Difficulty.ORTA, Difficulty.ZOR)
+               if buckets.get(d, 0) > 0]
+
+        def _gen_bucket(diff: Difficulty):
+            # İzole agent → paylaşılan trace/durum yarışı olmaz.
+            try:
+                return diff, _gen(GeminiAgent(), diff, buckets[diff]), None
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Quiz bucket başarısız (diff=%s): %s", diff.value, exc)
+                return diff, [], str(exc)
+
+        results: dict[Difficulty, list[Question]] = {}
+        with ThreadPoolExecutor(max_workers=len(seq)) as ex:
+            for diff, qs, _err in ex.map(_gen_bucket, seq):
+                results[diff] = qs
+        # progressive: kolay→zor sırasında topla.
+        for diff in seq:
+            raw.extend(results.get(diff, []))
+        if req.difficulty_mode == "mixed":
+            random.shuffle(raw)
 
     valid: list[Question] = []
     for q in raw:
