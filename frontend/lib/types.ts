@@ -295,9 +295,18 @@ export interface AttemptSummary {
   ratio: number;
 }
 
+export interface DailyTrendPoint {
+  date: string;
+  score: number;
+  total: number;
+  ratio: number;
+  attempts: number;
+}
+
 export interface ProgressResponse {
   summary: ProgressSummary;
   mastery: KazanimProgress[];
   weak: KazanimProgress[];
   recent: AttemptSummary[];
+  daily_trend?: DailyTrendPoint[];
 }

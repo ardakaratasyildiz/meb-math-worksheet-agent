@@ -17,9 +17,12 @@ except (AttributeError, ValueError):
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 os.environ.setdefault("GEMINI_API_KEY", "fake-key-for-tests")
 
+from datetime import date  # noqa: E402
+
 from app.services.progress import (  # noqa: E402
     WEAK_MIN_TOTAL,
     WEAK_RATIO_THRESHOLD,
+    build_daily_trend,
     build_progress,
 )
 
@@ -87,8 +90,35 @@ def test_recent_trend() -> None:
     check(abs(p.recent[1].ratio - 0.7) < 1e-9, f"son deneme oranı 0.7: {p.recent[1].ratio}")
 
 
+def test_daily_trend() -> None:
+    print("30 günlük gün-bazlı trend")
+    today = date(2026, 6, 10)
+    attempts = [
+        # Aynı gün 2 deneme → toplanmalı (Istanbul: 12:00 UTC = aynı gün)
+        {"score": 4, "total": 10, "completed_at": "2026-06-08T12:00:00+00:00"},
+        {"score": 6, "total": 10, "completed_at": "2026-06-08T15:00:00+00:00"},
+        {"score": 8, "total": 10, "completed_at": "2026-06-09T09:00:00+00:00"},
+        # 30 gün penceresi dışında → hariç
+        {"score": 1, "total": 10, "completed_at": "2026-04-01T09:00:00+00:00"},
+    ]
+    pts = build_daily_trend(attempts, today=today, days=30)
+    check(len(pts) == 2, f"2 aktif gün (pencere dışı hariç): {len(pts)}")
+    check(pts[0].date == "2026-06-08" and pts[1].date == "2026-06-09", "eski→yeni sıra")
+    # 08: (4+6)/(10+10) = 10/20 = 0.5, 2 deneme
+    check(pts[0].score == 10 and pts[0].total == 20, f"aynı gün toplandı: {pts[0].score}/{pts[0].total}")
+    check(abs(pts[0].ratio - 0.5) < 1e-9 and pts[0].attempts == 2, "08 oran 0.5 + 2 deneme")
+    check(abs(pts[1].ratio - 0.8) < 1e-9, f"09 oran 0.8: {pts[1].ratio}")
+    check(build_daily_trend([], today=today) == [], "boş → boş")
+
+
 def main() -> int:
-    for fn in (test_summary, test_weak_sort_and_filter, test_empty, test_recent_trend):
+    for fn in (
+        test_summary,
+        test_weak_sort_and_filter,
+        test_empty,
+        test_recent_trend,
+        test_daily_trend,
+    ):
         fn()
     print()
     if _failures:

@@ -5,6 +5,9 @@ LLM çağrısı yok (saf sayım) → rate limit yok, yalnız auth.
 """
 from __future__ import annotations
 
+import time
+from datetime import datetime, timedelta, timezone
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.models.schemas import (
@@ -17,8 +20,10 @@ from app.models.schemas import (
 )
 from app.security import require_api_key
 from app.services.attempt_review import build_attempt_detail
-from app.services.progress import build_progress
+from app.services.progress import build_daily_trend, build_progress
 from app.services.quiz_store import QUIZ_STORE
+
+_IST = timezone(timedelta(hours=3))
 
 router = APIRouter()
 
@@ -32,7 +37,14 @@ def get_progress(
     mastery_rows = QUIZ_STORE.get_mastery(tenant_id)
     quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
     recent = QUIZ_STORE.recent_attempts(tenant_id, limit=10)
-    return build_progress(mastery_rows, quizzes_solved, recent)
+    resp = build_progress(mastery_rows, quizzes_solved, recent)
+    # 30 günlük gün-bazlı trend (Türkiye günü).
+    since = time.time() - 30 * 86400
+    today = datetime.now(_IST).date()
+    resp.daily_trend = build_daily_trend(
+        QUIZ_STORE.attempts_since(tenant_id, since), today
+    )
+    return resp
 
 
 @router.get("/attempts", response_model=AttemptHistoryResponse)

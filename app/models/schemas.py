@@ -411,11 +411,20 @@ class AttemptSummary(BaseModel):
     ratio: float  # score / total (0.0–1.0)
 
 
+class DailyTrendPoint(BaseModel):
+    date: str  # YYYY-MM-DD (Europe/Istanbul günü)
+    score: int
+    total: int
+    ratio: float  # o günün toplam doğru oranı
+    attempts: int  # o gün çözülen quiz sayısı
+
+
 class ProgressResponse(BaseModel):
     summary: ProgressSummary
     mastery: list[KazanimProgress]  # tümü, zayıf→güçlü sırada
     weak: list[KazanimProgress]      # eşik altı + yeterli veri olan kazanımlar
-    recent: list[AttemptSummary] = []  # son denemeler (eski→yeni), trend için
+    recent: list[AttemptSummary] = []  # son denemeler (eski→yeni); geriye uyum
+    daily_trend: list[DailyTrendPoint] = []  # son 30 gün, gün-bazlı (eski→yeni)
 
 
 # ── Çözülebilir quiz (öğrenme döngüsü, Adım 1) ───────────────────────────────

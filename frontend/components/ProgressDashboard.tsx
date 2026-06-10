@@ -18,7 +18,7 @@ import {
   type TopicRollup,
 } from "@/lib/curriculum";
 import type {
-  AttemptSummary,
+  DailyTrendPoint,
   KazanimProgress,
   ProgressResponse,
 } from "@/lib/types";
@@ -71,33 +71,41 @@ function TopicBar({ t }: { t: TopicRollup }) {
   );
 }
 
-function TrendChart({ recent }: { recent: AttemptSummary[] }) {
-  if (recent.length < 2) return null;
+function formatDay(iso: string): string {
+  // "2026-06-08" → "08.06"
+  const p = iso.split("-");
+  return p.length === 3 ? `${p[2]}.${p[1]}` : iso;
+}
+
+function TrendChart({ trend }: { trend: DailyTrendPoint[] }) {
+  if (trend.length < 2) return null;
   return (
     <Card className="space-y-3 p-5">
-      <h2 className="text-sm font-semibold">Son denemeler</h2>
+      <h2 className="text-sm font-semibold">Son 30 gün</h2>
       <div className="flex items-end gap-1.5">
-        {recent.map((a, i) => {
-          const pct = a.total ? Math.round((a.score / a.total) * 100) : 0;
+        {trend.map((d) => {
+          const pct = d.total ? Math.round((d.score / d.total) * 100) : 0;
           return (
             <div
-              key={i}
+              key={d.date}
               className="flex flex-1 flex-col items-center gap-1"
-              title={`${a.score}/${a.total} · %${pct}`}
+              title={`${formatDay(d.date)} · ${d.score}/${d.total} · %${pct} · ${d.attempts} quiz`}
             >
-              <div
-                className={`w-full rounded-t ${pct >= 60 ? "bg-emerald-500" : "bg-amber-500"}`}
-                style={{ height: Math.max(4, Math.round(pct * 0.6)) }}
-              />
+              <div className="flex w-full items-end" style={{ height: 64 }}>
+                <div
+                  className={`w-full rounded-t ${pct >= 60 ? "bg-emerald-500" : "bg-amber-500"}`}
+                  style={{ height: Math.max(4, Math.round(pct * 0.6)) }}
+                />
+              </div>
               <span className="text-[9px] tabular-nums text-muted-foreground">
-                %{pct}
+                {formatDay(d.date)}
               </span>
             </div>
           );
         })}
       </div>
       <p className="text-[11px] text-muted-foreground">
-        Soldan sağa: eski → yeni. Her çubuk bir quiz&apos;in doğruluğu.
+        Her çubuk bir günün doğru oranı (eski → yeni).
       </p>
     </Card>
   );
@@ -230,7 +238,7 @@ export function ProgressDashboard() {
       </Card>
 
       {/* Trend */}
-      <TrendChart recent={data.recent} />
+      <TrendChart trend={data.daily_trend ?? []} />
 
       {/* Konu bazında ustalık (birincil görünüm) */}
       {topics.length ? (
