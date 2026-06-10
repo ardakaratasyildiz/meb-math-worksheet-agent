@@ -13,6 +13,7 @@ import { ScoreRing } from "@/components/ScoreRing";
 import { getProgress } from "@/lib/api";
 import {
   findKazanimByKod,
+  practiceHref,
   rollupByTopic,
   type TopicRollup,
 } from "@/lib/curriculum";
@@ -21,17 +22,6 @@ import type {
   KazanimProgress,
   ProgressResponse,
 } from "@/lib/types";
-
-function practiceHref(kod: string): string {
-  const info = findKazanimByKod(kod);
-  if (!info) return "/coz/yeni";
-  const p = new URLSearchParams({
-    grade: String(info.grade),
-    topic: info.topicId,
-    kazanim: kod,
-  });
-  return `/coz/yeni?${p.toString()}`;
-}
 
 function MasteryRow({ k }: { k: KazanimProgress }) {
   const info = findKazanimByKod(k.kazanim_kod);

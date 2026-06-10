@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { Loader2, Sparkles } from "lucide-react";
+import { FileText, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,8 @@ import {
 } from "@/components/QuestionReview";
 
 import { getQuiz, submitAttempt } from "@/lib/api";
-import { rollupByTopic } from "@/lib/curriculum";
+import { findKazanimByKod, practiceHref, rollupByTopic } from "@/lib/curriculum";
+import { useGenerateStore } from "@/lib/store";
 import type {
   AttemptResult,
   QuestionResult,
@@ -289,11 +291,35 @@ function ResultsView({
     submitted.map((s): [number, SubmittedAnswer] => [s.number, s]),
   );
 
+  const router = useRouter();
+  const setForm = useGenerateStore((s) => s.setForm);
+
   // Kazanım kodları yerine KONU bazında kırılım (anlaşılırlık).
   const topics = rollupByTopic(result.per_kazanim).sort((a, b) => a.ratio - b.ratio);
   const wrongCount = result.total - result.score;
   // Bu quiz'te en çok zorlanılan konu(lar) — "neyi yanlış yaptın" özeti.
   const weakTopics = topics.filter((t) => t.ratio < 1 && t.total > 0);
+
+  // En zayıf kazanım (eksik olan) — hedefli aksiyonlar için. Mükemmel skorda null.
+  const weakest = [...result.per_kazanim]
+    .filter((k) => k.total > 0)
+    .sort(
+      (a, b) => a.correct / a.total - b.correct / b.total || b.total - a.total,
+    )[0];
+  const weakestKod =
+    weakest && weakest.correct < weakest.total ? weakest.kazanim_kod : null;
+
+  function onCreateWorksheet() {
+    // Çöz→PDF köprüsü: zayıf konuyu PDF üreticiye ön-doldur (Zustand deseni).
+    const info = weakestKod ? findKazanimByKod(weakestKod) : null;
+    setForm({
+      grade: quiz.grade,
+      topicId: info?.topicId ?? quiz.topic_id,
+      kazanimKod: weakestKod ?? null,
+      difficulty: quiz.difficulty,
+    });
+    router.push("/generate");
+  }
 
   return (
     <div className="space-y-6">
@@ -385,13 +411,26 @@ function ResultsView({
       </ol>
 
       <div className="flex flex-wrap gap-3">
-        <Button asChild className="gap-2">
-          <Link href="/coz/yeni">
-            <Sparkles className="h-4 w-4" />
-            Yeni quiz çöz
-          </Link>
+        {weakestKod ? (
+          <Button asChild className="gap-2">
+            <Link href={practiceHref(weakestKod)}>
+              <Sparkles className="h-4 w-4" />
+              Eksiklerine göre yeni test
+            </Link>
+          </Button>
+        ) : (
+          <Button asChild className="gap-2">
+            <Link href="/coz/yeni">
+              <Sparkles className="h-4 w-4" />
+              Yeni quiz çöz
+            </Link>
+          </Button>
+        )}
+        <Button onClick={onCreateWorksheet} variant="outline" className="gap-2">
+          <FileText className="h-4 w-4" />
+          Bu konuda çalışma kağıdı
         </Button>
-        <Button asChild variant="outline">
+        <Button asChild variant="ghost">
           <Link href="/coz">Çöz &amp; Geliş&apos;e dön</Link>
         </Button>
       </div>
