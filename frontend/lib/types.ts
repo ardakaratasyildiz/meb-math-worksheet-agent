@@ -310,3 +310,25 @@ export interface ProgressResponse {
   recent: AttemptSummary[];
   daily_trend?: DailyTrendPoint[];
 }
+
+// ── Oyunlaştırma ───────────────────────────────────────────────────────────
+
+export interface GamificationResponse {
+  xp: number;
+  level: number;
+  xp_in_level: number;
+  xp_for_next: number;
+  streak_current: number;
+  streak_longest: number;
+  total_active_days: number;
+}
+
+export type BadgeTier = "bronze" | "silver" | "gold";
+
+export interface TopicBadge {
+  topicId: string;
+  topicName: string;
+  tier: BadgeTier;
+  ratio: number;
+  total: number;
+}

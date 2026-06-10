@@ -6,7 +6,7 @@ LLM çağrısı yok (saf sayım) → rate limit yok, yalnız auth.
 from __future__ import annotations
 
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -14,12 +14,14 @@ from app.models.schemas import (
     AttemptDetail,
     AttemptHistoryItem,
     AttemptHistoryResponse,
+    GamificationResponse,
     ProgressResponse,
     Question,
     SubmittedAnswer,
 )
 from app.security import require_api_key
 from app.services.attempt_review import build_attempt_detail
+from app.services.gamification import build_gamification
 from app.services.progress import build_daily_trend, build_progress
 from app.services.quiz_store import QUIZ_STORE
 
@@ -45,6 +47,23 @@ def get_progress(
         QUIZ_STORE.attempts_since(tenant_id, since), today
     )
     return resp
+
+
+@router.get("/gamification", response_model=GamificationResponse)
+def get_gamification(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> GamificationResponse:
+    """XP / seviye / seri. Rozetler frontend'de mastery'den türetilir."""
+    mastery_rows = QUIZ_STORE.get_mastery(tenant_id)
+    total_correct = sum(int(m.get("correct", 0)) for m in mastery_rows)
+    quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
+    active_dates = [
+        date.fromisoformat(s)
+        for s in QUIZ_STORE.distinct_attempt_dates(tenant_id)
+    ]
+    today = datetime.now(_IST).date()
+    return build_gamification(total_correct, quizzes_solved, active_dates, today)
 
 
 @router.get("/attempts", response_model=AttemptHistoryResponse)

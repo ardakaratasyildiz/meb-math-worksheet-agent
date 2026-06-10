@@ -10,6 +10,7 @@ import type {
   AttemptResult,
   CreateQuizRequest,
   Difficulty,
+  GamificationResponse,
   GenerateWorksheetRequest,
   GenerateWorksheetResponse,
   GradeInfo,
@@ -354,6 +355,15 @@ export async function getMyAttempt(
 ): Promise<AttemptDetail> {
   return request<AttemptDetail>(
     `/api/me/attempts/${encodeURIComponent(attemptId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Oyunlaştırma — XP / seviye / seri. */
+export async function getGamification(
+  tenantId: string,
+): Promise<GamificationResponse> {
+  return request<GamificationResponse>(
+    `/api/me/gamification?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 

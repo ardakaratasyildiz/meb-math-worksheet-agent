@@ -411,6 +411,19 @@ class QuizStore:
         out.reverse()
         return out
 
+    def distinct_attempt_dates(self, tenant_id: str) -> list[str]:
+        """Aktif gün (Europe/Istanbul) listesi — seri (streak) hesabı için. ISO tarih."""
+        if not tenant_id:
+            return []
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                "SELECT DISTINCT date(completed_at, 'unixepoch', '+3 hours') "
+                "FROM attempts WHERE solver_tenant_id = ? ORDER BY 1",
+                (tenant_id,),
+            ).fetchall()
+        return [r[0] for r in rows if r[0]]
+
     def attempts_since(self, tenant_id: str, since_epoch: float) -> list[dict]:
         """Belirli epoch'tan sonraki denemeler — eski→yeni (30 günlük trend için)."""
         if not tenant_id:

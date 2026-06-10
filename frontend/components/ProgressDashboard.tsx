@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScoreRing } from "@/components/ScoreRing";
+import { GamificationPanel } from "@/components/GamificationPanel";
 
 import { getProgress } from "@/lib/api";
 import {
@@ -236,6 +237,9 @@ export function ProgressDashboard() {
           ) : null}
         </div>
       </Card>
+
+      {/* Oyunlaştırma — seviye / XP / seri / rozetler */}
+      <GamificationPanel mastery={data.mastery} />
 
       {/* Trend */}
       <TrendChart trend={data.daily_trend ?? []} />
