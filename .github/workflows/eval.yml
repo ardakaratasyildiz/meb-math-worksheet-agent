@@ -63,14 +63,19 @@ jobs:
           import app.services.critic
           import app.services.retriever
           import app.services.structured
+          import app.services.quiz_store
+          import app.routers.quizzes
           import scripts.eval.ab_runner
           import scripts.eval.check_regression
           print('imports OK')
           "
-      - name: Unit tests (yapısal cevap — LLM'siz, saf)
+      - name: Unit tests (yapısal cevap + quiz store — LLM'siz, saf)
         env:
           PYTHONIOENCODING: "utf-8"
-        run: python tests/test_structured.py
+          GEMINI_API_KEY: "fake-key-for-import-only"
+        run: |
+          python tests/test_structured.py
+          python tests/test_quiz_store.py
 
   # 2. PR gate: hızlı eval (~1-2 dk) — sadece PR'lar ve manual dispatch'te
   quick-eval:

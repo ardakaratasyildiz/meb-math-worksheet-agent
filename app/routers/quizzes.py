@@ -1,0 +1,191 @@
+"""Çözülebilir quiz endpoint'leri (öğrenme döngüsü — Adım 1).
+
+POST /api/quizzes      → çözülebilir quiz üret (yalnız 4 otomatik-puanlanabilir
+                         tip), yapısal alanları doğrula, kaydet → CEVAPSIZ döndür.
+GET  /api/quizzes/{id} → çözmek için getir (CEVAPSIZ, owner-only).
+
+Anti-kopya: cevaplar (answer/solution_steps/correct_index/blanks/correct_bool)
+istemciye HİÇ gönderilmez; sunucuda kalır, Adım 2 /attempt puanlamasında kullanılır.
+
+Mevcut /api/worksheets akışından tamamen ayrıdır; PDF üretimi etkilenmez.
+"""
+from __future__ import annotations
+
+import logging
+from functools import lru_cache
+
+from fastapi import APIRouter, Depends, HTTPException, Request
+
+from app.data.curriculum import get_topic
+from app.models.enums import Difficulty, QuestionType
+from app.models.schemas import (
+    CreateQuizRequest,
+    Question,
+    QuizPublic,
+    QuizQuestionPublic,
+)
+from app.security import limiter, rate_limit_string, require_api_key
+from app.services.agent import AgentError, GeminiAgent
+from app.services.quiz_store import QUIZ_STORE
+from app.services.structured import derive_structured_fields, validate_structured
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter()
+
+# Adım 0'da desteklenen 4 çözülebilir tip — üretim dağıtımına allowed_types olarak
+# geçer. Eşleştirme/sıralama sonraki dilime bırakıldı.
+_SOLVABLE_TYPES = [
+    QuestionType.COKTAN_SECMELI,
+    QuestionType.DOGRU_YANLIS,
+    QuestionType.BOSLUK_DOLDURMA,
+    QuestionType.SALT_ISLEM,
+]
+
+
+@lru_cache(maxsize=1)
+def _agent() -> GeminiAgent:
+    return GeminiAgent()
+
+
+def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
+    """Çözülebilir mod üretim: yalnız 4 tip, derive + validate'den geçenler kalır.
+
+    Dönüş: (geçerli sorular [1..n numaralı], konu adı).
+    """
+    topic = get_topic(req.grade, req.topic_id)
+    if topic is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"{req.grade}. sınıfta '{req.topic_id}' konusu bulunmuyor.",
+        )
+    agent = _agent()
+    try:
+        raw = agent.generate(
+            grade=req.grade,
+            topic_id=req.topic_id,
+            kazanim_kod=req.kazanim_kod,
+            difficulty=req.difficulty,
+            question_count=req.question_count,
+            tenant_id=req.tenant_id,
+            allowed_types=_SOLVABLE_TYPES,
+        )
+    except AgentError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    valid: list[Question] = []
+    for q in raw:
+        enriched = derive_structured_fields(q)
+        ok, issues = validate_structured(enriched)
+        if ok:
+            valid.append(enriched)
+        else:
+            logger.info(
+                "Çözülebilir-dışı soru elendi (tip=%s): %s",
+                q.question_type.value, issues,
+            )
+    # Numaraları sıkı tut (eleme sonrası boşluk kalmasın).
+    valid = [q.model_copy(update={"number": i + 1}) for i, q in enumerate(valid)]
+    return valid, topic["name"]
+
+
+def _to_public(
+    *,
+    quiz_id: str,
+    title: str,
+    grade: int,
+    topic_id: str,
+    difficulty: Difficulty,
+    created_at: str,
+    questions: list[Question],
+) -> QuizPublic:
+    """Cevaplı Question listesini CEVAPSIZ QuizPublic'e dönüştürür (anti-kopya).
+
+    Çoktan seçmelide `options` (şıklar — cevap değil) gönderilir; boşluk
+    doldurmada yalnız `blank_count` (kaç giriş). Diğer her şey soyulur.
+    """
+    pub: list[QuizQuestionPublic] = []
+    for q in questions:
+        is_mcq = q.question_type == QuestionType.COKTAN_SECMELI
+        is_blank = q.question_type == QuestionType.BOSLUK_DOLDURMA
+        pub.append(
+            QuizQuestionPublic(
+                number=q.number,
+                question=q.question,
+                question_type=q.question_type,
+                kazanim_kod=q.kazanim_kod,
+                options=q.options if is_mcq else None,
+                blank_count=(len(q.blanks) if (is_blank and q.blanks) else None),
+            )
+        )
+    return QuizPublic(
+        id=quiz_id,
+        title=title,
+        grade=grade,
+        topic_id=topic_id,
+        difficulty=difficulty,
+        question_count=len(pub),
+        questions=pub,
+        created_at=created_at,
+    )
+
+
+@router.post("", response_model=QuizPublic)
+@limiter.limit(rate_limit_string())
+def create_quiz(
+    request: Request,
+    req: CreateQuizRequest,
+    _api_key: str = Depends(require_api_key),
+) -> QuizPublic:
+    """Çözülebilir quiz üret + kaydet → CEVAPSIZ döndür. LLM çağrısı (rate limitli)."""
+    questions, topic_name = _generate_solvable(req)
+    if not questions:
+        # Üretilenlerin hiçbiri yapısal doğrulamadan geçmedi (nadir) → tekrar deneyin.
+        raise HTTPException(
+            status_code=502,
+            detail="Çözülebilir soru üretilemedi; lütfen tekrar deneyin.",
+        )
+    title = f"{req.grade}. Sınıf - {topic_name} Quiz"
+    record = QUIZ_STORE.create(
+        owner_tenant_id=req.tenant_id,
+        title=title,
+        grade=req.grade,
+        topic_id=req.topic_id,
+        difficulty=req.difficulty.value,
+        questions=[q.model_dump() for q in questions],
+    )
+    logger.info(
+        "quiz oluşturuldu: tenant=%s id=%s soru=%d",
+        req.tenant_id, record["id"], len(questions),
+    )
+    return _to_public(
+        quiz_id=record["id"],
+        title=title,
+        grade=req.grade,
+        topic_id=req.topic_id,
+        difficulty=req.difficulty,
+        created_at=record["created_at"],
+        questions=questions,
+    )
+
+
+@router.get("/{quiz_id}", response_model=QuizPublic)
+def get_quiz(
+    quiz_id: str,
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> QuizPublic:
+    """Quiz'i çözmek için getir — CEVAPSIZ, yalnız sahibi (tenant_id) erişir."""
+    record = QUIZ_STORE.get(quiz_id, tenant_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Quiz bulunamadı.")
+    questions = [Question(**q) for q in record["questions"]]
+    return _to_public(
+        quiz_id=record["id"],
+        title=record["title"],
+        grade=record["grade"],
+        topic_id=record["topic_id"],
+        difficulty=Difficulty(record["difficulty"]),
+        created_at=record["created_at"],
+        questions=questions,
+    )
