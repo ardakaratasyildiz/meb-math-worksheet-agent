@@ -83,6 +83,12 @@ export interface Question {
   solution_steps: string | SolutionStep[];
   kazanim_kod: string;
   question_type: QuestionType;
+  // Yapısal cevap alanları (Adım 0 — site içi çözme). Yalnız çözülebilir
+  // tiplerde dolar; PDF/açık-uçlu akışta null. Eski kod bunları yok sayar.
+  options?: string[] | null;
+  correct_index?: number | null;
+  blanks?: string[] | null;
+  correct_bool?: boolean | null;
 }
 
 export interface AnswerKeyEntry {

@@ -134,6 +134,59 @@ def _equal_enough(expected: sympy.Expr, actual: sympy.Expr) -> bool:
         return False
 
 
+# Sayısal cevap parse'ı — ondalık + kesir + basit aritmetik. `_parse_answer`'dan
+# farkı: ondalık (0.5 / 0,5) destekler. Etkileşimli puanlama virgül-ondalığı sık
+# gördüğü için ayrı tutuldu (verify_question'ın davranışı değişmesin diye).
+_NUMERIC_TOKEN_RE = re.compile(
+    r"^\s*\(?\s*-?\s*\d+(?:[.,]\d+)?"
+    r"(?:\s*[+\-*/^]\s*-?\d+(?:[.,]\d+)?(?:\s*/\s*\d+)?)*\s*\)?"
+)
+
+
+def _parse_numeric_answer(answer: str) -> sympy.Expr | None:
+    """Cevabı ondalık/kesir destekli SymPy ifadesine çevirir. Başarısızsa None.
+
+    Yalnız baştaki sayısal token alınır ("12 elma" → 12). Sözel cevap ("yedi")
+    None döner — sympify harf dizisini sessizce Symbol'e çevirdiği için sonucta
+    serbest sembol kalırsa reddedilir (aksi halde "yedi" ≡ "yedi" yanlış pozitif).
+    """
+    if not answer:
+        return None
+    text = _normalize_number_text(answer)  # Türkçe ondalık virgül → nokta, vs.
+    m = _NUMERIC_TOKEN_RE.match(text)
+    if not m:
+        return None
+    candidate = m.group(0).strip()
+    if not candidate or not any(c.isdigit() for c in candidate):
+        return None
+    try:
+        expr = sympify(candidate, rational=True)
+    except (SympifyError, SyntaxError, TypeError, ValueError, ZeroDivisionError):
+        return None
+    # Saf sayı olmalı — içinde değişken kalmışsa (ör. "2x") sayısal değildir.
+    if getattr(expr, "free_symbols", set()):
+        return None
+    return expr
+
+
+def numeric_equivalent(expected: str, actual: str) -> bool | None:
+    """İki sayısal cevap metni denk mi? (etkileşimli çözme puanlaması için)
+
+    Türkçe notasyonu (virgül-ondalık, karışık kesir, üst simge) normalize edip
+    SymPy ile karşılaştırır → "1/2" ≡ "0,5" ≡ "0.5", "3 tam 1/4" ≡ "13/4".
+
+    Dönüş:
+      True  → denk
+      False → parse edildi ama denk değil
+      None  → en az biri sayısal olarak parse edilemedi (bilinmiyor / kapsam dışı)
+    """
+    e = _parse_numeric_answer(expected)
+    a = _parse_numeric_answer(actual)
+    if e is None or a is None:
+        return None
+    return _equal_enough(e, a)
+
+
 def verify_question(question: Question, index: int = 0) -> MathVerdict:
     """Tek bir soruyu doğrula. Verifier kapsamı dışındaysa is_verifiable=False."""
     if question.question_type not in _VERIFIABLE_TYPES:
