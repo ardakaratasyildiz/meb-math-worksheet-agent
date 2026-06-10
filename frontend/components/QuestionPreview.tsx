@@ -34,6 +34,7 @@ export function QuestionPreview() {
     includeSolutions,
     brandName,
     brandSubtitle,
+    brandLogo,
     replaceQuestion,
   } = useGenerateStore();
 
@@ -104,6 +105,7 @@ export function QuestionPreview() {
         include_solutions: includeSolutions,
         brand_name: brandName,
         brand_subtitle: brandSubtitle,
+        brand_logo: brandLogo,
       });
       downloadBlob(blob, buildPdfFilename(result.worksheet.title));
       // Funnel sonu — kullanıcının somut çıktıyı aldığı an (paylaşım/viral döngü

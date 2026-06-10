@@ -29,6 +29,8 @@ export interface FormState {
   // White-label PDF üst bilgisi — bir kez girilir, kalıcı (kurum/öğretmen + alt satır).
   brandName: string;
   brandSubtitle: string;
+  // Opsiyonel logo (base64 data URL) — PDF header'a basılır. Cihazda saklanır.
+  brandLogo: string;
 }
 
 interface GenerateStore extends FormState {
@@ -62,6 +64,7 @@ const DEFAULT_FORM: FormState = {
   includeSolutions: true,
   brandName: "",
   brandSubtitle: "",
+  brandLogo: "",
 };
 
 export const useGenerateStore = create<GenerateStore>()(
@@ -115,6 +118,7 @@ export const useGenerateStore = create<GenerateStore>()(
         includeSolutions: s.includeSolutions,
         brandName: s.brandName,
         brandSubtitle: s.brandSubtitle,
+        brandLogo: s.brandLogo,
       }),
     },
   ),

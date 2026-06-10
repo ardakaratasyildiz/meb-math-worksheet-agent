@@ -381,6 +381,22 @@ class GenerateWorksheetResponse(BaseModel):
     metadata: WorksheetMetadata
 
 
+class RenderRequest(BaseModel):
+    """Önceden üretilmiş worksheet'i PDF'e render etme isteği.
+
+    brand_logo base64 olabildiği için tüm alanlar BODY'de taşınır (query'ye sığmaz).
+    """
+
+    worksheet: Worksheet
+    include_answer_key: bool = True
+    include_solutions: bool = True
+    brand_name: str | None = None
+    brand_subtitle: str | None = None
+    brand_logo: str | None = Field(
+        None, description="Opsiyonel logo (data:image/...;base64,... veya çıplak base64)."
+    )
+
+
 class ErrorResponse(BaseModel):
     detail: str
 

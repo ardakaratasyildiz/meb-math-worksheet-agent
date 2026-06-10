@@ -16,6 +16,7 @@ from app.models.schemas import (
     GenerateWorksheetRequest,
     GenerateWorksheetResponse,
     RegenerateQuestionRequest,
+    RenderRequest,
     Worksheet,
     WorksheetMetadata,
 )
@@ -321,6 +322,7 @@ def _pdf_response(
     include_solutions: bool = True,
     brand_name: str | None = None,
     brand_subtitle: str | None = None,
+    brand_logo: str | None = None,
 ) -> Response:
     pdf_bytes = render_worksheet_pdf(
         worksheet,
@@ -328,6 +330,7 @@ def _pdf_response(
         include_solutions=include_solutions,
         brand_name=brand_name,
         brand_subtitle=brand_subtitle,
+        brand_logo=brand_logo,
     )
     filename = _build_pdf_filename(worksheet)
     return Response(
@@ -394,29 +397,44 @@ def clear_worksheet_history(
 
 
 @router.post("/render.pdf")
-def render_existing_worksheet(
-    worksheet: Worksheet,
-    include_answer_key: bool = True,
-    include_solutions: bool = True,
-    brand_name: str | None = None,
-    brand_subtitle: str | None = None,
+async def render_existing_worksheet(
+    request: Request,
     _api_key: str = Depends(require_api_key),
 ) -> Response:
     """Önceden üretilmiş bir worksheet JSON'unu PDF'e çevirir.
 
-    LLM çağrısı YAPMAZ → rate limit yok; sadece auth kontrolü.
-    Frontend hızlı tekrar PDF üretebilir. Toggle'lar query parametresi olarak
-    geçer: ?include_answer_key=false&include_solutions=false (sınav modu).
+    LLM çağrısı YAPMAZ → rate limit yok; sadece auth. White-label: brand_name +
+    brand_subtitle + brand_logo (opsiyonel) PDF üst bilgisine basılır.
 
-    White-label: brand_name (kurum/öğretmen) + brand_subtitle (ör. sınıf) verilirse
-    PDF üst bilgisine basılır. Boşsa header çizilmez.
+    Geriye uyumlu: YENİ format gövdede {worksheet, brand_logo, ...} (logo base64
+    query'ye sığmaz); ESKİ format gövde=Worksheet + marka/toggle query'de. Deploy
+    sırasında eski frontend yeni backend'e (veya tersi) çarparsa PDF kırılmasın.
     """
+    try:
+        body = await request.json()
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=400, detail="Geçersiz JSON gövde.") from exc
+
+    if isinstance(body, dict) and "worksheet" in body:
+        # Yeni format — gövde-model.
+        req = RenderRequest(**body)
+        return _pdf_response(
+            req.worksheet,
+            include_answer_key=req.include_answer_key,
+            include_solutions=req.include_solutions,
+            brand_name=req.brand_name,
+            brand_subtitle=req.brand_subtitle,
+            brand_logo=req.brand_logo,
+        )
+
+    # Eski format — gövde doğrudan Worksheet, marka/toggle query parametrelerinde.
+    qp = request.query_params
     return _pdf_response(
-        worksheet,
-        include_answer_key=include_answer_key,
-        include_solutions=include_solutions,
-        brand_name=brand_name,
-        brand_subtitle=brand_subtitle,
+        Worksheet(**body),
+        include_answer_key=qp.get("include_answer_key") != "false",
+        include_solutions=qp.get("include_solutions") != "false",
+        brand_name=qp.get("brand_name"),
+        brand_subtitle=qp.get("brand_subtitle"),
     )
 
 
