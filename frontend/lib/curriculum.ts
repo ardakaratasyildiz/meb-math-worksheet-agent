@@ -134,6 +134,20 @@ export function findKazanimByKod(
   };
 }
 
+// "Bu kazanımda pratik yap" derin-linki: /coz/yeni?grade=&topic=&kazanim=.
+// SolveForm bu parametreleri okuyup formu ön-doldurur. Üç çağrı yeri paylaşır
+// (ilerleme panosu, çöz-sonrası sonuç, hub önerisi).
+export function practiceHref(kod: string): string {
+  const info = findKazanimByKod(kod);
+  if (!info) return "/coz/yeni";
+  const p = new URLSearchParams({
+    grade: String(info.grade),
+    topic: info.topicId,
+    kazanim: kod,
+  });
+  return `/coz/yeni?${p.toString()}`;
+}
+
 export interface TopicRollup {
   topicId: string;
   topicName: string;
