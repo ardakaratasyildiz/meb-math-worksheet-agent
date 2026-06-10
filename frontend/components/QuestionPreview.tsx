@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ShareButton } from "@/components/ShareButton";
 
 import { track } from "@/lib/analytics";
 import { downloadBlob, regenerateQuestion, renderPdf } from "@/lib/api";
@@ -161,6 +162,7 @@ export function QuestionPreview() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <ShareButton />
           <Button onClick={onDownloadPdf} className="gap-2">
             <Download className="h-4 w-4" /> PDF indir
           </Button>
