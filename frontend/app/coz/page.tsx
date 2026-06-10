@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, History, Sparkles, TrendingUp } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { CozTodayCard } from "@/components/CozTodayCard";
 
 export default function CozHubPage() {
   return (
@@ -13,6 +14,8 @@ export default function CozHubPage() {
           yaptığını gör. Eksik kazanımlarına göre pratiğe yönlen.
         </p>
       </header>
+
+      <CozTodayCard />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Link href="/coz/yeni" className="group">
