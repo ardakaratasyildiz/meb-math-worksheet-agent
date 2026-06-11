@@ -130,7 +130,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2563eb",
+  themeColor: "#7C5BD6",
 };
 
 export default function RootLayout({
@@ -142,7 +142,7 @@ export default function RootLayout({
     <ClerkProvider
       localization={trTR}
       appearance={{
-        variables: { colorPrimary: "hsl(224, 76%, 33%)" },
+        variables: { colorPrimary: "hsl(258, 60%, 60%)" },
       }}
     >
       <html lang="tr" suppressHydrationWarning>
@@ -155,7 +155,7 @@ export default function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
           >
-            <div className="flex min-h-screen flex-col">
+            <div className="app-theme flex min-h-screen flex-col">
               <TopNavBar />
               <main className="flex-1">{children}</main>
             </div>

@@ -75,7 +75,7 @@ export function AltKonuLanding({ ak }: { ak: AltKonu }) {
           </div>
           <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {ak.grade}. Sınıf {ak.title} —{" "}
-            <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-coral bg-clip-text text-transparent">
               Çalışma Kağıdı
             </span>
           </h1>

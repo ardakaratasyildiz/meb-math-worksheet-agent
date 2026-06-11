@@ -131,6 +131,66 @@
     letter-spacing: -0.01em;
   }
 
+  /*
+   * Public/marketing yüzeyi teması — güven-forward sıcak marka (landing, features,
+   * pricing, faq, calismalar). .coz-theme ile aynı palet ama daha ölçülü (radius
+   * 1rem, oyunsu animasyon/maskot yok). Root layout sarmalayıcısına uygulanır;
+   * tüm public sayfalar tek seferde dönüşür. Koyu mod için warm-dark varyant var.
+   */
+  .app-theme {
+    --background: 28 100% 96%; /* krem #FFF4EA */
+    --foreground: 267 25% 23%; /* ink #3A2C4A */
+    --card: 0 0% 100%;
+    --card-foreground: 267 25% 23%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 267 25% 23%;
+    --primary: 258 60% 60%; /* grape #7C5BD6 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 28 60% 93%;
+    --secondary-foreground: 267 25% 23%;
+    --muted: 28 45% 93%;
+    --muted-foreground: 268 12% 42%;
+    --accent: 258 70% 95%;
+    --accent-foreground: 258 50% 42%;
+    --destructive: 0 84% 63%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 22% 91%;
+    --input: 270 20% 88%;
+    --ring: 258 60% 60%;
+    --radius: 1rem;
+
+    font-family: var(--font-nunito), system-ui, sans-serif;
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(34% 26% at 6% 3%, rgba(255, 201, 60, 0.13), transparent 60%),
+      radial-gradient(30% 24% at 96% 1%, rgba(124, 91, 214, 0.09), transparent 60%);
+    background-attachment: fixed;
+  }
+  .app-theme :is(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-fredoka), var(--font-manrope), system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  .dark .app-theme {
+    --background: 267 30% 12%; /* sıcak koyu plum */
+    --foreground: 28 60% 95%;
+    --card: 267 24% 17%;
+    --card-foreground: 28 60% 95%;
+    --popover: 267 24% 17%;
+    --popover-foreground: 28 60% 95%;
+    --primary: 258 80% 73%; /* koyu üstünde açık grape */
+    --primary-foreground: 267 40% 15%;
+    --secondary: 267 20% 22%;
+    --secondary-foreground: 28 60% 95%;
+    --muted: 267 18% 22%;
+    --muted-foreground: 268 15% 66%;
+    --accent: 267 28% 24%;
+    --accent-foreground: 258 75% 82%;
+    --border: 267 20% 25%;
+    --input: 267 20% 25%;
+    --ring: 258 80% 73%;
+    background-image: none;
+  }
+
   * {
     @apply border-border;
   }
