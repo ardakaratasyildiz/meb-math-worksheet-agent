@@ -13,5 +13,10 @@ export default function CozLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="container py-8">{children}</div>;
+  // .coz-theme → öğrenci alanına özel sıcak/oyunsu tema (bkz. globals.css).
+  return (
+    <div className="coz-theme min-h-screen">
+      <div className="container py-8">{children}</div>
+    </div>
+  );
 }

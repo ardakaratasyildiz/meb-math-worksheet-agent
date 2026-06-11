@@ -81,6 +81,56 @@
 }
 
 @layer base {
+  /*
+   * Çöz & Geliş (öğrenci alanı) oyunsu teması — yalnızca .coz-theme scope'unda.
+   * Aynı shadcn değişkenlerini sıcak/oyunsu palete çevirir; böylece Card/Button
+   * gibi mevcut bileşenler otomatik bu görünüme bürünür. Landing/diğer yüzeyler
+   * etkilenmez. Zemin = sıcak krem #FFF4EA, primary = grape #7C5BD6 (AA kontrast).
+   */
+  .coz-theme {
+    --background: 28 100% 96%; /* krem #FFF4EA */
+    --foreground: 267 25% 23%; /* ink #3A2C4A */
+
+    --card: 0 0% 100%;
+    --card-foreground: 267 25% 23%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 267 25% 23%;
+
+    --primary: 258 60% 60%; /* grape #7C5BD6 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 28 60% 93%;
+    --secondary-foreground: 267 25% 23%;
+
+    --muted: 28 45% 92%;
+    --muted-foreground: 268 14% 45%;
+
+    --accent: 258 70% 95%; /* yumuşak grape */
+    --accent-foreground: 258 50% 42%;
+
+    --destructive: 0 84% 63%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 270 22% 91%;
+    --input: 270 20% 88%;
+    --ring: 258 60% 60%;
+
+    --radius: 1.25rem; /* belirgin yuvarlak köşeler */
+
+    font-family: var(--font-nunito), system-ui, sans-serif;
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(38% 30% at 8% 4%, rgba(255, 201, 60, 0.16), transparent 60%),
+      radial-gradient(32% 26% at 94% 2%, rgba(124, 91, 214, 0.1), transparent 60%),
+      radial-gradient(40% 34% at 88% 94%, rgba(255, 107, 107, 0.1), transparent 62%);
+    background-attachment: fixed;
+  }
+  .coz-theme :is(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-fredoka), var(--font-manrope), system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
   * {
     @apply border-border;
   }

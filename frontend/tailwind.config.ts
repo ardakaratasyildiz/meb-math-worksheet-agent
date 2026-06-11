@@ -24,8 +24,17 @@ const config = {
           "system-ui",
           "sans-serif",
         ],
+        // Çöz & Geliş oyunsu teması (.coz-theme scope'unda)
+        display: ["var(--font-fredoka)", "var(--font-manrope)", "system-ui", "sans-serif"],
+        playful: ["var(--font-nunito)", "system-ui", "sans-serif"],
       },
       colors: {
+        // Çöz & Geliş oyunsu palet (yalnız öğrenci alanında kullanılır)
+        coral: "#FF6B6B",
+        sun: "#FFC93C",
+        mint: "#3DD9B3",
+        grape: "#7C5BD6",
+        cream: "#FFF4EA",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -65,7 +74,23 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        // Çöz & Geliş yumuşak renkli "pop" gölgeleri
+        pop: "0 8px 0 0 rgba(58,44,74,0.10)",
+        "pop-coral": "0 8px 0 0 rgba(255,107,107,0.40)",
+        "pop-grape": "0 8px 0 0 rgba(124,91,214,0.38)",
+        "pop-sun": "0 8px 0 0 rgba(214,158,0,0.38)",
+        "pop-mint": "0 8px 0 0 rgba(40,180,140,0.38)",
+      },
       keyframes: {
+        bob: {
+          "0%, 100%": { transform: "translateY(0) rotate(-3deg)" },
+          "50%": { transform: "translateY(-10px) rotate(3deg)" },
+        },
+        popIn: {
+          "0%": { opacity: "0", transform: "translateY(16px) scale(0.97)" },
+          "100%": { opacity: "1", transform: "none" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -93,6 +118,8 @@ const config = {
         "fade-in-up": "fadeInUp 0.5s ease-out forwards",
         "fade-in-up-fast": "fadeInUp 0.3s ease-out forwards",
         shimmer: "shimmer 2s linear infinite",
+        bob: "bob 3.4s ease-in-out infinite",
+        "pop-in": "popIn 0.6s cubic-bezier(0.2,0.8,0.2,1.2) forwards",
       },
     },
   },

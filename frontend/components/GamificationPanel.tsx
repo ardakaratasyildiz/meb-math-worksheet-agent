@@ -52,22 +52,24 @@ export function GamificationPanel({
       : 0;
 
   return (
-    <Card className="space-y-4 p-5">
+    <Card className="space-y-4 p-5 shadow-pop">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg font-bold text-primary">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-grape font-display text-2xl font-bold text-white shadow-pop-grape">
             {data.level}
           </div>
           <div>
-            <p className="text-sm font-semibold">Seviye {data.level}</p>
+            <p className="font-display text-lg font-bold">Seviye {data.level}</p>
             <p className="text-xs text-muted-foreground">{data.xp} XP</p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-sm">
+        <div className="flex items-center gap-1.5 rounded-full bg-sun/20 px-3 py-1.5 text-sm">
           <Flame
             className={`h-4 w-4 ${data.streak_current > 0 ? "text-orange-500" : "text-muted-foreground"}`}
           />
-          <span className="font-medium tabular-nums">{data.streak_current}</span>
+          <span className="font-display font-bold tabular-nums">
+            {data.streak_current}
+          </span>
           <span className="text-muted-foreground">gün seri</span>
           {data.streak_longest > data.streak_current ? (
             <span className="text-xs text-muted-foreground">
@@ -85,9 +87,9 @@ export function GamificationPanel({
             {data.xp_in_level}/{data.xp_for_next} XP
           </span>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div className="h-3 overflow-hidden rounded-full bg-grape/12">
           <div
-            className="h-full bg-primary"
+            className="h-full rounded-full bg-gradient-to-r from-sky-400 to-grape transition-all"
             style={{ width: `${barPct}%` }}
           />
         </div>
@@ -105,7 +107,7 @@ export function GamificationPanel({
                 title={`${s.label} · ${b.total} soru · %${Math.round(b.ratio * 100)}`}
               >
                 <span>{s.emoji}</span>
-                <span className="font-medium">{b.topicName}</span>
+                <span className="font-semibold">{b.topicName}</span>
               </div>
             );
           })}
@@ -113,7 +115,7 @@ export function GamificationPanel({
       ) : (
         <p className="text-xs text-muted-foreground">
           Henüz rozet yok — bir konuda en az 5 soru çözüp %60 başarıyla ilk
-          rozetini kazan.
+          rozetini kazan. 🏅
         </p>
       )}
     </Card>
