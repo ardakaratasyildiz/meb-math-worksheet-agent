@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, learningResourceSchema } from "@/components/JsonLd";
 import { SampleQuestions } from "@/components/SampleQuestions";
+import { getAltKonularByTopic } from "@/lib/altkonular";
 import { CURRICULUM_PAGES, getCurriculumPageBySlug } from "@/lib/curriculum";
 import { getKazanimlarByTopic } from "@/lib/kazanimlar";
 
@@ -70,6 +71,9 @@ export default async function CalismaDetailPage({ params }: PageProps) {
 
   // Bu konunun kazanımları — kazanım-seviyesi landing'lere iç link (SEO crawl).
   const kazanimlar = getKazanimlarByTopic(slug);
+
+  // Doğal-dil alt-konu landing'leri — yüksek arama hacimli iç linkler (SEO crawl).
+  const altKonular = getAltKonularByTopic(slug);
 
   const generateHref = `/generate?grade=${page.grade}&topic=${page.topicId}`;
 
@@ -150,6 +154,32 @@ export default async function CalismaDetailPage({ params }: PageProps) {
         topicId={page.topicId}
         topicName={page.topicName}
       />
+
+      {altKonular.length > 0 && (
+        <section className="bg-card py-16">
+          <div className="container max-w-4xl">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+              Sık çalışılan alt başlıklar
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              {page.grade}. sınıf {page.topicName.toLowerCase()} konusundaki alt
+              başlıklara özel çalışma kağıtları. Başlığa tıkla, içeriği gör ve o
+              başlığa uygun soruları üret.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {altKonular.map((a) => (
+                <Link
+                  key={a.slug}
+                  href={`/calismalar/${a.topicSlug}/${a.slug}`}
+                  className="rounded-lg border bg-background p-4 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary"
+                >
+                  {a.title}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {kazanimlar.length > 0 && (
         <section className="py-16">
