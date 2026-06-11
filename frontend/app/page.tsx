@@ -72,7 +72,7 @@ function Hero() {
         </Badge>
         <h1 className="max-w-4xl text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
           Matematik çalışma kağıtlarını{" "}
-          <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary to-coral bg-clip-text text-transparent">
             saniyeler içinde
           </span>{" "}
           hazırlayın
@@ -204,6 +204,35 @@ function SolveAndGrow() {
               <p className="text-sm text-muted-foreground">{f.body}</p>
             </div>
           ))}
+        </div>
+        {/* Öğrenci tarafına köprü — oyunlaştırma önizlemesi (alıcı, çocuğun
+            eğleneceğini görür). Statik temsilî veri. */}
+        <div className="mx-auto mt-12 max-w-md rounded-2xl border bg-background/60 p-5 shadow-pop">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary font-display text-lg font-bold text-primary-foreground">
+                7
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">Seviye 7</p>
+                <p className="text-xs text-muted-foreground">1.840 XP</p>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-sun/20 px-3 py-1 text-sm font-semibold text-foreground">
+              🔥 12 gün
+            </span>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-primary/10">
+            <div className="h-full w-[47%] rounded-full bg-primary" />
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs">
+            <span className="rounded-full bg-muted px-2.5 py-1 font-medium">🥇 Doğal sayılar</span>
+            <span className="rounded-full bg-muted px-2.5 py-1 font-medium">🥈 Cebir</span>
+            <span className="rounded-full bg-muted px-2.5 py-1 font-medium">🥉 Geometri</span>
+          </div>
+          <p className="mt-3 text-center text-xs text-muted-foreground">
+            Öğrenci çözerken rozet kazanır, seri yapar, seviye atlar.
+          </p>
         </div>
         <div className="mt-10 flex justify-center">
           <Button asChild size="lg" className="gap-2 px-7">
@@ -521,7 +550,7 @@ function PricingTeaser() {
   return (
     <section
       id="pricing"
-      className="relative overflow-hidden bg-gradient-to-br from-primary to-blue-950 py-20 text-primary-foreground"
+      className="relative overflow-hidden bg-gradient-to-br from-primary to-coral py-20 text-primary-foreground"
     >
       <div className="container max-w-3xl text-center">
         <p className="text-xs font-semibold uppercase tracking-wider opacity-80">
@@ -623,7 +652,7 @@ function FinalCta() {
   return (
     <section className="py-20">
       <div className="container">
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border bg-card p-12 text-center shadow-sm">
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border bg-card p-12 text-center shadow-pop">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             İlk çalışma kağıdını 5 dakikada hazırla
           </h2>

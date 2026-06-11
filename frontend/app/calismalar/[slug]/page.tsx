@@ -104,7 +104,7 @@ export default async function CalismaDetailPage({ params }: PageProps) {
           </div>
           <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {page.grade}. Sınıf {page.topicName} —{" "}
-            <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-coral bg-clip-text text-transparent">
               Çalışma Kağıdı
             </span>
           </h1>
