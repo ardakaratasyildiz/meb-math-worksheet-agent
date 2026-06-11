@@ -158,10 +158,12 @@ export default function RootLayout({
             <div className="app-theme flex min-h-screen flex-col">
               <TopNavBar />
               <main className="flex-1">{children}</main>
+              {/* Toaster + CookieConsent app-theme içinde → sıcak/grape paleti
+                  alır (yoksa cookie banner'ı eski lacivert primary'de kalıyor). */}
+              <Toaster richColors position="top-center" />
+              <CookieConsent />
+              <Analytics />
             </div>
-            <Toaster richColors position="top-center" />
-            <CookieConsent />
-            <Analytics />
           </ThemeProvider>
         </body>
       </html>

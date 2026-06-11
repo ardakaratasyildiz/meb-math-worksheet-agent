@@ -60,47 +60,88 @@ function Hero() {
     <section className="relative overflow-hidden">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[600px] bg-[radial-gradient(ellipse_at_top,_hsl(var(--primary)/0.18),transparent_60%)]"
+        className="pointer-events-none absolute -right-40 -top-40 -z-10 h-[520px] w-[520px] rounded-full bg-primary/10 blur-3xl"
       />
-      <div className="container flex flex-col items-center gap-7 py-20 text-center sm:py-28">
-        <Badge
-          variant="outline"
-          className="border-primary/30 bg-accent text-accent-foreground"
-        >
-          <Sparkles className="mr-1.5 h-3 w-3" />
-          1.→7. sınıf · MEB matematik müfredatı
-        </Badge>
-        <h1 className="max-w-4xl text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          Matematik çalışma kağıtlarını{" "}
-          <span className="bg-gradient-to-r from-primary to-coral bg-clip-text text-transparent">
-            saniyeler içinde
-          </span>{" "}
-          hazırlayın
-        </h1>
-        <p className="max-w-2xl text-balance text-lg text-muted-foreground sm:text-xl">
-          Sınıf ve konuyu seçin; MEB kazanımlarına uygun sorular, cevap anahtarı
-          ve adım adım çözümüyle hazır PDF birkaç saniyede elinizde. İndirin,
-          yazdırın, öğrencilerinizle paylaşın.
-        </p>
-        <div className="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
-          <Button asChild size="lg" className="gap-2 px-7">
-            <Link href="/sign-up">
-              Ücretsiz dene <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="secondary" className="gap-2 px-7">
-            <Link href="/coz">
-              Çözerek çalış <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="px-7">
-            <Link href="#ornekler">Örnek soruları gör</Link>
-          </Button>
+      <div className="container grid items-center gap-12 py-20 sm:py-24 lg:grid-cols-12">
+        {/* Sol — metin */}
+        <div className="lg:col-span-7">
+          <Badge
+            variant="outline"
+            className="border-primary/30 bg-accent text-accent-foreground"
+          >
+            <Sparkles className="mr-1.5 h-3 w-3" />
+            1.→7. sınıf · MEB matematik müfredatı
+          </Badge>
+          <h1 className="mt-6 max-w-2xl text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            Matematik çalışma kağıtlarını{" "}
+            <span className="bg-gradient-to-r from-primary to-coral bg-clip-text text-transparent">
+              saniyeler içinde
+            </span>{" "}
+            hazırlayın
+          </h1>
+          <p className="mt-6 max-w-xl text-balance text-lg text-muted-foreground sm:text-xl">
+            Sınıf ve konuyu seçin; MEB kazanımlarına uygun sorular, cevap anahtarı
+            ve adım adım çözümüyle hazır PDF birkaç saniyede elinizde. İndirin,
+            yazdırın, öğrencilerinizle paylaşın.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button asChild size="lg" className="gap-2 px-7">
+              <Link href="/sign-up">
+                Ücretsiz dene <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="secondary" className="gap-2 px-7">
+              <Link href="/coz">
+                Çözerek çalış <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="px-7">
+              <Link href="#ornekler">Örnek soruları gör</Link>
+            </Button>
+          </div>
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
+            <TrustBullet>Aylık 100 soru ücretsiz</TrustBullet>
+            <TrustBullet>Kayıt için yalnızca e-posta</TrustBullet>
+            <TrustBullet>Ödeme bilgisi alınmaz</TrustBullet>
+          </div>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-          <TrustBullet>Aylık 100 soru ücretsiz</TrustBullet>
-          <TrustBullet>Kayıt için yalnızca e-posta</TrustBullet>
-          <TrustBullet>Ödeme bilgisi alınmaz</TrustBullet>
+
+        {/* Sağ — örnek soru kartı */}
+        <div className="lg:col-span-5">
+          <div className="relative mx-auto max-w-sm">
+            <div
+              aria-hidden
+              className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-primary/10"
+            />
+            <div className="relative rounded-3xl border bg-card p-6 shadow-pop">
+              <div className="flex items-center justify-between border-b pb-3">
+                <span className="font-display text-base font-bold text-foreground">
+                  5. sınıf · Cebir
+                </span>
+                <span className="rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold text-accent-foreground">
+                  M.5.2.1
+                </span>
+              </div>
+              <ol className="mt-4 space-y-3 text-sm text-muted-foreground">
+                <li>
+                  <span className="font-bold text-foreground">1.</span> 3a + 5
+                  ifadesinin a = 4 için değeri kaçtır?
+                </li>
+                <li>
+                  <span className="font-bold text-foreground">2.</span> x − 7 = 12
+                  denkleminde x kaçtır?
+                </li>
+                <li>
+                  <span className="font-bold text-foreground">3.</span> Bir sayının
+                  2 katının 6 fazlası 20 ise sayı kaçtır?
+                </li>
+              </ol>
+              <div className="mt-5 flex items-center gap-2 border-t pt-3 text-[11px] font-bold text-mint">
+                <CheckCircle2 className="h-3.5 w-3.5" /> Cevap anahtarı · adım adım
+                çözüm
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -170,30 +211,68 @@ const SOLVE_FEATURES = [
 
 function SolveAndGrow() {
   return (
-    <section className="bg-card py-20">
+    <section className="py-20">
       <div className="container">
-        <div className="mx-auto max-w-2xl text-center">
-          <Badge
-            variant="outline"
-            className="border-primary/30 bg-accent text-accent-foreground"
-          >
-            <Sparkles className="mr-1.5 h-3 w-3" />
-            Yeni · Çöz &amp; Geliş
-          </Badge>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Sadece üretme — site içinde çöz, gelişimini gör
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            Üret → test gibi çöz → anında kaç doğru/yanlış → kazanım eksiğine
-            göre pratik. Çalışma kağıdı üreticisinin yanında artık tam bir
-            öğrenme döngüsü.
-          </p>
+        {/* Öğrenciler için — gradyan vitrin + oyunlaştırma önizlemesi (alıcıya
+            çocuğun eğleneceği deneyimi gösteren köprü). Statik temsilî veri. */}
+        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-sky-500 p-8 text-primary-foreground shadow-pop sm:p-10">
+          <div className="grid items-center gap-8 lg:grid-cols-2">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
+                <Sparkles className="h-3 w-3" /> Yeni · Öğrenciler için
+              </span>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+                Sadece kağıt değil — çocuğunuz için eğlenceli bir öğrenme döngüsü
+              </h2>
+              <p className="mt-3 text-base leading-relaxed text-white/85">
+                Üret → test gibi çöz → anında kaç doğru/yanlış → eksik kazanıma
+                göre pratik. Öğrenci rozet kazanır, seri yapar, seviye atlar; siz
+                gelişimini takip edersiniz.
+              </p>
+              <Button
+                asChild
+                size="lg"
+                className="mt-6 gap-2 bg-white text-primary hover:bg-white/90"
+              >
+                <Link href="/coz">
+                  Çöz &amp; Geliş&apos;i keşfet <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+            {/* oyunlaştırma önizlemesi */}
+            <div className="rounded-2xl bg-white/12 p-5 ring-1 ring-white/20 backdrop-blur">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sun font-display text-lg font-bold text-primary">
+                    7
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">Seviye 7</p>
+                    <p className="text-xs text-white/70">1.840 XP</p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-white/15 px-3 py-1 text-sm font-semibold">
+                  🔥 12 gün
+                </span>
+              </div>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/20">
+                <div className="h-full w-[47%] rounded-full bg-sun" />
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                <span className="rounded-full bg-white/15 px-2.5 py-1 font-medium">🥇 Doğal sayılar</span>
+                <span className="rounded-full bg-white/15 px-2.5 py-1 font-medium">🥈 Cebir</span>
+                <span className="rounded-full bg-white/15 px-2.5 py-1 font-medium">🥉 Geometri</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+        {/* Çöz & Geliş özellikleri */}
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {SOLVE_FEATURES.map((f, i) => (
             <div
               key={i}
-              className="flex flex-col gap-3 rounded-xl border bg-background/50 p-5"
+              className="flex flex-col gap-3 rounded-xl border bg-card p-5 shadow-pop"
             >
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">
                 {f.icon}
@@ -204,42 +283,6 @@ function SolveAndGrow() {
               <p className="text-sm text-muted-foreground">{f.body}</p>
             </div>
           ))}
-        </div>
-        {/* Öğrenci tarafına köprü — oyunlaştırma önizlemesi (alıcı, çocuğun
-            eğleneceğini görür). Statik temsilî veri. */}
-        <div className="mx-auto mt-12 max-w-md rounded-2xl border bg-background/60 p-5 shadow-pop">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary font-display text-lg font-bold text-primary-foreground">
-                7
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">Seviye 7</p>
-                <p className="text-xs text-muted-foreground">1.840 XP</p>
-              </div>
-            </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-sun/20 px-3 py-1 text-sm font-semibold text-foreground">
-              🔥 12 gün
-            </span>
-          </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-primary/10">
-            <div className="h-full w-[47%] rounded-full bg-primary" />
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <span className="rounded-full bg-muted px-2.5 py-1 font-medium">🥇 Doğal sayılar</span>
-            <span className="rounded-full bg-muted px-2.5 py-1 font-medium">🥈 Cebir</span>
-            <span className="rounded-full bg-muted px-2.5 py-1 font-medium">🥉 Geometri</span>
-          </div>
-          <p className="mt-3 text-center text-xs text-muted-foreground">
-            Öğrenci çözerken rozet kazanır, seri yapar, seviye atlar.
-          </p>
-        </div>
-        <div className="mt-10 flex justify-center">
-          <Button asChild size="lg" className="gap-2 px-7">
-            <Link href="/coz">
-              Çözerek çalış <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
         </div>
       </div>
     </section>

@@ -44,7 +44,7 @@ const TopNavBar = () => {
             width={706}
             height={173}
             priority
-            className="h-8 w-auto rounded-md"
+            className="h-8 w-auto rounded-md [filter:hue-rotate(32deg)_saturate(1.3)]"
           />
         </Link>
         <div className="hidden items-center gap-7 md:flex">
