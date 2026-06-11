@@ -43,19 +43,22 @@ export function CozTodayCard() {
   // Yeni kullanıcı — ilk quiz çağrısı.
   if (data.summary.total_answered === 0) {
     return (
-      <Card className="flex flex-col gap-3 border-primary/30 bg-accent/20 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="flex flex-col gap-4 border-0 bg-gradient-to-br from-grape to-sky-500 p-6 text-white shadow-pop sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-2xl">
             <Sparkles className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-semibold">Hadi başlayalım</p>
-            <p className="text-sm text-muted-foreground">
+            <p className="font-display text-lg font-bold">Hadi başlayalım! ✨</p>
+            <p className="text-sm text-white/85">
               İlk quizini çöz; gelişimin ve sana özel öneriler burada belirsin.
             </p>
           </div>
         </div>
-        <Button asChild className="shrink-0 gap-2">
+        <Button
+          asChild
+          className="shrink-0 gap-2 rounded-full bg-sun font-display font-semibold text-grape shadow-pop-sun hover:bg-sun/90"
+        >
           <Link href="/coz/yeni">
             İlk quizini çöz
             <ArrowRight className="h-4 w-4" />
@@ -74,26 +77,28 @@ export function CozTodayCard() {
   const pct = Math.round(target.ratio * 100);
 
   return (
-    <Card className="flex flex-col gap-3 border-primary/30 bg-accent/20 p-5 sm:flex-row sm:items-center sm:justify-between">
+    <Card className="flex flex-col gap-4 border-0 bg-gradient-to-br from-grape to-sky-500 p-6 text-white shadow-pop sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-2xl">
           <Target className="h-5 w-5" />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-semibold">Bugün şunu çöz</p>
-          <p className="text-sm text-muted-foreground">
-            <span className="text-foreground">{label}</span>
-            {info ? (
-              <span className="text-muted-foreground">
-                {" "}
-                · {info.topicName}
-              </span>
-            ) : null}{" "}
-            <span className="text-xs">(şu an %{pct})</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-0.5 font-display text-xs font-semibold">
+            ✨ Günün görevi
+          </span>
+          <p className="mt-1.5 font-display text-base font-bold leading-snug">
+            {label}
+          </p>
+          <p className="text-sm text-white/80">
+            {info ? <span>{info.topicName} · </span> : null}
+            <span>şu an %{pct} — birlikte yükseltelim!</span>
           </p>
         </div>
       </div>
-      <Button asChild className="shrink-0 gap-2">
+      <Button
+        asChild
+        className="shrink-0 gap-2 rounded-full bg-sun font-display font-semibold text-grape shadow-pop-sun hover:bg-sun/90"
+      >
         <Link href={practiceHref(target.kazanim_kod)}>
           Hemen çöz
           <ArrowRight className="h-4 w-4" />

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Manrope } from "next/font/google";
+import { Inter, Manrope, Fredoka, Nunito } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { trTR } from "@clerk/localizations";
 import { Toaster } from "sonner";
@@ -26,6 +26,22 @@ const manrope = Manrope({
   variable: "--font-manrope",
   display: "swap",
   weight: ["500", "600", "700", "800"],
+});
+
+// Çöz & Geliş (öğrenci alanı) oyunsu teması için — yalnızca .coz-theme scope'unda
+// kullanılır (bkz. globals.css). Landing/diğer yüzeyler Inter/Manrope kalır.
+const fredoka = Fredoka({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-fredoka",
+  display: "swap",
+  weight: ["500", "600", "700"],
+});
+
+const nunito = Nunito({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-nunito",
+  display: "swap",
+  weight: ["400", "600", "700", "800"],
 });
 
 // metadataBase — tüm relative OG/Twitter/canonical URL'lerin baz alacağı host.
@@ -131,7 +147,7 @@ export default function RootLayout({
     >
       <html lang="tr" suppressHydrationWarning>
         <body
-          className={`${inter.variable} ${manrope.variable} font-sans antialiased`}
+          className={`${inter.variable} ${manrope.variable} ${fredoka.variable} ${nunito.variable} font-sans antialiased`}
         >
           <ThemeProvider
             attribute="class"
