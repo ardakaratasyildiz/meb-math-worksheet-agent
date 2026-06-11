@@ -6,6 +6,8 @@ import { ArrowRight, ChevronRight, GraduationCap, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, learningResourceSchema } from "@/components/JsonLd";
+import { AltKonuLanding } from "@/components/AltKonuLanding";
+import { ALTKONU_PAGES, getAltKonu } from "@/lib/altkonular";
 import { getCurriculumPageBySlug } from "@/lib/curriculum";
 import {
   KAZANIM_PAGES,
@@ -20,20 +22,45 @@ interface PageProps {
   params: Promise<{ slug: string; kazanim: string }>;
 }
 
-/** 123 kazanım sayfasını build-time'da statik üret (Vercel CDN, Google ilk crawl). */
+/**
+ * İkinci seviye sayfaları build-time'da statik üret (Vercel CDN, Google ilk crawl).
+ * İki tür: kazanım-kodu sayfaları (KAZANIM_PAGES) + alt-konu sayfaları
+ * (ALTKONU_PAGES). Aynı route'u paylaşırlar; slug uzayları çakışmaz (kazanım =
+ * "m-5-2-3", alt-konu = "kesirlerle-toplama-cikarma").
+ */
 export function generateStaticParams() {
-  return KAZANIM_PAGES.map((k) => ({
-    slug: k.topicSlug,
-    kazanim: k.kazanimSlug,
-  }));
+  return [
+    ...KAZANIM_PAGES.map((k) => ({ slug: k.topicSlug, kazanim: k.kazanimSlug })),
+    ...ALTKONU_PAGES.map((a) => ({ slug: a.topicSlug, kazanim: a.slug })),
+  ];
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, kazanim } = await params;
+
+  // Alt-konu sayfası mı? (doğal-dil sorgu odaklı title/description)
+  const ak = getAltKonu(slug, kazanim);
+  if (ak) {
+    const akTitle = `${ak.grade}. Sınıf ${ak.title} Çalışma Kağıdı`;
+    return {
+      title: akTitle,
+      description: ak.description,
+      alternates: { canonical: `/calismalar/${slug}/${kazanim}` },
+      openGraph: {
+        title: `${akTitle} · Soru Atölyesi`,
+        description: ak.description,
+        url: `${SITE_URL}/calismalar/${slug}/${kazanim}`,
+        type: "article",
+      },
+    };
+  }
+
   const k = getKazanim(slug, kazanim);
   if (!k) return { title: "Bulunamadı" };
 
-  const title = `${k.kod} — ${k.grade}. Sınıf ${k.topicName} Çalışma Kağıdı`;
+  // Title doğal-dil kazanım metninden başlar (kod ikincil) — arama-amaçlı SEO.
+  const shortMetin = k.metin.length > 60 ? k.metin.slice(0, 60) + "…" : k.metin;
+  const title = `${shortMetin} — ${k.grade}. Sınıf ${k.topicName} (${k.kod})`;
   const description = `${k.kod} kazanımı: ${k.metin} ${k.grade}. sınıf ${k.topicName.toLowerCase()} konusunda bu kazanıma özel çalışma kağıdı üret — PDF, cevap anahtarı ve adım adım çözüm dahil.`;
 
   return {
@@ -51,6 +78,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function KazanimDetailPage({ params }: PageProps) {
   const { slug, kazanim } = await params;
+
+  // Önce alt-konu (SEO-only landing); bulamazsa kazanım-kodu sayfası.
+  const ak = getAltKonu(slug, kazanim);
+  if (ak) return <AltKonuLanding ak={ak} />;
+
   const k = getKazanim(slug, kazanim);
   if (!k) notFound();
 
