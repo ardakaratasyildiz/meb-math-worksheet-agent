@@ -76,6 +76,839 @@ function ak(i: AltKonuInput): AltKonu {
 }
 
 export const ALTKONU_PAGES: AltKonu[] = [
+  // ─── 1. SINIF ──────────────────────────────────────────────────────────────
+  ak({
+    grade: 1,
+    topicId: "dogal_sayilar",
+    slug: "ritmik-sayma",
+    title: "Ritmik Sayma",
+    description:
+      "1. sınıf ritmik sayma çalışma kağıdı: birer, ikişer, beşer ve onar sayma. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz üret.",
+    intro:
+      "Ritmik sayma, sayıları belirli bir kural (birer, ikişer, beşer, onar) ile sıralı sayma becerisidir. Bu çalışma kağıdı verilen sayıdan başlayarak ileri ve geri ritmik saymayı pekiştirir.",
+    skills: [
+      "Birer birer ileri ve geri sayma",
+      "İkişer ve beşer ritmik sayma",
+      "Onar ritmik sayma",
+      "Verilen sayıdan devam ederek sayma",
+      "Eksik bırakılan sayıyı tamamlama",
+    ],
+    difficulty: [
+      "20'ye kadar birer birer sayma.",
+      "İkişer veya beşer ritmik sayma.",
+      "Onar sayma veya geriye doğru ritmik sayma.",
+    ],
+  }),
+  ak({
+    grade: 1,
+    topicId: "dogal_sayilar",
+    slug: "toplama-islemi",
+    title: "Toplama İşlemi (20'ye Kadar)",
+    description:
+      "1. sınıf toplama işlemi çalışma kağıdı: 20'ye kadar zihinden ve yazılı toplama. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı toplamları en çok 20 olan iki doğal sayıyı zihinden ve yazılı olarak toplamayı, toplama işleminin günlük hayattaki karşılığını pekiştirir.",
+    skills: [
+      "Toplamı 10'a kadar olan işlemler",
+      "Toplamı 20'ye kadar olan işlemler",
+      "Zihinden toplama",
+      "Toplama içeren basit problemler",
+    ],
+    difficulty: [
+      "Toplamı 10'a kadar olan işlemler.",
+      "Toplamı 20'ye kadar olan işlemler.",
+      "Toplama gerektiren kısa sözel problemler.",
+    ],
+    family: "toplama-islemi",
+  }),
+  ak({
+    grade: 1,
+    topicId: "dogal_sayilar",
+    slug: "cikarma-islemi",
+    title: "Çıkarma İşlemi (20'ye Kadar)",
+    description:
+      "1. sınıf çıkarma işlemi çalışma kağıdı: 20'ye kadar çıkarma ve eksik sayı bulma. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı 20'ye kadar olan sayılarla çıkarma işlemini, toplama-çıkarma ilişkisini ve eksik sayıyı bulmayı pekiştirir.",
+    skills: [
+      "10'a kadar çıkarma işlemi",
+      "20'ye kadar çıkarma işlemi",
+      "Eksik sayıyı bulma (örn. 7 − ? = 3)",
+      "Çıkarma içeren basit problemler",
+    ],
+    difficulty: [
+      "10'dan küçük sayılarla çıkarma.",
+      "20'ye kadar çıkarma.",
+      "Eksik sayı veya kısa sözel problemler.",
+    ],
+    family: "cikarma-islemi",
+  }),
+  ak({
+    grade: 1,
+    topicId: "dogal_sayilar",
+    slug: "onluk-birlik",
+    title: "Onluk ve Birlik (Basamak Değeri)",
+    description:
+      "1. sınıf onluk-birlik çalışma kağıdı: iki basamaklı sayıları onluk ve birliklerine ayırma. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı iki basamaklı sayıları onluk ve birlik kavramlarıyla çözümlemeyi, basamak değerini anlamayı pekiştirir.",
+    skills: [
+      "Bir sayıyı onluk ve birliklerine ayırma",
+      "Onluk-birlik verilip sayıyı bulma",
+      "Basamak değerini belirleme",
+      "Onluk-birlik modeliyle sayı oluşturma",
+    ],
+    difficulty: [
+      "Sayıyı onluk ve birliğine ayırma.",
+      "Onluk-birlikten sayıyı bulma.",
+      "Eksik bilgi içeren çözümleme.",
+    ],
+    family: "basamak-deger",
+  }),
+  ak({
+    grade: 1,
+    topicId: "geometri",
+    slug: "geometrik-sekiller",
+    title: "Geometrik Şekiller: Kare, Üçgen, Daire, Dikdörtgen",
+    description:
+      "1. sınıf geometrik şekiller çalışma kağıdı: kare, üçgen, daire ve dikdörtgeni tanıma ve eşleştirme. PDF, cevap anahtarı ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı temel geometrik şekilleri tanımayı, adlandırmayı ve çevredeki nesnelerle eşleştirmeyi pekiştirir.",
+    skills: [
+      "Kare, üçgen, daire ve dikdörtgeni tanıma",
+      "Şekilleri adlandırma",
+      "Nesneleri geometrik şekille eşleştirme",
+      "Şekilleri özelliklerine göre gruplama",
+    ],
+    difficulty: [
+      "Şekli tanıma ve adlandırma.",
+      "Nesneyle şekli eşleştirme.",
+      "Şekilleri özelliğine göre ayırma.",
+    ],
+  }),
+  ak({
+    grade: 1,
+    topicId: "olcme",
+    slug: "uzunluk-karsilastirma",
+    title: "Uzunlukları Karşılaştırma (Kısa-Uzun)",
+    description:
+      "1. sınıf uzunluk karşılaştırma çalışma kağıdı: kısa-uzun, ince-kalın ve standart olmayan birimlerle ölçme. PDF + cevap anahtarı, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı nesnelerin uzunluklarını kısa-uzun, ince-kalın olarak karşılaştırmayı ve karış, adım gibi standart olmayan birimlerle ölçmeyi pekiştirir.",
+    skills: [
+      "İki nesneyi kısa-uzun olarak karşılaştırma",
+      "İnce-kalın ayrımı yapma",
+      "Standart olmayan birimlerle (karış, adım) ölçme",
+      "Nesneleri uzunluğa göre sıralama",
+    ],
+    difficulty: [
+      "İki nesneyi karşılaştırma.",
+      "Standart olmayan birimle ölçme.",
+      "Üç ve daha fazla nesneyi sıralama.",
+    ],
+  }),
+  ak({
+    grade: 1,
+    topicId: "olcme",
+    slug: "saat-okuma-tam",
+    title: "Saat Okuma (Tam Saatler)",
+    description:
+      "1. sınıf saat okuma çalışma kağıdı: tam saatleri okuma ve gösterme. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz üret.",
+    intro:
+      "Bu çalışma kağıdı analog saatte tam saatleri okumayı ve verilen tam saati saat üzerinde göstermeyi pekiştirir.",
+    skills: [
+      "Tam saatleri okuma",
+      "Verilen saati gösterme",
+      "Günlük olayları saatle ilişkilendirme",
+      "Akrep ve yelkovanı tanıma",
+    ],
+    difficulty: [
+      "Tam saati okuma.",
+      "Verilen tam saati gösterme.",
+      "Saat ve günlük olay eşleştirme.",
+    ],
+    family: "saat-okuma",
+  }),
+  ak({
+    grade: 1,
+    topicId: "cebir",
+    slug: "sayi-oruntuleri",
+    title: "Sayı Örüntüleri",
+    description:
+      "1. sınıf sayı örüntüleri çalışma kağıdı: basit örüntüleri tanıma ve eksik öğeyi bulma. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı birer ve ikişer ritmik sayarak oluşan basit örüntüleri tanımayı ve örüntüdeki eksik sayı veya şekli bulmayı pekiştirir.",
+    skills: [
+      "Basit sayı örüntüsünü tanıma",
+      "Örüntüyü devam ettirme",
+      "Eksik öğeyi bulma",
+      "Şekil örüntülerini tanıma",
+    ],
+    difficulty: [
+      "Birer artan örüntüyü tanıma.",
+      "Örüntüyü devam ettirme.",
+      "Eksik öğeyi bulma.",
+    ],
+    family: "oruntu",
+  }),
+
+  // ─── 2. SINIF ──────────────────────────────────────────────────────────────
+  ak({
+    grade: 2,
+    topicId: "dogal_sayilar",
+    slug: "eldeli-toplama",
+    title: "Eldeli Toplama İşlemi",
+    description:
+      "2. sınıf eldeli toplama çalışma kağıdı: 100'e kadar elde ederek toplama. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı toplamları en çok 100 olan sayılarda elde ederek toplama işlemini ve toplama içeren problemleri pekiştirir.",
+    skills: [
+      "Elde olmadan iki basamaklı toplama",
+      "Elde ederek toplama",
+      "Üç sayıyı toplama",
+      "Toplama içeren problemler",
+    ],
+    difficulty: [
+      "Elde olmadan toplama.",
+      "Elde ederek toplama.",
+      "Toplama gerektiren sözel problemler.",
+    ],
+    family: "toplama-islemi",
+  }),
+  ak({
+    grade: 2,
+    topicId: "dogal_sayilar",
+    slug: "onluk-bozarak-cikarma",
+    title: "Onluk Bozarak Çıkarma",
+    description:
+      "2. sınıf çıkarma çalışma kağıdı: 100'e kadar onluk bozarak çıkarma. PDF + cevap anahtarı + adım adım çözüm, ücretsiz üret.",
+    intro:
+      "Bu çalışma kağıdı iki basamaklı sayılarda onluk bozarak çıkarma işlemini ve çıkarma içeren günlük hayat problemlerini pekiştirir.",
+    skills: [
+      "Onluk bozmadan çıkarma",
+      "Onluk bozarak çıkarma",
+      "Toplama-çıkarma ilişkisini kullanma",
+      "Çıkarma içeren problemler",
+    ],
+    difficulty: [
+      "Onluk bozmadan çıkarma.",
+      "Onluk bozarak çıkarma.",
+      "Çıkarma gerektiren sözel problemler.",
+    ],
+    family: "cikarma-islemi",
+  }),
+  ak({
+    grade: 2,
+    topicId: "dogal_sayilar",
+    slug: "carpmaya-giris",
+    title: "Çarpmaya Giriş (Tekrarlı Toplama)",
+    description:
+      "2. sınıf çarpmaya giriş çalışma kağıdı: tekrarlı toplama ve çarpma ilişkisi. PDF, cevap anahtarı ve çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı çarpma işlemini tekrarlı toplama olarak açıklamayı ve 5'e kadar olan sayılarla basit çarpma yapmayı pekiştirir.",
+    skills: [
+      "Tekrarlı toplamayı çarpma olarak yazma",
+      "Çarpma işlemini modelle gösterme",
+      "5'e kadar olan sayılarla çarpma",
+      "Çarpma içeren basit problemler",
+    ],
+    difficulty: [
+      "Tekrarlı toplamayı çarpmaya çevirme.",
+      "Küçük sayılarla çarpma.",
+      "Çarpma gerektiren basit problemler.",
+    ],
+    family: "carpma-islemi",
+  }),
+  ak({
+    grade: 2,
+    topicId: "dogal_sayilar",
+    slug: "basamak-degeri",
+    title: "Basamak Değeri (Onluk-Birlik)",
+    description:
+      "2. sınıf basamak değeri çalışma kağıdı: üç basamaklı sayıları basamaklarına göre çözümleme. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı üç basamaklı doğal sayıları yüzlük, onluk ve birliklerine ayırarak basamak değerlerini belirlemeyi pekiştirir.",
+    skills: [
+      "Sayıyı basamaklarına ayırma",
+      "Basamak değerini belirleme",
+      "Verilen basamaklardan sayıyı oluşturma",
+      "Sayıları okuma ve yazma",
+    ],
+    difficulty: [
+      "İki basamaklı çözümleme.",
+      "Üç basamaklı çözümleme.",
+      "Eksik basamak bilgisiyle sayı bulma.",
+    ],
+    family: "basamak-deger",
+  }),
+  ak({
+    grade: 2,
+    topicId: "geometri",
+    slug: "kenar-kose",
+    title: "Kenar ve Köşe Sayısı",
+    description:
+      "2. sınıf geometri çalışma kağıdı: şekillerin kenar ve köşe sayıları, kare-dikdörtgen özellikleri. PDF, cevap anahtarı ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı geometrik şekillerin kenar ve köşe sayılarını belirlemeyi; karenin ve dikdörtgenin kenar özelliklerini fark etmeyi pekiştirir.",
+    skills: [
+      "Şekillerin kenar sayısını belirleme",
+      "Şekillerin köşe sayısını belirleme",
+      "Karenin kenar özelliklerini fark etme",
+      "Dikdörtgenin karşılıklı kenarlarını tanıma",
+    ],
+    difficulty: [
+      "Kenar/köşe sayma.",
+      "Şekilleri kenar-köşeye göre ayırt etme.",
+      "Özelliklere göre şekil belirleme.",
+    ],
+  }),
+  ak({
+    grade: 2,
+    topicId: "olcme",
+    slug: "metre-santimetre",
+    title: "Metre ve Santimetre",
+    description:
+      "2. sınıf uzunluk ölçme çalışma kağıdı: metre ve santimetre ile ölçme ve karşılaştırma. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı metre ve santimetre birimlerini tanımayı, bu birimlerle uzunluk ölçmeyi ve karşılaştırmayı pekiştirir.",
+    skills: [
+      "Metre ve santimetreyi tanıma",
+      "Uygun birimi seçme",
+      "Uzunlukları ölçme ve karşılaştırma",
+      "Uzunluk içeren basit problemler",
+    ],
+    difficulty: [
+      "Uygun birimi seçme.",
+      "Ölçme ve karşılaştırma.",
+      "Uzunluk problemleri.",
+    ],
+  }),
+  ak({
+    grade: 2,
+    topicId: "olcme",
+    slug: "saat-okuma-yarim-ceyrek",
+    title: "Saat Okuma (Yarım ve Çeyrek)",
+    description:
+      "2. sınıf saat okuma çalışma kağıdı: tam, yarım ve çeyrek saatleri okuma. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı saat ve dakika kavramlarını kullanarak tam, yarım ve çeyrek saatleri okumayı ve göstermeyi pekiştirir.",
+    skills: [
+      "Tam ve yarım saatleri okuma",
+      "Çeyrek saatleri okuma",
+      "Verilen saati gösterme",
+      "Saat içeren günlük durumlar",
+    ],
+    difficulty: [
+      "Tam ve yarım saat.",
+      "Çeyrek saatleri okuma.",
+      "Saat ve süre içeren problemler.",
+    ],
+    family: "saat-okuma",
+  }),
+  ak({
+    grade: 2,
+    topicId: "cebir",
+    slug: "sayi-sekil-oruntuleri",
+    title: "Sayı ve Şekil Örüntüleri",
+    description:
+      "2. sınıf örüntü çalışma kağıdı: sayı ve şekil örüntülerinde ilişkiyi bulma ve genişletme. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı bir örüntüdeki ilişkiyi belirlemeyi, örüntüyü genişletmeyi ve eksik öğeleri tamamlamayı pekiştirir.",
+    skills: [
+      "Örüntüdeki kuralı bulma",
+      "Örüntüyü genişletme",
+      "Eksik öğeyi tamamlama",
+      "Sayı ve şekil örüntüsünü ilişkilendirme",
+    ],
+    difficulty: [
+      "Kuralı belirleme.",
+      "Örüntüyü genişletme.",
+      "Eksik öğeyi bulma.",
+    ],
+    family: "oruntu",
+  }),
+
+  // ─── 3. SINIF ──────────────────────────────────────────────────────────────
+  ak({
+    grade: 3,
+    topicId: "dogal_sayilar",
+    slug: "toplama-islemi",
+    title: "Üç Basamaklı Sayılarla Toplama",
+    description:
+      "3. sınıf toplama çalışma kağıdı: dört basamağa kadar elde ederek toplama ve problemler. PDF, cevap anahtarı ve çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı en çok dört basamaklı doğal sayılarla elde ederek toplama işlemini ve toplama içeren çok adımlı problemleri pekiştirir.",
+    skills: [
+      "Üç ve dört basamaklı toplama",
+      "Elde ederek toplama",
+      "Toplamı tahmin etme",
+      "Toplama içeren problemler",
+    ],
+    difficulty: [
+      "Elde olmadan toplama.",
+      "Elde ederek toplama.",
+      "Çok adımlı toplama problemleri.",
+    ],
+    family: "toplama-islemi",
+  }),
+  ak({
+    grade: 3,
+    topicId: "dogal_sayilar",
+    slug: "cikarma-islemi",
+    title: "Çıkarma İşlemi",
+    description:
+      "3. sınıf çıkarma çalışma kağıdı: dört basamağa kadar onluk bozarak çıkarma ve problemler. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı en çok dört basamaklı doğal sayılarla onluk bozarak çıkarma işlemini ve çıkarma içeren problemleri pekiştirir.",
+    skills: [
+      "Onluk bozarak çıkarma",
+      "Ardışık bozma gerektiren çıkarma",
+      "Toplama ile çıkarmayı doğrulama",
+      "Çıkarma içeren problemler",
+    ],
+    difficulty: [
+      "Tek bozmalı çıkarma.",
+      "Ardışık bozmalı çıkarma.",
+      "Çıkarma gerektiren problemler.",
+    ],
+    family: "cikarma-islemi",
+  }),
+  ak({
+    grade: 3,
+    topicId: "dogal_sayilar",
+    slug: "carpma-islemi",
+    title: "Çarpma İşlemi",
+    description:
+      "3. sınıf çarpma çalışma kağıdı: iki basamaklı sayılarla çarpma ve çarpım tablosu. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı çarpım tablosunu kullanarak iki basamaklı doğal sayılarla çarpma işlemini ve çarpma içeren problemleri pekiştirir.",
+    skills: [
+      "Çarpım tablosunu kullanma",
+      "İki basamaklı bir sayıyı bir basamaklıyla çarpma",
+      "İki basamaklı sayıları çarpma",
+      "Çarpma içeren problemler",
+    ],
+    difficulty: [
+      "Bir basamaklı çarpan ile çarpma.",
+      "İki basamaklı çarpma.",
+      "Çarpma gerektiren problemler.",
+    ],
+    family: "carpma-islemi",
+  }),
+  ak({
+    grade: 3,
+    topicId: "dogal_sayilar",
+    slug: "bolmeye-giris",
+    title: "Bölme İşlemine Giriş",
+    description:
+      "3. sınıf bölme çalışma kağıdı: bölmeyi paylaştırma olarak anlama ve basit bölme. PDF + cevap anahtarı + çözüm, ücretsiz üret.",
+    intro:
+      "Bu çalışma kağıdı bölme işlemini eşit paylaştırma ve gruplama olarak anlamayı; iki basamaklı bir sayıyı bir basamaklıya bölmeyi pekiştirir.",
+    skills: [
+      "Bölmeyi paylaştırma olarak anlama",
+      "Çarpma-bölme ilişkisini kullanma",
+      "İki basamaklıyı bir basamaklıya bölme",
+      "Bölme içeren basit problemler",
+    ],
+    difficulty: [
+      "Kalansız basit bölme.",
+      "Çarpmadan bölmeye geçiş.",
+      "Bölme gerektiren problemler.",
+    ],
+    family: "bolme-islemi",
+  }),
+  ak({
+    grade: 3,
+    topicId: "kesirler",
+    slug: "kesirlere-giris",
+    title: "Kesirlere Giriş: Yarım, Çeyrek, Bütün",
+    description:
+      "3. sınıf kesirler çalışma kağıdı: bütün, yarım, çeyrek ve birim kesirler. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı bütün, yarım ve çeyrek kavramlarını model üzerinde göstermeyi; bir bütünü eşit parçalara ayırarak parça-bütün ilişkisini ve pay-payda kavramını pekiştirir.",
+    skills: [
+      "Bütün, yarım ve çeyreği modelle gösterme",
+      "Bir bütünü eşit parçalara ayırma",
+      "Pay ve payda kavramını kullanma",
+      "Basit kesirleri yazma",
+    ],
+    difficulty: [
+      "Yarım ve çeyreği tanıma.",
+      "Pay-payda ile basit kesir yazma.",
+      "Parça-bütün içeren problemler.",
+    ],
+    family: "kesir-temel",
+  }),
+  ak({
+    grade: 3,
+    topicId: "geometri",
+    slug: "cevre-hesaplama",
+    title: "Çevre Hesaplama",
+    description:
+      "3. sınıf çevre çalışma kağıdı: düzgün çokgenlerin çevre uzunluğunu hesaplama. PDF + cevap anahtarı + adım adım çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı bir şeklin kenar uzunluklarını toplayarak çevresini bulmayı; düzgün çokgenlerde çevre hesaplamayı pekiştirir.",
+    skills: [
+      "Kenarları toplayarak çevre bulma",
+      "Düzgün çokgende çevre hesaplama",
+      "Verilen çevreden kenar bulma",
+      "Çevre içeren problemler",
+    ],
+    difficulty: [
+      "Kenarları toplama.",
+      "Düzgün çokgende çevre.",
+      "Verilen çevreden kenar bulma.",
+    ],
+    family: "cevre",
+  }),
+  ak({
+    grade: 3,
+    topicId: "geometri",
+    slug: "simetri",
+    title: "Simetri ve Simetri Ekseni",
+    description:
+      "3. sınıf simetri çalışma kağıdı: simetri eksenini belirleme ve simetrik şekil oluşturma. PDF, cevap anahtarı ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı bir şeklin simetri eksenini belirlemeyi ve verilen eksene göre simetrik şekiller oluşturmayı pekiştirir.",
+    skills: [
+      "Simetri eksenini belirleme",
+      "Simetrik olan/olmayan şekilleri ayırt etme",
+      "Eksene göre simetriğini çizme",
+      "Birden fazla simetri eksenini bulma",
+    ],
+    difficulty: [
+      "Simetri eksenini bulma.",
+      "Simetriğini tamamlama.",
+      "Birden fazla eksen veya karmaşık şekil.",
+    ],
+  }),
+  ak({
+    grade: 3,
+    topicId: "olcme",
+    slug: "uzunluk-olculeri",
+    title: "Uzunluk Ölçüleri (km, m, cm)",
+    description:
+      "3. sınıf uzunluk ölçüleri çalışma kağıdı: km, m, cm, mm arası dönüşüm ve problemler. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı kilometre, metre, santimetre ve milimetre arasındaki dönüşümleri ve bu birimleri kullanan problemleri pekiştirir.",
+    skills: [
+      "m-cm ve cm-mm dönüşümü",
+      "km-m dönüşümü",
+      "Uygun birimi seçme",
+      "Uzunluk içeren problemler",
+    ],
+    difficulty: [
+      "Komşu birim dönüşümü.",
+      "Birkaç birim arası dönüşüm.",
+      "Dönüşüm + işlem problemleri.",
+    ],
+  }),
+  ak({
+    grade: 3,
+    topicId: "olcme",
+    slug: "zaman-olcme",
+    title: "Zaman Ölçme (Saat ve Dakika)",
+    description:
+      "3. sınıf zaman ölçme çalışma kağıdı: saat-dakika ilişkisi ve zaman problemleri. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı saat, dakika ve saniye arasındaki ilişkiyi kullanarak zaman ölçme problemlerini çözmeyi pekiştirir.",
+    skills: [
+      "Saat ve dakikayı okuma",
+      "Saat-dakika dönüşümü",
+      "Geçen süreyi hesaplama",
+      "Zaman içeren problemler",
+    ],
+    difficulty: [
+      "Saati okuma.",
+      "Geçen süreyi bulma.",
+      "Çok adımlı zaman problemleri.",
+    ],
+    family: "saat-okuma",
+  }),
+  ak({
+    grade: 3,
+    topicId: "cebir",
+    slug: "oruntude-kural",
+    title: "Örüntülerde Kural Bulma",
+    description:
+      "3. sınıf örüntü çalışma kağıdı: sayı ve şekil örüntülerinde kuralı bulma ve tamamlama. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı sayı ve şekil örüntülerindeki kuralı belirlemeyi ve eksik öğeleri kurala göre tamamlamayı pekiştirir.",
+    skills: [
+      "Örüntüdeki kuralı sözel ifade etme",
+      "Kurala göre örüntüyü sürdürme",
+      "Eksik öğeleri tamamlama",
+      "Kuralı verilen örüntü oluşturma",
+    ],
+    difficulty: [
+      "Sabit artan örüntü kuralı.",
+      "Değişen adımlı örüntü.",
+      "Kuralı verilen örüntüyü kurma.",
+    ],
+    family: "oruntu",
+  }),
+
+  // ─── 4. SINIF ──────────────────────────────────────────────────────────────
+  ak({
+    grade: 4,
+    topicId: "dogal_sayilar",
+    slug: "buyuk-sayilar",
+    title: "Büyük Sayıları Okuma ve Yazma",
+    description:
+      "4. sınıf büyük sayılar çalışma kağıdı: altı basamağa kadar sayıları okuma, yazma ve çözümleme. PDF, cevap anahtarı ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı en çok altı basamaklı doğal sayıları okumayı, yazmayı, bölük ve basamaklarına göre çözümlemeyi ve sıralamayı pekiştirir.",
+    skills: [
+      "Büyük sayıları okuma ve yazma",
+      "Bölük ve basamakları belirleme",
+      "Basamak değerini bulma",
+      "Sayıları sıralama ve karşılaştırma",
+    ],
+    difficulty: [
+      "Dört-beş basamaklı sayılar.",
+      "Altı basamaklı çözümleme.",
+      "Sıralama ve karşılaştırma problemleri.",
+    ],
+  }),
+  ak({
+    grade: 4,
+    topicId: "dogal_sayilar",
+    slug: "carpma-islemi",
+    title: "Çarpma İşlemi (Çok Basamaklı)",
+    description:
+      "4. sınıf çarpma çalışma kağıdı: üç basamaklıyı iki basamaklıyla çarpma ve problemler. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı üç basamaklı bir doğal sayıyı iki basamaklı bir sayı ile çarpmayı ve çarpma içeren çok adımlı problemleri pekiştirir.",
+    skills: [
+      "Çok basamaklı çarpma algoritması",
+      "Çarpımı tahmin etme",
+      "Çarpma-toplama bir arada",
+      "Çarpma içeren problemler",
+    ],
+    difficulty: [
+      "İki basamaklı çarpma.",
+      "Üç basamaklıyı iki basamaklıyla çarpma.",
+      "Çok adımlı çarpma problemleri.",
+    ],
+    family: "carpma-islemi",
+  }),
+  ak({
+    grade: 4,
+    topicId: "dogal_sayilar",
+    slug: "bolme-islemi",
+    title: "Bölme İşlemi",
+    description:
+      "4. sınıf bölme çalışma kağıdı: iki basamaklıya bölme, kalanlı bölme ve problemler. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı üç basamaklı bir doğal sayıyı iki basamaklıya bölmeyi, kalanı yorumlamayı ve bölme içeren problemleri pekiştirir.",
+    skills: [
+      "Çok basamaklı bölme algoritması",
+      "Kalanı bulma ve yorumlama",
+      "Bölme işlemini doğrulama",
+      "Bölme içeren problemler",
+    ],
+    difficulty: [
+      "Bir basamaklıya bölme.",
+      "İki basamaklıya bölme.",
+      "Kalanı yorumlayan problemler.",
+    ],
+    family: "bolme-islemi",
+  }),
+  ak({
+    grade: 4,
+    topicId: "dogal_sayilar",
+    slug: "dort-islem-problemleri",
+    title: "Dört İşlem Problemleri",
+    description:
+      "4. sınıf dört işlem problemleri çalışma kağıdı: toplama, çıkarma, çarpma ve bölme içeren çok adımlı problemler. PDF + cevap anahtarı, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı dört işlemi birlikte gerektiren çok adımlı problemleri çözmeyi; problemi adımlara ayırarak çözüm stratejisi kurmayı pekiştirir.",
+    skills: [
+      "Problemi adımlara ayırma",
+      "Uygun işlemi seçme",
+      "Çok adımlı çözüm kurma",
+      "Sonucu mantık açısından kontrol etme",
+    ],
+    difficulty: [
+      "İki işlemli problemler.",
+      "Üç-dört işlemli problemler.",
+      "İşlem önceliği gerektiren problemler.",
+    ],
+  }),
+  ak({
+    grade: 4,
+    topicId: "kesirler",
+    slug: "kesir-cesitleri",
+    title: "Kesir Çeşitleri (Basit, Bileşik, Tam Sayılı)",
+    description:
+      "4. sınıf kesir çeşitleri çalışma kağıdı: basit, bileşik ve tam sayılı kesirleri tanıma. PDF, cevap anahtarı ve çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı basit, bileşik ve tam sayılı kesirleri tanımayı, modelle göstermeyi ve birbirine dönüştürmeyi pekiştirir.",
+    skills: [
+      "Basit, bileşik ve tam sayılı kesri tanıma",
+      "Kesri modelle gösterme",
+      "Bileşik kesri tam sayılı kesre çevirme",
+      "Tam sayılı kesri bileşik kesre çevirme",
+    ],
+    difficulty: [
+      "Kesir türünü belirleme.",
+      "Modelle gösterme.",
+      "Türler arası dönüşüm.",
+    ],
+    family: "kesir-temel",
+  }),
+  ak({
+    grade: 4,
+    topicId: "kesirler",
+    slug: "denk-kesirler",
+    title: "Denk Kesirler",
+    description:
+      "4. sınıf denk kesirler çalışma kağıdı: eşit kesirleri model ve genişletmeyle bulma. PDF + cevap anahtarı + adım adım çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı eşit (denk) kesirleri model üzerinde göstermeyi ve genişletme yoluyla denk kesirler bulmayı pekiştirir.",
+    skills: [
+      "Denk kesirleri modelle gösterme",
+      "Genişleterek denk kesir bulma",
+      "İki kesrin denkliğini kontrol etme",
+      "Denk kesir örnekleri verme",
+    ],
+    difficulty: [
+      "Modelle denklik gösterme.",
+      "Genişleterek denk kesir bulma.",
+      "Denkliği kullanan problemler.",
+    ],
+    family: "denk-kesirler",
+  }),
+  ak({
+    grade: 4,
+    topicId: "kesirler",
+    slug: "ondalik-gosterime-giris",
+    title: "Ondalık Gösterime Giriş",
+    description:
+      "4. sınıf ondalık sayılar çalışma kağıdı: kesirleri ondalık gösterimle ifade etme (1/2 = 0,5). PDF, cevap anahtarı ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı paydası 10 ve 100 olan kesirleri ondalık gösterimle ifade etmeyi ve ondalık gösterimi okumayı pekiştirir.",
+    skills: [
+      "Kesri ondalık gösterimle yazma",
+      "Ondalık gösterimi okuma",
+      "Ondalık-kesir ilişkisini kurma",
+      "Ondalık gösterimleri karşılaştırma",
+    ],
+    difficulty: [
+      "Yarım/çeyreği ondalık yazma.",
+      "Paydası 10/100 kesri ondalığa çevirme.",
+      "Ondalık karşılaştırma ve sıralama.",
+    ],
+  }),
+  ak({
+    grade: 4,
+    topicId: "geometri",
+    slug: "acilar",
+    title: "Açılar: Dar, Dik, Geniş",
+    description:
+      "4. sınıf açılar çalışma kağıdı: dar, dik, geniş ve doğru açıyı tanıma ve sınıflandırma. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı açıları dar, dik, geniş ve doğru açı olarak sınıflandırmayı ve çevredeki açıları tanımayı pekiştirir.",
+    skills: [
+      "Açı çeşitlerini tanıma",
+      "Açıyı dik açıyla karşılaştırma",
+      "Açıları sınıflandırma",
+      "Şekillerdeki açıları belirleme",
+    ],
+    difficulty: [
+      "Açı türünü tanıma.",
+      "Dik açıyla karşılaştırma.",
+      "Şekillerdeki açıları sınıflandırma.",
+    ],
+  }),
+  ak({
+    grade: 4,
+    topicId: "geometri",
+    slug: "cevre-hesaplama",
+    title: "Üçgen ve Dörtgenlerde Çevre",
+    description:
+      "4. sınıf çevre çalışma kağıdı: üçgen, kare, dikdörtgen ve çokgenlerin çevresi. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı üçgen ve dörtgenlerin çevrelerini kenar uzunluklarını toplayarak hesaplamayı ve verilen çevreden kenar bulmayı pekiştirir.",
+    skills: [
+      "Üçgenin çevresini bulma",
+      "Kare ve dikdörtgenin çevresini hesaplama",
+      "Verilen çevreden kenar bulma",
+      "Çevre içeren problemler",
+    ],
+    difficulty: [
+      "Kenarları toplama.",
+      "Formülle çevre/kenar bulma.",
+      "Çevre içeren problemler.",
+    ],
+    family: "cevre",
+  }),
+  ak({
+    grade: 4,
+    topicId: "geometri",
+    slug: "alan-birim-kare",
+    title: "Alan (Birim Kare ile)",
+    description:
+      "4. sınıf alan çalışma kağıdı: birim karelerle alan belirleme ve karşılaştırma. PDF + cevap anahtarı + çözüm, ücretsiz üret.",
+    intro:
+      "Bu çalışma kağıdı şekillerin alanını birim kareler kullanarak belirlemeyi, alanları karşılaştırmayı ve alan kavramını çevreden ayırt etmeyi pekiştirir.",
+    skills: [
+      "Birim kareleri sayarak alan bulma",
+      "Şekillerin alanlarını karşılaştırma",
+      "Alan ve çevreyi ayırt etme",
+      "Verilen alana göre şekil çizme",
+    ],
+    difficulty: [
+      "Birim kare sayma.",
+      "Yarım kareler içeren alan.",
+      "Alan-çevre ayrımı gerektiren problemler.",
+    ],
+    family: "alan",
+  }),
+  ak({
+    grade: 4,
+    topicId: "olcme",
+    slug: "birim-donusumleri",
+    title: "Uzunluk Birimi Dönüşümleri",
+    description:
+      "4. sınıf birim dönüşümleri çalışma kağıdı: uzunluk birimleri arası dönüşüm ve problem çözme. PDF, cevap anahtarı ile ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı uzunluk birimleri arasında dönüşüm yapmayı ve dönüşüm gerektiren günlük hayat problemlerini pekiştirir.",
+    skills: [
+      "Birimler arası dönüşüm yapma",
+      "Bileşik uzunlukları tek birime çevirme",
+      "Dönüşüm sonrası işlem yapma",
+      "Dönüşüm içeren problemler",
+    ],
+    difficulty: [
+      "Tek adımlı dönüşüm.",
+      "Çok adımlı dönüşüm.",
+      "Dönüşüm + işlem problemleri.",
+    ],
+  }),
+  ak({
+    grade: 4,
+    topicId: "cebir",
+    slug: "oruntu-iliskiler",
+    title: "Örüntü ve İlişkilerde Genelleme",
+    description:
+      "4. sınıf örüntü çalışma kağıdı: örüntüdeki ilişkiyi genelleme ve istenen adımı bulma. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Bu çalışma kağıdı bir örüntüdeki ilişkiyi belirleyip genellemeyi ve örüntünün istenen adımındaki öğeyi bulmayı pekiştirir.",
+    skills: [
+      "Örüntüdeki kuralı genelleme",
+      "İstenen adımdaki öğeyi bulma",
+      "Kuralı sözel ifade etme",
+      "Örüntü içeren problemler",
+    ],
+    difficulty: [
+      "Sabit kurallı örüntüyü sürdürme.",
+      "İstenen adımı kuralla bulma.",
+      "Kuralı genelleyen problemler.",
+    ],
+    family: "oruntu",
+  }),
+
   // ─── 5. SINIF ──────────────────────────────────────────────────────────────
   ak({
     grade: 5,
@@ -164,6 +997,7 @@ export const ALTKONU_PAGES: AltKonu[] = [
       "Sadeleştirme veya verilen denk kesirde eksik payı/paydayı bulma.",
       "Denkliği kullanarak karşılaştırma/problem çözme.",
     ],
+    family: "denk-kesirler",
   }),
   ak({
     grade: 5,
