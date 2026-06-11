@@ -62,6 +62,21 @@ function Hero() {
         aria-hidden
         className="pointer-events-none absolute -right-40 -top-40 -z-10 h-[520px] w-[520px] rounded-full bg-primary/10 blur-3xl"
       />
+      {/* Süzülen matematik sembolleri — oyunsu hava (sadece geniş ekran) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-[7%] top-24 hidden animate-bob font-display text-4xl text-primary/25 lg:block"
+        style={{ animationDelay: "0.4s" }}
+      >
+        ÷
+      </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-[46%] bottom-14 hidden animate-bob font-display text-5xl text-coral/25 lg:block"
+        style={{ animationDelay: "1.1s" }}
+      >
+        π
+      </div>
       <div className="container grid items-center gap-12 py-20 sm:py-24 lg:grid-cols-12">
         {/* Sol — metin */}
         <div className="lg:col-span-7">
@@ -109,6 +124,13 @@ function Hero() {
         {/* Sağ — örnek soru kartı */}
         <div className="lg:col-span-5">
           <div className="relative mx-auto max-w-sm">
+            {/* Zıplayan maskot — demolardaki oyunsu dokunuş */}
+            <div
+              aria-hidden
+              className="absolute -left-6 -top-9 z-10 animate-bob text-5xl drop-shadow-md"
+            >
+              🦊
+            </div>
             <div
               aria-hidden
               className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-primary/10"

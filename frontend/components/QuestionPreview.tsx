@@ -19,6 +19,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { track } from "@/lib/analytics";
 import { downloadBlob, regenerateQuestion, renderPdf } from "@/lib/api";
 import { buildPdfFilename } from "@/lib/filename";
+import { MATH_FACTS } from "@/lib/mathFacts";
 import { useGenerateStore } from "@/lib/store";
 import type { Question } from "@/lib/types";
 import { QuestionCard } from "./QuestionCard";
@@ -202,23 +203,7 @@ export function QuestionPreview() {
 }
 
 // ─── Generating state — kullanıcıya keyifli bekleme deneyimi ─────────────────
-
-const MATH_FACTS = [
-  "0! (sıfır faktöriyel) = 1'dir. Çünkü hiçbir şeyi sıralamanın tek bir yolu vardır: sıralamamak.",
-  "Pisagor teoremi, Pisagor'dan 1300 yıl önce Babillilerce zaten biliniyordu — ama isim ona kaldı.",
-  "Gauss 9 yaşındayken öğretmeni \"1'den 100'e kadar topla\" dedi. 30 saniyede 5050'yi söyledi — formülü kendi keşfetti.",
-  "\"Algoritma\" kelimesi, 9. yüzyıl matematikçisi El-Harezmi'nin Latince adı \"Algoritmi\"den gelir.",
-  "Bal arıları peteklerini altıgen yapar — çünkü altıgen, eşit alan için en az malzeme kullanan şekildir.",
-  "Sonsuzluk simgesi ∞, John Wallis tarafından 1655'te icat edildi — Roma rakamı M (1000) şeklinin değişimi olabilir.",
-  "Pi günü 14 Mart'tır (3.14) ve Albert Einstein'ın doğum günüyle aynı tarih.",
-  "Bir A4 kâğıdı insan gücüyle en fazla 7 kez katlanabilir; 8.'sinde fizik durdurur.",
-  "2 hariç tüm asal sayılar tektir — çünkü çift sayı zaten 2'ye bölünür.",
-  "Fibonacci dizisi (1, 1, 2, 3, 5, 8...) ayçiçeği tohumlarında, deniz kabuğunda, kelebek kanadında doğal olarak çıkar.",
-  "Sıfır sayısını matematiksel olarak ilk tanımlayan kişi Hint matematikçi Brahmagupta'dır (7. yüzyıl).",
-  "Bir küpün 8 köşesi, 12 kenarı, 6 yüzü vardır. Köşe − Kenar + Yüz = 2 — Euler'in tüm konvex çokyüzlülerde geçerli formülü.",
-  "Saniyede 1 sayma hızıyla 1 milyon sayısına 11.5 günde, 1 milyara ise 31.7 yılda ulaşırsın.",
-  "0 sayısı çiftdir — 2'ye tam bölünür ve çift sayıların tüm tanımlarını sağlar.",
-];
+// Matematik bilgileri @/lib/mathFacts'ten (PDF + quiz üretiminde ortak).
 
 function GeneratingState({
   questionCount,
@@ -296,7 +281,7 @@ function GeneratingState({
           <Lightbulb className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
           <div className="min-w-0 flex-1">
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
-              Bunu biliyor muydun?
+              Bunu biliyor muydun? 🤔
             </p>
             <p
               key={factIndex}

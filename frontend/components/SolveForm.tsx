@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { ChevronDown, Loader2, Sparkles } from "lucide-react";
+import { ChevronDown, Lightbulb, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ import {
   getKazanimlarLocal,
   getTopicsLocal,
 } from "@/lib/curriculum";
+import { MATH_FACTS } from "@/lib/mathFacts";
 import type {
   Difficulty,
   DifficultyMode,
@@ -157,6 +158,11 @@ export function SolveForm() {
       toast.error("Quiz üretilemedi", { description: msg });
       setSubmitting(false);
     }
+  }
+
+  // Üretim sürerken (~30 sn) "Bunu biliyor muydun?" bekleme ekranı göster.
+  if (submitting) {
+    return <QuizGeneratingState questionCount={questionCount} />;
   }
 
   return (
@@ -401,6 +407,79 @@ export function SolveForm() {
             </>
           )}
         </Button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Quiz üretiliyor — "Bunu biliyor muydun?" bekleme ekranı ─────────────────
+// /generate (PDF) akışındaki GeneratingState'in quiz karşılığı. Streaming yok;
+// zaman-tabanlı faz/ilerleme + dönen matematik bilgisi (ortak @/lib/mathFacts).
+function QuizGeneratingState({ questionCount }: { questionCount: number }) {
+  const [factIndex, setFactIndex] = React.useState(() =>
+    Math.floor(Math.random() * MATH_FACTS.length),
+  );
+  const [elapsed, setElapsed] = React.useState(0);
+
+  React.useEffect(() => {
+    const factTimer = setInterval(() => {
+      setFactIndex((i) => (i + 1) % MATH_FACTS.length);
+    }, 6000);
+    const tickTimer = setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => {
+      clearInterval(factTimer);
+      clearInterval(tickTimer);
+    };
+  }, []);
+
+  const phase =
+    elapsed < 8
+      ? "Sorular üretiliyor"
+      : elapsed < 18
+        ? "Aritmetik denetimi yapılıyor"
+        : elapsed < 28
+          ? "Kazanım uyumu denetleniyor"
+          : "Quiz hazırlanıyor";
+  const progress = Math.min(98, Math.round((1 - Math.exp(-elapsed / 14)) * 100));
+  const eta = Math.max(0, 30 - elapsed);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        </div>
+        <div className="flex-1">
+          <p className="font-display text-base font-bold text-foreground">
+            {phase}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {questionCount} soruluk quiz hazırlanıyor
+            {eta > 0 ? ` · ~${eta} sn` : " · birazdan..."}
+          </p>
+        </div>
+      </div>
+
+      <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-primary to-coral transition-all duration-1000 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div className="flex items-start gap-3 rounded-2xl border bg-accent/40 p-4">
+        <Lightbulb className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
+        <div className="min-w-0 flex-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
+            Bunu biliyor muydun? 🤔
+          </p>
+          <p
+            key={factIndex}
+            className="animate-fade-in text-sm leading-relaxed text-foreground"
+          >
+            {MATH_FACTS[factIndex]}
+          </p>
+        </div>
       </div>
     </div>
   );
