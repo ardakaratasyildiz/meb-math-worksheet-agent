@@ -424,7 +424,7 @@ function QuizGeneratingState({ questionCount }: { questionCount: number }) {
   React.useEffect(() => {
     const factTimer = setInterval(() => {
       setFactIndex((i) => (i + 1) % MATH_FACTS.length);
-    }, 6000);
+    }, 11000);
     const tickTimer = setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => {
       clearInterval(factTimer);
