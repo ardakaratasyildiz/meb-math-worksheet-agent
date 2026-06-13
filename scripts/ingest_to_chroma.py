@@ -28,6 +28,7 @@ from app.services.embedder import GeminiEmbedder  # noqa: E402
 
 
 SYNTH_JSON_PATH = ROOT / "knowledge_base" / "processed" / "synthetic_examples.json"
+LGS_JSON_PATH = ROOT / "knowledge_base" / "processed" / "lgs_examples.json"
 VISUAL_JSON_PATH = ROOT / "knowledge_base" / "processed" / "visual_examples.json"
 FORMAT_JSON_PATH = ROOT / "knowledge_base" / "processed" / "format_examples.json"
 GEOMETRY_SVG_JSON_PATH = ROOT / "knowledge_base" / "processed" / "geometry_svg_examples.json"
@@ -120,6 +121,18 @@ def _load_salt_islem_latex() -> list[dict]:
     return items
 
 
+def _load_lgs() -> list[dict]:
+    """LGS PDF'lerinden çıkarılan gerçek sınav sorularını yükler (grade=8 few-shot)."""
+    if not LGS_JSON_PATH.exists():
+        logger.info("LGS JSON yok (atlanıyor): %s", LGS_JSON_PATH)
+        return []
+    with LGS_JSON_PATH.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    items = data.get("examples", [])
+    logger.info("LGS örnek: %s", len(items))
+    return items
+
+
 def _load_manual_few_shot() -> list[dict]:
     """Mevcut elle yazılmış few-shot örneklerini topla."""
     out: list[dict] = []
@@ -180,6 +193,7 @@ def main() -> None:
         + _load_geometry_svg()
         + _load_chart_pattern_svg()
         + _load_salt_islem_latex()
+        + _load_lgs()
         + _load_manual_few_shot()
     )
     logger.info("Toplam aday örnek: %s", len(all_items))

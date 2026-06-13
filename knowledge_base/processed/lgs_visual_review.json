@@ -96,6 +96,1904 @@
       "question_no": 6,
       "stem_preview": "Okula gitmek için her gün aynı saatte durakta bekleyen Ayça, gölge boyunda meydana gelen değişimleri bir hafta boyunca g",
       "skip_reason": "Fen Bilimleri sorusu, matematik değil."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 1,
+      "stem_preview": "Ahmet ile Deniz arasında bir oyun oynanıyor. Oyuncu bir sayı söylüyor, rakip o sayının kendisi, söylediği sayının kendis",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, sorunun kendisiyle ilgili bir şekil, grafik veya tablo değil, bir ders kitabı kapağıdır. Sorunun çözümü için görsel bir bilgi içermemektedir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 2,
+      "stem_preview": "Yarıçapının uzunluğu r olan bir çemberin çevresi 2πr'dir. Mehmet bisiklet almak için bisikletçiye gidiyor ve tekerlekler",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, soruyla ilgili bir şekil, grafik veya tablo değil, bir kitap kapağıdır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 3,
+      "stem_preview": "Bir çiftçi yaptığı toprağın analizi sonucunda tarlasının ihtiyacı olan azot miktarını belirliyor. Bu ihtiyacı karşılamak",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen görsel (gübrelerin fiyatları ve azot oranları tablosu) sağlanmamıştır. Verilen görsel bir kitap kapağıdır ve soruyla ilgili veri içermemektedir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıda uzunluğu 360 cm ile 400 cm arasında olan AB doğru parçası verilmiştir. Bu doğru parçasının üzerine kenar uzunluk",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen matematiksel görsel (doğru parçası ve kareler) görsel olarak verilmemiştir. Verilen görsel bir kitap kapağıdır ve soru metniyle doğrudan ilişkili değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 5,
+      "stem_preview": "Yukarıdaki kare dik prizma şeklindeki koliler herhangi bir yüzeyi üzerinde üst üste konularak hiç boşluk kalmadan yüksek",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, soruda bahsedilen kare dik prizmaları içermiyor, bir kitap kapağı fotoğrafı."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 6,
+      "stem_preview": "Bir toplantı salonuna genişliği 60 cm olan koltuklar, bir doğru boyunca aralarında 25 cm boşluk bulunacak şekilde yerleş",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, gerçek nesnelerin (koltukların) bir odadaki düzenlemesini gösteren illüstratif bir fotoğraftır, çizim veya şematik bir geometri şekli değildir. Temel bilgiler metinde verilmiştir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 8,
+      "stem_preview": "Merdivenlerin basamaklarının yüksekliği belli standartlara göre yapılmalıdır. Bu standartlara göre basamak yüksekliği 18",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metni merdiven görseli beklerken, sağlanan görsel farklı sorulara (koltuklar ve kaldırım taşları) aittir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıda 1'den 100'e kadar olan doğal sayıların yazılı olduğu bir kart verilmiştir. Serra, bu kartta 2'nin pozitif tam sa",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde görsel bulunmamaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 11,
+      "stem_preview": "a ≠ 0 ve m, n birer tam sayı olmak üzere a^m . a^n = a^(m+n) ve a^m / a^n = a^(m-n) dir. a^5, a^3, a^4, a^6 ve a^8 üslü ",
+      "skip_reason": "Görseldeki mavi hücre sayısı (6) ile verilen üslü ifade sayısı (5) arasında tutarsızlık bulunmaktadır. Bu nedenle soru çözülemez."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 12,
+      "stem_preview": "a ≠ 0, b ≠ 0, k, m, n tam sayılar olmak üzere a^m . a^n = a^(m+n), (a^m)^n = a^(m.n) ve (a.b)^k = a^k . b^k dir. Bir öğr",
+      "skip_reason": "Hesaplanan maksimum değer (729) seçeneklerde bulunmamaktadır. Soru kökü veya seçeneklerde bir tutarsızlık olduğu düşünülmektedir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 13,
+      "stem_preview": "m, n birer tam sayı ve a ≠ 0 olmak üzere a^m . a^n = a^(m+n), (a^m)^n = a^(m.n) ve a^m / a^n = a^(m-n) dir. Laboratuvar ",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metninde görsel bulunmamaktadır. Sağlanan görsel, soru metniyle ilişkili değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 15,
+      "stem_preview": "[e], 1 veya 1'den büyük, 10'dan küçük bir gerçek sayı ve n bir tam sayı olmak üzere a · 10ⁿ gösterimi bilimsel gösterimd",
+      "visual_type": "grafik",
+      "skip_reason": "fotoğraf içeriyor"
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 17,
+      "stem_preview": "Ayrıtları a, b, c olan dikdörtgenler prizmasının hacmi a·b·c'dir. [e], 1 veya 1'den büyük, 10'dan küçük bir gerçek sayı ",
+      "visual_type": "geometri",
+      "skip_reason": "Soru kökünde görsel bulunmamaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 18,
+      "stem_preview": "Elektrik devrelerinde akımı sınırlamak ve devre elemanlarının yüksek akımdan zarar görmesini engellemek için dirençler k",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan görsel, verilen soru metniyle eşleşmiyor. Soru metninde bahsedilen direnç renk kodları tablosu ve direnç görseli mevcut değil."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 22,
+      "stem_preview": "1 ve kendisinden başka tam böleni olmayan 1'den büyük doğal sayılara asal sayı denir. Bir okulun her katındaki sınıflar ",
+      "visual_type": "desen",
+      "skip_reason": "Soru metninde görsel bulunmamaktadır. 'Görseldeki gibi' ifadesi, salon numaralarının nasıl oluşturulduğunu açıklayan bir yöntem tarifidir, somut bir şekil veya grafik içermemektedir. Sağlanan görsel ise bu soruya ait değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 23,
+      "stem_preview": "Aşağıda bir ortaokuldaki öğrencilerin farklı kalınlıktaki mavi ve pembe renkli iplerden birini kullanarak yapmış oldukla",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, verilen soru metninde bahsedilen tablo verilerini içermemektedir. Görseldeki şekiller (üçgen ve asılı tablolar) soru metniyle ilgili değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 26,
+      "stem_preview": "a ≠ 0 ve n bir tam sayı olmak üzere a⁻ⁿ = 1/aⁿ ve (aᵐ)ⁿ = aᵐ·ⁿ şeklinde yazılır. Matematik öğretmeni Elif'e yukarıdaki y",
+      "visual_type": "desen",
+      "skip_reason": "Verilen görsel, soru metninde bahsedilen 'yapboz parçaları'nı içermemektedir. Görsel, farklı bir LGS sorusuna aittir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 28,
+      "stem_preview": "İki pozitif tam sayının 1'den başka ortak böleni yok ise bu sayılar aralarında asaldır. Şekildeki karelerin her birinin ",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen görsel (karelerin dizilimi) metinde tanımlanmamış ve verilen görsel soruyla alakasız."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 40,
+      "stem_preview": "Aşağıda bir firmanın özel olarak yaptırdığı ışıklı tabelanın görseli verilmiştir. Tabelanın ışıklandırma sistemi, açıldı",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, sorunun matematiksel çözümü için gerekli olmayan açıklayıcı bir illüstrasyondur ve Türkiye haritası gibi karmaşık vektör çizimleri içerdiği için SVG olarak yeniden üretilmesi pratik değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 41,
+      "stem_preview": "İki pozitif tam sayının 1'den başka ortak böleni yok ise bu sayılar aralarında asaldır denir. Aşağıda bir video izleme u",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel bir ekran görüntüsüdür ve metinle yeterince açıklanmıştır. SVG olarak yeniden üretilmesi çok karmaşık ve gereksizdir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 43,
+      "stem_preview": "1 ve kendisinden başka tam böleni olmayan 1'den büyük doğal sayılara asal sayı denir. Aşağıda birer yüzlerinde farklı do",
+      "visual_type": "desen",
+      "skip_reason": "Görsel metinde açıklanmış ancak görselin kendisi verilmemiş (kartların üzerindeki sayılar eksik)."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 44,
+      "stem_preview": "a ≠ 0 ve m, n tam sayı olmak üzere, (a^m)^n = a^(m·n), a^m · a^n = a^(m+n) ve a^m / a^n = a^(m-n) dir. Bir emlakçı topla",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, karmaşık bir coğrafi harita içeriyor ve basit SVG çizim elemanlarıyla doğru şekilde yeniden üretilemez."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 45,
+      "stem_preview": "Kolonya üreten bir fabrikada iki farklı boyutta kolonya şişesi mevcuttur. Aşağıda biri 200 ml'lik, diğeri 500 ml'lik şiş",
+      "visual_type": "desen",
+      "skip_reason": "Soru metninde belirtilen satış fiyatları tablosu veya görseli eksiktir. Sağlanan görsel, soru metniyle ilgili değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 46,
+      "stem_preview": "Bir mağazanın duvarında bulunan eşit uzunlukta iki rafa, tabloda özellikleri verilen iki çeşit saksı; aynı özellikteki s",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen tablo görseli eksik. Sağlanan görsel, soru metniyle ilgili değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 50,
+      "stem_preview": "Aşağıda bir işyerinde bulunan çay kahve makinesinin görseli verilmiştir. Bu makine eşit büyüklükteki bardaklara her defa",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, soru metninde bahsedilen çay kahve makinesi ile ilgili değil, illüstratif bir çizimdir ve matematiksel bir şekil, grafik veya tablo değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 51,
+      "stem_preview": "a ≠ 0, m ve n birer tam sayı olmak üzere a^m / a^n = a^(m-n) ve (a^m)^n = a^(m*n) dir. Bir süt fabrikasında; özdeş şişel",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, verilen soru metniyle ilgili değildir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 59,
+      "stem_preview": "Canan Öğretmen, eylül ayı boyunca tüm derslerini EBA canlı sınıf uygulaması üzerinden hafta içi yapmıştır. Aşağıda eylül",
+      "skip_reason": "Hesaplanan doğru cevap şıklarda bulunmamaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 60,
+      "stem_preview": "1'den başka ortak çarpanı (böleni) olmayan iki doğal sayıya aralarında asal sayılar denir. Yukarıda verilen iki yay aşağ",
+      "visual_type": "desen",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 61,
+      "stem_preview": "Bir dükkanda eşit uzunluktaki iki rafa lastik ve jantlar aşağıdaki gibi aralarında boşluk bırakılmadan dizilmiştir. Bu r",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metninde bahsedilen görsel sağlanmamıştır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 62,
+      "stem_preview": "1'den başka ortak çarpanı (böleni) olmayan iki doğal sayıya aralarında asal sayılar denir. Aşağıda 9 eş kareden oluşan b",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde 'Aşağıda 9 eş kareden oluşan bir tablo verilmiştir.' ifadesi geçmesine rağmen, sağlanan görsel bu tabloyu içermemektedir. Sağlanan görsel, soru metniyle ilgisi olmayan yaylar ve uzunluklarla ilgili farklı bir sorunun görselidir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 63,
+      "stem_preview": "Bir şekerleme fabrikasında aşağıda verilen şeker, çikolata ve lokumlar üretilmektedir. Üretilen bu şekerlemeler arasında",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen ürün kodları ve birim fiyatları tablosu görselde bulunmamaktadır. Görsel, soru metniyle alakasız başka sorulara ait takvim ve yay çizimleri içermektedir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 65,
+      "stem_preview": "Aşağıda bir kodlama tekniği ile ilgili bilgi verilmiştir. Kodlamak istediğiniz doğal sayıyı 2'nin doğal sayı kuvvetlerin",
+      "skip_reason": "Soru metnindeki tablo ile verilen örnek arasında kodlama kuralı çelişmektedir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 66,
+      "stem_preview": "a ≠ 0, m ve n birer tam sayı olmak üzere (a^m)^n = a^(m*n) ve a^m * a^n = a^(m+n) dir. Kare biçimindeki bir karton 25 eş",
+      "skip_reason": "Soru metnindeki boyalı kare sayısı ile görseldeki boyalı kare sayısı çelişmektedir ve kurallara göre hesaplanan sonuç şıklarda bulunmamaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 71,
+      "stem_preview": "a ≠ 0, m ve n birer tam sayı olmak üzere 1/aⁿ = a⁻ⁿ, (aᵐ)ⁿ = aᵐ·ⁿ, aᵐ · aⁿ = aᵐ⁺ⁿ ve aᵐ/aⁿ = aᵐ⁻ⁿ dir. Bu kartlardan dör",
+      "skip_reason": "Soru kökünde 'en büyük değer' istenmesine rağmen, kartlardaki bir üslü ifadenin negatif olması nedeniyle tüm olası sonuçlar negatiftir. Şıklar ise pozitif değerler içermektedir. Bu durum, sorunun hatalı olduğunu veya eksik bilgi içerdiğini göstermektedir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 72,
+      "stem_preview": "Aşağıda bir spor kompleksinin krokisi verilmiştir. Bu spor kompleksinde aynı anda 22 kişi futbol, 10 kişi basketbol ve 1",
+      "visual_type": "geometri",
+      "skip_reason": "İstenen soruya ait görsel, verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 73,
+      "stem_preview": "a ≠ 0, m ve n birer tam sayı olmak üzere (aᵐ)ⁿ = aᵐ·ⁿ ve aᵐ/aⁿ = aᵐ⁻ⁿ dir. Bir mahallede yer üstündeki kablolar yer altı",
+      "skip_reason": "Soru kökünde 'daha az makara' istenmesine rağmen, yapılan hesaplamalara göre en az makara gerektiren seçenek Telefon (1 makara) iken, verilen cevap anahtarında doğru cevap Televizyon (D) olarak belirtilmiştir (49 makara). Bu durum, soru ile cevap anahtarı arasında açık bir çelişki oluşturmaktadır ve sorunun doğru bir şekilde çözülmesini engellemektedir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 75,
+      "stem_preview": "Bir dönem kullanılan kâğıt paraların ön yüzlerinde Atatürk portresi, arka yüzlerinde ise Mehmet Akif Ersoy, Fatih Sultan",
+      "visual_type": "desen",
+      "skip_reason": "fotoğraf içeriyor"
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 76,
+      "stem_preview": "Zeynep'in elinde üç farklı renkte aşağıdaki gibi ipler bulunmaktadır. Zeynep bu ipleri her biri kendi içinde eş parçalar",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metninde bahsedilen ipler görselde bulunmamaktadır. Görselde farklı bir LGS sorusuna ait içerik bulunmaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 78,
+      "stem_preview": "a ≠ 0 ve m, n tam sayı olmak üzere a^n . a^m = a^(n+m) ve a^n / a^m = a^(n-m) dir. Başak ve Esra bir mama firmasının sok",
+      "skip_reason": "Soru kökü ve şıklar arasında tutarsızlık var, en mantıklı yorumla bile şıklara ulaşılamıyor."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 80,
+      "stem_preview": "Bir kırtasiyede 60 adet kırmızı kalem, 72 adet mavi kalem ve 42 adet kalem kutusu bulunmaktadır. Bu kalemlerin tamamı he",
+      "visual_type": "desen",
+      "skip_reason": "Soru metni görsel içermiyor."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 83,
+      "stem_preview": "a ≠ 0, b ≠ 0 ve k, m, n birer tam sayı olmak üzere a^n . a^m = a^(n+m), (a^n)^m = a^(n.m) ve a^k . b^k = (a.b)^k dir. Aş",
+      "skip_reason": "Yunus'un toplarında yazan sayılar ile sepet içerikleri ve top alma kuralı arasında tutarsızlık var, soru çözülemiyor."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 84,
+      "stem_preview": "a ≠ 0 ve m, n tam sayı olmak üzere a^n . a^m = a^(n+m) ve a^n / a^m = a^(n-m) dir. Bir kereste fabrikasında, kalınlıklar",
+      "skip_reason": "Hesaplanan A tipi tahta paketi sayısı (2^12 / 5) tam sayı çıkmamaktadır, bu da şıklardaki tam sayı değerlerle çelişmektedir. Soru tutarsız."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 89,
+      "stem_preview": "Kısa kenar uzunlukları 3^2 mm olan üç dikdörtgensel bölge kısa kenarları doğrusal, uzun kenarları çakışık olacak şekilde",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Sağlanan görsel, farklı bir soruya (87. soru) aittir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 90,
+      "stem_preview": "Beren'in her birinde yalnızca madenî 1 TL'lerin bulunduğu iki kumbarası vardır. Bu kumbaralardan birinde 150 adet, diğer",
+      "visual_type": "desen",
+      "skip_reason": "Metinle tam ifade edilebilir (aslında görsele gerek yok)"
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 92,
+      "stem_preview": "İçi, 1 veya 1'den büyük, 10'dan küçük bir gerçek sayı ve n bir tam sayı olmak üzere a * 10^n gösterimi bilimsel gösterim",
+      "skip_reason": "Görseldeki boyut bilgileri metindeki 'kare biçimindeki duvar' ifadesiyle ve diğer boyutlarla çelişmektedir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 93,
+      "stem_preview": "Bir ondalık gösterimin, basamak değerleri toplamı şeklinde yazılmasına ondalık gösterimin çözümlenmesi denir. Aşağıda fa",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel (mobilya türlerinin kumaş uzunluklarını içeren tablo) soruda verilmemiştir."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 94,
+      "stem_preview": "Aşağıda kenar uzunlukları santimetre cinsinden birer doğal sayı ve her bir kenar uzunluğu 60 cm'den kısa olan dikdörtgen",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metnine karşılık gelen görsel bulunmamaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 96,
+      "stem_preview": "Kenarlarının uzunlukları santimetre cinsinden birer doğal sayı ve her birinin alanı 180 cm² olan eş dikdörtgenler, kenar",
+      "skip_reason": "Görseldeki ilişki ve verilen alan bilgisiyle kenar uzunlukları doğal sayı çıkmamaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 98,
+      "stem_preview": "Çağla her birinin kütlesi 2 g olan mavi boncuklar ve her birinin kütlesi 4 g olan sarı boncuklar ile 100 metresinin kütl",
+      "visual_type": "desen",
+      "skip_reason": "Metinle tam ifade edilebilir (aslında görsele gerek yok)"
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 99,
+      "stem_preview": "a ≠ 0, b ≠ 0 ve k bir tam sayı olmak üzere a^k * b^k = (a * b)^k dir. Aşağıda birer adet turuncu, mor ve mavi kart ile b",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen turuncu, mor ve mavi kart görselleri verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "1_1.pdf",
+      "question_no": 101,
+      "stem_preview": "Aşağıda her birinde 10 adet bilye bulunan 6 küre verilmiştir. Bu kürelerin her biri birer kez döndürülüp durdurulduğunda",
+      "visual_type": "desen",
+      "skip_reason": "Soru metnine ait görsel bulunmamaktadır. Sağlanan görsel farklı bir soruya aittir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 1,
+      "stem_preview": "Uğur Öğretmen öğrencilerine tam kare olmayan kareköklü sayıların değerinin en yakın olduğu doğal sayıyı buldurabilmek iç",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, sorunun içeriğiyle ilgili bir matematiksel şekil, grafik veya tablo değil, bir kitap kapağıdır. Bu nedenle yeniden üretilemez."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 2,
+      "stem_preview": "1'den 16'ya kadar numaralandırılmış 16 top aşağıdaki kurallara göre 1'den 4'e kadar numaralanmış 4 torbaya atılacaktır. ",
+      "visual_type": "desen",
+      "skip_reason": "Sorunun kendisi görsel içermemektedir. Sağlanan görsel, sorunun bir parçası olmayan bir kitap kapağıdır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 4,
+      "stem_preview": "Bir şifreleme yönteminde alfabemizdeki 29 harf bulunduktan sıranın karekökü bir tam sayı ise o tam sayı olarak, değil is",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, sorunun içeriğiyle ilgili bir şekil, grafik veya tablo değil, bir kitap kapağıdır. Soru metin tabanlıdır ve görselin matematiksel bir temsili gerekmemektedir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıda bir basketbol maçındaki oyuncuların forma numaraları verilmiştir. Bu maçta oyuncular forma numaralarının karekök",
+      "visual_type": "grafik",
+      "skip_reason": "Görselde soruyla ilgili forma numaraları tablosu bulunmamaktadır, görsel bir kitap kapağıdır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 15,
+      "stem_preview": "Aşağıdaki daire grafiğinde 2016 yılında trafiğe kayıtlı toplam 10 800 ticari ve binek aracın bulunduğu bir ildeki bu ara",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen daire grafiği ve tablo, sağlanan görselde bulunmamaktadır. Sağlanan görsel, farklı sorulara (13 ve 14) ait görselleri içermektedir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 16,
+      "stem_preview": "Aşağıda bir sinemada bir filmin gün içindeki 4 farklı gösteriminde satılan tam ve indirimli bilet sayıları verilmiştir. ",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, soru metninde açıklanan verileri (bilet satışları) içermiyor."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 18,
+      "stem_preview": "Aşağıdaki robot, sistemine yüklenen yazılımdan aldığı talimata göre birim kareleri oluşturan çizgiler üzerinde hareket e",
+      "visual_type": "desen",
+      "skip_reason": "Verilen LGS sorusu metnine ait görsel bulunmamaktadır. Sağlanan görsel farklı sorulara aittir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 21,
+      "stem_preview": "a ve b birer doğal sayı olmak üzere a√b = √a² . b dir. Bir yayaya geçidinde trafik lambalarının altına, kırmızı ışığın k",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni için görsel bulunmamaktadır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 23,
+      "stem_preview": "Bir matematik öğretmeni, bir manavın günlük sattığı meyve miktarlarını gösteren bir tablo hazırlamış ve öğrencilerinden ",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen soru metniyle alakalı değil. Soru metni meyve satışları ve grafiklerden bahsederken, görselde bir çark oyunu bulunmaktadır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 24,
+      "stem_preview": "Bir ilkokulda; sanat, kültür, yaşam, spor ve bilim alanlarında tasarım-beceri atölyeleri kurulmuş, her öğrenci tercih et",
+      "skip_reason": "Daire grafiğinde \"Sanat\" alanına ait merkez açı değeri belirtilmediği için toplam öğrenci sayısı hesaplanamamaktadır. Ayrıca soru kökünde önceki sorudan kalma hatalı metin bulunmaktadır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 26,
+      "stem_preview": "Bir firmanın 2018 yılında sattığı bisikletlerin sayısının dört renge göre dağılımını gösteren grafik aşağıda verilmiştir",
+      "skip_reason": "2019 yılı için Beyaz ve Kırmızı bisiklet satış miktarları hakkında bilgi verilmediği için daire grafiği oluşturulamamaktadır. Sadece Siyah ve Mavi bisikletlerin üretim ve satılamayan miktarları belirtilmiştir. Bu eksik bilgiyle şıklardan herhangi birine ulaşılamamaktadır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 29,
+      "stem_preview": "Aşağıdaki görselde, ahşap kalem kutusunun kenarı ile bu kutunun kapağı olan 20 santimetrelik cetvelin arasına yerleştiri",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metninde bahsedilen görsel (kalem kutusu, cetvel, kalemtıraş) verilen resimde bulunmamaktadır. Verilen resimdeki sorular (27 ve 28) farklı görseller içermektedir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 30,
+      "stem_preview": "Aşağıdaki grafikler bir barınaktaki köpeklerin türlerine göre sayılarının ocak ve şubat aylarındaki dağılımını göstermek",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metninde bahsedilen grafikler sağlanan görselde bulunmamaktadır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 31,
+      "stem_preview": "Kuzey, Çınar ve Ali birlikte lunaparka gidip bir dönme dolabın farklı kabinlerine binerler. Ali'nin bulunduğu kabin zemi",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, verilen dönme dolap sorusuyla ilgili bir şekil içermemektedir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 32,
+      "stem_preview": "Aşağıdaki hedef tahtasındaki her daire dilimi kırmızı ve beyaz olmak üzere iki bölgeden oluşmaktadır. Bu hedef tahtasına",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metni bir hedef tahtası görseli gerektirirken, sağlanan görselde uzun atlama pisti ve sütun grafik bulunmaktadır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 34,
+      "stem_preview": "Bir konfeksiyon atölyesinde mart ayı boyunca toplam 3600 tane ürün dikilmiştir. Aşağıdaki daire grafiğinde bu ürünlerin ",
+      "skip_reason": "Soru metni ve grafikler arasında çelişkili bilgiler bulunmaktadır (gömlek defolu sayısı ve defolu kazak/pantolon eşitliği koşulları, grafiklerdeki yüzdelerle tutarsız)."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 35,
+      "stem_preview": "a, b, c, d birer doğal sayı olmak üzere a√b = √(a²b) ve a√b · c√d = a · c · √(b · d) dir. Aşağıda verilen dikdörtgenler ",
+      "visual_type": "geometri",
+      "skip_reason": "fotoğraf içeriyor"
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 36,
+      "stem_preview": "Aşağıdaki ulaşım aracı insanların kullanımı için şehrin belli yerlerine bırakılmaktadır. Bu araç bir cep telefonu uygula",
+      "visual_type": "grafik",
+      "skip_reason": "Fotoğraf/gerçek nesne görüntüsü içeriyor ve SVG ile anlamlı bir şekilde yeniden üretilemez."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 37,
+      "stem_preview": "a, b, c, d birer doğal sayı olmak üzere a√b = √(a²b) ve a√b · c√d = a · c · √(b · d) dir. Bir matematik öğretmeni birbir",
+      "skip_reason": "Verilen şıklardaki yapıların hiçbirinde tüm bağlantıların kareköklü ifadelerinin çarpımı rasyonel sayı olmamaktadır. Şıklarda hata veya çelişki bulunmaktadır."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 47,
+      "stem_preview": "Aşağıda A, B, C barajlarının 2020 yılının Ocak ve Aralık aylarındaki doluluk oranları verilmiştir. Bu barajlarda 2020 yı",
+      "skip_reason": "Hesaplanan değer seçeneklerle uyuşmuyor."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 49,
+      "stem_preview": "Her birinin genişliği 12√5 cm olan özdeş kutular bir rafa aşağıdaki gibi dizilmiştir. Buna göre bu rafa dizilen kutu say",
+      "skip_reason": "Hesaplanan değer seçeneklerle uyuşmuyor."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 50,
+      "stem_preview": "Aşağıda kare biçimindeki yüzeylerinin alanları 5 dm² olan sarı renkli ve 7 dm² olan mavi renkli kartonlar verilmiştir. B",
+      "skip_reason": "Görseldeki dizilim bilgisi ile dikdörtgen olma şartı çelişiyor."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 51,
+      "stem_preview": "pH değeri bir çözeltinin asidik veya bazik olma derecesini gösteren bir ölçüttür. pH değerinin 7 olması asitlik ve bazlı",
+      "visual_type": "tablo",
+      "skip_reason": "Verilen soru metnine ait görsel (pH değerleri tablosu) sağlanan resimde bulunmamaktadır. Resimdeki görseller farklı sorulara (46 ve 47) aittir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 52,
+      "stem_preview": "Bir uzaktan eğitim çalıştayı dört farklı ilden davetlilerin katılması planlanmıştır. Bu çalıştaya katılması planlanan he",
+      "skip_reason": "Hesaplanan değer seçeneklerle uyuşmuyor."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 53,
+      "stem_preview": "Nejla Hanım, lokantasında kullanılan bitkisel yağları toplayarak geri dönüşüme göndermektedir. Daire grafiğinde Nejla Ha",
+      "skip_reason": "Su kirlenme oranı bilgisi eksik ve hesaplanan değer seçeneklerle uyuşmuyor."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 66,
+      "stem_preview": "1 ton = 1000 kg. Bir mandırada günlük toplanan sütlerin %10'u ile tereyağı, %30'u ile peynir üretilmektedir. Bu mandırad",
+      "visual_type": "grafik",
+      "skip_reason": "Sağlanan görsel, verilen soru metniyle eşleşmiyor. Soru metni tereyağı dağılımı grafiğinden bahsederken, görsel çorap dağılımı grafiğini göstermektedir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 67,
+      "stem_preview": "a, b, c, d birer doğal sayı olmak üzere a√b = √a²b, a√b + c√b = (a + c)√b, a√b - c√b = (a - c)√b, a√b / c√d = a/c √(b/d)",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen soruya ait değil."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 68,
+      "stem_preview": "Eşit hacimli kavanozlarda satılan reçel çeşitlerinin birer adedinin fiyatları ve bu ürünlerle ilgili kampanyalar aşağıda",
+      "visual_type": "grafik",
+      "skip_reason": "Görselin içeriği (tablo ve daire grafiği verileri) soru metninde verilmemiştir ve ekteki görsel farklı bir soruya aittir."
+    },
+    {
+      "source": "2.pdf",
+      "question_no": 71,
+      "stem_preview": "Yunus'un 2021 yılında ürettiği avokado, kivi ve muzun kilogram cinsinden miktarlarının dağılımı daire grafiğinde, bu ürü",
+      "visual_type": "grafik",
+      "skip_reason": "Sağlanan görsel, verilen soru metniyle eşleşmiyor. Görsel, farklı bir soruya (Q70) aittir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıda bazı şekiller ve bu şekillerin ifade ettiği işlemler verilmiştir. Kare içine yazılan ifadeyi kendisiyle çarpar. ",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen şekiller (kare, üçgen, oval içindeki ifadeler) ve seçenekler görsel olarak verilmemiştir. Yalnızca bir kitap kapağı görseli sağlanmıştır."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 2,
+      "stem_preview": "Aşağıda kısa kenarı (4x + 16) m, uzun kenarı (6x + 18) m olan dikdörtgen şeklindeki bir konser alanının krokisi verilmiş",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen konser alanı krokisi görseli eksik. Verilen görsel bir kitap kapağı olup, matematiksel problemle ilgili bir diyagram değildir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 3,
+      "stem_preview": "Kare şeklindeki pano Şekil I'de gösterildiği gibi 4 parçaya ayrılıyor. Daha sonra elde edilen bu parçalar Şekil II'deki ",
+      "skip_reason": "Görseldeki parçaların toplam alanı ile oluşturulan dış şeklin alanı aynı olduğu için 'birleşmeyen bölge'nin alanı 0 olmalıdır, ancak şıklarda 0 yoktur ve soru metni bir bölgenin kaldığını belirtmektedir. Bu durum soruyu çelişkili ve anlaşılamaz kılmaktadır."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 4,
+      "stem_preview": "Geometri tahtası bir zeminin üzerine eşit aralıklarla yerleştirilmiş çivilerden oluşur. Kuzey ve Duru, matematik dersi i",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, matematik problemiyle ilgili bir diyagram değil, bir kitap kapağıdır. Bu tür bir görsel SVG veya Markdown formatına dönüştürülemez."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 16,
+      "stem_preview": "Uçak ile Ankara'dan Trabzon'a gidecek olan Kerem ve dedesi havaalanına gelmiş ve uçakta oturacakları koltukları belirlem",
+      "skip_reason": "Görseldeki dolu/boş koltukların renkleri çok düşük çözünürlük nedeniyle ayırt edilememektedir. Bu durum, sorunun çözümünü imkansız kılmaktadır."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 19,
+      "stem_preview": "Aşağıdaki daire grafiğinde Cumhuriyet Ortaokulu öğrencilerinin sınıf düzeylerine göre dağılımı verilmiştir. Cumhuriyet O",
+      "skip_reason": "Soru kökünde 'hangisi olamaz' denmesine rağmen, matematiksel olarak tüm şıkların olasılık değeri olabileceği hesaplanmıştır. Bu durum sorunun hatalı veya eksik olduğunu düşündürmektedir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 20,
+      "stem_preview": "Ahmet, Burcu ve Emine'nin de içinde olduğu bir grup sporcu yarıyıl tatilinde Antalya'ya kampa gitmiştir. Kalacakları ote",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde görsel bir öğe bulunmamaktadır."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 22,
+      "stem_preview": "Su sıvı halden katı hale geçerken hacmi %8 ile %10 arasında artar. Ağzı kapalı cam bir şişenin içerisindeki suyun donmuş",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel (şişe hacimleri tablosu) soru metniyle uyumlu değil, görselde uçak koltuk düzeni ve kartlar var."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 26,
+      "stem_preview": "Kapalı durumda iken şekil 1'deki gibi kare biçiminde olan bir sahne klaketi şekil 2'deki gibi açılarak sabitlenmiştir. V",
+      "skip_reason": "Soru kökünde belirtilen 'açılan parça'nın alanı (ab) şıklarda bulunmamaktadır ve şıklardaki ifadelerden hiçbiri mantıksal olarak 'açılan parça'nın alanını temsil etmemektedir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 30,
+      "stem_preview": "Kerem bilgisayarında özdeş karelerden oluşan iki şekil çizmiştir. Kerem bu şekillerden birinin alanını %12,5 oranında kü",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen soru metniyle ilgili değil."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 31,
+      "stem_preview": "Dikdörtgen şeklindeki 3 kart aşağıdaki gibi bir çizgiyle ikiye ayrılıp, her iki tarafına farklı birer cebirsel ifade yaz",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, kullanıcının soru metniyle eşleşmiyor. Kullanıcının sorusu kartlarla ilgili bir örüntü sorusuyken, görsel otopark kepenkleri ve alan hesaplamasıyla ilgili bir geometri sorusuna aittir. Ayrıca görsel, soyut bir geometri şekli değil, gerçek nesne (otopark kepenkleri) illüstrasyonudur."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 32,
+      "stem_preview": "Gökçe Öğretmen sınıfa kırmızı, sarı ve mavi renkli dokuzar tane halka ve bu halkaları dizeceği bir tahta getirmiştir. Gö",
+      "visual_type": "desen",
+      "skip_reason": "Soru metninde bahsedilen görsel (halkalar ve tahta) bulunmamaktadır. Sağlanan görsel ise soru metniyle alakasız olup, karmaşık bir illüstrasyondur ve SVG formatında yeniden üretilmesi uygun değildir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 34,
+      "stem_preview": "Bir olayın olma olasılığı = İstenen olası durumların sayısı / Tüm olası durumların sayısı. 1'den 48'e kadar numaralandır",
+      "visual_type": "tablo",
+      "skip_reason": "çok karmaşık şekil"
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 2,
+      "stem_preview": "1. görselde yapılmakta olan bir telekonferans görüşmesi sırasında ekranın, aralarında boşluk olmayan dikdörtgen biçimind",
+      "skip_reason": "Görseldeki boyutlandırmalar ve metindeki 'eş bölge' ifadeleriyle yapılan alan hesaplamaları, verilen cevap anahtarı (D) ile tutarlı bir sonuca ulaşmamaktadır. Sorunun ya da cevap anahtarının hatalı olduğu düşünülmektedir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 45,
+      "stem_preview": "Aşağıda dikdörtgen biçiminde bir tabela görseli verilmiştir. Buna göre, bu tabelada alüminyum çerçevenin içinde kalan af",
+      "skip_reason": "Görseldeki çerçeve kalınlıkları kullanılarak yapılan afiş alanı hesaplaması (9x² - 30x + 24), verilen şıklardan hiçbiriyle eşleşmemektedir. Sorunun ya da şıkların hatalı olduğu düşünülmektedir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 49,
+      "stem_preview": "Aşağıda internet üzerinde alışveriş yapılan bir sitede satılan üç farklı marka kalemin satış fiyatları verilmiştir. Duru",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan görsel, verilen soru metniyle eşleşmemektedir. Soru metni kalem fiyatları ve olasılıkla ilgili bir tablo veya liste gerektirirken, görsel telekonferans ekranları ve geometri ile ilgili farklı bir soruyu temsil etmektedir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 63,
+      "stem_preview": "Kare şeklindeki bir kağıdın bir yüzü aşağıdaki gibi dikdörtgensel ve karesel bölgelere ayrılmıştır. Aynı harflerle göste",
+      "visual_type": "geometri",
+      "skip_reason": "Sorunun görseli metinde belirtilmesine rağmen, sağlanan resimde bu soruya ait görsel bulunmamaktadır. Sağlanan resimdeki sorular (60 ve 61) farklıdır."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 64,
+      "stem_preview": "Bir olayın olma olasılığı = İstenilen olası durumların sayısı / Tüm olası durumların sayısı. Bir masanın üstünde renkler",
+      "visual_type": "desen",
+      "skip_reason": "Metinle tam ifade edilebilir (aslında görsele gerek yok)"
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 65,
+      "stem_preview": "Bir olayın olma olasılığı = İstenilen olası durumların sayısı / Tüm olası durumların sayısı. Bir boya fabrikasında beyaz",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen tablo görseli, verilen resimde bulunmamaktadır. Resimdeki görseller farklı sorulara aittir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 66,
+      "stem_preview": "Efe kısa kenarının uzunluğu 2x santimetre olan Şekil 1'deki resmi sadece uzun kenarlarını bilgisayarındaki bir program y",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metnine ait görsel bulunmamaktadır. Sağlanan görsel farklı bir soruya (60. soru) aittir."
+    },
+    {
+      "source": "3.pdf",
+      "question_no": 67,
+      "stem_preview": "Bir olayın olma olasılığı = İstenilen olası durumların sayısı / Tüm olası durumların sayısı. Yaren, yeni aldığı bilgisay",
+      "visual_type": "desen",
+      "skip_reason": "Soru metni görsel içermemektedir."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 1,
+      "stem_preview": "Kaan ile Duru evlerinin balkonlarından ellerindeki farklı gazlar kullanılarak şişirilmiş balonları aynı anda bırakıyorla",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, soruda bahsedilen grafiği değil, bir kitap kapağını içermektedir. Soruda bahsedilen grafik görselde bulunmamaktadır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 2,
+      "stem_preview": "Benzinli bir araca LPG sistemi takıldığında % 40 yakıt tasarrufu sağlanmaktadır. LPG sistemi takılma maliyeti ve her 12 ",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, sorudaki matematiksel içeriğe ait bir şekil, grafik veya tablo değil; bir kitap kapağıdır. Soruda bahsedilen tablo görselde bulunmamaktadır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda yükseklikleri aynı, eş çekmecelerden ve farklı yükseklikte kapaklardan oluşan iki dolap verilmiştir. Bu dolaplar",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, soru metninde bahsedilen dolap ve çekmece çizimlerini içermemektedir. Görsel bir kitap kapağıdır ve soruyla alakasızdır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 4,
+      "stem_preview": "Ahmet ve Beyza'nın bir teknoloji mağazasından aldıkları bilgisayarlar için yaptıkları ödemeler aşağıda verilmiştir. Her ",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, soru metniyle ilgili bir tablo veya grafik değil, bir kitap kapağıdır. Soru metninde bahsedilen ödeme bilgileri görselde bulunmamaktadır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 5,
+      "stem_preview": "İki sütunlu bir tablo yapıp, çarpma işleminin birinci çarpanını sol taraftaki sütunun birinci satırına, ikinci çarpanını",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, soru metninde bahsedilen tablo değil, bir kitap kapağı fotoğrafıdır. Soru metnindeki tablo görseli sağlanmamıştır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıda uzunlukları eşit iki tane plastik çubuk verilmiştir. Kırmızı çubuğun bir ucundan 2 cm'lik parça kesilip kalan kı",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, soru metniyle alakalı değil. Soru metninde bahsedilen çubuklar ve yedigen şekli görselde bulunmamaktadır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 9,
+      "stem_preview": "Yanda iç içe geçirilmiş üstü açık 9 tane küpten oluşan bir oyuncak görseli verilmiştir. Bu oyuncaktaki her küpün kenar u",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen 'iç içe geçirilmiş 9 küpten oluşan oyuncak görseli' verilen resimlerde bulunmamaktadır. Verilen resimler farklı sorulara aittir."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 11,
+      "stem_preview": "Aşağıdaki görselde 100 kişilik bir sinema salonundaki bilet fiyatları verilmiştir. Bu sinema salonundaki bir film göster",
+      "visual_type": "grafik",
+      "skip_reason": "Görselde sinema salonu bilet fiyatları tablosu bulunmamaktadır. Verilen görselde 6. ve 7. sorulara ait farklı tablolar ve metinler yer almaktadır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 13,
+      "stem_preview": "Demir çubukla birlikte kütlelerin toplam kütlesi 284 kg olan bu halterde kullanılan disklerden en büyüğünün kütlesi en k",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görselde bu soruya ait bir şekil, grafik veya tablo bulunmamaktadır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 15,
+      "stem_preview": "Aşağıda Mehmet'in aracının lastiklerinin taban, yanak, jant bölümleri ve bunların ölçüleri verilmiştir. Mehmet'in aracın",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, soru metniyle uyumlu değil ve verilen görsel (dart tahtası) çok karmaşık bir yapıya sahip (20'den fazla nesne içeriyor)."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 17,
+      "stem_preview": "Eğim, dikey uzunluğun yatay uzunluğa oranıdır. Yukarıdaki kareli zemin üzerinde bir ada ve bu adaya doğru ilerlemekte ol",
+      "visual_type": "geometri",
+      "skip_reason": "Görselin detayları (noktaların ve adanın konumları) soru metninde verilmemiştir ve sağlanan görsel metinle alakasızdır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 20,
+      "stem_preview": "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı kutlamaları sırasında sahneye şiir okumak için art arda boyları 155, 157, 161",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde görsel bulunmamaktadır."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 47,
+      "stem_preview": "Kırmızı ve mavi renklere boyanmış, ön yüzleri dikdörtgen şeklinde olan bahçe duvarının üzerine direkler dikilerek şekild",
+      "visual_type": "geometri",
+      "skip_reason": "Sorunun kendi görseli bulunmamaktadır. Sağlanan görsel farklı bir soruya aittir."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 49,
+      "stem_preview": "Bir fabrikada 1 m² halı dokumak için 300 m uzunluğunda ip kullanılmaktadır. Bu fabrikada 6 m²'lik bir halı, turuncu ve y",
+      "skip_reason": "Görseldeki yeşil ipin kalan uzunluğunu gösteren grafiğin artış göstermesi, 'ipler birlikte kullanılarak dokunuyor' ifadesiyle çelişmektedir. Ayrıca, verilen başlangıç ip miktarları (1300m turuncu, 100m yeşil), 1 m² halı için 300m ip kullanıldığı bilgisi ve 6 m² halı dokunduğunda toplam 500m ip kaldığı bilgisi birbiriyle tutarsızdır. Bu nedenle soru çözülemez."
+    },
+    {
+      "source": "4.pdf",
+      "question_no": 50,
+      "stem_preview": "Eğim, dikey uzunluğun yatay uzunluğa oranıdır. Ayrıt uzunlukları desimetre cinsinden birer doğal sayı ve birer yan yüzey",
+      "skip_reason": "Verilen prizma yerleşimine göre eğim formülü (2x+y)/(2y+x) olarak bulunur. x*y=20 ve x, y doğal sayı olmalıdır. Bu koşulları sağlayan (x,y) çiftleri için hesaplanan eğim değerleri şıklardaki değerlerle uyuşmamaktadır. Ayrıca, şıklardaki değerleri eğim formülüne eşitleyerek x ve y değerlerini bulmaya çalıştığımızda, x ve y doğal sayı çıkmamaktadır. Bu nedenle soru tutarsızdır ve çözülemez."
+    },
+    {
+      "source": "5.pdf",
+      "question_no": 6,
+      "stem_preview": "İki terimin toplamının karesi, bu iki terimin kareleri ve bu iki terimin çarpımının iki katının toplamına eşittir. (a + ",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, soru metninde açıklanan görselle eşleşmiyor. Soru metni bir dikdörtgenin bir daire içine yerleştirilmesini tarif ederken, sağlanan görsel bir koridordaki çerçeveli resimleri göstermektedir."
+    },
+    {
+      "source": "5.pdf",
+      "question_no": 7,
+      "stem_preview": "Dik üçgenlerde 90°'lik açının karşısındaki kenara hipotenüs denir. Bir dik üçgende dik kenarların uzunluklarının kareler",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, soru metniyle eşleşmiyor. Soru metni bir göl ve yürüyüş yolu görseli beklerken, verilen görsel çerçeveler ve koridor içeriyor."
+    },
+    {
+      "source": "5.pdf",
+      "question_no": 8,
+      "stem_preview": "Eş üçgenlerin karşılıklı açıları ölçüleri ve karşılıklı kenarlarının uzunlukları birbirine eşittir. Dik üçgenlerde 90°'l",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metninde bahsedilen görsel (gemi modeli) sağlanmamıştır. Verilen görsel (koridor ve çerçeveler) soru metniyle eşleşmemektedir."
+    },
+    {
+      "source": "5.pdf",
+      "question_no": 15,
+      "stem_preview": "Zehra Öğretmen tasarladığı bir etkinlikte birim kareli zemin üzerinde yukarıda gösterildiği gibi bir dikdörtgen çizmiş v",
+      "visual_type": "grafik",
+      "skip_reason": "Sağlanan soru metni ile görsel birbiriyle alakasızdır. Görsel, cetvel ve üçgen ölçümleri içeren farklı bir soruya aittir. Metinde bahsedilen dikdörtgen ve birim kareli zemin görselde bulunmamaktadır."
+    },
+    {
+      "source": "5.pdf",
+      "question_no": 16,
+      "stem_preview": "Üçgenin her bir kenarının uzunluğu, diğer iki kenarının uzunluklarının farkının mutlak değerinden büyük, toplamından küç",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metni üçgen şeklindeki yeşil alanlar ve dikdörtgen bir yürüyüş yolu hakkında iken, görsel cetveller ve bir ABC üçgeni göstermektedir."
+    },
+    {
+      "source": "5.pdf",
+      "question_no": 18,
+      "stem_preview": "Dik üçgenlerde 90° lik açının karşısındaki kenara hipotenüs denir. Bir dik üçgende dik kenarların uzunluklarının kareler",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen soru kökü ile eşleşmiyor. Soru kökünde bahsedilen görsel (dikdörtgenler prizması ve açınımı) mevcut değil."
+    },
+    {
+      "source": "5.pdf",
+      "question_no": 19,
+      "stem_preview": "Eşkenar üçgen biçimindeki beş mavi karton aralarında boşluk kalmayacak ve üst üste gelmeyecek şekilde aşağıdaki gibi yer",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, verilen soru metniyle eşleşmiyor. Soru metni eşkenar üçgenlerden bahsederken, görsel cetveller ve farklı bir üçgen ölçümünü göstermektedir."
+    },
+    {
+      "source": "6.pdf",
+      "question_no": 1,
+      "stem_preview": "İki sayı doğrusunun birbirleriyle dik kesişmesiyle oluşan sisteme koordinat sistemi denir. Sayı doğrularının kesişim nok",
+      "skip_reason": "Soru metnindeki puanlama bilgileri (özellikle orijin için 10 puan ve halkaların 1-10 puan olması) ile şıklar arasında tutarsızlık bulunmaktadır. Verilen bilgilere göre hesaplanan doğru cevap (5 puan, 6 puan) şıklarda yer almamaktadır."
+    },
+    {
+      "source": "6.pdf",
+      "question_no": 2,
+      "stem_preview": "Düzlem aynalarda görüntü aynaya göre cismin simetriğidir. Simetri, cismin ve cismin görüntüsünün ayna ekseninde katlandı",
+      "skip_reason": "Soru metnindeki Braille alfabesi ve yansıma görselleri ile şıklar arasında tutarsızlık bulunmaktadır. Hem Braille alfabesi kurallarına göre yapılan yansıma (439) hem de sorudaki görselde gösterilen yansıma (698) şıklarda yer almamaktadır."
+    },
+    {
+      "source": "6.pdf",
+      "question_no": 3,
+      "stem_preview": "Yarıçapının uzunluğu r ve yüksekliği h olan bir dik dairesel silindirin yanal yüzeyinin alanı 2πrh'dir. Taban çapının uz",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, sorunun kendisiyle ilgili bir şekil, grafik veya tablo değil, bir kitap kapağıdır. Sorunun çözümüne katkıda bulunacak bir görsel içermemektedir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 6,
+      "stem_preview": "Bir teknoloji mağazasında eşit sayıda satışa sunulan ürünlerin türleri ve bu ürünlerin kodlarının çözümlenmiş hâli Tablo",
+      "visual_type": "tablo",
+      "skip_reason": "Soruya ait tablolar görselde bulunmamaktadır. Verilen görsel bir sınav kapak sayfasıdır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 8,
+      "stem_preview": "Emir otobüse ya da minibüse binmek için evinden çıktıktan 7 dakika sonra durağa ulaşmaktadır. Otobüs 30 dakikada bir, mi",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde görsel bir öğe bulunmamaktadır. Sağlanan görsel, sorunun kendisiyle ilgili olmayan bir sınav kapağıdır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 11,
+      "stem_preview": "Aşağıda bir sayının çarpanlarının tamamı küçükten büyüğe doğru yazılmıştır. Buna göre aşağıdakilerden hangisi B - A ifad",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, soruda bahsedilen çarpan listesini içermiyor, genel bir sınav kapağıdır ve soruyla doğrudan ilgili matematiksel bir görsel değildir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 12,
+      "stem_preview": "Reyhan Öğretmen tahtaya çıkardığı üç öğrencisine sırasıyla aşağıdaki görevleri vermiştir. Selim bir sayı söyleyecektir. ",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, sorunun matematiksel içeriğiyle ilgili bir şekil, grafik veya tablo değil, bir sınav kapağıdır. Soru metinle tam olarak ifade edilebilir ve görselin matematiksel bir karşılığı yoktur."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 15,
+      "stem_preview": "Aşağıdaki tabloda bazı kavramlar ve tanımlar eşleştirilmiştir. Buna göre hangi kavram ile tanımının eşleştirilmesi doğru",
+      "skip_reason": "Matematik sorusu değildir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 16,
+      "stem_preview": "Dünya üzerindeki kıtaların yerleri haritada gösterilmiştir. Buna göre aşağıda yapılan yorumlardan hangisi yanlıştır?",
+      "skip_reason": "Matematik sorusu değildir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 17,
+      "stem_preview": "Aşağıda bir DNA molekülünün eşlenmesi şematize edilmiştir. ▲, ●, ★ sembolleri azotlu organik bazları temsil etmektedir. ",
+      "skip_reason": "Matematik sorusu değildir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 18,
+      "stem_preview": "Özdeş termometre ve lambalarla oluşturulan deney düzeneklerinin başlangıçtaki durumları aşağıdaki görselde verilmiştir. ",
+      "skip_reason": "Matematik sorusu değildir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 19,
+      "stem_preview": "Aşağıda yüksek ve alçak basınç alanları ile ilgili pano çalışması yapılmıştır. Buna göre çalışma ile ilgili aşağıda yapı",
+      "skip_reason": "Matematik sorusu değildir."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 3,
+      "stem_preview": "Sarı, kırmızı ve mavi ana renklerinin karıştırılması ile oluşturulabilecek renklerden turuncu, yeşil ve kahverenginin ol",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen 'aşağıdaki gibi' görseli eksiktir. Sağlanan görsel (LGS kapak sayfası) ise karmaşık bir doküman görselidir ve matematiksel bir şekil olarak SVG'ye dönüştürülemez."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıda bir kenar uzunluğu verilen dikdörtgen şeklindeki pano, eş kare parçalara ayrılmış ve bu karelerden bazıları şeki",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen görsel (eş karelere ayrılmış ve boyanmış dikdörtgen pano) verilen resimde bulunmamaktadır. Verilen resim bir sınav kapağıdır."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 6,
+      "stem_preview": "Eş karelerden oluşan mavi zemin üzerine, zeminin kenarlarına değecek şekilde turuncu daire çizilmiştir. Kare zeminin bir",
+      "skip_reason": "Sorunun verilen bilgileriyle cevap anahtarındaki şıkka ulaşılamamaktadır."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 7,
+      "stem_preview": "Okullarında düzenlenecek olan TÜBİTAK Bilim Fuarı için Ahmet ve Mehmet, yük taşıyabilen birer robot tasarlamıştır. Ahmet",
+      "skip_reason": "Sorunun verilen bilgileriyle cevap anahtarındaki şıkka ulaşılamamaktadır."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 8,
+      "stem_preview": "EBA üzerinden işlenen bir canlı dersin tabletteki görünümü Görsel 1'de verilmiştir. Ekranda öğretmenin görüntüsünün bulu",
+      "skip_reason": "Görseldeki boyut ilişkileri ve verilen bilgilerle cevap anahtarındaki şıkka ulaşılamamaktadır."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıda verilen çubuklardan birincisi 40 eş bölmeye, ikincisi 30 eş bölmeye ayrılmıştır. 1. çubuğun bir bölmesinin uzunl",
+      "skip_reason": "Sorunun verilen bilgileriyle cevap anahtarındaki şıkka ulaşılamamaktadır."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıdaki grafikte bezelyelerde bir karakterle ilgili dört farklı çaprazlamada oluşabilecek tüm genotip oranları verilmi",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni (bezelyelerde genotip oranları) ile görseldeki grafik (DNA yapıları) birbiriyle uyuşmamaktadır."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 11,
+      "stem_preview": "Fatih, özdeş küpler kullanarak isminde bulunan sessiz harfleri oluşturuyor. Oluşturduğu harflerle katı basıncını etkiley",
+      "skip_reason": "Görseldeki şekillerin özellikleri (küp sayısı ve taban alanı) verilen hipotezleri test etmek için uygun değildir. Tüm şekiller aynı küp sayısına ve taban alanına sahiptir."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 12,
+      "stem_preview": "Kalıtsal özelliklerin nasıl aktarıldığını anlamak isteyen Ahmet, iki farklı çaprazlama yapıyor. İlk olarak genotipleri f",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen grafikler (1. ve 2. grafik) görsel olarak sağlanmamıştır. Verilen görsel, soru metniyle alakasız başka bir sorunun görselidir."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 14,
+      "stem_preview": "K, L ve M cisimlerinin yüzey alanları sırasıyla S, S, 2S'dir. Cisimlerin eşit kollu terazideki denge konumları verilmişt",
+      "visual_type": "geometri",
+      "skip_reason": "çok karmaşık şekil"
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 18,
+      "stem_preview": "Yüzey alanları eşit olan küpler üst üste konularak farklı dizilimler oluşturulmuştur. Oluşturulan dizilimlerde cisimleri",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metninde bahsedilen grafik görselde bulunmamaktadır."
+    },
+    {
+      "source": "lgs2.pdf",
+      "question_no": 19,
+      "stem_preview": "Görseldeki arazide bahçe ve bu bahçeyi sulamak için kullanılan kule üzerinde yer alan su deposu verilmiştir. Su deposu k",
+      "visual_type": "geometri",
+      "skip_reason": "Soru kökünde bahsedilen görsel, sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıdaki tabloda yapılan aktivitelerde geçen süreye göre harcanan ortalama kalori miktarları gösterilmiştir. Buna göre ",
+      "skip_reason": "Soru metninin matematiksel çözümü ile verilen cevap anahtarı arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıda 7 eş dikdörtgen ve 4 eş kareden oluşan bir hedef tahtası verilmiştir. Atılan okun hedef tahtasına isabet ettiği ",
+      "skip_reason": "Görsel ile soru metni arasında çelişki bulunmaktadır (şekil sayısı ve türü uyuşmuyor)."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 6,
+      "stem_preview": "√0,81/√0,09 + √0,64/√0,04 - √6,25/√0,25 işleminin sonucu kaçtır?",
+      "skip_reason": "Soru metninin matematiksel çözümü ile verilen cevap anahtarı arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 7,
+      "stem_preview": "Aşağıda A, B ve C mağazalarında gün boyunca satılan ayakkabı sayılarının dağılımı Grafik 1'de, her bir mağazada satılan ",
+      "skip_reason": "Görseldeki açı bilgisi ve matematiksel hesaplamalar ile verilen cevap anahtarı arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıdaki satranç tahtasının C2 karesinde kırmızı bir pul bulunmaktadır. Kırmızı pul başlangıçta 0,12 * 10^3 şeklinde bi",
+      "skip_reason": "Soru metninin matematiksel çözümü ile verilen cevap anahtarı arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 9,
+      "stem_preview": "Dört farklı telsiz modelinin iç mekândaki çekim mesafesi ve fiyatları Tablo 1'de verilmiştir. Muharrem ve Hacer çifti, o",
+      "skip_reason": "Verilen telsiz modellerinin hiçbiri gerekli çekim mesafesi şartını sağlamamaktadır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 10,
+      "stem_preview": "Yukarıda verilen 250 cm uzunluğundaki ip, uzunlukları santimetre cinsinden doğal sayı olan 3 parçaya ayrılıyor. Birinci ",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, sorunun kendisiyle ilgili matematiksel bir şekil, grafik veya tablo değildir; genel bir sınav kapağıdır ve içeriği çok karmaşıktır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 14,
+      "stem_preview": "Aşağıdaki tabloda bir büfede satılan poğaça çeşitleri ve fiyatları, daire grafiğinde ise bu büfede bir günde satılan poğ",
+      "visual_type": "tablo",
+      "skip_reason": "Kullanıcının sağladığı soru metninde bahsedilen görsel (poğaça çeşitleri tablosu ve daire grafiği) verilen görselde bulunmamaktadır. Verilen görsel, farklı bir soruya ait sütun grafiği içermektedir."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 15,
+      "stem_preview": "Üzerinde tam sayıların yazılı olduğu toplar iki ayrı kutu içerisine konulmuş ve bu kutulardan birer top seçilmiştir. 1. ",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan soru metnine ait görsel, verilen resimde bulunmamaktadır. Resimdeki görseller farklı sorulara aittir."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 16,
+      "stem_preview": "Bir otomobil fabrikasının üretim planlama departmanı, aylık üretim maliyetlerini düşürmek amacıyla boya alımı ile ilgili",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen 'tablo' görselde bulunmamaktadır. Görselde farklı bir LGS sorusuna ait sütun grafik yer almaktadır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 13,
+      "stem_preview": "K çözeltisine kırmızı turnusol kağıdı batırıldığında rengi maviye dönüşmektedir. K çözeltisiyle ilgili aşağıdaki yorumla",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metni ile ilişkili bir görsel bulunmamaktadır."
+    },
+    {
+      "source": "lgs3.pdf",
+      "question_no": 18,
+      "stem_preview": "Kimyasal ve fiziksel değişim örnekleri aşağıdaki tabloda verilmiştir. Buna göre verilen değişimlerin gruplandırılması ha",
+      "visual_type": "tablo",
+      "skip_reason": "İstenen tablo görselde bulunmamaktadır. Görselde iki adet grafik bulunmaktadır."
+    },
+    {
+      "source": "lgs4.pdf",
+      "question_no": 4,
+      "stem_preview": "SON DAKİKA! Ankara'nın Polatlı ve Haymana ilçelerinde saat 15.00 sıralarında şiddetli bir kum fırtınası yaşandı. Bir and",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metninde görsel bulunmamaktadır."
+    },
+    {
+      "source": "lgs4.pdf",
+      "question_no": 15,
+      "stem_preview": "Kapalı bir kapta gerçekleşen kimyasal tepkime sırasında kullanılan ve oluşan madde miktarları aşağıdaki grafikte gösteri",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen kimyasal tepkime grafiği görsel olarak sağlanmamıştır. Sağlanan görsel, soru metniyle ilgili değildir."
+    },
+    {
+      "source": "lgs4.pdf",
+      "question_no": 17,
+      "stem_preview": "Görselde asit, baz ve nötr olduğu bilinen K, L, M ve N maddelerinin sulu çözeltileri, tabloda ise bazı ayıraçların asit ",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen 'ayıraçların asit ve bazlarla etkileşimleri sonucu meydana gelen renk değişimleri' tablosu görselde bulunmamaktadır. Sağlanan görsel, sorunun metniyle ilgili değildir."
+    },
+    {
+      "source": "lgs4.pdf",
+      "question_no": 18,
+      "stem_preview": "Merve, ilk sıcaklıkları eşit olan K, L ve M sıvılarını özdeş beherlere koyup özdeş ısıtıcılarla beşer dakika ısıtıyor ve",
+      "visual_type": "tablo",
+      "skip_reason": "Tablo görseli soruda verilmemiştir."
+    },
+    {
+      "source": "lgs5.pdf",
+      "question_no": 16,
+      "stem_preview": "Kare biçiminde bir ahşap plakanın ön ve arka yüzü üzerine dikdörtgen biçiminde mavi renkli iki farklı şerit çekilmiştir.",
+      "visual_type": "desen",
+      "skip_reason": "Soru metnine ait görsel bulunmamaktadır."
+    },
+    {
+      "source": "lgs5.pdf",
+      "question_no": 17,
+      "stem_preview": "Dört farklı zekâ oyununun Türk lirası cinsinden adet fiyatlarının çözümlenmiş hâli aşağıdaki tabloda verilmiştir. Toplam",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen tablo görselde bulunmamaktadır."
+    },
+    {
+      "source": "lgs5.pdf",
+      "question_no": 19,
+      "stem_preview": "Aşağıda üzerinde cebirsel ifadeler yazan sekiz kart verilmiştir. Bu kartlardan biri rastgele seçildiğinde, seçilen kartt",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen 'sekiz kart' görseli, sağlanan resimde bulunmamaktadır. Sağlanan resim farklı sorulara ait görseller içermektedir."
+    },
+    {
+      "source": "lgs5.pdf",
+      "question_no": 9,
+      "stem_preview": "Şekilde eşit bölmeli kaplara belirtilen seviyelerde K ve L sıvıları konulmuş ve kap tabanlarına etki eden sıvı basınçlar",
+      "skip_reason": "Soru kökü ve şıklar arasında çelişki bulunmaktadır. Cevap anahtarı C şıkkını yanlış olarak belirtirken, yapılan hesaplamalara göre C şıkkı (S kabının tabanındaki sıvı basıncı P kabının tabanındaki sıvı basıncından fazladır) doğru bir ifadedir. Ayrıca D şıkkı da yanlış bir ifade olarak görünmektedir. Bu durum sorunun hatalı olduğunu göstermektedir."
+    },
+    {
+      "source": "lgs5.pdf",
+      "question_no": 11,
+      "stem_preview": "DNA eşlenme sürecini anlatan fen bilimleri öğretmeni, aşağıdaki hatasız eşlenme modelini tahtaya yansıtarak öğrencilerde",
+      "skip_reason": "Soru kökü ve şıklar arasında çelişki bulunmaktadır. Cevap anahtarı B şıkkını doğru olarak belirtirken, yapılan hesaplamalara göre B şıkkı (K ve M zincirlerindeki guanin nükleotidi sayıları birbirine eşittir) kesinlikle doğru bir ifade değildir. K zincirindeki guanin sayısı, M zincirindeki sitozin sayısına eşittir. Bu durum sorunun hatalı olduğunu göstermektedir."
+    },
+    {
+      "source": "lgs5.pdf",
+      "question_no": 17,
+      "stem_preview": "Aşağıdaki periyodik tablo kesitinde bazı elementler sembolleriyle gösterilmiştir. Bu periyodik tablo kesitinde yer alan ",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, fotoğraf veya gerçek nesne görüntüleri içerdiği için yeniden üretilemez."
+    },
+    {
+      "source": "lgs5.pdf",
+      "question_no": 18,
+      "stem_preview": "pH değeri 5,6'nın altına düşen yağışlar \"asit yağmuru\" olarak adlandırılır. Atmosfere salınan karbon dioksit (CO₂), kükü",
+      "visual_type": "grafik",
+      "skip_reason": "Sağlanan görsel, soru metniyle eşleşmiyor. Soru metni asit yağmurları ve şehirlerin yağış/pH grafikleri hakkında iken, görsel bezelye bitkisi karakterleri ve çaprazlama olasılıkları hakkındadır."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 5,
+      "stem_preview": "Bir belediyenin düzenli şehirleşme için geliştirdiği bir proje kapsamında düzenlenecek doğrusal bir caddenin planı aşağı",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, soru metninde bahsedilen cadde planını içermiyor, genel bir sınav kapağı görseli."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 6,
+      "stem_preview": "Bir depoda bulunan üç çeşit buğdayın birer tonunun fiyatı tabloda, bu depoda bulunan buğdayların toplam kütlesinin çeşit",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen tablo ve daire grafiği görseli sağlanmamıştır. Verilen görsel, soruyla ilgili veri içeren bir grafik veya tablo değil, bir sınav kapağıdır."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 7,
+      "stem_preview": "Aşağıdaki görselde Ali ve İsa'nın bulundukları noktaların bir ATM'ye olan uzaklıkları verilmiştir. Ali bulunduğu noktada",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen grafik görseli eksik. Verilen görsel, sorunun kendisiyle ilgili olmayan bir sınav kapağıdır."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıda iki arabanın kilometre sayaçlarının gösterdiği değerler, 10'un tam sayı kuvvetleri kullanılarak ifade edilmiştir",
+      "skip_reason": "Soru metnindeki koşullar ('1. araçtan küçük, 2. araçtan büyük') ve tabloda verilen sayısal değerler (1. Araba: 1.48 * 10^4 = 14800, 2. Araba: 960 * 10^-3 = 0.96) arasında tutarsızlık bulunmaktadır. Selim'in seçtiği arabanın değeri (1.28 * 10^5 = 128000) bu koşulu sağlamamaktadır (0.96 < 128000 < 14800 yanlıştır). Bu nedenle soru çözülememektedir."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 9,
+      "stem_preview": "Dakikada 1 kazak üreten bir makine üretime ara vermeksizin sırasıyla 4 beyaz, 3 siyah ve 5 lacivert kazak üretmektedir. ",
+      "skip_reason": "Verilen bilgilerle yapılan hesaplamalar sonucunda elde edilen olasılık değeri (7/18), cevap anahtarındaki şık ile uyuşmamaktadır ve cevap anahtarındaki şıkka (5/18) ulaşılamamaktadır. Soru metninde veya cevap anahtarında hata olduğu düşünülmektedir."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 10,
+      "stem_preview": "Sinan, aşağıdaki gibi √890 cm yüksekliğinde bir tabureye çıktığında baş hizasının 144 cm'ye karşılık geldiğini görmüştür",
+      "skip_reason": "Verilen bilgilerle yapılan hesaplamalar sonucunda elde edilen Sinan'ın boyu aralığı (114 ile 115 cm arası), cevap anahtarındaki şık ile uyuşmamaktadır ve cevap anahtarındaki şıkka (116-117 cm) ulaşılamamaktadır. Soru metninde veya cevap anahtarında hata olduğu düşünülmektedir."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 10,
+      "stem_preview": "Katı cisimler ağırlıklarından dolayı temas ettikleri yüzeylere basınç uygular. Katı basıncı ağırlıkla doğru, yüzey alanı",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen 'düzenekler' görseli verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 11,
+      "stem_preview": "K, L ve M kapları kullanılarak aşağıdaki bileşik kap düzeneği oluşturulmuştur. Başlangıçta sadece K kabında h seviyesine",
+      "visual_type": "grafik",
+      "skip_reason": "Sorunun metninde bahsedilen görsel (K, L, M kapları düzeneği) verilen görseller arasında bulunmamaktadır."
+    },
+    {
+      "source": "lgs6.pdf",
+      "question_no": 12,
+      "stem_preview": "Aşağıdaki görselde bir inşaatta çalışan işçilerin kurdukları palanga sistemleriyle yerde bulunan özdeş P yüklerini aynı ",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen palanga sistemi görseli, verilen resimde bulunmamaktadır. Verilen resimdeki görseller (küre, kaldıraçlar) soru metniyle eşleşmemektedir."
+    },
+    {
+      "source": "lgs7.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıdaki tabloda dört aracın sabit hızlarla 1 saatte ve toplamda aldıkları yol, metre cinsinden üslü ifadelerle gösteri",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, soru metninde bahsedilen tabloyu içermiyor. Sağlanan görsel bir sınav kapak sayfasıdır ve soruyla doğrudan ilgili değildir."
+    },
+    {
+      "source": "lgs7.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıda bir kolunun uzunluğu 8 cm, diğer kolunun uzunluğu 11 cm olan pergel ve eşit aralıklı 20 cm'lik bir cetvel göster",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, soruda bahsedilen pergel ve cetvel görseli değil, bir sınav kapağıdır. Bu nedenle sorudaki görsel yeniden üretilememiştir."
+    },
+    {
+      "source": "lgs7.pdf",
+      "question_no": 5,
+      "stem_preview": "Bir halat, görseldeki gibi altlarında verilen sayılarla orantılı olacak şekilde dört parçaya ayrılıyor. Mavi, turuncu, s",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen halatın parçalarını ve orantılı olduğu sayıları gösteren görsel, verilen resimde bulunmamaktadır. Verilen resim bir sınav kapak sayfasıdır."
+    },
+    {
+      "source": "lgs7.pdf",
+      "question_no": 6,
+      "stem_preview": "Kısa kenar uzunluğu √8 dm ve alanı desimetrekare cinsinden tam kare doğal sayı olan dikdörtgen şeklindeki ayna aşağıda v",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, soru metninde bahsedilen geometri şeklini değil, bir sınav kapağını içermektedir. Soruya ait bir görsel bulunmamaktadır."
+    },
+    {
+      "source": "lgs7.pdf",
+      "question_no": 8,
+      "stem_preview": "Deniz'in blok parçalardan oluşan, biri diğerinden 5 cm uzun iki oyuncak çubuğu vardır. Bu çubuklardan kısa olanı eşit uz",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, sorunun kendisiyle ilgili değil, bir sınav kapağıdır. Sorunun görseli (çubuklarla ölçülen kamyon) mevcut değil."
+    },
+    {
+      "source": "lgs7.pdf",
+      "question_no": 13,
+      "stem_preview": "Aşağıda 120 cm ve 150 cm uzunluğunda iki demir çubuk verilmiştir. Bu çubuklar hiç parça artmayacak ve uzunlukları birbir",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metninde görsel bulunmamaktadır."
+    },
+    {
+      "source": "lgs7.pdf",
+      "question_no": 15,
+      "stem_preview": "Bir mağazada bulunan ayakkabı sayılarının markalarına göre dağılımı Grafik 1'de, bir süre sonra satılan A marka ayakkabı",
+      "skip_reason": "Sorudaki Grafik 2 bilgileri ile metindeki sayısal bilgiler (satılan çocuk ve erkek ayakkabı sayıları) birbiriyle çelişmektedir, tutarlı bir çözüm yolu bulunamamıştır."
+    },
+    {
+      "source": "lgs7.pdf",
+      "question_no": 18,
+      "stem_preview": "Aşağıdaki tabloda, üç farklı model kablonun yalıtım malzemesi ile kaplanmadan önceki yarıçap uzunlukları verilmiştir. Ka",
+      "visual_type": "tablo",
+      "skip_reason": "Görselde belirtilen tablo bulunmamaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 4,
+      "stem_preview": "Bir fanus içerisinde özdeş 26 top bulunmaktadır. Toplardan 13 tanesinin üzerine 3 sayısı, diğerlerinin üzerine ise 5 say",
+      "skip_reason": "Soru metni/görsel bilgileri ile cevap anahtarı arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıdaki görselde, her birinin alanı santimetrekare cinsinden iki basamaklı tam sayı olan kırmızı, mavi ve yeşil renkli",
+      "skip_reason": "Soru metni/görsel bilgileri ile cevap anahtarı arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 6,
+      "stem_preview": "Aşağıda gösterilen kendi içinde özdeş kırmızı, sarı ve mavi renkteki şeritlerden yeterli sayıda vardır. Şeritler doğrusa",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, sorunun matematiksel içeriğiyle ilgili değil, bir sınav kapağıdır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 7,
+      "stem_preview": "Aşağıda ABCD-KLMN olmak üzere iki dikdörtgen ve bu dikdörtgenlerin kenar uzunlukları verilmiştir. Buna göre KLMN dikdört",
+      "skip_reason": "Görseldeki iki dikdörtgen arasında x değerini bulmak için yeterli bilgi verilmemiştir."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 8,
+      "stem_preview": "Sivas'tan tam dolu batarya ile yola çıkan bir elektrikli aracın güzergâhı ve bu güzergâh üzerinde bulunan yerleşim yerle",
+      "skip_reason": "Soru metni/görsel bilgileri ile cevap anahtarı arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 9,
+      "stem_preview": "Dikdörtgen biçiminde bir panonun kenar uzunlukları, uzunluğu √27 dm ve bu çubuklar uç uca eklenerek aşağıdaki gibi ölçül",
+      "skip_reason": "Soru metnindeki çubuk uzunluğu bilgisi ile görseldeki çubuk uzunluğu etiketi çelişmektedir ve bu çelişki nedeniyle doğru çözüm yapılamamaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıda, üzerinde birer sayı yazılı dokuz adet top ile sarı ve yeşil renkli boş iki torba verilmiştir. Bu toplardan üzer",
+      "skip_reason": "Soru metni ve verilen sayılarla cevap anahtarındaki şık (D) arasında tutarsızlık bulunmaktadır. Mantıksal çözüm 19 sonucunu vermektedir, ancak cevap anahtarı 48'i işaret etmektedir. 48 sonucuna ulaşılamamıştır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 11,
+      "stem_preview": "Uzun kenar uzunlukları (5x – 7) cm olan Görsel 1’deki dikdörtgen şeklinde özdeş üç cam Görsel 2’deki gibi üst üste yapış",
+      "skip_reason": "Soru metni ve görseldeki bilgilerle cevap anahtarındaki şık (D) arasında tutarsızlık bulunmaktadır. Verilen boyutlarla 9x^2-9 cebirsel ifadesine ulaşılamamıştır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 12,
+      "stem_preview": "Aşağıdaki görselde tesisat arızalarından olduğu günlük su israfı ile ilgili bir broşür verilmiştir. Bir apartmanda yapıl",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen görsel (su israfı broşürü) verilen görselde bulunmamaktadır. Verilen görsel, farklı bir LGS sorusuna aittir."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 13,
+      "stem_preview": "Bir kargo firmasının akıllı dağıtım merkezindeki küp biçiminde özdeş koliler, üzerinde yazan sayılara göre otomatik olar",
+      "skip_reason": "Soru metni ve verilen sayılarla cevap anahtarındaki şık (C) arasında tutarsızlık bulunmaktadır. Mantıksal çözüm 2 sonucunu vermektedir, ancak cevap anahtarı 4'ü işaret etmektedir. 4 sonucuna ulaşılamamıştır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 16,
+      "stem_preview": "Aşağıda hacmi 22 L olan boş bir kova ve bu kovaya su doldurmak için kullanılacak bir sürahi verilmiştir. Sürahi her defa",
+      "skip_reason": "Soru metnindeki '3 L’den az' ve 'bir miktar su taştığı' ifadeleri kesin eşitsizlikleri (4.4 < x < 5) gerektirmesine rağmen, cevap anahtarı (D) kapalı aralık (4.4 <= x <= 5) önermektedir. Bu durum, soru metni ile cevap anahtarı arasında tutarsızlık yaratmaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 17,
+      "stem_preview": "Dik koordinat sisteminde iğneli ucu orijin üzerine yerleştirilen bir pergelin diğer ucu A(3, 4) noktası üzerindedir. Per",
+      "skip_reason": "Soru metni ve görseldeki bilgilerle cevap anahtarındaki şık (B) arasında tutarsızlık bulunmaktadır. Mantıksal çözüm 50 birimkare sonucunu vermektedir, ancak cevap anahtarı 25'i işaret etmektedir. 25 sonucuna ulaşılamamıştır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 20,
+      "stem_preview": "Kenar uzunlukları 8 cm ve 12 cm olan ABCD dikdörtgeninin ardışık iki kenarı üzerinde E ve F noktaları işaretlenerek DEF ",
+      "skip_reason": "Verilen kenar uzunlukları (EB=7 cm ve AB=12 cm) bir dik üçgen oluşturmadığı için (7² < 12²), E noktasının AD kenarı üzerinde olması imkansızdır. Bu durum, sorudaki geometrik bilgilerin tutarsız olduğunu göstermektedir."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıda elektriklenme ile ilgili bir deneyin aşamaları verilmiştir: Birinci aşama: Nötr cam çubuk, nötr ipek kumaşa sürt",
+      "visual_type": "desen",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 9,
+      "stem_preview": "Yüklü olduğu bilinen K, L ve M küreleri, aralarında eşit mesafe olacak şekilde yalıtkan zemine konulduklarında kürelerin",
+      "skip_reason": "Soru kökü ve görsellerdeki fiziksel etkileşimler ile cevap anahtarı arasında tutarsızlık bulunmaktadır. Özellikle P dinamometresinin artan değeri, K(-), L(-), M(+) yük dağılımı ile çelişmektedir."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 11,
+      "stem_preview": "Fen bilimleri öğretmeni, başlangıçta birer sabit makara ile kurduğu iki düzenekten birinci düzeneğe 30 N'lık, ikinci düz",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen grafikler görselde bulunmamaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 14,
+      "stem_preview": "Aşağıdaki haritada dört farklı şehrin Dünya üzerindeki konumları verilmiştir. Konumları verilen şehirlerin 21 Haziran ta",
+      "visual_type": "grafik",
+      "skip_reason": "çok karmaşık şekil"
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 16,
+      "stem_preview": "Yüksek basınç alanından alçak basınç alanına doğru oluşan yatay yönlü hava hareketine rüzgâr denir. Haritada konumları v",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde görsel bulunmamaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 18,
+      "stem_preview": "Isıca yalıtılmış bir ortamda bulunan saf K ve L maddelerine ait sıcaklık-zaman grafiği aşağıda verilmiştir. Verilenlere ",
+      "visual_type": "grafik",
+      "skip_reason": "İstenen 'sıcaklık-zaman grafiği' görseli verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "lgs8.pdf",
+      "question_no": 19,
+      "stem_preview": "Bir öğrenci, cam boru ve kaplar ile kurduğu sızdırmaz düzenekte K kabındaki yeşil renkli saf maddeyi ısıtıyor. Isıtma iş",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metnine ait görsel, sağlanan resimde bulunmamaktadır. Resimdeki görseller farklı sorulara aittir."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 4,
+      "stem_preview": "Simit, poğaça ve tost satan bir büfede ürünlerin birer adedinin satış fiyatının dağılımı Grafik 1'de, bu büfede bir günd",
+      "visual_type": "grafik",
+      "skip_reason": "Görselde soruya ait grafikler bulunmamaktadır, sadece sınav kapağı mevcuttur."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 5,
+      "stem_preview": "Bir alışveriş sitesinde satılan cetvel haricindeki ürünlerin Türk lirası cinsinden fiyatlarının çözümlenmiş şekli aşağıd",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen tablo görseli, verilen resimde bulunmamaktadır. Verilen resim bir sınav kapağıdır."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 6,
+      "stem_preview": "Bir inşaatın temeline beton döken A ve B mikserleri aşağıda gösterilmiştir. Mikserlerde kalan beton miktarlarının zamana",
+      "visual_type": "grafik",
+      "skip_reason": "Görselde belirtilen doğrusal grafik soruda verilmemiştir. Yalnızca sınav kapağı mevcuttur."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 7,
+      "stem_preview": "Kenar uzunlukları 9√3 cm ve 24√3 cm olan dikdörtgen şeklindeki bir karton, Görsel 1'deki gibi kısa kenarına paralel olac",
+      "skip_reason": "Soru metni ve görseldeki bilgilerle cevap anahtarı arasında tutarsızlık bulunmaktadır. Şeritlerin boyutları ve birleştirilme şekli ile verilen cevap (288√3) tutarlı bir şekilde elde edilememektedir."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıda bir çatı modeli gösterilmiştir. Bu çatının sol bölümünün eğimi 3/7, sağ bölümünün eğimi 3/2'dir. Çatının genişli",
+      "skip_reason": "Soru metni ve görseldeki bilgilerle cevap anahtarı arasında tutarsızlık bulunmaktadır. Çatının yüksekliği ve genişliğinin tam sayı olması koşuluyla, verilen eğimlerle çatının genişliği 5 metre olarak elde edilememektedir."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 3,
+      "stem_preview": "Öğretmen, derste anlatacağı kavram için bir kişinin spora başlamadan önceki ve bir yıl spor yaptıktan sonraki vücut yapı",
+      "skip_reason": "Fen Bilimleri sorusu."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıda bir besin ağı modeli verilmiştir. Besin ağı ile ilgili aşağıdaki ifadelerden hangisi yanlıştır?",
+      "skip_reason": "Fen Bilimleri sorusu."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıdaki tabloda, bezelye bitkisindeki bazı alellerin baskın ve çekinik olma durumları verilmiştir. Bezelye bitkilerini",
+      "skip_reason": "Fen Bilimleri sorusu."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 6,
+      "stem_preview": "Eşlenmekte olan bir DNA molekülünün yapısında bulunan nükleotidler aşağıdaki modelde sembollerle gösterilmiştir. DNA mol",
+      "skip_reason": "Fen Bilimleri sorusu."
+    },
+    {
+      "source": "lgs9.pdf",
+      "question_no": 7,
+      "stem_preview": "Sürtünmelerin önemsiz olduğu aşağıdaki düzenekler kullanılarak özdeş P yükleri aynı yüksekliğe çıkarılacaktır. Buna göre",
+      "skip_reason": "Fen Bilimleri sorusu."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 13,
+      "stem_preview": "Bir takı tasarım atölyesinde sarı, mavi ve turuncu renkli boncuklarla kolyeler yapılacaktır. Aşağıda boncuk sayılarının ",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen soru metnine ait daire grafiğini içermiyor."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 14,
+      "stem_preview": "Bir mağazadan alışveriş yapan müşterilerin her 1000 TL tutarında alışverişleri için 1 defa çevireceği hediye çarkı aşağı",
+      "visual_type": "grafik",
+      "skip_reason": "Sağlanan soru metni bir hediye çarkından bahsetmektedir. Ancak ekteki görsel, soru metniyle ilişkili olmayan, farklı bir LGS sorusuna (geometri şekilleri) ait görseller içermektedir. Bu nedenle, soru metnindeki görsel yeniden üretilememiştir."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 15,
+      "stem_preview": "Aşağıda verilen özdeş iki çubuktan birincisine 4 adet mavi halka yerleştirildiğinde çubuğun 4 cm'lik kısmı, ikincisine 8",
+      "visual_type": "tablo",
+      "skip_reason": "Sorunun metninde görsel bir öğe bulunmamaktadır."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 16,
+      "stem_preview": "1'den 40'a kadar (1 ve 40 dâhil) doğal sayıların her biri karekök içinde özdeş kartlara yazılıyor. Bu kartlar arasından ",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metni için görsel bulunmamaktadır. Sağlanan görsel, farklı sorulara aittir."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 15,
+      "stem_preview": "Bir işçi, aynı merdiveni kullanarak özdeş kutuları farklı katlara çıkaracaktır. İşçi, 1. kata kutu çıkarırken F₁ kuvveti",
+      "skip_reason": "Bu soru bir fizik (fen bilimleri) sorusudur, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 16,
+      "stem_preview": "Fen bilimleri öğretmeni derste aşağıda verilen deney düzeneğini hazırlayarak işlemleri sırasıyla gerçekleştiriyor. Bu de",
+      "skip_reason": "Bu soru bir fizik (fen bilimleri) sorusudur, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 17,
+      "stem_preview": "Aşağıda periyodik tablonun bir bölümü verilmiştir. Tablonun verilen bölümünde yer alan iki elementin atom numaralarının ",
+      "skip_reason": "Bu soru bir kimya (fen bilimleri) sorusudur, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 18,
+      "stem_preview": "Başlangıçta katı hâlde bulunan saf X ve Y maddelerinin aynı ortamda ısıtılması sonucu elde edilen sıcaklık-ısı grafikler",
+      "skip_reason": "Bu soru bir fizik (fen bilimleri) sorusudur, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs10.pdf",
+      "question_no": 19,
+      "stem_preview": "Aşağıda farklı maddelerde gerçekleşen değişimlere ait tanecik modelleri verilmiştir. Verilen değişimlerle ilgili aşağıda",
+      "skip_reason": "Bu soru bir kimya (fen bilimleri) sorusudur, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 19,
+      "stem_preview": "Aşağıdaki koordinat sisteminde A(0, 0) ve B(6, -8) merkezli çemberler çizilmiştir. B noktası A merkezli çember üzerinded",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metnindeki görsel (koordinat sisteminde çemberler) sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 7,
+      "stem_preview": "Dış basınç arttığında balon gibi esnek cisimlerin hacimleri azalır ve cisimler küçülürler. Dış basınç azaldığında ise ha",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metninde bahsedilen balon deneyi görseli bulunmamaktadır."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıdaki görselde, birbirine komşu K ve L bölgelerindeki hava hareketleri modellenmiştir. Buna göre, K ve L bölgeleri i",
+      "skip_reason": "Görseldeki hava hareketleri ve meteorolojik bilgiler ile cevap anahtarı arasında çelişki bulunmaktadır. Bu nedenle tutarlı ve bilimsel olarak doğru bir çözüm yolu üretilememektedir."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 9,
+      "stem_preview": "Zıt yüklü küreler ile nötr iletken K, L, M ve N cisimleri kullanılarak aşağıdaki işlemler yapılıyor. İşlemler sonucunda ",
+      "skip_reason": "Görseldeki elektrostatik indüksiyon prensipleri ve metin ile cevap anahtarı arasında çelişki bulunmaktadır. Bu nedenle tutarlı ve bilimsel olarak doğru bir çözüm yolu üretilememektedir."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 13,
+      "stem_preview": "Özdeş küplerin yapıştırılması ile oluşturulan K, L, M ve N cisimleri görselde verilmiştir. Cisimlerin kırmızı ile boyanm",
+      "skip_reason": "Görseldeki cisimlerin basınç değişim hesaplamaları ile cevap anahtarı arasında çelişki bulunmaktadır. Özellikle L cismi için tutarlı bir çözüm yolu üretilememektedir."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 15,
+      "stem_preview": "Bir işçi, görseldeki düzeneği kullanarak yükü belirli bir yüksekliğe çıkarıp bu yükseklikte dengede tutmaktadır. Makara ",
+      "skip_reason": "Soru Fen Bilimleri dersine aittir, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 16,
+      "stem_preview": "Erime sıcaklığında bulunan K, L ve M metallerinin erimesi için gerekli ısının kütleye göre değişim grafiği aşağıda veril",
+      "skip_reason": "Soru Fen Bilimleri dersine aittir, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 17,
+      "stem_preview": "Yapılan bir deneyde, içinde renksiz sıvı bulunan kaba, deney tüpündeki pembe renkli sıvı damlatılmış, bir süre sonra kap",
+      "skip_reason": "Soru Fen Bilimleri dersine aittir, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs11.pdf",
+      "question_no": 18,
+      "stem_preview": "Bir azot molekülü ile üç hidrojen molekülü kimyasal tepkimeye girerek iki amonyak molekülü oluşturur. Kapalı bir kapta a",
+      "skip_reason": "Soru Fen Bilimleri dersine aittir, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 6,
+      "stem_preview": "Alanları küçükten büyüğe doğru birbirinin iki katı olan ve farklı boyuttaki kare kartonları, kenarları ve köşeleri çakış",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen görsel (kare kartonlardan oluşan yapı) mevcut değil, bunun yerine bir sınav kapağı görseli verilmiştir."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 7,
+      "stem_preview": "Bir antrenör, doğrusal bir parkur üzerine aralarında eşit mesafe olacak şekilde 6 adet özdeş duba dizmiştir. Parkurdaki ",
+      "visual_type": "desen",
+      "skip_reason": "Soru metninde görsel bulunmamaktadır. Sağlanan görsel, sorunun kendisiyle ilgili bir şekil, grafik veya tablo değil, genel bir sınav kapağıdır."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 8,
+      "stem_preview": "Kenar uzunlukları 32^2 mm ve 8^4 mm olan dikdörtgen biçimindeki kâğıt aşağıda verilmiştir. Bu kâğıttan, her birinin alan",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen dikdörtgen ve kesilen kareleri gösteren görsel, verilen resimde bulunmamaktadır. Verilen resim bir sınav kapak sayfasıdır."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 9,
+      "stem_preview": "Tamamı sıvı gübreyle dolu bir bidon ve hacmi 3√2 L olan sulama kabı aşağıda verilmiştir. Nilgün, sulama kabını sıvı gübr",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen bidon ve sulama kabı görseli verilen resimde bulunmamaktadır. Verilen resim bir sınavın kapak sayfasıdır."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 11,
+      "stem_preview": "A torbasında 1'den 25'e kadar ardışık doğal sayılar, B torbasında ise 1'den n'ye kadar ardışık doğal sayıların yazılı ol",
+      "skip_reason": "Soru kökünde geçen 'en az bir asal sayıya ait 2 rakamının bulunması' ifadesi çok belirsizdir ve farklı yorumlara açıktır. Verilen 'olası durum sayısı 2' bilgisiyle şıklara ulaşılamamaktadır."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 13,
+      "stem_preview": "Aşağıdaki dik koordinat sisteminde, kenarları eksenlere paralel olan bir ABCD dikdörtgeni çizilmiş ve A noktasının koord",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen görsel (koordinat sistemi ve dikdörtgen) verilen resimde bulunmamaktadır. Verilen resim bir sınav kapağıdır."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 16,
+      "stem_preview": "Aşağıdakilerden hangisinde verilen motifler, eksenlere göre birbirinin yansımasıdır?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metni ile sağlanan görsel arasında bir eşleşme bulunmamaktadır. Görselde yansıma motifleri veya eksenler yerine, farklı geometri ve hareket problemleri için şekiller bulunmaktadır."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 17,
+      "stem_preview": "Bir mağazada satışa sunulan A, B ve C marka televizyonların sayılarının dağılımı Grafik 1'de, bir süre sonra satılan tel",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel (Grafik 1 ve Grafik 2) soruda belirtilmesine rağmen, sağlanan resimde bu grafikler bulunmamaktadır. Resimdeki görseller başka sorulara aittir."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 8,
+      "stem_preview": "Yalıtkan iplere bağlı K, L ve M küreleri görseldeki gibi dengededir. Buna göre, cisimlerin yük cinsleri hangi seçenektek",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen K, L ve M kürelerinin görseli sağlanmamıştır. Sağlanan görsel farklı bir soruya aittir."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıda verilen çarklık sistemine asılı ay ve yıldız şeklindeki cisimler dengededir. Verilen sistem ile ilgili yapılan y",
+      "visual_type": "geometri",
+      "skip_reason": "Kullanıcının verdiği soru metni (çarklık sistemi) ile birlikte sağladığı görsel (DNA replikasyonu ve biyoloji deneyi) birbiriyle uyuşmamaktadır. Soru metnindeki görsel mevcut değildir."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 10,
+      "stem_preview": "Bir öğrenci, \"Katı basıncı, cismin temas eden yüzey alanına bağlıdır.\" hipotezini test etmek amacıyla 10 tane özdeş küpü",
+      "visual_type": "desen",
+      "skip_reason": "Soru kökünde bahsedilen görsel (katı basıncı deneyi ile ilgili cisimler ve grafik) verilen resimde bulunmamaktadır. Resimdeki görseller farklı sorulara aittir."
+    },
+    {
+      "source": "lgs12.pdf",
+      "question_no": 18,
+      "stem_preview": "K, L, M ve N elementlerinin periyot ve grup numaraları aşağıdaki grafikte verilmiştir. Grafikte verilenlere göre, elemen",
+      "visual_type": "grafik",
+      "skip_reason": "çok karmaşık şekil"
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 5,
+      "stem_preview": "Bir kırtasiyede bulunan dört farklı renkteki kalemlerin başlangıçtaki sayılarına ait bilgiler sütun grafiğinde verilmişt",
+      "skip_reason": "Soru kökü ve görsellerdeki veriler arasında matematiksel tutarsızlık bulunmaktadır. Verilen bilgilerle tutarlı bir çözüm elde edilememektedir."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 6,
+      "stem_preview": "Aşağıda verilen küpün bir ayrıtının uzunluğu ve bu küpün bir yüzüne çizilen ABCD karesinin kenarlarının uzunlukları sant",
+      "skip_reason": "Soru kökü ve cevap anahtarı arasında tutarsızlık bulunmaktadır. Verilen bilgilerle tutarlı bir çözüm elde edilememektedir."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 7,
+      "stem_preview": "Sarı, mavi ve kırmızı renkli dikdörtgenlerin uzun kenarlarını oluşturan doğru parçalarının uç noktaları çakıştırılarak Ş",
+      "skip_reason": "Soru kökü ve cevap anahtarı arasında tutarsızlık bulunmaktadır. Verilen bilgilerle tutarlı bir çözüm elde edilememektedir."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 9,
+      "stem_preview": "Bir yüzünde geometrik şekiller bulunan noktalı kâğıt aşağıdaki gibi ortadan ikiye katlandığında katlama çizgisi simetri ",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metni noktalı kağıt ve simetri doğrusu ile ilgili bir görsel beklerken, sağlanan görselde çubuk grafik, daire grafik ve 3 boyutlu küp şekli bulunmaktadır."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 10,
+      "stem_preview": "Alanları metrekare cinsinden ardışık doğal sayılara eşit olan yeterli sayıdaki karelerden dördü aşağıda verilmiştir. Her",
+      "skip_reason": "Soru kökü ve cevap anahtarı arasında tutarsızlık bulunmaktadır. Verilen bilgilerle tutarlı bir çözüm elde edilememektedir."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 5,
+      "stem_preview": "Başlangıç sıcaklıkları aynı olan eşit kütleli K, L ve M metal bilyeleri özdeş birer ısıtıcıyla eşit süre ısıtılıyor. Bu ",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen öz ısı değerleri tablosu görselde bulunmamaktadır."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 6,
+      "stem_preview": "Saf K ve L sıvılarının sıcaklık-zaman grafikleri şu şekildedir. Buna göre bu sıvılarla ilgili, I. Sıvıların cinsi birbir",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, karmaşık bir biyolojik süreç diyagramıdır ve 20'den fazla nesne içermektedir. Ayrıca, soru kökünde bahsedilen 'sıcaklık-zaman grafiği' ile verilen görsel uyuşmamaktadır."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 8,
+      "stem_preview": "Kaldıraçlarda kuvvet kolunun ve yük kolunun uzunluğuna bağlı olarak yükü dengede tutmak için uygulanan kuvvetin büyüklüğ",
+      "skip_reason": "Bu soru Fen Bilimleri dersine ait bir sorudur, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 9,
+      "stem_preview": "Işık rengi dışında tüm koşulların aynı olduğu fotosentezle ilgili bir deneyde numaralandırılmış özdeş bitkiler şekildeki",
+      "skip_reason": "Bu soru Fen Bilimleri dersine ait bir sorudur, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs13.pdf",
+      "question_no": 10,
+      "stem_preview": "Elektriklenme ile ilgili bir etkinlikte K, L ve M iletken küreleri kullanılarak hazırlanan dört düzenek ve bu düzenekler",
+      "skip_reason": "Bu soru Fen Bilimleri dersine ait bir sorudur, matematik sorusu değildir."
+    },
+    {
+      "source": "lgs14.pdf",
+      "question_no": 1,
+      "stem_preview": "İçinde 80 kalem bulunan A kutusundaki kalemlerin %15'i kırmızı, 60 kalem bulunan B kutusundaki kalemlerin ise %30'u kırm",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, soru metninde bahsedilen kutu fiyatlarını içermemektedir. Verilen görsel bir sınav kitapçığı kapağıdır ve soruyla ilgili veri sunmamaktadır."
+    },
+    {
+      "source": "lgs14.pdf",
+      "question_no": 2,
+      "stem_preview": "İki satır ve iki sütundan oluşan aşağıdaki tablonun her bir bölmesine: aynı satırda bulunan üslü ifadelerin kuvvetleri b",
+      "visual_type": "tablo",
+      "skip_reason": "Görselde soru metninde bahsedilen tablo bulunmamaktadır. Verilen görsel bir sınav kitapçığı kapağıdır."
+    },
+    {
+      "source": "lgs14.pdf",
+      "question_no": 4,
+      "stem_preview": "Yapılan bir araştırmada bir çiftçi grubuna \"2026 yılında buğday ekmeyi planlıyor musunuz?\" sorusu sorulmuş ve çiftçileri",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, soru metninde bahsedilen daire grafiği değil, bir sınav kitapçığının kapak sayfasıdır."
+    },
+    {
+      "source": "lgs14.pdf",
+      "question_no": 7,
+      "stem_preview": "Bir deneyde numaralanmış üç özdeş kaba ilk sıcaklıkları eşit olan K veya L sıvıları konularak bir düzenek hazırlanıyor. ",
+      "visual_type": "desen",
+      "skip_reason": "Çok karmaşık 3D geometri şekilleri içeriyor."
+    },
+    {
+      "source": "lgs14.pdf",
+      "question_no": 9,
+      "stem_preview": "Elektriksel olarak yüklü olduğu bilinen K, L ve N kürelerinden şekildeki gibi K ve L küreleri birbirine yaklaştırıldığın",
+      "visual_type": "desen",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "lgs14.pdf",
+      "question_no": 10,
+      "stem_preview": "Doğada gerçekleşen azot döngüsündeki bazı olaylar şemada gösterilmiştir. Bu şemaya göre, azot döngüsüyle ilgili aşağıdak",
+      "skip_reason": "Bu soru matematik değil, fen bilimleri (biyoloji) sorusudur."
+    },
+    {
+      "source": "lgs15.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıda dört haneli bir sayaç verilmiştir. Sayaç çalıştığında mavi bölmelerin oluşturduğu 19 sayısı sabit kalıyor, sarı ",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, soruda bahsedilen sayacı içermemektedir. Görsel bir sınav kitapçığı kapağıdır."
+    },
+    {
+      "source": "lgs15.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda santimetre cinsinden eş bölmelere ayrılmış 30 cm'lik bir cetvel verilmiştir. Esnemeyen bir ipin uçlarından biri,",
+      "skip_reason": "Görsel ve metin anlaşılır olmasına rağmen, verilen şıklar ve koşullar birbiriyle tutarsızdır. Hiçbir şık, belirtilen ip uzunluğu aralıklarına uymamaktadır."
+    },
+    {
+      "source": "lgs15.pdf",
+      "question_no": 4,
+      "stem_preview": "Bir ilin 2019 yılının Haziran ve Temmuz ayları sonundaki nüfusunun cinsiyete göre dağılımları aşağıdaki daire grafikleri",
+      "skip_reason": "Görsel ve metin anlaşılır olmasına rağmen, verilen bilgiler (daire grafiği açıları ve nüfus değişimleri) birbiriyle tutarsızdır ve negatif nüfus değerlerine yol açmaktadır."
+    },
+    {
+      "source": "lgs15.pdf",
+      "question_no": 5,
+      "stem_preview": "Bir okulda dört farklı spor dalında kurs düzenlenmiştir. Her bir öğrenci sadece bir spor dalından kursa katılabilecektir",
+      "skip_reason": "Görseldeki veriler ile cevap anahtarı arasında tutarsızlık bulunmaktadır. Grafikteki sayılara göre olasılık 7/8 iken, cevap anahtarı 5/8 olarak belirtilmiştir."
+    },
+    {
+      "source": "lgs15.pdf",
+      "question_no": 7,
+      "stem_preview": "İçinde eşit kütlede ürün bulunan iki çuvaldan birinde pirinç, diğerinde bulgur vardır. Pirinçten 16 kg satıldıktan sonra",
+      "skip_reason": "Soru metnindeki denklemin çözümü (M=76) cevap anahtarındaki şık (C: 88) ile uyuşmamaktadır. Cevap anahtarına göre yapılan kontrol de (24 kg ve 19 kg, fark 5 kg) sorudaki 4 kg fark koşulunu sağlamamaktadır."
+    },
+    {
+      "source": "lgs15.pdf",
+      "question_no": 8,
+      "stem_preview": "Bir pastanedeki yaş pastaların büyüklüklerine göre kütlelerinin gram cinsinden değerleri aşağıdaki tabloda verilmiştir. ",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen tablo görseli, sağlanan resimde bulunmamaktadır. Resimdeki görseller soru metniyle eşleşmemektedir."
+    },
+    {
+      "source": "lgs15.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıdaki kareli zeminde verilen iki dörtgenin çevrelerinin uzunlukları arasındaki fark 12 cm'den büyüktür. Buna göre x'",
+      "skip_reason": "Görseldeki ilk dörtgenin çevresi 4√10 cm olarak hesaplanmaktadır. İkinci dörtgenin çevresi 2(x+1) cm'dir. Çevreler arasındaki farkın 12 cm'den büyük olması eşitsizliğinden x > 11.32 bulunur. Bu durumda x'in en küçük tam sayı değeri 12 olmalıdır. Ancak şıklarda 12 bulunmamakta ve cevap anahtarındaki D şıkkı (x=6) bu koşulu sağlamamaktadır. Soru veya şıklarda tutarsızlık mevcuttur."
+    },
+    {
+      "source": "lgs15.pdf",
+      "question_no": 10,
+      "stem_preview": "Dikdörtgen biçimindeki iki özdeş etiket, dik dairesel silindir ve kare dik prizma şeklindeki kutuların etrafına alt ve ü",
+      "skip_reason": "Soruda verilen 'özdeş etiket' bilgisi ile görsellerdeki etiket yükseklikleri (silindirde 5 cm, prizmada 6 cm) çelişmektedir. Bu durum sorunun çözülmesini engellemektedir."
+    },
+    {
+      "source": "yazili2.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıdaki grafikte Ali'nin 3 günde çözdüğü toplam soru sayısı ve Yusuf'un 3 günde çözdüğü toplam soru sayısı verilmiştir",
+      "visual_type": "grafik",
+      "skip_reason": "Sağlanan soru metni, verilen görseldeki içerikle (geometri şekilleri) eşleşmiyor. Soru bir grafik beklerken, görselde grafik bulunmamaktadır."
+    },
+    {
+      "source": "yazili2.pdf",
+      "question_no": 13,
+      "stem_preview": "İçerisinde 5 kırmızı, 8 yeşil, 4 mavi, 5 mor renkte özdeş topların bulunduğu torbadan rastgele bir top çekiliyor. Bu dur",
+      "skip_reason": "Soru MCQ formatında değil, boşluk doldurma."
+    },
+    {
+      "source": "yazili2.pdf",
+      "question_no": 15,
+      "stem_preview": "Yukarıdaki hedef tahtası eş parçalara ayrılmıştır. Leyla'nın isabet ettirdiği sayının 5'in katı olma olasılığı kaçtır?",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen 'hedef tahtası' görseli verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "yazili2.pdf",
+      "question_no": 17,
+      "stem_preview": "9x² + 5y - 1 cebirsel ifadesindeki terimleri, değişkenleri, katsayıları ve sabit terimi yazınız.",
+      "skip_reason": "Soru MCQ formatında değil, tanımları listeleme."
+    },
+    {
+      "source": "yazili3.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıda bazı cebirsel ifadelerin farklı biçimde yazılışları verilmiştir. Boşluklara uygun olan çarpanları yazınız.",
+      "skip_reason": "Soru kökü MCQ formatına uygun değil, boşluk doldurma ve cebirsel ifade tamamlama sorusu."
+    },
+    {
+      "source": "yazili3.pdf",
+      "question_no": 2,
+      "stem_preview": "Aşağıdaki şekilde bir kenar uzunluğu (x - 1) cm olan kare şeklindeki bir kâğıt ile uzun kenar uzunluğu 8 cm olan dikdört",
+      "skip_reason": "Soru kökü MCQ formatına uygun değil, cebirsel ifade yazma sorusu."
+    },
+    {
+      "source": "yazili3.pdf",
+      "question_no": 3,
+      "stem_preview": "Yukarıdaki panoda ve kırmızı özdeş kartlar, kare şeklindedir. Kırmızı kare kartlar köşeleri çakışık ve kenarları panonun",
+      "skip_reason": "Soru metni ile görsel arasında çelişki var. Kırmızı kartların kenar uzunluğu panonun kenar uzunluğu ile aynı belirtilmiş ancak görselde kırmızı kartlar panonun içinde daha küçük olarak gösterilmiştir. Bu nedenle soru anlaşılamamaktadır."
+    },
+    {
+      "source": "yazili3.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıdaki cebirsel ifadeleri çarpanlarına ayırınız.",
+      "skip_reason": "Soru kökü MCQ formatına uygun değil, cebirsel ifade çarpanlara ayırma sorusu."
+    },
+    {
+      "source": "yazili3.pdf",
+      "question_no": 5,
+      "stem_preview": "2x - 4 / 5 = x + 2 / 3 denkleminin çözümünü bulunuz.",
+      "skip_reason": "Soru kökü MCQ formatına uygun değil, denklem çözme sorusu."
+    },
+    {
+      "source": "yazili3.pdf",
+      "question_no": 6,
+      "stem_preview": "Yukarıdaki koordinat sisteminde verilen noktaların koordinatlarını yazınız.",
+      "skip_reason": "Soru kökü MCQ formatına uygun değil, koordinatları yazma sorusu."
+    },
+    {
+      "source": "yazili3.pdf",
+      "question_no": 7,
+      "stem_preview": "A ve B şehirleri arası 400 kilometredir. A şehrinden 80 km/saat hız ile yola çıkan bir aracın B şehrine olan uzaklığının",
+      "skip_reason": "Soru kökü MCQ formatına uygun değil, denklem yazma ve tablo doldurma sorusu."
+    },
+    {
+      "source": "yazili3.pdf",
+      "question_no": 8,
+      "stem_preview": "2x + 4y - 12 = 0 denklemi verilen doğrunun grafiğini çiziniz ve eğimini hesaplayınız.",
+      "skip_reason": "Soru kökü MCQ formatına uygun değil, grafik çizme ve eğim hesaplama sorusu"
+    },
+    {
+      "source": "yazili4.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıdaki şekilde en uzun doğru parçasını bulunuz.",
+      "skip_reason": "Görseldeki dörtgenin iç açıları toplamı 360 derece etmediği için soru çözülemez."
+    },
+    {
+      "source": "yazili4.pdf",
+      "question_no": 5,
+      "stem_preview": "Mehmet, bir bilgisayar programı kullanarak Şekil - 1'de ölçüleri verilen fotoğraf üzerinde düzenlemeler yapmaktadır. Meh",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen 'Şekil - 1' görseli (fotoğrafın boyutlarını gösteren) mevcut değil ve soru metinle tam olarak ifade edilebilir."
+    },
+    {
+      "source": "yazili4.pdf",
+      "question_no": 6,
+      "stem_preview": "Aşağıdaki koordinat sisteminde verilen paralelkenarın y eksenine göre yansıması altındaki görüntüsü ile yamuk şeklinin 6",
+      "skip_reason": "Soru çizim yapmayı gerektirdiği için MCQ formatına dönüştürülemez."
+    },
+    {
+      "source": "yazili4.pdf",
+      "question_no": 7,
+      "stem_preview": "Aşağıda açınımı verilen dik dairesel silindirin yarıçap uzunluğunu hesaplayınız. (π'yi 3 alınız.)",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, soru metninde belirtilen dik dairesel silindir açınımı değildir. Görselde iki farklı üçgen problemi bulunmaktadır."
     }
   ]
 }
