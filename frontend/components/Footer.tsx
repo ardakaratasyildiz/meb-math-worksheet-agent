@@ -17,7 +17,7 @@ export function Footer() {
             />
             <p className="mt-4 max-w-xs text-sm opacity-70">
               MEB matematik müfredatı kapsamında otomatik çalışma kağıdı üretim
-              sistemi. 1.→7. sınıf kazanım kodu bazlı üretim.
+              sistemi. 1.→8. sınıf (LGS hazırlık dahil) kazanım kodu bazlı üretim.
             </p>
           </div>
           <FooterColumn

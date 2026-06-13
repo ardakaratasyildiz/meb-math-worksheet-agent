@@ -30,8 +30,9 @@ export default function PricingPage() {
           </h2>
           <ul className="mt-6 space-y-3 text-sm text-foreground">
             <li>
-              <span className="font-medium">Kapsam:</span> 1.→7. sınıf MEB
-              matematik müfredatının tamamı, kazanım kodu bazlı üretim.
+              <span className="font-medium">Kapsam:</span> 1.→8. sınıf MEB
+              matematik müfredatının tamamı (8. sınıf LGS hazırlık dahil),
+              kazanım kodu bazlı üretim.
             </li>
             <li>
               <span className="font-medium">Kayıt:</span> E-posta adresi

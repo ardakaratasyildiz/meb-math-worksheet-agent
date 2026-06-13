@@ -58,7 +58,7 @@ const FAQ_CATEGORIES: FaqCategory[] = [
     items: [
       {
         q: "Hangi sınıflar destekleniyor?",
-        a: "1.→7. sınıf MEB matematik müfredatının tamamı şu an desteklenmektedir. 8. sınıf (LGS) kapsamının eklenmesi yol haritasında yer almaktadır.",
+        a: "1.→8. sınıf MEB matematik müfredatının tamamı desteklenmektedir. 8. sınıf, LGS hazırlık kapsamını da içerir — gerçek çıkmış LGS soruları örnek havuzunda kullanılır.",
       },
       {
         q: "Diğer dersler eklenecek mi?",

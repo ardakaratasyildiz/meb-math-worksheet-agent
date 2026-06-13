@@ -45,7 +45,7 @@ export function organizationSchema() {
     url: SITE_URL,
     logo: `${SITE_URL}/logo.png`,
     description:
-      "MEB matematik müfredatı (1.-7. sınıf) için kazanım koduna göre otomatik çalışma kağıdı üretim sistemi.",
+      "MEB matematik müfredatı (1.-8. sınıf, 8. sınıf LGS hazırlık dahil) için kazanım koduna göre otomatik çalışma kağıdı üretim sistemi.",
     email: "destek@soruatolyesi.com",
     sameAs: [
       "https://www.instagram.com/soruatolyesi.com2026",

@@ -1720,5 +1720,607 @@
       "orta": "Olasılığı kesir, ondalık ve yüzde gösterimleriyle ifade etme.",
       "zor": "Birleşik veya ayrık olayların olasılığını karşılaştırarak yorum yapma."
     }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-1-1",
+    "kod": "M.8.1.1.1",
+    "metin": "Verilen pozitif tam sayıların çarpanlarını bulur; asal çarpanlara ayırır ve üslü ifade olarak yazar.",
+    "hints": {
+      "kolay": "Bir sayının asal çarpanlarını bulup üslü ifade olarak yazma.",
+      "orta": "İki sayının EBOB ve EKOK değerlerini asal çarpanlarla hesaplama.",
+      "zor": "EBOB ve EKOK'u bir arada gerektiren LGS tarzı problem çözme."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-1-2",
+    "kod": "M.8.1.1.2",
+    "metin": "İki doğal sayının EBOB ve EKOK'unu hesaplar; ilgili problemleri çözer.",
+    "hints": {
+      "kolay": "İki sayının EBOB veya EKOK değerini hesaplama.",
+      "orta": "EBOB veya EKOK kullanarak iki adımlı problem çözme.",
+      "zor": "EBOB ve EKOK ilişkisini birlikte kullanarak LGS tarzı problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-1-3",
+    "kod": "M.8.1.1.3",
+    "metin": "Aralarında asal sayıları belirler.",
+    "hints": {
+      "kolay": "Verilen iki sayının aralarında asal olup olmadığını belirleme.",
+      "orta": "Bir sayıya aralarında asal olan sayıları listeleme.",
+      "zor": "Aralarında asal olma koşulunu içeren problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-2-1",
+    "kod": "M.8.1.2.1",
+    "metin": "Tam sayıların tam sayı kuvvetlerini hesaplar.",
+    "hints": {
+      "kolay": "Basit bir üslü ifadenin değerini hesaplama.",
+      "orta": "Negatif tabanlı veya negatif üslü ifadenin değerini bulma.",
+      "zor": "Birden fazla üslü ifade içeren karmaşık işlem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-2-2",
+    "kod": "M.8.1.2.2",
+    "metin": "Üslü ifadelerle ilgili temel kuralları uygular; üslü ifadeleri birbirine dönüştürür.",
+    "hints": {
+      "kolay": "Çarpma veya bölme kuralıyla üslü ifadeyi sadeleştirme.",
+      "orta": "Üssün üssü kuralı veya farklı tabanları eşitleme.",
+      "zor": "Birden fazla kuralı içeren parantezli üslü ifade işlemi."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-2-3",
+    "kod": "M.8.1.2.3",
+    "metin": "Sayıların ondalık gösterimlerini 10'un tam sayı kuvvetlerini kullanarak çözümler.",
+    "hints": {
+      "kolay": "Verilen ondalık sayıyı 10'un kuvvetiyle çözümleme.",
+      "orta": "Çözümlenmiş haldeki sayıyı ondalık gösterime yazma.",
+      "zor": "Çözümleme ve basamak değeri ilişkisini içeren problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-2-4",
+    "kod": "M.8.1.2.4",
+    "metin": "Çok büyük ve çok küçük sayıları bilimsel gösterimle ifade eder ve karşılaştırır.",
+    "hints": {
+      "kolay": "Verilen bir sayıyı bilimsel gösterimle yazma.",
+      "orta": "Bilimsel gösterimle verilen iki sayıyı karşılaştırma.",
+      "zor": "Bilimsel gösterimdeki sayılarla işlem yapıp sonucu bilimsel gösterimle ifade etme."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-3-1",
+    "kod": "M.8.1.3.1",
+    "metin": "Tam kare pozitif tam sayılarla bu sayıların karekökleri arasındaki ilişkiyi belirler.",
+    "hints": {
+      "kolay": "Verilen tam kare sayının karekökünü bulma.",
+      "orta": "Karekökü verilen sayının tam kare olup olmadığını belirleme.",
+      "zor": "Tam kare sayılarla ilgili problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-3-2",
+    "kod": "M.8.1.3.2",
+    "metin": "Tam kare olmayan kareköklü bir sayının hangi iki doğal sayı arasında olduğunu belirler.",
+    "hints": {
+      "kolay": "Tam kare olmayan sayının karekökünün hangi tam sayılar arasında olduğunu bulma.",
+      "orta": "Karekök değerini tahmin ve sayı doğrusunda gösterme.",
+      "zor": "Karekök değerlerini karşılaştırarak sıralama."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-3-3",
+    "kod": "M.8.1.3.3",
+    "metin": "Kareköklü bir ifadeyi a√b şeklinde yazar ve a√b şeklindeki ifadede katsayıyı kök içine alır.",
+    "hints": {
+      "kolay": "Verilen kareköklü ifadeyi a√b şeklinde yazma.",
+      "orta": "a√b ifadesini kök içine alarak yazma.",
+      "zor": "İki farklı gösterimdeki ifadeleri karşılaştırarak sıralama."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-3-4",
+    "kod": "M.8.1.3.4",
+    "metin": "Kareköklü ifadelerde çarpma ve bölme işlemleri yapar.",
+    "hints": {
+      "kolay": "İki kareköklü ifadeyi çarpma veya bölme.",
+      "orta": "a√b şeklindeki ifadelerle çarpma veya bölme.",
+      "zor": "Çarpma ve bölme içeren a√b dönüşümü gerektiren problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-3-5",
+    "kod": "M.8.1.3.5",
+    "metin": "Kareköklü ifadelerde toplama ve çıkarma işlemleri yapar.",
+    "hints": {
+      "kolay": "Benzer kareköklü ifadeleri toplama veya çıkarma.",
+      "orta": "a√b dönüşümü gerektiren kareköklü ifadeleri toplama veya çıkarma.",
+      "zor": "Toplama ve çıkarma içeren a√b dönüşümü gerektiren problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-3-6",
+    "kod": "M.8.1.3.6",
+    "metin": "Kareköklü bir ifade ile çarpıldığında sonucu doğal sayı yapan çarpanları belirler.",
+    "hints": {
+      "kolay": "Kareköklü ifadeyi doğal sayı yapan en küçük çarpanı bulma.",
+      "orta": "Farklı çarpanlarla dönüşümleri karşılaştırma.",
+      "zor": "Doğal sayı yapma koşulunu içeren çok adımlı problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-dogal-sayilar",
+    "grade": 8,
+    "topicId": "dogal_sayilar",
+    "topicName": "Sayılar ve İşlemler",
+    "kazanimSlug": "m-8-1-3-7",
+    "kod": "M.8.1.3.7",
+    "metin": "Gerçek sayıları tanır; rasyonel ve irrasyonel sayılar arasındaki ilişkiyi açıklar.",
+    "hints": {
+      "kolay": "Verilen sayıları rasyonel veya irrasyonel olarak sınıflandırma.",
+      "orta": "Rasyonel ve irrasyonel sayıların özelliklerini karşılaştırma.",
+      "zor": "Sayı kümeleri hiyerarşisini açıklayan LGS tarzı soru."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-2-1-1",
+    "kod": "M.8.2.1.1",
+    "metin": "Cebirsel ifadeleri ortak çarpan ve gruplandırma yöntemiyle çarpanlarına ayırır.",
+    "hints": {
+      "kolay": "Ortak çarpana alarak çarpanlara ayırma.",
+      "orta": "Gruplandırma yöntemiyle çarpanlara ayırma.",
+      "zor": "Birden fazla yöntemi gerektiren karmaşık ifadeyi çarpanlara ayırma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-2-2-1",
+    "kod": "M.8.2.2.1",
+    "metin": "Özdeşlikleri modellerle açıklar ve ispatlar.",
+    "hints": {
+      "kolay": "Bir özdeşliği geometrik modelle gösterme.",
+      "orta": "Modeli verilen özdeşliği cebirsel olarak ifade etme.",
+      "zor": "Farklı özdeşlikleri karşılaştırarak modelle açıklama."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-2-2-2",
+    "kod": "M.8.2.2.2",
+    "metin": "Özdeşlikleri kullanarak cebirsel ifadeleri çarpanlarına ayırır.",
+    "hints": {
+      "kolay": "Tam kare özdeşliğiyle çarpanlara ayırma.",
+      "orta": "İki kare farkı özdeşliğiyle çarpanlara ayırma.",
+      "zor": "Birden fazla özdeşliği içeren karmaşık ifadeyi çarpanlara ayırma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-3-1-1",
+    "kod": "M.8.3.1.1",
+    "metin": "Birinci dereceden bir bilinmeyenli denklemleri çözer ve probleme uygular.",
+    "hints": {
+      "kolay": "Basit tek bilinmeyenli denklemi çözme.",
+      "orta": "Parantezli veya kesirli denklemi çözme.",
+      "zor": "Değişkenin her iki tarafta olduğu çok adımlı denklemi çözme."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-3-2-1",
+    "kod": "M.8.3.2.1",
+    "metin": "Koordinat sistemini özellikleriyle tanır; sıralı ikilileri koordinat sisteminde gösterir.",
+    "hints": {
+      "kolay": "Koordinat sisteminde bir noktanın koordinatlarını yazma.",
+      "orta": "Verilen koordinatlara sahip noktayı sistemde işaretleme.",
+      "zor": "Farklı bölgelerdeki nokta özelliklerini karşılaştırma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-3-2-2",
+    "kod": "M.8.3.2.2",
+    "metin": "Doğrusal ilişkileri tablo ve grafik ile temsil eder.",
+    "hints": {
+      "kolay": "Doğrusal denklemin değer tablosunu oluşturma.",
+      "orta": "Tablosu verilen doğrusal ilişkiyi grafikle gösterme.",
+      "zor": "Grafiği verilen ilişkinin denklemini ve tablosunu oluşturma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-3-2-3",
+    "kod": "M.8.3.2.3",
+    "metin": "Doğrusal denklemlerin grafiklerini çizer; doğrunun eğimini hesaplar ve anlamlandırır.",
+    "hints": {
+      "kolay": "Basit bir doğrusal denklemin grafiğini çizme.",
+      "orta": "Eksenleri kesen noktaları bularak denklemin grafiğini çizme.",
+      "zor": "Eğim ve eksen kesim noktalarından doğru denklemini yazma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-3-3-1",
+    "kod": "M.8.3.3.1",
+    "metin": "Birinci dereceden bir bilinmeyenli eşitsizlikleri çözer ve sayı doğrusunda gösterir.",
+    "hints": {
+      "kolay": "Basit bir bilinmeyenli eşitsizliği çözme.",
+      "orta": "Parantezli veya kesirli eşitsizliği çözüp sayı doğrusunda gösterme.",
+      "zor": "Değişkenin her iki tarafta olduğu eşitsizliği çözme."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-cebir",
+    "grade": 8,
+    "topicId": "cebir",
+    "topicName": "Cebir, Denklemler ve Eşitsizlikler",
+    "kazanimSlug": "m-8-3-3-2",
+    "kod": "M.8.3.3.2",
+    "metin": "Birinci dereceden bir bilinmeyenli eşitsizliklerle ilgili problem çözer.",
+    "hints": {
+      "kolay": "Basit sözel problemi eşitsizliğe dönüştürüp çözme.",
+      "orta": "İki durumu karşılaştıran eşitsizlik problemi.",
+      "zor": "Gerçek hayat bağlamında çok adımlı eşitsizlik problemi."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-1-1",
+    "kod": "M.8.4.1.1",
+    "metin": "Üçgenlerde kenarortay, açıortay ve yüksekliği inşa eder; özelliklerini açıklar.",
+    "hints": {
+      "kolay": "Üçgende kenarortayı veya açıortayı çizme.",
+      "orta": "Farklı üçgen türlerinde yüksekliği çizme.",
+      "zor": "Bu elemanların özelliklerini karşılaştıran problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-1-2",
+    "kod": "M.8.4.1.2",
+    "metin": "Üçgenin iki kenar uzunluğunun toplamı veya farkı ile üçüncü kenarını ilişkilendirir.",
+    "hints": {
+      "kolay": "Verilen kenarlarla üçgen oluşturulup oluşturulamayacağını belirleme.",
+      "orta": "Üçüncü kenarın alabileceği tam sayı değerlerini bulma.",
+      "zor": "Kenar uzunlukları ilişkisini içeren problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-1-3",
+    "kod": "M.8.4.1.3",
+    "metin": "Üçgenin kenar uzunlukları ile karşı açıların ölçülerini ilişkilendirir.",
+    "hints": {
+      "kolay": "Üçgende en uzun kenar veya en büyük açıyı belirleme.",
+      "orta": "Kenar uzunluklarına göre açıları sıralama.",
+      "zor": "Kenar-açı ilişkisini içeren LGS tarzı problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-1-4",
+    "kod": "M.8.4.1.4",
+    "metin": "Pisagor bağıntısını oluşturur ve ilgili problemleri çözer.",
+    "hints": {
+      "kolay": "Dik üçgende verilmeyen kenarı Pisagor ile bulma.",
+      "orta": "Pisagor bağıntısını kullanarak iki adımlı problem.",
+      "zor": "Gerçek hayat bağlamında Pisagor gerektiren çok adımlı problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-1-5",
+    "kod": "M.8.4.1.5",
+    "metin": "Eş ve benzer üçgenleri özellikleriyle açıklar; belirler ve problemlere uygular.",
+    "hints": {
+      "kolay": "Verilen iki üçgenin eş mi benzer mi olduğunu belirleme.",
+      "orta": "Benzer üçgenlerde verilmeyen kenar veya açıyı bulma.",
+      "zor": "Eş veya benzer üçgenlerin özelliklerini kullanan problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-2-1",
+    "kod": "M.8.4.2.1",
+    "metin": "Nokta, doğru parçası ve şekillerin öteleme, yansıma ve dönme altındaki görüntülerini çizer.",
+    "hints": {
+      "kolay": "Bir noktanın öteleme veya yansıma görüntüsünü bulma.",
+      "orta": "Bir şeklin dönme altındaki görüntüsünü çizme.",
+      "zor": "Birden fazla dönüşüm uygulayarak son görüntüyü bulma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-2-2",
+    "kod": "M.8.4.2.2",
+    "metin": "Çokgenlere öteleme, yansıma ve dönme dönüşümleri uygular; koordinat sisteminde gösterir.",
+    "hints": {
+      "kolay": "Çokgenin öteleme altındaki görüntüsünü çizme.",
+      "orta": "Koordinat sisteminde yansıma veya dönme uygulama.",
+      "zor": "Ardışık dönüşümler uygulayarak son görüntüyü bulma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-3-1",
+    "kod": "M.8.4.3.1",
+    "metin": "Dik dairesel silindirin temel elemanlarını belirler, açınımını çizer ve yüzey alanını hesaplar.",
+    "hints": {
+      "kolay": "Silindirin açınımını çizme.",
+      "orta": "Silindirin yüzey alanını hesaplama.",
+      "zor": "Açınımı verilen silindirin bir elemanını veya yüzey alanını bulma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-3-2",
+    "kod": "M.8.4.3.2",
+    "metin": "Dik dairesel silindirin hacmini hesaplar ve probleme uygular.",
+    "hints": {
+      "kolay": "Yarıçap ve yüksekliği verilen silindirin hacmini hesaplama.",
+      "orta": "Hacmi ve bir elemanı verilen silindirin diğer elemanını bulma.",
+      "zor": "Gerçek hayat bağlamında silindir hacmi problemi."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-3-3",
+    "kod": "M.8.4.3.3",
+    "metin": "Dik dairesel koninin temel elemanlarını belirler, açınımını çizer ve yüzey alanını hesaplar.",
+    "hints": {
+      "kolay": "Koninin açınımını çizme.",
+      "orta": "Koninin yüzey alanını hesaplama.",
+      "zor": "Açınımı verilen koninin bir elemanını veya yüzey alanını bulma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-3-4",
+    "kod": "M.8.4.3.4",
+    "metin": "Dik dairesel koninin hacmini hesaplar ve probleme uygular.",
+    "hints": {
+      "kolay": "Yarıçap ve yüksekliği verilen koninin hacmini hesaplama.",
+      "orta": "Hacmi ve bir elemanı verilen koninin diğer elemanını bulma.",
+      "zor": "Gerçek hayat bağlamında koni hacmi problemi."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-3-5",
+    "kod": "M.8.4.3.5",
+    "metin": "Dik piramidin temel elemanlarını belirler, açınımını çizer ve yüzey alanını hesaplar.",
+    "hints": {
+      "kolay": "Piramidin açınımını çizme.",
+      "orta": "Piramidin yüzey alanını hesaplama.",
+      "zor": "Açınımı verilen piramidin bir elemanını veya yüzey alanını bulma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-geometri",
+    "grade": 8,
+    "topicId": "geometri",
+    "topicName": "Geometri ve Ölçme",
+    "kazanimSlug": "m-8-4-3-6",
+    "kod": "M.8.4.3.6",
+    "metin": "Dik piramidin hacmini hesaplar ve probleme uygular.",
+    "hints": {
+      "kolay": "Taban alanı ve yüksekliği verilen piramidin hacmini hesaplama.",
+      "orta": "Hacmi ve bir elemanı verilen piramidin diğer elemanını bulma.",
+      "zor": "Gerçek hayat bağlamında piramit hacmi problemi."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-veri-isleme",
+    "grade": 8,
+    "topicId": "veri_isleme",
+    "topicName": "Veri İşleme ve İstatistik",
+    "kazanimSlug": "m-8-5-1-1",
+    "kod": "M.8.5.1.1",
+    "metin": "Bir veri grubuna ait daire grafiğini oluşturur ve yorumlar.",
+    "hints": {
+      "kolay": "Verilen verileri daire grafiğiyle gösterme.",
+      "orta": "Daire grafiğinden verileri okuyarak soruyı yanıtlama.",
+      "zor": "Daire grafiğiyle diğer grafik türlerini karşılaştırarak yorum yapma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-veri-isleme",
+    "grade": 8,
+    "topicId": "veri_isleme",
+    "topicName": "Veri İşleme ve İstatistik",
+    "kazanimSlug": "m-8-5-1-2",
+    "kod": "M.8.5.1.2",
+    "metin": "Bir veri grubuna ait çizgi grafiğini oluşturur ve yorumlar.",
+    "hints": {
+      "kolay": "Verilen verileri çizgi grafiğiyle gösterme.",
+      "orta": "Çizgi grafiğinden değişimi okuyarak soruyı yanıtlama.",
+      "zor": "Çizgi grafiğindeki eğilimden tahmin yapma."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-veri-isleme",
+    "grade": 8,
+    "topicId": "veri_isleme",
+    "topicName": "Veri İşleme ve İstatistik",
+    "kazanimSlug": "m-8-5-1-3",
+    "kod": "M.8.5.1.3",
+    "metin": "Grafik türleri arasında veriye uygun olanı seçer ve yorumlar.",
+    "hints": {
+      "kolay": "Verilen veri setine uygun grafik türünü belirleme.",
+      "orta": "Farklı grafik türlerinin avantaj ve dezavantajlarını karşılaştırma.",
+      "zor": "Senaryo için en uygun grafik türünü seçip gerekçesiyle açıklama."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-olasilik",
+    "grade": 8,
+    "topicId": "olasilik",
+    "topicName": "Olasılık",
+    "kazanimSlug": "m-8-6-1-1",
+    "kod": "M.8.6.1.1",
+    "metin": "Bir olaya ait olası durumları belirler; örnek uzayı listeler.",
+    "hints": {
+      "kolay": "Basit bir olayın tüm olası durumlarını listeleme.",
+      "orta": "İki aşamalı bir olayın örnek uzayını belirleme.",
+      "zor": "Verilen koşullara göre olası durumları filtreleme."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-olasilik",
+    "grade": 8,
+    "topicId": "olasilik",
+    "topicName": "Olasılık",
+    "kazanimSlug": "m-8-6-1-2",
+    "kod": "M.8.6.1.2",
+    "metin": "Bir olayın olma olasılığını hesaplar.",
+    "hints": {
+      "kolay": "Basit bir olayın olasılığını kesir olarak hesaplama.",
+      "orta": "İki aşamalı bir olayın olasılığını hesaplama.",
+      "zor": "Olasılık hesabı gerektiren LGS tarzı çok adımlı problem."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-olasilik",
+    "grade": 8,
+    "topicId": "olasilik",
+    "topicName": "Olasılık",
+    "kazanimSlug": "m-8-6-1-3",
+    "kod": "M.8.6.1.3",
+    "metin": "Olasılık değerinin 0 ile 1 arasında olduğunu açıklar; kesin ve imkânsız olayları tanır.",
+    "hints": {
+      "kolay": "Verilen olayı 'kesin' veya 'imkânsız' olarak sınıflandırma.",
+      "orta": "İki olayın olasılıklarını 'daha fazla/eşit/daha az' ifadeleriyle karşılaştırma.",
+      "zor": "Gerçek hayat senaryolarında olasılık ifadelerini yorumlama."
+    }
+  },
+  {
+    "topicSlug": "8-sinif-olasilik",
+    "grade": 8,
+    "topicId": "olasilik",
+    "topicName": "Olasılık",
+    "kazanimSlug": "m-8-6-1-4",
+    "kod": "M.8.6.1.4",
+    "metin": "Eşit şansa sahip olaylarda her çıktının olasılığının eşit olduğunu açıklar ve örneklendirir.",
+    "hints": {
+      "kolay": "Eşit şansa sahip bir olaya örnek verme.",
+      "orta": "Eşit ve eşit olmayan şans durumlarını karşılaştırma.",
+      "zor": "Eşit şans koşulunu sorgulayan LGS tarzı soru."
+    }
   }
 ]

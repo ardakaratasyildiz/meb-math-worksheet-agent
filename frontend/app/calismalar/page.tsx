@@ -9,7 +9,7 @@ import { CURRICULUM_PAGES } from "@/lib/curriculum";
 export const metadata = {
   title: "Sınıf ve Konuya Göre Matematik Çalışma Kağıtları",
   description:
-    "1.-7. sınıf MEB matematik müfredatı kapsamındaki tüm konular için hazır çalışma kağıtları. Sınıfını ve konunu seç, kazanım kodu bazlı PDF üret.",
+    "1.-8. sınıf MEB matematik müfredatı (8. sınıf LGS hazırlık dahil) kapsamındaki tüm konular için hazır çalışma kağıtları. Sınıfını ve konunu seç, kazanım kodu bazlı PDF üret.",
   alternates: { canonical: "/calismalar" },
 };
 
@@ -52,7 +52,7 @@ export default function CalismalarHubPage() {
       <PageHeader
         eyebrow="Çalışma Kağıtları"
         title="Sınıf ve konuya göre matematik çalışma kağıtları"
-        body="MEB müfredatına uygun 1.-7. sınıf tüm konular. Sınıfını ve istediğin konuyu seçerek o konuya özel kazanım kodu bazlı çalışma kağıdı üretebilirsin."
+        body="MEB müfredatına uygun 1.-8. sınıf tüm konular (8. sınıf LGS hazırlık dahil). Sınıfını ve istediğin konuyu seçerek o konuya özel kazanım kodu bazlı çalışma kağıdı üretebilirsin."
       />
 
       <section className="py-16">

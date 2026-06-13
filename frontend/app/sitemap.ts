@@ -13,7 +13,7 @@ const SITE_URL =
  *
  * Üç katman:
  * 1. Static marketing/legal sayfalar
- * 2. Programmatic landing pages (1.-7. sınıf × konu = 38 sayfa)
+ * 2. Programmatic landing pages (1.-8. sınıf × konu = 43 sayfa)
  *
  * Auth gerekli sayfalar (/generate, /history, /admin) sitemap'e GİRMEZ —
  * Google'ın index'lemesinin anlamı yok, robots.ts'te disallow.

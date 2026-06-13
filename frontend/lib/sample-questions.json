@@ -948,5 +948,130 @@
         "kazanim_kod": "M.7.7.1"
       }
     ]
+  },
+  "8-sinif-dogal-sayilar": {
+    "grade": 8,
+    "topic_id": "dogal_sayilar",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Aşağıdaki sayıları rasyonel ve irrasyonel olarak sınıflandırınız ve her bir sınıflandırmanın nedenini açıklayınız: $\\sqrt{25}$, $0.333...$, $\\pi$, $\\frac{7}{2}$, $\\sqrt{18}$.",
+        "answer": "Rasyonel Sayılar: $\\sqrt{25}$, $0.333...$, $\\frac{7}{2}$. İrrasyonel Sayılar: $\\pi$, $\\sqrt{18}$.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.8.1.3.7"
+      },
+      {
+        "question": "42 sayısının 10'dan büyük ve 50'den küçük olup, kendisiyle aralarında asal olan kaç tane doğal sayı vardır?",
+        "answer": "12",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.8.1.1.3"
+      },
+      {
+        "question": "Bir okul bahçesine dikilmek üzere 120 cm ve 180 cm uzunluğunda iki fidan getiriliyor. Bu fidanlar, her ikisi de eşit uzunlukta olacak şekilde ve hiç artmayacak şekilde en büyük parçalara ayrılacaktır. Elde edilen her parçanın maliyeti 8 TL olduğuna göre, tüm fidanları parçalara ayırma işlemi için toplam kaç TL maliyet oluşur?",
+        "answer": "40 TL",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.8.1.1.2"
+      }
+    ]
+  },
+  "8-sinif-cebir": {
+    "grade": 8,
+    "topic_id": "cebir",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Kenar uzunluğu 'a' birim olan büyük bir kareden, kenar uzunluğu 'b' birim olan daha küçük bir kare çıkarılıyor. Kalan L şeklindeki bölge, iki dikdörtgene ayrılarak, bir kenarı 'a+b' birim ve diğer kenarı 'a-b' birim olan tek bir dikdörtgen oluşturacak şekilde birleştiriliyor. Bu model hangi cebirsel özdeşliği göstermektedir?",
+        "answer": "İki Kare Farkı Özdeşliği: a² - b² = (a - b)(a + b)",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.8.2.2.1"
+      },
+      {
+        "question": "Bir doğrusal denklemin grafiği x eksenini A(6, 0) noktasında, y eksenini B(0, -4) noktasında kesmektedir. Bu doğrunun eğimi kaçtır?",
+        "answer": "2/3",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.8.3.2.3"
+      },
+      {
+        "question": "$3x^2 - 6x + 5xy - 10y$ cebirsel ifadesini gruplandırma yöntemiyle çarpanlarına ayırırken izlenen adımları ve bu yöntemin temel amacını açıklayınız.",
+        "answer": "Gruplandırma yöntemi, dört veya daha fazla terimi olan cebirsel ifadeleri, her gruptaki terimlerin ortak çarpanı olacak şekilde iki veya daha fazla gruba ayırarak çarpanlarına ayırma yöntemidir. Temel amaç, her grubun ortak çarpanını aldıktan sonra ortaya çıkan yeni ortak çarpanı (parantez içindeki ifadeyi) kullanarak ifadeyi daha basit çarpanların çarpımı şeklinde yazmaktır. Verilen ifade için adımlar:1. İlk iki terim ve son iki terim gruplandırılır: $(3x^2 - 6x) + (5xy - 10y)$.2. Her gruptaki ortak çarpan dışarı alınır: $3x(x - 2) + 5y(x - 2)$.3. Ortak parantez $(x-2)$ dışarı alınır: $(x - 2)(3x + 5y)$.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.8.2.1.1"
+      }
+    ]
+  },
+  "8-sinif-geometri": {
+    "grade": 8,
+    "topic_id": "geometri",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir üçgenin iki kenar uzunluğu 8 cm ve 15 cm'dir. Bu üçgenin üçüncü kenarının uzunluğu santimetre cinsinden kaç farklı tam sayı değeri alabilir?",
+        "answer": "15 farklı tam sayı değeri",
+        "question_type": "akil_yurutme",
+        "kazanim_kod": "M.8.4.1.2"
+      },
+      {
+        "question": "Geniş açılı bir üçgende yüksekliklerin kesişim noktası üçgenin neresinde bulunur? Açıklayınız.",
+        "answer": "Üçgenin dış bölgesinde",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.8.4.1.1"
+      },
+      {
+        "question": "Boyu 15 metre olan bir ağaç, fırtına nedeniyle yerden belli bir yükseklikten kırılarak devrilmiştir. Ağacın tepe noktası, ağacın kökünden 9 metre uzağa düşmüştür. Buna göre ağaç, yerden kaç metre yükseklikten kırılmıştır?",
+        "answer": "4.8 metre",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.8.4.1.4"
+      }
+    ]
+  },
+  "8-sinif-veri-isleme": {
+    "grade": 8,
+    "topic_id": "veri_isleme",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir otelde bir haftalık doluluk oranları aşağıdaki tabloda verilmiştir. Bu verilere göre, hangi iki gün arasındaki doluluk oranı değişimi en fazladır ve bu değişim kaç puandır?\n\n| Gün       | Doluluk Oranı (%) |\n|-----------|-------------------|\n| Pazartesi | 70                |\n| Salı      | 65                |\n| Çarşamba  | 78                |\n| Perşembe  | 85                |\n| Cuma      | 92                |\n| Cumartesi | 98                |\n| Pazar     | 80                |",
+        "answer": "Cumartesi - Pazar arasında 18 puan",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.8.5.1.2"
+      },
+      {
+        "question": "Bir mağaza yöneticisi, son bir yılda satılan ürün kategorilerinin (elektronik, giyim, gıda) toplam satış içindeki paylarını göstermek istemektedir. Ayrıca, bu kategorilerin her birinin aylık satış performansındaki değişimini de takip etmesi gerekmektedir. Bu iki farklı analiz için hangi grafik türlerinin ayrı ayrı kullanılması en uygun olurdu? Seçimlerinizi nedenleriyle birlikte açıklayınız.",
+        "answer": "Ürün kategorilerinin toplam satış içindeki payları için daire grafiği; aylık satış performansındaki değişim için çizgi grafiği.",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.8.5.1.3"
+      },
+      {
+        "question": "Bir kütüphanedeki kitapların türlerine göre dağılımı aşağıdaki daire grafiğinde gösterilmiştir. Toplam 8000 kitap bulunan bu kütüphanede, Bilim ve Çocuk kitaplarının toplam sayısı kaçtır?<svg viewBox=\"0 0 320 200\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M 130.0 100.0 L 130.0 30.0 A 70.0 70.0 0 0 1 196.6 121.6 Z\" fill=\"#3b82f6\" stroke=\"#ffffff\" stroke-width=\"1\"/><text x=\"198.0\" y=\"50.6\" font-size=\"12\" text-anchor=\"start\" dominant-baseline=\"middle\">Edebiyat %30</text><path d=\"M 130.0 100.0 L 196.6 121.6 A 70.0 70.0 0 0 1 108.4 166.6 Z\" fill=\"#10b981\" stroke=\"#ffffff\" stroke-width=\"1\"/><text x=\"168.1\" y=\"174.8\" font-size=\"12\" text-anchor=\"start\" dominant-baseline=\"middle\">Bilim %25</text><path d=\"M 130.0 100.0 L 108.4 166.6 A 70.0 70.0 0 0 1 60.0 100.0 Z\" fill=\"#f59e0b\" stroke=\"#ffffff\" stroke-width=\"1\"/><text x=\"62.0\" y=\"149.4\" font-size=\"12\" text-anchor=\"end\" dominant-baseline=\"middle\">Tarih %20</text><path d=\"M 130.0 100.0 L 60.0 100.0 A 70.0 70.0 0 0 1 88.9 43.4 Z\" fill=\"#ef4444\" stroke=\"#ffffff\" stroke-width=\"1\"/><text x=\"55.2\" y=\"61.9\" font-size=\"12\" text-anchor=\"end\" dominant-baseline=\"middle\">Çocuk %15</text><path d=\"M 130.0 100.0 L 88.9 43.4 A 70.0 70.0 0 0 1 130.0 30.0 Z\" fill=\"#8b5cf6\" stroke=\"#ffffff\" stroke-width=\"1\"/><text x=\"104.0\" y=\"20.1\" font-size=\"12\" text-anchor=\"end\" dominant-baseline=\"middle\">Sanat %10</text></svg>",
+        "answer": "3200 kitap",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.8.5.1.1"
+      }
+    ]
+  },
+  "8-sinif-olasilik": {
+    "grade": 8,
+    "topic_id": "olasilik",
+    "difficulty": "orta",
+    "questions": [
+      {
+        "question": "Bir madeni para art arda iki kez atılıyor. Bu deneyde elde edilebilecek tüm olası durumları (örnek uzayı) listeleyiniz.",
+        "answer": "(Yazı, Yazı), (Yazı, Tura), (Tura, Yazı), (Tura, Tura)",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.8.6.1.1"
+      },
+      {
+        "question": "Bir torbada 3 kırmızı, 2 mavi ve 5 yeşil bilye bulunmaktadır. Torbadan rastgele bir bilye çekiliyor, rengine bakıldıktan sonra torbaya geri atılıyor. Daha sonra tekrar rastgele bir bilye çekiliyor. Çekilen bilyelerin ikisinin de kırmızı olma olasılığı nedir?",
+        "answer": "9/100",
+        "question_type": "sozel_problem",
+        "kazanim_kod": "M.8.6.1.2"
+      },
+      {
+        "question": "Bir deneyde, A olayının olma olasılığı 0, B olayının olma olasılığı 1 ve C olayının olma olasılığı 0.5 olarak hesaplanmıştır. Bu olayları, gerçekleşme olasılıklarına göre 'imkansız olay', 'kesin olay' ve 'eşit şanslı olay' kavramlarıyla eşleştiriniz.",
+        "answer": "A olayı: imkansız olay; B olayı: kesin olay; C olayı: eşit şanslı olay",
+        "question_type": "kavram_sorusu",
+        "kazanim_kod": "M.8.6.1.3"
+      }
+    ]
   }
 }

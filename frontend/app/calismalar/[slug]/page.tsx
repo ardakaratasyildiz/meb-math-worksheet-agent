@@ -63,7 +63,7 @@ export default async function CalismaDetailPage({ params }: PageProps) {
     (p) => p.grade === page.grade && p.slug !== page.slug,
   );
 
-  // Aynı konunun farklı sınıflardaki versiyonları — örn. "Geometri" 1.-7. sınıf
+  // Aynı konunun farklı sınıflardaki versiyonları — örn. "Geometri" 1.-8. sınıf
   // boyunca devam eder, vertical linking iyi olur.
   const sameTopicOtherGrades = CURRICULUM_PAGES.filter(
     (p) => p.topicId === page.topicId && p.grade !== page.grade,

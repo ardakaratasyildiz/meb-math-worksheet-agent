@@ -1,5 +1,5 @@
 /**
- * Frontend tarafı MEB müfredat (1-7. sınıf) snapshot'ı.
+ * Frontend tarafı MEB müfredat (1-8. sınıf, 8 = LGS hazırlık) snapshot'ı.
  *
  * Backend'in tek doğru kaynağı (`app/data/curriculum.py`); bu dosya build-time
  * bağımlılığını ortadan kaldırmak için elle replicate edilmiştir. Backend
@@ -66,6 +66,12 @@ export const CURRICULUM_PAGES: CurriculumPage[] = [
   { grade: 7, topicId: "cebir", topicName: "Cebir ve Denklemler", description: "Eşitsizlikler, doğrusal denklemler, oran-orantı", slug: "7-sinif-cebir", kazanimCount: 4 },
   { grade: 7, topicId: "veri_isleme", topicName: "Veri İşleme ve İstatistik", description: "Veri analizi, daire grafiği, merkezi eğilim", slug: "7-sinif-veri-isleme", kazanimCount: 2 },
   { grade: 7, topicId: "olasilik", topicName: "Olasılık", description: "Olası durumlar, basit olasılık hesabı", slug: "7-sinif-olasilik", kazanimCount: 1 },
+  // 8. sınıf — LGS hazırlık kapsamı (gerçek çıkmış LGS soruları few-shot havuzunda)
+  { grade: 8, topicId: "dogal_sayilar", topicName: "Sayılar ve İşlemler", description: "Çarpanlar-katlar, EBOB-EKOK, üslü ifadeler, kareköklü ifadeler, gerçek sayılar", slug: "8-sinif-dogal-sayilar", kazanimCount: 14 },
+  { grade: 8, topicId: "cebir", topicName: "Cebir, Denklemler ve Eşitsizlikler", description: "Çarpanlara ayırma, özdeşlikler, doğrusal denklemler, eğim, eşitsizlikler", slug: "8-sinif-cebir", kazanimCount: 9 },
+  { grade: 8, topicId: "geometri", topicName: "Geometri ve Ölçme", description: "Üçgenler, Pisagor bağıntısı, dönüşüm geometrisi, geometrik cisimler (silindir-koni-piramit)", slug: "8-sinif-geometri", kazanimCount: 13 },
+  { grade: 8, topicId: "veri_isleme", topicName: "Veri İşleme ve İstatistik", description: "Daire grafiği, çizgi grafiği, veriye uygun grafik türü seçimi", slug: "8-sinif-veri-isleme", kazanimCount: 3 },
+  { grade: 8, topicId: "olasilik", topicName: "Olasılık", description: "Olası durumlar, olma olasılığı, eşit şanslı olaylar", slug: "8-sinif-olasilik", kazanimCount: 4 },
 ];
 
 export function getCurriculumPageBySlug(slug: string): CurriculumPage | undefined {
@@ -88,6 +94,7 @@ const GRADE_LEVELS: Record<number, EducationLevel> = {
   5: "Ortaokul",
   6: "Ortaokul",
   7: "Ortaokul",
+  8: "Ortaokul",
 };
 
 export function getGradesLocal(): GradeInfo[] {

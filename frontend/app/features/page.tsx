@@ -25,7 +25,7 @@ const FEATURES = [
   {
     icon: <BookOpen className="h-5 w-5" />,
     title: "Kazanım kodu bazlı üretim",
-    body: "Üretim talebi sınıf, konu ve kazanım kodu seçilerek yapılır. PDF'teki her sorunun yanında ilgili MEB kazanım kodu (örn. M.5.2.1.1) yer alır. 1.→7. sınıf MEB matematik müfredatı kapsamındadır.",
+    body: "Üretim talebi sınıf, konu ve kazanım kodu seçilerek yapılır. PDF'teki her sorunun yanında ilgili MEB kazanım kodu (örn. M.5.2.1.1) yer alır. 1.→8. sınıf MEB matematik müfredatı (8. sınıf LGS hazırlık dahil) kapsamındadır.",
   },
   {
     icon: <ShieldCheck className="h-5 w-5" />,

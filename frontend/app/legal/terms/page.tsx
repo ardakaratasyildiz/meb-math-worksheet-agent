@@ -14,7 +14,7 @@ const SECTIONS: LegalSection[] = [
   {
     heading: "Hizmetin Tanımı",
     paragraphs: [
-      "Soru Atölyesi (“Platform”), MEB matematik müfredatı (1.–7. sınıf) kapsamında, seçilen kazanım koduna göre yapay zeka destekli çalışma kağıdı üreten bir çevrim içi hizmettir. Çıktılar PDF biçiminde; cevap anahtarı ve adım adım çözüm bölümleriyle birlikte sunulur.",
+      "Soru Atölyesi (“Platform”), MEB matematik müfredatı (1.–8. sınıf, 8. sınıf LGS hazırlık dahil) kapsamında, seçilen kazanım koduna göre yapay zeka destekli çalışma kağıdı üreten bir çevrim içi hizmettir. Çıktılar PDF biçiminde; cevap anahtarı ve adım adım çözüm bölümleriyle birlikte sunulur.",
     ],
   },
   {

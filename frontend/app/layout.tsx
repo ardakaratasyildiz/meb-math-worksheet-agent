@@ -52,7 +52,7 @@ const SITE_URL =
 
 const SITE_NAME = "Soru Atölyesi";
 const SITE_DESC =
-  "MEB matematik müfredatı (1.→7. sınıf) için kazanım koduna göre çalışma kağıdı üreten otomatik sistem. PDF çıktı, cevap anahtarı ve adım adım çözüm dahil — öğretmenler ve veliler için.";
+  "MEB matematik müfredatı (1.→8. sınıf, 8. sınıf LGS hazırlık dahil) için kazanım koduna göre çalışma kağıdı üreten otomatik sistem. PDF çıktı, cevap anahtarı ve adım adım çözüm dahil — öğretmenler ve veliler için.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -71,6 +71,10 @@ export const metadata: Metadata = {
     "5. sınıf matematik",
     "6. sınıf matematik",
     "7. sınıf matematik",
+    "8. sınıf matematik",
+    "LGS matematik",
+    "LGS hazırlık",
+    "LGS matematik çalışma kağıdı",
     "matematik soru üretici",
     "kazanım kodu",
     "matematik PDF",

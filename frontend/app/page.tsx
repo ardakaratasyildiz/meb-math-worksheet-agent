@@ -85,7 +85,7 @@ function Hero() {
             className="border-primary/30 bg-accent text-accent-foreground"
           >
             <Sparkles className="mr-1.5 h-3 w-3" />
-            1.→7. sınıf · MEB matematik müfredatı
+            1.→8. sınıf · LGS hazırlık · MEB matematik müfredatı
           </Badge>
           <h1 className="mt-6 max-w-2xl text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
             Matematik çalışma kağıtlarını{" "}
@@ -184,7 +184,7 @@ function TrustBullet({ children }: { children: React.ReactNode }) {
 function SocialProof() {
   const stats = [
     { value: String(KAZANIM_COUNT), label: "MEB kazanımı" },
-    { value: "1–7", label: "sınıf kapsamı" },
+    { value: "1–8", label: "sınıf + LGS kapsamı" },
     { value: String(TOPIC_COUNT), label: "konu başlığı" },
     { value: String(WORKAREA_COUNT), label: "sınıf × konu çalışma alanı" },
   ];
@@ -331,8 +331,10 @@ interface _SampleEntry {
 const _SAMPLES = sampleData as unknown as Record<string, _SampleEntry>;
 
 const _SHOWROOM_SLUGS: [string, string][] = [
+  ["8-sinif-cebir", "8. sınıf · LGS hazırlık"],
   ["2-sinif-dogal-sayilar", "2. sınıf · Doğal sayılar"],
   ["5-sinif-cebir", "5. sınıf · Cebir"],
+  ["8-sinif-geometri", "8. sınıf · LGS geometri"],
   ["6-sinif-veri-isleme", "6. sınıf · Veri işleme"],
   ["3-sinif-dogal-sayilar", "3. sınıf · Doğal sayılar"],
   ["4-sinif-olcme", "4. sınıf · Ölçme"],
@@ -423,8 +425,8 @@ function SystemSummary() {
             Öğretmenler ve veliler için MEB uyumlu çalışma kağıdı hazırlayıcı
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            1.→7. sınıf MEB matematik müfredatına uygun çalışma kağıtlarını
-            dakikalar değil saniyeler içinde hazırlar. Üretilen her soru sana
+            1.→8. sınıf MEB matematik müfredatına (8. sınıfta LGS hazırlık dahil)
+            uygun çalışma kağıtlarını dakikalar değil saniyeler içinde hazırlar. Üretilen her soru sana
             gösterilmeden önce <strong>iki kez kontrol edilir</strong>: önce
             matematiği doğru mu, sonra seçtiğin konuya/kazanıma uyuyor mu. Yanlış
             veya konu dışı sorular otomatik elenir — yani elindeki PDF&apos;e
@@ -542,7 +544,7 @@ const FEATURES = [
   {
     icon: <BookOpen className="h-5 w-5" />,
     title: "Kazanım kodu bazlı üretim",
-    body: "1.→7. sınıf MEB matematik kazanımları; her sorunun yanında ilgili kazanım kodu görünür.",
+    body: "1.→8. sınıf MEB matematik kazanımları (8. sınıf LGS hazırlık dahil); her sorunun yanında ilgili kazanım kodu görünür.",
   },
   {
     icon: <ShieldCheck className="h-5 w-5" />,
@@ -659,7 +661,7 @@ function PricingTeaser() {
 const FAQS = [
   {
     q: "Hangi sınıflar destekleniyor?",
-    a: "1.→7. sınıf MEB matematik müfredatının tamamı şu an desteklenmektedir. 8. sınıf (LGS) kapsamının eklenmesi yol haritasındadır.",
+    a: "1.→8. sınıf MEB matematik müfredatının tamamı desteklenmektedir. 8. sınıf, LGS hazırlık kapsamını da içerir — gerçek çıkmış LGS soruları örnek havuzunda kullanılır.",
   },
   {
     q: "Sistem MEB kazanımına nasıl uyuyor?",

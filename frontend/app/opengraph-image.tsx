@@ -39,7 +39,7 @@ export default async function OGImage() {
             marginBottom: 24,
           }}
         >
-          1. → 7. sınıf · MEB müfredatı
+          1. → 8. sınıf · LGS hazırlık · MEB müfredatı
         </div>
         <div
           style={{
