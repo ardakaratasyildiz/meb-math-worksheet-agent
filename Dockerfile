@@ -38,6 +38,10 @@ COPY scripts ./scripts
 # Müfredat / vector store (büyük ama tek seferlik)
 COPY knowledge_base ./knowledge_base
 
+# Startup script — ingest + server
+COPY start.sh .
+RUN chmod +x start.sh
+
 # Non-root çalışma kullanıcısı (Render best practice)
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
@@ -51,5 +55,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
     CMD curl --fail "http://localhost:${PORT}/healthz" || exit 1
 
-# Shell formu: $PORT expand edilsin
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT}
+# Startup: grade 8 ingest (idempotent) + server
+CMD ["./start.sh"]
