@@ -69,7 +69,7 @@ def _should_ingest(chunk: dict) -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--grade", type=int, required=True, help="Sınıf (1-7)")
+    parser.add_argument("--grade", type=int, required=True, help="Sınıf (1-8)")
     parser.add_argument("--dry-run", action="store_true", help="Sadece istatistik yaz, ChromaDB'ye yazma")
     parser.add_argument("--batch", type=int, default=50, help="Embedding batch boyutu")
     args = parser.parse_args()

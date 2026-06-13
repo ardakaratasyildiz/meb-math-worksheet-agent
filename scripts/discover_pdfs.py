@@ -50,7 +50,7 @@ def detect_grade(filename: str) -> int | None:
     if m:
         try:
             g = int(m.group("grade"))
-            if 1 <= g <= 7:
+            if 1 <= g <= 8:
                 return g
         except ValueError:
             return None
@@ -168,7 +168,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--grade", type=int, default=None,
-        help="Sadece bu sınıfa ait PDF'leri analiz et (1-7). Boşsa hepsi.",
+        help="Sadece bu sınıfa ait PDF'leri analiz et (1-8). Boşsa hepsi.",
     )
     parser.add_argument(
         "--pattern", type=str, default=None,

@@ -1,0 +1,224 @@
+{
+  "grade": 8,
+  "description": "8. sınıf matematik kaynakları — ders kitabı, konu özetleri, LGS çıkmış sorular, ünite soru bankaları, yazılı sınavlar",
+  "files": [
+    {
+      "file": "8 - Matematik Ders Kitabı - MEB.pdf",
+      "track": "textbook",
+      "note": "MEB resmi 8. sınıf matematik ders kitabı, 365 sayfa"
+    },
+    {
+      "file": "konu_ozeti.pdf",
+      "track": "textbook",
+      "note": "Konu özeti - karma"
+    },
+    {
+      "file": "konu_ozeti_2.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 2"
+    },
+    {
+      "file": "konu_ozet_3.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 3"
+    },
+    {
+      "file": "konu_ozet_4.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 4"
+    },
+    {
+      "file": "konu_ozeti_5.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 5"
+    },
+    {
+      "file": "konu_ozet_6.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 6"
+    },
+    {
+      "file": "konu_ozeti_7.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 7"
+    },
+    {
+      "file": "konu_ozet_8.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 8"
+    },
+    {
+      "file": "konu_ozeti_9.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 9"
+    },
+    {
+      "file": "konu_ozeti_10.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 10"
+    },
+    {
+      "file": "konu_ozeti_11.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 11"
+    },
+    {
+      "file": "konu_ozeti_12.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 12"
+    },
+    {
+      "file": "konu_ozeti_13.pdf",
+      "track": "textbook",
+      "note": "Konu özeti 13"
+    },
+    {
+      "file": "1_1.pdf",
+      "track": "lgs",
+      "note": "Ünite 1 soru bankası — Çarpanlar ve Katlar, Üslü İfadeler"
+    },
+    {
+      "file": "2.pdf",
+      "track": "lgs",
+      "note": "Ünite 2 soru bankası — Kareköklü İfadeler, Veri Analizi"
+    },
+    {
+      "file": "3.pdf",
+      "track": "lgs",
+      "note": "Ünite 3 soru bankası — Olasılık, Cebirsel İfadeler ve Özdeşlikler"
+    },
+    {
+      "file": "4.pdf",
+      "track": "lgs",
+      "note": "Ünite 4 soru bankası"
+    },
+    {
+      "file": "5.pdf",
+      "track": "lgs",
+      "note": "Ünite 5 soru bankası"
+    },
+    {
+      "file": "6.pdf",
+      "track": "lgs",
+      "note": "Ünite 6 soru bankası"
+    },
+    {
+      "file": "lgs1.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 1"
+    },
+    {
+      "file": "lgs2.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 2"
+    },
+    {
+      "file": "lgs3.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 3"
+    },
+    {
+      "file": "lgs4.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 4"
+    },
+    {
+      "file": "lgs5.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 5"
+    },
+    {
+      "file": "lgs6.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 6"
+    },
+    {
+      "file": "lgs7.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 7"
+    },
+    {
+      "file": "lgs8.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 8"
+    },
+    {
+      "file": "lgs9.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 9"
+    },
+    {
+      "file": "lgs10.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 10"
+    },
+    {
+      "file": "lgs11.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 11"
+    },
+    {
+      "file": "lgs12.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 12"
+    },
+    {
+      "file": "lgs13.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 13"
+    },
+    {
+      "file": "lgs14.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 14"
+    },
+    {
+      "file": "lgs15.pdf",
+      "track": "lgs",
+      "note": "LGS çıkmış soru - deneme 15"
+    },
+    {
+      "file": "lgsornek1.pdf",
+      "track": "lgs",
+      "skip": true,
+      "note": "lgs13.pdf ile aynı içerik (md5 duplicate)"
+    },
+    {
+      "file": "lgsornek2.pdf",
+      "track": "lgs",
+      "skip": true,
+      "note": "lgs14.pdf ile aynı içerik (md5 duplicate)"
+    },
+    {
+      "file": "lgsornek3.pdf",
+      "track": "lgs",
+      "skip": true,
+      "note": "lgs15.pdf ile aynı içerik (md5 duplicate)"
+    },
+    {
+      "file": "c1_matematik_8.pdf",
+      "track": "lgs",
+      "note": "8. sınıf matematik soru seti — M.8.x.x kazanım kodları içeriyor"
+    },
+    {
+      "file": "yazili1.pdf",
+      "track": "lgs",
+      "note": "Yazılı sınav 1 — M.8.1.x kazanım kodları"
+    },
+    {
+      "file": "yazili2.pdf",
+      "track": "lgs",
+      "note": "Yazılı sınav 2 — M.8.1-2-4-5 kazanım kodları"
+    },
+    {
+      "file": "yazili3.pdf",
+      "track": "lgs",
+      "note": "Yazılı sınav 3 — M.8.2.x kazanım kodları"
+    },
+    {
+      "file": "yazili4.pdf",
+      "track": "lgs",
+      "note": "Yazılı sınav 4 — M.8.2-3.x kazanım kodları"
+    }
+  ]
+}

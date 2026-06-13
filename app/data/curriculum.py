@@ -41,6 +41,7 @@ GRADE_LEVELS: dict[int, EducationLevel] = {
     5: EducationLevel.ORTAOKUL,
     6: EducationLevel.ORTAOKUL,
     7: EducationLevel.ORTAOKUL,
+    8: EducationLevel.ORTAOKUL,
 }
 
 TOPIC_NAMES: dict[str, str] = {
@@ -1437,6 +1438,430 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "Eş olası örnek uzayda istenen olayın olasılığı (zar, madeni para, top torbası).",
                         "Olasılığı kesir, ondalık ve yüzde gösterimleriyle ifade etme.",
                         "Birleşik veya ayrık olayların olasılığını karşılaştırarak yorum yapma.",
+                    ),
+                },
+            ],
+        },
+    },
+    8: {
+        TopicId.DOGAL_SAYILAR.value: {
+            "topic_id": TopicId.DOGAL_SAYILAR.value,
+            "name": "Sayılar ve İşlemler",
+            "description": "Çarpanlar-Katlar, Üslü İfadeler, Kareköklü İfadeler, Gerçek Sayılar",
+            "kazanimlar": [
+                {
+                    "kod": "M.8.1.1.1",
+                    "metin": "Verilen pozitif tam sayıların çarpanlarını bulur; asal çarpanlara ayırır ve üslü ifade olarak yazar.",
+                    "difficulty_hints": _hints(
+                        "Bir sayının asal çarpanlarını bulup üslü ifade olarak yazma.",
+                        "İki sayının EBOB ve EKOK değerlerini asal çarpanlarla hesaplama.",
+                        "EBOB ve EKOK'u bir arada gerektiren LGS tarzı problem çözme.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.1.2",
+                    "metin": "İki doğal sayının EBOB ve EKOK'unu hesaplar; ilgili problemleri çözer.",
+                    "difficulty_hints": _hints(
+                        "İki sayının EBOB veya EKOK değerini hesaplama.",
+                        "EBOB veya EKOK kullanarak iki adımlı problem çözme.",
+                        "EBOB ve EKOK ilişkisini birlikte kullanarak LGS tarzı problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.1.3",
+                    "metin": "Aralarında asal sayıları belirler.",
+                    "difficulty_hints": _hints(
+                        "Verilen iki sayının aralarında asal olup olmadığını belirleme.",
+                        "Bir sayıya aralarında asal olan sayıları listeleme.",
+                        "Aralarında asal olma koşulunu içeren problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.2.1",
+                    "metin": "Tam sayıların tam sayı kuvvetlerini hesaplar.",
+                    "difficulty_hints": _hints(
+                        "Basit bir üslü ifadenin değerini hesaplama.",
+                        "Negatif tabanlı veya negatif üslü ifadenin değerini bulma.",
+                        "Birden fazla üslü ifade içeren karmaşık işlem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.2.2",
+                    "metin": "Üslü ifadelerle ilgili temel kuralları uygular; üslü ifadeleri birbirine dönüştürür.",
+                    "difficulty_hints": _hints(
+                        "Çarpma veya bölme kuralıyla üslü ifadeyi sadeleştirme.",
+                        "Üssün üssü kuralı veya farklı tabanları eşitleme.",
+                        "Birden fazla kuralı içeren parantezli üslü ifade işlemi.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.2.3",
+                    "metin": "Sayıların ondalık gösterimlerini 10'un tam sayı kuvvetlerini kullanarak çözümler.",
+                    "difficulty_hints": _hints(
+                        "Verilen ondalık sayıyı 10'un kuvvetiyle çözümleme.",
+                        "Çözümlenmiş haldeki sayıyı ondalık gösterime yazma.",
+                        "Çözümleme ve basamak değeri ilişkisini içeren problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.2.4",
+                    "metin": "Çok büyük ve çok küçük sayıları bilimsel gösterimle ifade eder ve karşılaştırır.",
+                    "difficulty_hints": _hints(
+                        "Verilen bir sayıyı bilimsel gösterimle yazma.",
+                        "Bilimsel gösterimle verilen iki sayıyı karşılaştırma.",
+                        "Bilimsel gösterimdeki sayılarla işlem yapıp sonucu bilimsel gösterimle ifade etme.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.3.1",
+                    "metin": "Tam kare pozitif tam sayılarla bu sayıların karekökleri arasındaki ilişkiyi belirler.",
+                    "difficulty_hints": _hints(
+                        "Verilen tam kare sayının karekökünü bulma.",
+                        "Karekökü verilen sayının tam kare olup olmadığını belirleme.",
+                        "Tam kare sayılarla ilgili problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.3.2",
+                    "metin": "Tam kare olmayan kareköklü bir sayının hangi iki doğal sayı arasında olduğunu belirler.",
+                    "difficulty_hints": _hints(
+                        "Tam kare olmayan sayının karekökünün hangi tam sayılar arasında olduğunu bulma.",
+                        "Karekök değerini tahmin ve sayı doğrusunda gösterme.",
+                        "Karekök değerlerini karşılaştırarak sıralama.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.3.3",
+                    "metin": "Kareköklü bir ifadeyi a√b şeklinde yazar ve a√b şeklindeki ifadede katsayıyı kök içine alır.",
+                    "difficulty_hints": _hints(
+                        "Verilen kareköklü ifadeyi a√b şeklinde yazma.",
+                        "a√b ifadesini kök içine alarak yazma.",
+                        "İki farklı gösterimdeki ifadeleri karşılaştırarak sıralama.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.3.4",
+                    "metin": "Kareköklü ifadelerde çarpma ve bölme işlemleri yapar.",
+                    "difficulty_hints": _hints(
+                        "İki kareköklü ifadeyi çarpma veya bölme.",
+                        "a√b şeklindeki ifadelerle çarpma veya bölme.",
+                        "Çarpma ve bölme içeren a√b dönüşümü gerektiren problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.3.5",
+                    "metin": "Kareköklü ifadelerde toplama ve çıkarma işlemleri yapar.",
+                    "difficulty_hints": _hints(
+                        "Benzer kareköklü ifadeleri toplama veya çıkarma.",
+                        "a√b dönüşümü gerektiren kareköklü ifadeleri toplama veya çıkarma.",
+                        "Toplama ve çıkarma içeren a√b dönüşümü gerektiren problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.3.6",
+                    "metin": "Kareköklü bir ifade ile çarpıldığında sonucu doğal sayı yapan çarpanları belirler.",
+                    "difficulty_hints": _hints(
+                        "Kareköklü ifadeyi doğal sayı yapan en küçük çarpanı bulma.",
+                        "Farklı çarpanlarla dönüşümleri karşılaştırma.",
+                        "Doğal sayı yapma koşulunu içeren çok adımlı problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.1.3.7",
+                    "metin": "Gerçek sayıları tanır; rasyonel ve irrasyonel sayılar arasındaki ilişkiyi açıklar.",
+                    "difficulty_hints": _hints(
+                        "Verilen sayıları rasyonel veya irrasyonel olarak sınıflandırma.",
+                        "Rasyonel ve irrasyonel sayıların özelliklerini karşılaştırma.",
+                        "Sayı kümeleri hiyerarşisini açıklayan LGS tarzı soru.",
+                    ),
+                },
+            ],
+        },
+        TopicId.CEBIR.value: {
+            "topic_id": TopicId.CEBIR.value,
+            "name": "Cebir, Denklemler ve Eşitsizlikler",
+            "description": "Cebirsel çarpanlara ayırma, özdeşlikler, doğrusal denklem/eşitsizlik, koordinat ve doğru",
+            "kazanimlar": [
+                {
+                    "kod": "M.8.2.1.1",
+                    "metin": "Cebirsel ifadeleri ortak çarpan ve gruplandırma yöntemiyle çarpanlarına ayırır.",
+                    "difficulty_hints": _hints(
+                        "Ortak çarpana alarak çarpanlara ayırma.",
+                        "Gruplandırma yöntemiyle çarpanlara ayırma.",
+                        "Birden fazla yöntemi gerektiren karmaşık ifadeyi çarpanlara ayırma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.2.2.1",
+                    "metin": "Özdeşlikleri modellerle açıklar ve ispatlar.",
+                    "difficulty_hints": _hints(
+                        "Bir özdeşliği geometrik modelle gösterme.",
+                        "Modeli verilen özdeşliği cebirsel olarak ifade etme.",
+                        "Farklı özdeşlikleri karşılaştırarak modelle açıklama.",
+                    ),
+                },
+                {
+                    "kod": "M.8.2.2.2",
+                    "metin": "Özdeşlikleri kullanarak cebirsel ifadeleri çarpanlarına ayırır.",
+                    "difficulty_hints": _hints(
+                        "Tam kare özdeşliğiyle çarpanlara ayırma.",
+                        "İki kare farkı özdeşliğiyle çarpanlara ayırma.",
+                        "Birden fazla özdeşliği içeren karmaşık ifadeyi çarpanlara ayırma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.3.1.1",
+                    "metin": "Birinci dereceden bir bilinmeyenli denklemleri çözer ve probleme uygular.",
+                    "difficulty_hints": _hints(
+                        "Basit tek bilinmeyenli denklemi çözme.",
+                        "Parantezli veya kesirli denklemi çözme.",
+                        "Değişkenin her iki tarafta olduğu çok adımlı denklemi çözme.",
+                    ),
+                },
+                {
+                    "kod": "M.8.3.2.1",
+                    "metin": "Koordinat sistemini özellikleriyle tanır; sıralı ikilileri koordinat sisteminde gösterir.",
+                    "difficulty_hints": _hints(
+                        "Koordinat sisteminde bir noktanın koordinatlarını yazma.",
+                        "Verilen koordinatlara sahip noktayı sistemde işaretleme.",
+                        "Farklı bölgelerdeki nokta özelliklerini karşılaştırma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.3.2.2",
+                    "metin": "Doğrusal ilişkileri tablo ve grafik ile temsil eder.",
+                    "difficulty_hints": _hints(
+                        "Doğrusal denklemin değer tablosunu oluşturma.",
+                        "Tablosu verilen doğrusal ilişkiyi grafikle gösterme.",
+                        "Grafiği verilen ilişkinin denklemini ve tablosunu oluşturma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.3.2.3",
+                    "metin": "Doğrusal denklemlerin grafiklerini çizer; doğrunun eğimini hesaplar ve anlamlandırır.",
+                    "difficulty_hints": _hints(
+                        "Basit bir doğrusal denklemin grafiğini çizme.",
+                        "Eksenleri kesen noktaları bularak denklemin grafiğini çizme.",
+                        "Eğim ve eksen kesim noktalarından doğru denklemini yazma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.3.3.1",
+                    "metin": "Birinci dereceden bir bilinmeyenli eşitsizlikleri çözer ve sayı doğrusunda gösterir.",
+                    "difficulty_hints": _hints(
+                        "Basit bir bilinmeyenli eşitsizliği çözme.",
+                        "Parantezli veya kesirli eşitsizliği çözüp sayı doğrusunda gösterme.",
+                        "Değişkenin her iki tarafta olduğu eşitsizliği çözme.",
+                    ),
+                },
+                {
+                    "kod": "M.8.3.3.2",
+                    "metin": "Birinci dereceden bir bilinmeyenli eşitsizliklerle ilgili problem çözer.",
+                    "difficulty_hints": _hints(
+                        "Basit sözel problemi eşitsizliğe dönüştürüp çözme.",
+                        "İki durumu karşılaştıran eşitsizlik problemi.",
+                        "Gerçek hayat bağlamında çok adımlı eşitsizlik problemi.",
+                    ),
+                },
+            ],
+        },
+        TopicId.GEOMETRI.value: {
+            "topic_id": TopicId.GEOMETRI.value,
+            "name": "Geometri ve Ölçme",
+            "description": "Üçgenler, Pisagor, dönüşüm geometrisi, geometrik cisimler (silindir-koni-piramit)",
+            "kazanimlar": [
+                {
+                    "kod": "M.8.4.1.1",
+                    "metin": "Üçgenlerde kenarortay, açıortay ve yüksekliği inşa eder; özelliklerini açıklar.",
+                    "difficulty_hints": _hints(
+                        "Üçgende kenarortayı veya açıortayı çizme.",
+                        "Farklı üçgen türlerinde yüksekliği çizme.",
+                        "Bu elemanların özelliklerini karşılaştıran problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.1.2",
+                    "metin": "Üçgenin iki kenar uzunluğunun toplamı veya farkı ile üçüncü kenarını ilişkilendirir.",
+                    "difficulty_hints": _hints(
+                        "Verilen kenarlarla üçgen oluşturulup oluşturulamayacağını belirleme.",
+                        "Üçüncü kenarın alabileceği tam sayı değerlerini bulma.",
+                        "Kenar uzunlukları ilişkisini içeren problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.1.3",
+                    "metin": "Üçgenin kenar uzunlukları ile karşı açıların ölçülerini ilişkilendirir.",
+                    "difficulty_hints": _hints(
+                        "Üçgende en uzun kenar veya en büyük açıyı belirleme.",
+                        "Kenar uzunluklarına göre açıları sıralama.",
+                        "Kenar-açı ilişkisini içeren LGS tarzı problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.1.4",
+                    "metin": "Pisagor bağıntısını oluşturur ve ilgili problemleri çözer.",
+                    "difficulty_hints": _hints(
+                        "Dik üçgende verilmeyen kenarı Pisagor ile bulma.",
+                        "Pisagor bağıntısını kullanarak iki adımlı problem.",
+                        "Gerçek hayat bağlamında Pisagor gerektiren çok adımlı problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.1.5",
+                    "metin": "Eş ve benzer üçgenleri özellikleriyle açıklar; belirler ve problemlere uygular.",
+                    "difficulty_hints": _hints(
+                        "Verilen iki üçgenin eş mi benzer mi olduğunu belirleme.",
+                        "Benzer üçgenlerde verilmeyen kenar veya açıyı bulma.",
+                        "Eş veya benzer üçgenlerin özelliklerini kullanan problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.2.1",
+                    "metin": "Nokta, doğru parçası ve şekillerin öteleme, yansıma ve dönme altındaki görüntülerini çizer.",
+                    "difficulty_hints": _hints(
+                        "Bir noktanın öteleme veya yansıma görüntüsünü bulma.",
+                        "Bir şeklin dönme altındaki görüntüsünü çizme.",
+                        "Birden fazla dönüşüm uygulayarak son görüntüyü bulma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.2.2",
+                    "metin": "Çokgenlere öteleme, yansıma ve dönme dönüşümleri uygular; koordinat sisteminde gösterir.",
+                    "difficulty_hints": _hints(
+                        "Çokgenin öteleme altındaki görüntüsünü çizme.",
+                        "Koordinat sisteminde yansıma veya dönme uygulama.",
+                        "Ardışık dönüşümler uygulayarak son görüntüyü bulma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.3.1",
+                    "metin": "Dik dairesel silindirin temel elemanlarını belirler, açınımını çizer ve yüzey alanını hesaplar.",
+                    "difficulty_hints": _hints(
+                        "Silindirin açınımını çizme.",
+                        "Silindirin yüzey alanını hesaplama.",
+                        "Açınımı verilen silindirin bir elemanını veya yüzey alanını bulma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.3.2",
+                    "metin": "Dik dairesel silindirin hacmini hesaplar ve probleme uygular.",
+                    "difficulty_hints": _hints(
+                        "Yarıçap ve yüksekliği verilen silindirin hacmini hesaplama.",
+                        "Hacmi ve bir elemanı verilen silindirin diğer elemanını bulma.",
+                        "Gerçek hayat bağlamında silindir hacmi problemi.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.3.3",
+                    "metin": "Dik dairesel koninin temel elemanlarını belirler, açınımını çizer ve yüzey alanını hesaplar.",
+                    "difficulty_hints": _hints(
+                        "Koninin açınımını çizme.",
+                        "Koninin yüzey alanını hesaplama.",
+                        "Açınımı verilen koninin bir elemanını veya yüzey alanını bulma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.3.4",
+                    "metin": "Dik dairesel koninin hacmini hesaplar ve probleme uygular.",
+                    "difficulty_hints": _hints(
+                        "Yarıçap ve yüksekliği verilen koninin hacmini hesaplama.",
+                        "Hacmi ve bir elemanı verilen koninin diğer elemanını bulma.",
+                        "Gerçek hayat bağlamında koni hacmi problemi.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.3.5",
+                    "metin": "Dik piramidin temel elemanlarını belirler, açınımını çizer ve yüzey alanını hesaplar.",
+                    "difficulty_hints": _hints(
+                        "Piramidin açınımını çizme.",
+                        "Piramidin yüzey alanını hesaplama.",
+                        "Açınımı verilen piramidin bir elemanını veya yüzey alanını bulma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.4.3.6",
+                    "metin": "Dik piramidin hacmini hesaplar ve probleme uygular.",
+                    "difficulty_hints": _hints(
+                        "Taban alanı ve yüksekliği verilen piramidin hacmini hesaplama.",
+                        "Hacmi ve bir elemanı verilen piramidin diğer elemanını bulma.",
+                        "Gerçek hayat bağlamında piramit hacmi problemi.",
+                    ),
+                },
+            ],
+        },
+        TopicId.VERI_ISLEME.value: {
+            "topic_id": TopicId.VERI_ISLEME.value,
+            "name": "Veri İşleme ve İstatistik",
+            "description": "Daire grafiği, çizgi grafiği, uygun grafik türü seçimi ve yorumu",
+            "kazanimlar": [
+                {
+                    "kod": "M.8.5.1.1",
+                    "metin": "Bir veri grubuna ait daire grafiğini oluşturur ve yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Verilen verileri daire grafiğiyle gösterme.",
+                        "Daire grafiğinden verileri okuyarak soruyı yanıtlama.",
+                        "Daire grafiğiyle diğer grafik türlerini karşılaştırarak yorum yapma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.5.1.2",
+                    "metin": "Bir veri grubuna ait çizgi grafiğini oluşturur ve yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Verilen verileri çizgi grafiğiyle gösterme.",
+                        "Çizgi grafiğinden değişimi okuyarak soruyı yanıtlama.",
+                        "Çizgi grafiğindeki eğilimden tahmin yapma.",
+                    ),
+                },
+                {
+                    "kod": "M.8.5.1.3",
+                    "metin": "Grafik türleri arasında veriye uygun olanı seçer ve yorumlar.",
+                    "difficulty_hints": _hints(
+                        "Verilen veri setine uygun grafik türünü belirleme.",
+                        "Farklı grafik türlerinin avantaj ve dezavantajlarını karşılaştırma.",
+                        "Senaryo için en uygun grafik türünü seçip gerekçesiyle açıklama.",
+                    ),
+                },
+            ],
+        },
+        TopicId.OLASILIK.value: {
+            "topic_id": TopicId.OLASILIK.value,
+            "name": "Olasılık",
+            "description": "Olası durumlar, olma olasılığı, olasılık değeri, eşit şansa sahip olaylar",
+            "kazanimlar": [
+                {
+                    "kod": "M.8.6.1.1",
+                    "metin": "Bir olaya ait olası durumları belirler; örnek uzayı listeler.",
+                    "difficulty_hints": _hints(
+                        "Basit bir olayın tüm olası durumlarını listeleme.",
+                        "İki aşamalı bir olayın örnek uzayını belirleme.",
+                        "Verilen koşullara göre olası durumları filtreleme.",
+                    ),
+                },
+                {
+                    "kod": "M.8.6.1.2",
+                    "metin": "Bir olayın olma olasılığını hesaplar.",
+                    "difficulty_hints": _hints(
+                        "Basit bir olayın olasılığını kesir olarak hesaplama.",
+                        "İki aşamalı bir olayın olasılığını hesaplama.",
+                        "Olasılık hesabı gerektiren LGS tarzı çok adımlı problem.",
+                    ),
+                },
+                {
+                    "kod": "M.8.6.1.3",
+                    "metin": "Olasılık değerinin 0 ile 1 arasında olduğunu açıklar; kesin ve imkânsız olayları tanır.",
+                    "difficulty_hints": _hints(
+                        "Verilen olayı 'kesin' veya 'imkânsız' olarak sınıflandırma.",
+                        "İki olayın olasılıklarını 'daha fazla/eşit/daha az' ifadeleriyle karşılaştırma.",
+                        "Gerçek hayat senaryolarında olasılık ifadelerini yorumlama.",
+                    ),
+                },
+                {
+                    "kod": "M.8.6.1.4",
+                    "metin": "Eşit şansa sahip olaylarda her çıktının olasılığının eşit olduğunu açıklar ve örneklendirir.",
+                    "difficulty_hints": _hints(
+                        "Eşit şansa sahip bir olaya örnek verme.",
+                        "Eşit ve eşit olmayan şans durumlarını karşılaştırma.",
+                        "Eşit şans koşulunu sorgulayan LGS tarzı soru.",
                     ),
                 },
             ],

@@ -58,12 +58,19 @@ GRADE_PATTERN_RE = re.compile(
 
 
 def _discover_grade_pdfs(grade: int, base_dir: Path) -> list[Path]:
-    """Sınıf için tüm PDF'leri bul: hardcoded liste + regex deseni.
-    md5 hash ile duplicate'leri eler (aynı içerik farklı isimle eklenmiş olabilir)."""
+    """Sınıf için tüm PDF'leri bul: hardcoded liste + regex deseni + alt-klasör manifest.
+
+    Alt-klasör discovery kuralı:
+      - base_dir içinde `{grade}.Sınıf/` veya `{grade}.sinif/` (büyük/küçük harf toleranslı)
+        alt-klasörü varsa ve içinde manifest.json mevcutsa, manifest'teki `track="textbook"`
+        (ve `skip` olmayan) girişleri bu discovery'e dahil edilir.
+      - Manifest yoksa alt-klasördeki tüm *.pdf dosyaları taranır (aynı hash kuralı).
+    """
+    import json
     paths: list[Path] = []
     seen_hashes: set[str] = set()
 
-    # Önce hardcoded liste — eski isimler öncelikli (ChromaDB'de zaten var)
+    # 1. Hardcoded liste — eski isimler öncelikli (ChromaDB'de zaten var)
     for fname in PDFS_BY_GRADE.get(grade, []):
         p = base_dir / fname
         if p.exists():
@@ -72,7 +79,7 @@ def _discover_grade_pdfs(grade: int, base_dir: Path) -> list[Path]:
                 seen_hashes.add(h)
                 paths.append(p)
 
-    # Sonra regex desenli yeni dosyalar
+    # 2. Regex desenli yeni dosyalar (knowledge_base/ kökü)
     for p in sorted(base_dir.glob("*.pdf")):
         m = GRADE_PATTERN_RE.match(p.name)
         if not m:
@@ -88,6 +95,50 @@ def _discover_grade_pdfs(grade: int, base_dir: Path) -> list[Path]:
             continue
         seen_hashes.add(h)
         paths.append(p)
+
+    # 3. Alt-klasör manifest discovery (örn. knowledge_base/8.Sınıf/manifest.json)
+    for subdir in base_dir.iterdir():
+        if not subdir.is_dir():
+            continue
+        # "8.Sınıf", "8.sinif", "8.Sinif" vb. eşleştir
+        name_norm = subdir.name.lower().replace("ı", "i").replace("ş", "s")
+        if not name_norm.startswith(f"{grade}."):
+            continue
+        manifest_path = subdir / "manifest.json"
+        if manifest_path.exists():
+            try:
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            except Exception as exc:
+                logger.warning("Manifest okunamadı (%s): %s", manifest_path, exc)
+                continue
+            if manifest.get("grade") != grade:
+                continue
+            for entry in manifest.get("files", []):
+                if entry.get("skip"):
+                    continue
+                if entry.get("track") != "textbook":
+                    continue
+                p = subdir / entry["file"]
+                if not p.exists():
+                    logger.warning("Manifest dosyası bulunamadı: %s", p)
+                    continue
+                h = _file_quick_hash(p)
+                if h in seen_hashes:
+                    logger.info("Duplicate atlandı (manifest, md5): %s", p.name)
+                    continue
+                seen_hashes.add(h)
+                paths.append(p)
+                logger.info("Manifest'ten eklendi (textbook): %s", p.name)
+        else:
+            # Manifest yok — alt-klasördeki tüm PDF'leri tara
+            for p in sorted(subdir.glob("*.pdf")):
+                h = _file_quick_hash(p)
+                if h in seen_hashes:
+                    logger.info("Duplicate atlandı (subdir, md5): %s", p.name)
+                    continue
+                seen_hashes.add(h)
+                paths.append(p)
+                logger.info("Alt-klasörden eklendi (manifest yok): %s", p.name)
 
     return paths
 
@@ -378,7 +429,7 @@ def process_pdf(pdf_path: Path, grade: int) -> list[Chunk]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--grade", type=int, required=True, choices=range(1, 8))
+    parser.add_argument("--grade", type=int, required=True, choices=range(1, 9))
     args = parser.parse_args()
     grade = args.grade
     output = ROOT / "knowledge_base" / "processed" / f"textbook_chunks_grade{grade}.json"

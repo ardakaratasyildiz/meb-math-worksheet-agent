@@ -85,7 +85,7 @@ class KazanimlarResponse(BaseModel):
 
 
 class GenerateWorksheetRequest(BaseModel):
-    grade: int = Field(..., ge=1, le=7, description="Sınıf (1-7)")
+    grade: int = Field(..., ge=1, le=8, description="Sınıf (1-8)")
     topic_id: str = Field(..., description="Konu kimliği (curriculum.py)")
     kazanim_kod: str | None = Field(
         None,
@@ -468,7 +468,7 @@ class CreateQuizRequest(BaseModel):
     difficulty_mode = gelişmiş (opsiyonel); verilmezse 4 tip / tek seviye.
     """
 
-    grade: int = Field(..., ge=1, le=7)
+    grade: int = Field(..., ge=1, le=8)
     topic_id: str = Field(..., description="Konu kimliği (curriculum.py)")
     kazanim_kod: str | None = Field(
         None, description="Opsiyonel: belirli kazanım. Boşsa konu geneli."

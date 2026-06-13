@@ -1,0 +1,101 @@
+{
+  "review_queue": [
+    {
+      "source": "lgs1.pdf",
+      "question_no": 6,
+      "stem_preview": "Bir teknoloji mağazasında eşit sayıda satışa sunulan ürünlerin türleri ve bu ürünlerin kodlarının çözümlenmiş hâli Tablo",
+      "skip_reason": "Soru metnindeki 'eşit sayıda satışa sunulan ürünlerin türleri' ve 'satılmayan ürün sayısı 60' koşulları, verilen satış sayıları ile birlikte tutarlı bir başlangıç ürün sayısı (tam sayı olarak) vermemektedir. Bu nedenle soru matematiksel olarak çözülememektedir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 7,
+      "stem_preview": "Yasin Öğretmen, bir doğal sayıyı asal çarpanlarının çarpımı şeklinde göstermesini anlatmak için bazı asal sayıları farkl",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, sorunun kendisi değil, bir sınav kapağıdır ve karmaşık bir fotoğraf/belge görüntüsüdür. Soruda bahsedilen küp modelleri veya üstten görünüm görselleri mevcut değildir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 8,
+      "stem_preview": "Emir otobüse ya da minibüse binmek için evinden çıktıktan 7 dakika sonra durağa ulaşmaktadır. Otobüs 30 dakikada bir, mi",
+      "skip_reason": "Hesaplanan ortak varış saatleri (EKOK) ile şıklardaki çıkış saatleri ve cevap anahtarı arasında tutarsızlık bulunmaktadır. Cevap anahtarındaki şık (C) ile varış saati (16.30), ortak varış saatlerinden biri değildir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 9,
+      "stem_preview": "0,25 · 10^x sayısı 1000'den büyük, 27 000 · 10^y sayısı ise 1'den küçüktür. Buna göre a ve b sayıları aşağıdakilerden ha",
+      "skip_reason": "Soru metnindeki eşitsizlikler için yapılan hesaplamalar (x >= 4 ve y <= -5), cevap anahtarındaki şık (D) ile tutarsızdır. Hesaplamalara göre sadece A şıkkı doğru olmaktadır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 10,
+      "stem_preview": "Antarktika'nın kral penguenleri günde ortalama 100 defa suya dalarlar. Bunun ancak %10'unda avlanabilirler. Bir penguen ",
+      "skip_reason": "Yapılan hesaplamalar sonucunda elde edilen bilimsel gösterim (2 · 10^4) cevap anahtarındaki şık (D) ile tutarsızdır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 11,
+      "stem_preview": "Aşağıda bir sayının çarpanlarının tamamı küçükten büyüğe doğru yazılmıştır. Buna göre aşağıdakilerden hangisi B - A ifad",
+      "skip_reason": "Yapılan hesaplamalar sonucunda B-A ifadesinin değeri 152 bulunmuştur. 152'nin çarpanları arasında cevap anahtarındaki şık (C) olan 6 bulunmamaktadır. Hesaplamalara göre D şıkkı (8) doğru olmaktadır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 12,
+      "stem_preview": "Reyhan Öğretmen tahtaya çıkardığı üç öğrencisine sırasıyla aşağıdaki görevleri vermiştir. Selim: Bir sayıyı söyleyecekti",
+      "skip_reason": "Soru metnindeki koşullara göre (8 çarpanı ve 3 asal çarpanı olan sayı), yapılan hesaplamalar sonucunda D şıkkı (70) doğru olmaktadır. Cevap anahtarındaki şık (A) bu koşulları sağlamamaktadır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 13,
+      "stem_preview": "80 kg ve 64 kg kütleli iki çuval pirincin tamamı birbirine karıştırılmadan ve hiç artmayacak şekilde paketlere konulacak",
+      "skip_reason": "Yapılan hesaplamalar sonucunda en az 9 paket gerektiği bulunmuştur. Cevap anahtarındaki şık (A) olan 4, bu koşulları sağlamamaktadır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 14,
+      "stem_preview": "Aşağıda iki farklı fotokopi makinesi ve bu makinelerin çalışma hızları ile ilgili bilgiler verilmiştir. 1. fotokopi maki",
+      "skip_reason": "Soru kökünde verilen bilgiler (eşit sayıda çıktı, toplam 180 çıktı) ve makine hızları ile cevap anahtarındaki şık arasında tutarsızlık bulunmaktadır. Mantıksal hesaplama 12 dakika sonucunu verirken, cevap anahtarı 20 dakika olarak belirtilmiştir."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 17,
+      "stem_preview": "Aşağıda üç farklı şekil ile tanımlanan işlemler gösterilmiştir. Üçgen(a) = a⁰, Kare(b) = b³, Daire(c) = c¹. Buna göre üç",
+      "skip_reason": "Soru kökünde tanımlanan işlemler ve verilen sayılarla yapılan hesaplama sonucu (-14) ile cevap anahtarındaki şık (49) arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 15,
+      "stem_preview": "Alanı 150 m² olan aşağıdaki dikdörtgen şeklindeki arsanın kenar uzunlukları metre cinsinden aralarında asal doğal sayıla",
+      "skip_reason": "Soru kökünde belirtilen koşullara göre (kalan alanın en az olması) yapılan hesaplama sonucu (114 m²) ile cevap anahtarındaki şık (146 m²) arasında tutarsızlık bulunmaktadır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 18,
+      "stem_preview": "Çevresinin uzunluğu 64³ br olan dikdörtgen biçimindeki kağıt, aşağıdaki gibi biri dikdörtgen diğeri kare şeklinde iki pa",
+      "skip_reason": "Dikdörtgenin çevresi 64³ birim iken, içinden kesilen kare parçanın bir kenar uzunluğu 8⁶ birim olarak verilmiştir. 64³ = 2¹⁸ ve 8⁶ = 2¹⁸ olduğundan, dikdörtgenin yarı çevresi 2¹⁷ iken, kare kenarı 2¹⁸ olmaktadır. Bu durum, kare kenarının dikdörtgenin yarı çevresinden büyük olması nedeniyle geometrik olarak imkansızdır."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıdaki grafikte birbirine komşu dört farklı şehrin, aynı zaman aralığında ölçülen ortalama sıcaklık değerleri verilmi",
+      "skip_reason": "Fen Bilimleri sorusu, matematik değil."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıda 21 Haziran gün dönümü tarihinde Dünya üzerindeki aydınlanan alan gösterilmiştir. Bu tarihle ilgili aşağıda yapıl",
+      "skip_reason": "Fen Bilimleri sorusu, matematik değil."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 5,
+      "stem_preview": "Dünya nüfusunun yaklaşık yüzde sekizlik bölümü mavi gözlere sahip. Buna rağmen mavi göz geninin klinik tarihi için yeni ",
+      "skip_reason": "Fen Bilimleri sorusu, matematik değil."
+    },
+    {
+      "source": "lgs1.pdf",
+      "question_no": 6,
+      "stem_preview": "Okula gitmek için her gün aynı saatte durakta bekleyen Ayça, gölge boyunda meydana gelen değişimleri bir hafta boyunca g",
+      "skip_reason": "Fen Bilimleri sorusu, matematik değil."
+    }
+  ]
+}

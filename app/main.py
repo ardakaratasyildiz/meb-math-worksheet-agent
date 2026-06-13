@@ -38,7 +38,7 @@ _init_sentry()
 
 app = FastAPI(
     title="MEB Matematik Çalışma Kağıdı Üretici",
-    description="MEB müfredatına uygun (1-7. sınıf) matematik soruları üreten Gemini tabanlı mikroservis.",
+    description="MEB müfredatına uygun (1-8. sınıf) matematik soruları üreten Gemini tabanlı mikroservis.",
     version="0.1.0",
 )
 

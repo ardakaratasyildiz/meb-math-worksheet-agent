@@ -1,0 +1,76 @@
+{
+  "examples": [
+    {
+      "id": "lgs_fb99a719fd9927",
+      "grade": 8,
+      "topic_id": "",
+      "kazanim_kod": "M.8.1.1.3",
+      "difficulty": "orta",
+      "question_type": "coktan_secmeli",
+      "question": "120 kg pirinç ve kütlesi kilogram cinsinden tam sayı olan bir miktar bulgur birbirine karıştırılmadan ve hiç artmayacak şekilde eşit kütleli paketlere konulmuştur. Kullanılan paketlerin kütlesi en fazla 20 kg olduğuna göre başlangıçtaki bulgurun kütlesi aşağıdakilerden hangisi olabilir?\n\nA) 80\nB) 120\nC) 140\nD) 180",
+      "answer": "A) 80",
+      "solution": "Eğer bulgur miktarı 80 kg olursa, 120 kg pirinç ve 80 kg bulgur 20 kg'lık eşit paketlere ayrılabilir (120/20 = 6 paket pirinç, 80/20 = 4 paket bulgur). Bu durumda kullanılan paketlerin kütlesi 20 kg olup, 'en fazla 20 kg' koşulunu sağlar.",
+      "source": "lgs/lgs1.pdf"
+    },
+    {
+      "id": "lgs_4bd9d3f072dd66",
+      "grade": 8,
+      "topic_id": "",
+      "kazanim_kod": "M.8.1.2.2",
+      "difficulty": "orta",
+      "question_type": "gorsel_geometri",
+      "question": "Aşağıda verilen düzgün altıgenin bazı köşelerine üslü ifadeler, bazı köşelerine harfler yazılmıştır. Altıgenin verilen her köşegeninin uçlarına yazılan üslü ifadelerin çarpımı birbirine eşit olduğuna göre A · B · C işleminin sonucu kaçtır?<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"170,100 135,160.6 65,160.6 30,100 65,39.4 135,39.4\" fill=\"none\" stroke=\"black\" stroke-width=\"2\"/><line x1=\"170\" y1=\"100\" x2=\"30\" y2=\"100\" stroke=\"black\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/><line x1=\"135\" y1=\"160.6\" x2=\"65\" y2=\"39.4\" stroke=\"black\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/><line x1=\"65\" y1=\"160.6\" x2=\"135\" y2=\"39.4\" stroke=\"black\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/><text x=\"170\" y=\"90\" text-anchor=\"middle\" font-size=\"14\">2⁶</text><text x=\"145\" y=\"175\" text-anchor=\"middle\" font-size=\"14\">A</text><text x=\"55\" y=\"175\" text-anchor=\"middle\" font-size=\"14\">2⁴</text><text x=\"30\" y=\"90\" text-anchor=\"middle\" font-size=\"14\">2⁻²</text><text x=\"55\" y=\"25\" text-anchor=\"middle\" font-size=\"14\">B</text><text x=\"145\" y=\"25\" text-anchor=\"middle\" font-size=\"14\">C</text></svg>\n\nA) 3^25\nB) 3^24\nC) 3^22\nD) 3^21",
+      "answer": "B) 3^24",
+      "solution": "Köşelerdeki üslü ifadeler 9^5 = 3^10 ve 27^2 = 3^6'dır. Şıklardaki ifadeler 3 tabanında olduğu için 8^13 ifadesinin bir yazım hatası olduğu ve 3^8 olması gerektiği varsayılır (aksi takdirde sonuç 3 tabanında çıkmaz). Köşegenlerin uçlarındaki ifadelerin çarpımı eşit olmalıdır: P = 3^10 * B = A * 3^6 = 3^8 * C. A, B, C'nin çarpımının 3^24 olması için P^3 / (3^6 * 3^10 * 3^8) = 3^24 eşitliğinden P^3 = 3^48 ve P = 3^16 bulunur. Bu durumda A = 3^16 / 3^6 = 3^10, B = 3^16 / 3^10 = 3^6, C = 3^16 / 3^8 = 3^8 olur. A * B * C = 3^10 * 3^6 * 3^8 = 3^24.",
+      "source": "lgs/lgs1.pdf"
+    },
+    {
+      "id": "lgs_a3bec7f44d52e3",
+      "grade": 8,
+      "topic_id": "",
+      "kazanim_kod": "M.8.1.1.2",
+      "difficulty": "orta",
+      "question_type": "coktan_secmeli",
+      "question": "Yasin Öğretmen, bir doğal sayıyı asal çarpanlarının çarpımı şeklinde göstermesini anlatmak için bazı asal sayıları farklı renkte birim küplerle aşağıdaki gibi modellemiştir. Kırmızı küp 2, Yeşil küp 3, Mavi küp 5, Siyah küp 7. Örneğin; 350 = 2 · 5^2 · 7 olduğundan, kırmızı küpten 1, mavi küpten 2 ve siyah küpten 1 tane kullanılır. 350 sayısının birim küplerle modellenmiş hâli ve üstten görünümü aşağıdaki gibi olur. Toplam dört küp kullanılarak oluşturulan bir yapının üstten görünümü aşağıdaki gibidir. Buna göre bu yapı aşağıdaki sayılardan hangisinin modeli olamaz?\n\nA) 84\nB) 126\nC) 252\nD) 294",
+      "answer": "C) 252",
+      "solution": "Verilen üstten görünümde K, Y, S küpleri görülmektedir. Toplam dört küp kullanıldığına göre, dördüncü küp bu üç küpten birinin altında olmalıdır. Bu durumda olası sayı modelleri: 1. K^2YS (2^2 * 3 * 7 = 84), 2. KY^2S (2 * 3^2 * 7 = 126), 3. KYS^2 (2 * 3 * 7^2 = 294). Seçeneklerdeki 252 sayısının asal çarpanları 2^2 * 3^2 * 7'dir, bu da 2 adet K, 2 adet Y ve 1 adet S küpü gerektirir, yani toplam 5 küp. Bu durum, 'toplam dört küp kullanılarak' koşulunu sağlamaz. Dolayısıyla 252 bu yapının modeli olamaz.",
+      "source": "lgs/lgs1.pdf"
+    },
+    {
+      "id": "lgs_57b5a5212f2fc8",
+      "grade": 8,
+      "topic_id": "",
+      "kazanim_kod": "M.8.1.2.1",
+      "difficulty": "kolay",
+      "question_type": "coktan_secmeli",
+      "question": "Yukarıda verilen eşitliklere göre a + b işleminin sonucu kaçtır? 4⁻³ = 1/a, 5ᵇ = 1/25\n\nA) -66\nB) -17\nC) 62\nD) 66",
+      "answer": "C) 62",
+      "solution": "4⁻³ = 1/4³ = 1/64 olduğundan a = 64'tür. 5ᵇ = 1/25 = 1/5² = 5⁻² olduğundan b = -2'dir. Buna göre a + b = 64 + (-2) = 62 bulunur.",
+      "source": "lgs/lgs1.pdf"
+    },
+    {
+      "id": "lgs_c192b7569a3679",
+      "grade": 8,
+      "topic_id": "",
+      "kazanim_kod": "M.8.1.2.3",
+      "difficulty": "orta",
+      "question_type": "tablo_sorusu",
+      "question": "Kısa mesafe koşularında başlama işaretinden sonra sporcuların başlangıç noktasından ayrılma sürelerine tepki süresi denir. Kısa mesafe koşusuna katılan dört sporcuya ait tepki sürelerinin çözümlenmiş hâli ile bu sporcuların yarışı bitirme süreleri saniye cinsinden aşağıdaki tabloda verilmiştir. Buna göre tepki süresi en küçük olan yarışmacının, tepki süresi dışında yarışta kaldığı sürenin saniye cinsinden bilimsel gösterimi aşağıdakilerden hangisidir?\n\n| Sporcu | Tepki Süresi (saniye) | Yarışı Bitirme Süresi (saniye) |\n|---|---|---|\n| 1. sporcu | 2 * 10^-1 + 5 * 10^-2 + 4 * 10^-3 | 9,87 |\n| 2. sporcu | 2 * 10^-1 + 4 * 10^-2 + 5 * 10^-3 | 9,9 |\n| 3. sporcu | 2 * 10^-1 + 3 * 10^-2 + 9 * 10^-3 | 9,8 |\n| 4. sporcu | 2 * 10^-1 + 5 * 10^-2 + 9 * 10^-3 | 9,95 |\n\nA) 1,83 * 10¹\nB) 18,3 * 10⁰\nC) 1,9357 * 10¹\nD) 19,357 * 10⁰",
+      "answer": "D) 19,357 * 10⁰",
+      "solution": "Sporcuların tepki süreleri ondalık olarak yazılır: Mikail: 0,413 s, Salih: 0,403 s, Orhan: 0,410 s, Abdullah: 0,420 s. En küçük tepki süresi Salih'e aittir (0,403 s). Salih'in yarışı bitirme süresi 19,76 s'dir. Tepki süresi dışında yarışta kaldığı süre = 19,76 - 0,403 = 19,357 saniyedir. Bu sayının bilimsel gösterimi 19,357 * 10⁰ olarak ifade edilebilir.",
+      "source": "lgs/lgs1.pdf"
+    },
+    {
+      "id": "lgs_d8af0bdd81106c",
+      "grade": 8,
+      "topic_id": "",
+      "kazanim_kod": "M.8.1.2.1",
+      "difficulty": "orta",
+      "question_type": "gorsel_geometri",
+      "question": "Aşağıda aynı büyüklükte dört parçaya bölünmüş özdeş iki cam levha ile bu levhaların bölümlerine yazılmış üslü ifadeler gösterilmiştir. 1. cam levhadaki üslü ifadelerden değeri negatif tamsayı olanların bulunduğu bölüm mavi, 2. cam levhadaki üslü ifadelerden değeri pozitif tamsayı olanların bulunduğu bölüm sarıya boyanıyor. Bunların dışındaki bölümler boyanmadan bırakılıyor. Daha sonra bu iki cam levha yönleri değiştirilmeden kenarları çakışacak şekilde üst üste konulduğunda üst üste gelen mavi ve sarı renkli bölümlerin rengi yeşil görünüyor. Buna göre cam levhaların üst üste konulduktan sonraki görünümü aşağıdakilerden hangisi gibi olur?<svg viewBox=\"0 0 240 140\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"60\" y=\"15\" text-anchor=\"middle\" font-size=\"14\">1. cam levha</text><text x=\"180\" y=\"15\" text-anchor=\"middle\" font-size=\"14\">2. cam levha</text><rect x=\"10\" y=\"30\" width=\"100\" height=\"100\" fill=\"none\" stroke=\"black\" stroke-width=\"1\"/><line x1=\"60\" y1=\"30\" x2=\"60\" y2=\"130\" stroke=\"black\" stroke-width=\"1\"/><line x1=\"10\" y1=\"80\" x2=\"110\" y2=\"80\" stroke=\"black\" stroke-width=\"1\"/><text x=\"35\" y=\"55\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-size=\"16\">(-3)<tspan baseline-shift=\"super\" font-size=\"70%\">2</tspan></text><text x=\"85\" y=\"55\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-size=\"16\">(-2)<tspan baseline-shift=\"super\" font-size=\"70%\">3</tspan></text><text x=\"35\" y=\"105\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-size=\"16\">-5<tspan baseline-shift=\"super\" font-size=\"70%\">2</tspan></text><text x=\"85\" y=\"105\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-size=\"16\">(-1)<tspan baseline-shift=\"super\" font-size=\"70%\">10</tspan></text><rect x=\"130\" y=\"30\" width=\"100\" height=\"100\" fill=\"none\" stroke=\"black\" stroke-width=\"1\"/><line x1=\"180\" y1=\"30\" x2=\"180\" y2=\"130\" stroke=\"black\" stroke-width=\"1\"/><line x1=\"130\" y1=\"80\" x2=\"230\" y2=\"80\" stroke=\"black\" stroke-width=\"1\"/><text x=\"155\" y=\"55\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-size=\"16\">(-4)<tspan baseline-shift=\"super\" font-size=\"70%\">0</tspan></text><text x=\"205\" y=\"55\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-size=\"16\">-2<tspan baseline-shift=\"super\" font-size=\"70%\">4</tspan></text><text x=\"155\" y=\"105\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-size=\"16\">3<tspan baseline-shift=\"super\" font-size=\"70%\">-1</tspan></text><text x=\"205\" y=\"105\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-size=\"16\">(-1/2)<tspan baseline-shift=\"super\" font-size=\"70%\">-2</tspan></text></svg>\n\nA) Görsel A\nB) Görsel B\nC) Görsel C\nD) Görsel D",
+      "answer": "A) Görsel A",
+      "solution": "1. cam levhadaki değerler: (-5/2)³ = -15,625 (beyaz), (-2²)¹ = -4 (mavi), (-1)⁻¹⁰ = 1 (beyaz), (-0,1)⁻¹ = -10 (mavi). Yani 1. levhada sağ üst ve sol alt mavi. 2. cam levhadaki değerler: (-1,1)² = 1,21 (beyaz), (-10⁻¹)⁻² = 100 (sarı), (0,1)⁻¹ = 10 (sarı), (2/3)⁻³ = 3,375 (beyaz). Yani 2. levhada sağ üst ve sol alt sarı. İki levha üst üste konulduğunda mavi ve sarı bölgeler yeşil olur. Bu durumda sağ üst ve sol alt bölgeler yeşil, diğerleri beyaz olur. Bu görünüm A şıkkındaki görselle eşleşir.",
+      "source": "lgs/lgs1.pdf"
+    }
+  ]
+}

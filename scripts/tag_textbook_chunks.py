@@ -178,7 +178,7 @@ def _call_gemini_with_backoff(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--grade", type=int, required=True, help="Sınıf (1-7)")
+    parser.add_argument("--grade", type=int, required=True, help="Sınıf (1-8)")
     parser.add_argument("--batch", type=int, default=4, help="Bir Gemini çağrısındaki chunk sayısı")
     parser.add_argument("--limit", type=int, default=None, help="Test için maksimum chunk sayısı")
     parser.add_argument(
