@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useAuth } from "@clerk/nextjs";
+import { SignUpButton, useAuth } from "@clerk/nextjs";
 import {
   Download,
   FileText,
@@ -166,9 +166,28 @@ export function QuestionPreview() {
         </div>
         <div className="flex items-center gap-2">
           <ShareButton />
-          <Button onClick={onDownloadPdf} className="gap-2">
-            <Download className="h-4 w-4" /> PDF indir
-          </Button>
+          {userId ? (
+            <Button onClick={onDownloadPdf} className="gap-2">
+              <Download className="h-4 w-4" /> PDF indir
+            </Button>
+          ) : (
+            // Anonim: değeri (sorular + cevap anahtarı) gördü; PDF üyelik kapısında.
+            // Clerk modal sayfadan çıkmadan açılır → üretilen kağıt korunur; üyelik
+            // bitince userId dolar, buton "PDF indir"e döner.
+            <SignUpButton mode="modal">
+              <Button
+                className="gap-2"
+                onClick={() =>
+                  track("download_signup_gate", {
+                    grade: worksheet.grade,
+                    topic: worksheet.topic,
+                  })
+                }
+              >
+                <Download className="h-4 w-4" /> Üye ol ve PDF indir
+              </Button>
+            </SignUpButton>
+          )}
         </div>
       </div>
 
