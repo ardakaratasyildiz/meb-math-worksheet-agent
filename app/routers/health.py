@@ -18,7 +18,10 @@ from app.services.worksheet_history import WORKSHEET_HISTORY
 router = APIRouter()
 
 
-@router.get("/healthz", tags=["system"])
+# GET + HEAD: UptimeRobot gibi uptime monitor'leri varsayılan olarak HEAD atar.
+# Yalnız GET tanımlıysa HEAD → 405 döner ve monitor "down" sanır. Her iki metodu
+# da kabul ederek hangi pinger olursa olsun 200 alınır.
+@router.api_route("/healthz", methods=["GET", "HEAD"], tags=["system"])
 def healthz() -> dict[str, str]:
     return {"status": "ok"}
 

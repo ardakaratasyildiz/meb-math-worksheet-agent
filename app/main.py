@@ -75,6 +75,6 @@ app.include_router(admin.router, prefix="/admin", tags=["admin"])
 app.include_router(health.router, tags=["system"])
 
 
-@app.get("/health", tags=["system"])
+@app.api_route("/health", methods=["GET", "HEAD"], tags=["system"])
 def health() -> dict[str, str]:
     return {"status": "ok"}
