@@ -6,6 +6,7 @@ import { ArrowRight, BookOpen, CheckCircle2, FileText, GraduationCap, Sparkles }
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, learningResourceSchema } from "@/components/JsonLd";
+import { TrackedGenerateLink } from "@/components/TrackedGenerateLink";
 import { SampleQuestions } from "@/components/SampleQuestions";
 import { getAltKonularByTopic } from "@/lib/altkonular";
 import { CURRICULUM_PAGES, getCurriculumPageBySlug } from "@/lib/curriculum";
@@ -110,11 +111,16 @@ export default async function CalismaDetailPage({ params }: PageProps) {
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">{page.description}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="gap-2">
-              <Link href={generateHref}>
-                Çalışma kağıdı üret <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+            <TrackedGenerateLink
+              href={generateHref}
+              source="curriculum"
+              grade={page.grade}
+              topic={page.topicId}
+              size="lg"
+              className="gap-2"
+            >
+              Çalışma kağıdı üret <ArrowRight className="h-4 w-4" />
+            </TrackedGenerateLink>
             <Button asChild variant="outline" size="lg">
               <Link href="/features">Sistem nasıl çalışır?</Link>
             </Button>
@@ -217,11 +223,16 @@ export default async function CalismaDetailPage({ params }: PageProps) {
           <p className="mt-3 text-muted-foreground">
             Soru sayısı, zorluk seviyesi ve soru tipini sen belirle. PDF&apos;in birkaç saniyede hazır.
           </p>
-          <Button asChild size="lg" className="mt-6 gap-2 px-8">
-            <Link href={generateHref}>
-              Şimdi üretmeye başla <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <TrackedGenerateLink
+            href={generateHref}
+            source="curriculum_footer"
+            grade={page.grade}
+            topic={page.topicId}
+            size="lg"
+            className="mt-6 gap-2 px-8"
+          >
+            Şimdi üretmeye başla <ArrowRight className="h-4 w-4" />
+          </TrackedGenerateLink>
         </div>
       </section>
 

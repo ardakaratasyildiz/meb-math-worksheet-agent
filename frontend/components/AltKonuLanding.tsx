@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, learningResourceSchema } from "@/components/JsonLd";
+import { TrackedGenerateLink } from "@/components/TrackedGenerateLink";
 import type { AltKonu } from "@/lib/altkonular";
 import { getAltKonularByTopic, getAltKonuFamily } from "@/lib/altkonular";
 import { getCurriculumPageBySlug } from "@/lib/curriculum";
@@ -81,11 +82,16 @@ export function AltKonuLanding({ ak }: { ak: AltKonu }) {
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">{ak.intro}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="gap-2">
-              <Link href={generateHref}>
-                Çalışma kağıdı üret <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+            <TrackedGenerateLink
+              href={generateHref}
+              source="altkonu"
+              grade={ak.grade}
+              topic={ak.topicId}
+              size="lg"
+              className="gap-2"
+            >
+              Çalışma kağıdı üret <ArrowRight className="h-4 w-4" />
+            </TrackedGenerateLink>
             <Button asChild variant="outline" size="lg">
               <Link href={`/calismalar/${ak.topicSlug}`}>
                 {ak.topicName} konusunun tümü
@@ -157,11 +163,16 @@ export function AltKonuLanding({ ak }: { ak: AltKonu }) {
             {" "}konusuna uygun soruları üretir, çift denetimden geçirir ve PDF olarak
             hazırlar.
           </p>
-          <Button asChild size="lg" className="mt-6 gap-2 px-8">
-            <Link href={generateHref}>
-              Şimdi üret <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <TrackedGenerateLink
+            href={generateHref}
+            source="altkonu_footer"
+            grade={ak.grade}
+            topic={ak.topicId}
+            size="lg"
+            className="mt-6 gap-2 px-8"
+          >
+            Şimdi üret <ArrowRight className="h-4 w-4" />
+          </TrackedGenerateLink>
         </div>
       </section>
 
