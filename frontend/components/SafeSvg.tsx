@@ -8,33 +8,6 @@ interface SafeSvgProps {
   className?: string;
 }
 
-// DOMPurify SVG sanitize seçenekleri — script/on* handler'ları, href javascript:
-// gibi vektörleri keser; kritik SVG attr'larını açıkça whitelist'ler.
-const SANITIZE_OPTS = {
-  USE_PROFILES: { svg: true, svgFilters: true },
-  ADD_ATTR: [
-    "xmlns",
-    "xmlns:xlink",
-    "viewBox",
-    "preserveAspectRatio",
-    "fill",
-    "stroke",
-    "stroke-width",
-    "stroke-dasharray",
-    "stroke-linecap",
-    "stroke-linejoin",
-    "font-size",
-    "font-family",
-    "font-weight",
-    "text-anchor",
-    "dominant-baseline",
-    "transform",
-    "opacity",
-  ],
-  FORBID_ATTR: ["onload", "onclick", "onerror", "onmouseover", "href"],
-  FORBID_TAGS: ["script", "foreignObject", "iframe"],
-} as const;
-
 /**
  * LLM tarafından üretilen ham SVG string'ini sanitize edip render eder.
  *
@@ -72,7 +45,34 @@ export function SafeSvg({ content, className }: SafeSvgProps) {
 
     void import("isomorphic-dompurify").then(({ default: DOMPurify }) => {
       if (cancelled) return;
-      const clean = DOMPurify.sanitize(svg, SANITIZE_OPTS);
+      // Seçenekler inline — DOMPurify.sanitize overload'ı (dönüş tipi string)
+      // ile uyum için (çıkarılmış `as const` obje overload'ı kırıyor).
+      const clean = DOMPurify.sanitize(svg, {
+        USE_PROFILES: { svg: true, svgFilters: true },
+        // xmlns, viewBox ve diğer kritik attr'ları açıkça whitelist'le —
+        // bazı DOMPurify versiyonlarında default'ta drop ediliyor.
+        ADD_ATTR: [
+          "xmlns",
+          "xmlns:xlink",
+          "viewBox",
+          "preserveAspectRatio",
+          "fill",
+          "stroke",
+          "stroke-width",
+          "stroke-dasharray",
+          "stroke-linecap",
+          "stroke-linejoin",
+          "font-size",
+          "font-family",
+          "font-weight",
+          "text-anchor",
+          "dominant-baseline",
+          "transform",
+          "opacity",
+        ],
+        FORBID_ATTR: ["onload", "onclick", "onerror", "onmouseover", "href"],
+        FORBID_TAGS: ["script", "foreignObject", "iframe"],
+      });
       setState(
         clean && clean.includes("<svg")
           ? { status: "ok", svg: clean }
