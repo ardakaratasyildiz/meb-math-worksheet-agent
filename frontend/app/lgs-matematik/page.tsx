@@ -188,7 +188,7 @@ export default function LgsHubPage() {
             <div className="mb-6 flex items-center gap-2">
               <Target className="h-5 w-5 text-primary" />
               <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                LGS'de en çok çıkan alt-konular
+                LGS&apos;de en çok çıkan alt-konular
               </h2>
             </div>
             <p className="mb-8 text-muted-foreground">
