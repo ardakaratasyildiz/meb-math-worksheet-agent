@@ -13,10 +13,17 @@ from app.config import settings
 
 
 def _identifier(request: Request) -> str:
-    """Rate-limit anahtarı: API key varsa onu, yoksa IP'yi kullan."""
-    api_key = request.headers.get("X-API-Key")
-    if api_key:
-        return f"key:{api_key}"
+    """Rate-limit anahtarı: oturum (tenant) varsa per-kullanıcı, yoksa per-IP.
+
+    NOT: X-API-Key AUTH içindir ve prod'da tüm tarayıcı istekleri AYNI public
+    key'i (NEXT_PUBLIC_API_KEY) gönderir → onunla key'lemek herkesi tek bucket'a
+    koyar (anonim üretim ölçeğinde global kilit). Bu yüzden rate-limit kimliği
+    için X-Tenant-Id (giriş yapan kullanıcı) / IP (anonim) kullanılır. Auth ile
+    rate-limit kimliği bilinçli olarak ayrıştırılmıştır.
+    """
+    tenant = request.headers.get("X-Tenant-Id")
+    if tenant:
+        return f"tenant:{tenant}"
     return f"ip:{get_remote_address(request)}"
 
 

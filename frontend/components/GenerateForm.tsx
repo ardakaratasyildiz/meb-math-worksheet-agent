@@ -315,14 +315,10 @@ export function GenerateForm({
       });
       return;
     }
-    // tenant_id (Clerk userId) hazır değilken üretme — aksi halde üretim
-    // hesaba kaydedilmez ("geçmişte göremiyorum" sorununun kök sebebi).
-    if (!userId) {
-      toast.error("Oturum bilgisi henüz yüklenmedi", {
-        description: "Birkaç saniye sonra tekrar deneyin.",
-      });
-      return;
-    }
+    // Anonim üretime izin verilir (tenant_id null → backend history'ye yazmaz,
+    // rate-limit IP bazlı). Giriş yapıldıysa tenant_id = userId → üretim hesaba
+    // kaydedilir ve geçmişte görünür. PDF indirme anonimde üyelik kapısında
+    // (QuestionPreview).
     startGenerate();
     // Funnel: aktivasyon adımının başlangıcı.
     track("worksheet_generate_start", {

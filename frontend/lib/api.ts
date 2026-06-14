@@ -93,11 +93,21 @@ export async function listKazanimlar(
 
 // ---- Worksheets ---------------------------------------------------------
 
+/**
+ * Rate-limit kimliği için header: giriş yapan kullanıcı per-tenant, anonim
+ * per-IP bucket'a düşer (bkz. backend security._identifier). tenant_id null ise
+ * header gönderilmez → backend IP'ye düşer.
+ */
+function tenantHeader(tenantId: string | null | undefined): Record<string, string> {
+  return tenantId ? { "X-Tenant-Id": tenantId } : {};
+}
+
 export async function generateWorksheet(
   body: GenerateWorksheetRequest,
 ): Promise<GenerateWorksheetResponse> {
   return request<GenerateWorksheetResponse>("/api/worksheets/generate", {
     method: "POST",
+    headers: tenantHeader(body.tenant_id),
     body: JSON.stringify(body),
   });
 }
@@ -144,7 +154,7 @@ export async function generateWorksheetStream(
 ): Promise<GenerateWorksheetResponse> {
   const res = await fetch(`${BASE}/api/worksheets/generate.stream`, {
     method: "POST",
-    headers: headers(),
+    headers: headers(tenantHeader(body.tenant_id)),
     body: JSON.stringify(body),
     signal,
   });
@@ -271,7 +281,11 @@ export async function regenerateQuestion(body: {
 }): Promise<Question> {
   const r = await request<{ question: Question }>(
     "/api/worksheets/regenerate-question",
-    { method: "POST", body: JSON.stringify(body) },
+    {
+      method: "POST",
+      headers: tenantHeader(body.tenant_id),
+      body: JSON.stringify(body),
+    },
   );
   return r.question;
 }
