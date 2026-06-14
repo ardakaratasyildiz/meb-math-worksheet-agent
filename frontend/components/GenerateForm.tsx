@@ -34,7 +34,7 @@ import {
 } from "@/lib/curriculum";
 import { track } from "@/lib/analytics";
 import { addHistory, type HistoryItem } from "@/lib/history";
-import { useGenerateStore, type TypeGroupKey } from "@/lib/store";
+import { useGenerateStore, type FormState, type TypeGroupKey } from "@/lib/store";
 import {
   QUESTION_TYPE_GROUPS,
   type Difficulty,
@@ -155,7 +155,15 @@ function SectionTitle({
   );
 }
 
-export function GenerateForm() {
+export function GenerateForm({
+  initialGrade,
+  initialTopicId,
+  initialKazanim,
+}: {
+  initialGrade?: number;
+  initialTopicId?: string;
+  initialKazanim?: string;
+} = {}) {
   const {
     grade,
     topicId,
@@ -178,6 +186,28 @@ export function GenerateForm() {
   } = useGenerateStore();
 
   const { userId } = useAuth();
+
+  // SEO deep-link hidrasyonu (?grade=&topic=&kazanim=) — bir kez, mount'ta.
+  // URL niyeti, localStorage'a persist edilmiş son seçimi EZER (kullanıcı SEO'dan
+  // belirli bir sınıf/konu için geldi). Ayrıca huni ölçümü için form'a varış
+  // event'i atılır → cta_generate_click ile arası = auth-duvarı kaybı.
+  const hydratedRef = React.useRef(false);
+  React.useEffect(() => {
+    if (hydratedRef.current) return;
+    hydratedRef.current = true;
+    const patch: Partial<FormState> = {};
+    if (initialGrade) patch.grade = initialGrade;
+    if (initialTopicId) patch.topicId = initialTopicId;
+    if (initialKazanim) patch.kazanimKod = initialKazanim;
+    const fromDeeplink = Object.keys(patch).length > 0;
+    if (fromDeeplink) setForm(patch);
+    track("generate_page_view", {
+      grade: patch.grade ?? grade,
+      topic_id: patch.topicId ?? topicId,
+      deeplink: fromDeeplink,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Dropdown verisi lokal müfredat snapshot'ından başlatılır → seçenekler ilk
   // render'da hazır gelir, Render backend'inin cold-start'ını beklemez (eski

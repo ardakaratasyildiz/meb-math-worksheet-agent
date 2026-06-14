@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { TrackedGenerateLink } from "@/components/TrackedGenerateLink";
 import { ALTKONU_PAGES } from "@/lib/altkonular";
 import { CURRICULUM_PAGES } from "@/lib/curriculum";
 
@@ -138,11 +139,15 @@ export default function LgsHubPage() {
             Cevap anahtarı ve adım adım çözüm dahil.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="gap-2">
-              <Link href="/generate?grade=8">
-                LGS çalışma kağıdı üret <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+            <TrackedGenerateLink
+              href="/generate?grade=8"
+              source="lgs_hub"
+              grade={8}
+              size="lg"
+              className="gap-2"
+            >
+              LGS çalışma kağıdı üret <ArrowRight className="h-4 w-4" />
+            </TrackedGenerateLink>
             <Button asChild variant="outline" size="lg">
               <Link href="/calismalar">Tüm sınıflar ve konular</Link>
             </Button>
@@ -238,11 +243,15 @@ export default function LgsHubPage() {
             8. sınıf konusunu seç, gerisini sisteme bırak — kazanıma hizalı
             sorular, cevap anahtarı ve adım adım çözümle PDF olarak hazır.
           </p>
-          <Button asChild size="lg" className="mt-6 gap-2 px-8">
-            <Link href="/generate?grade=8">
-              Şimdi üret <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <TrackedGenerateLink
+            href="/generate?grade=8"
+            source="lgs_hub_footer"
+            grade={8}
+            size="lg"
+            className="mt-6 gap-2 px-8"
+          >
+            Şimdi üret <ArrowRight className="h-4 w-4" />
+          </TrackedGenerateLink>
         </div>
       </section>
 

@@ -3,9 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, ChevronRight, GraduationCap, Target } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, learningResourceSchema } from "@/components/JsonLd";
+import { TrackedGenerateLink } from "@/components/TrackedGenerateLink";
 import { AltKonuLanding } from "@/components/AltKonuLanding";
 import { ALTKONU_PAGES, getAltKonu } from "@/lib/altkonular";
 import { getCurriculumPageBySlug } from "@/lib/curriculum";
@@ -138,11 +138,16 @@ export default async function KazanimDetailPage({ params }: PageProps) {
             içinde hazırla — PDF, cevap anahtarı ve adım adım çözüm dahil.
           </p>
           <div className="mt-8">
-            <Button asChild size="lg" className="gap-2">
-              <Link href={generateHref}>
-                Bu kazanıma özel kağıt üret <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+            <TrackedGenerateLink
+              href={generateHref}
+              source="kazanim"
+              grade={k.grade}
+              topic={k.topicId}
+              size="lg"
+              className="gap-2"
+            >
+              Bu kazanıma özel kağıt üret <ArrowRight className="h-4 w-4" />
+            </TrackedGenerateLink>
           </div>
         </div>
       </section>
@@ -182,11 +187,16 @@ export default async function KazanimDetailPage({ params }: PageProps) {
             Soru sayısı, zorluk ve soru tipini sen seç; sistem bu kazanıma hizalı
             soruları üretir, denetimden geçirir ve PDF olarak hazırlar.
           </p>
-          <Button asChild size="lg" className="mt-6 gap-2 px-8">
-            <Link href={generateHref}>
-              Şimdi üret <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <TrackedGenerateLink
+            href={generateHref}
+            source="kazanim_footer"
+            grade={k.grade}
+            topic={k.topicId}
+            size="lg"
+            className="mt-6 gap-2 px-8"
+          >
+            Şimdi üret <ArrowRight className="h-4 w-4" />
+          </TrackedGenerateLink>
         </div>
       </section>
 
