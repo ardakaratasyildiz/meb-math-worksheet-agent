@@ -33,6 +33,22 @@ function headers(extra: Record<string, string> = {}): HeadersInit {
   return h;
 }
 
+/**
+ * Backend'i uyandırma ping'i (fire-and-forget). Render free tier 15 dk
+ * trafiksiz kalınca container'ı uyutur; uyanması ~25 sn sürer. Kullanıcı
+ * siteye girer girmez bu ping backend'i uyandırmaya başlar → /coz sekmelerine
+ * vardığında instance ısınmış/ısınmakta olur. Hata yutulur (asla throw etmez).
+ */
+export function pingHealth(): void {
+  try {
+    void fetch(`${BASE}/healthz`, { method: "GET", cache: "no-store" }).catch(
+      () => {},
+    );
+  } catch {
+    /* SSR / fetch yoksa sessiz geç */
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...init,

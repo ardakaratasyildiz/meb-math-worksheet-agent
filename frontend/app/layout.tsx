@@ -5,6 +5,7 @@ import { trTR } from "@clerk/localizations";
 import { Toaster } from "sonner";
 
 import { Analytics } from "@/components/Analytics";
+import { BackendWarmup } from "@/components/BackendWarmup";
 import { CookieConsent } from "@/components/CookieConsent";
 import { ThemeProvider } from "@/components/theme-provider";
 import TopNavBar from "@/components/TopNavBar";
@@ -167,6 +168,7 @@ export default function RootLayout({
               <Toaster richColors position="top-center" />
               <CookieConsent />
               <Analytics />
+              <BackendWarmup />
             </div>
           </ThemeProvider>
         </body>
