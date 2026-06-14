@@ -1642,6 +1642,318 @@ export const ALTKONU_PAGES: AltKonu[] = [
       "Grafikten geri okuma ve problem çözme.",
     ],
   }),
+
+  // ─── 8. SINIF — LGS HAZIRLIK ─────────────────────────────────────────────
+  // LGS'de en çok soru çıkan alt-konular. description'larda "LGS" çerçevesi
+  // long-tail aramayı yakalar; /lgs-matematik hub bu sayfalara link verir.
+  ak({
+    grade: 8,
+    topicId: "dogal_sayilar",
+    slug: "uslu-ifadeler",
+    title: "Üslü İfadeler",
+    description:
+      "8. sınıf LGS üslü ifadeler çalışma kağıdı: üslü sayılarla çarpma-bölme, negatif ve sıfır üs, üssün üssü. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz üret.",
+    intro:
+      "Üslü ifadeler LGS matematikte neredeyse her yıl soru çıkan temel konudur. Bu çalışma kağıdı tam sayı kuvvetlerini, negatif ve sıfır üssü, aynı tabanlı üslü sayılarda işlem kurallarını ve 10'un kuvvetleriyle gösterimi pekiştirir.",
+    skills: [
+      "Aynı tabanlı üslü sayılarda çarpma ve bölme",
+      "Negatif tam sayı ve sıfır üssünü yorumlama",
+      "Üslü bir ifadenin üssünü alma",
+      "10'un tam sayı kuvvetleriyle büyük/küçük sayı yazma",
+      "Üslü ifadeleri karşılaştırma ve sıralama",
+    ],
+    difficulty: [
+      "Tek kuralla aynı tabanlı çarpma-bölme.",
+      "Negatif üs ve birden çok kuralın birlikte kullanımı.",
+      "LGS tarzı çok adımlı üslü ifade sadeleştirme.",
+    ],
+    family: "uslu-ifadeler",
+  }),
+  ak({
+    grade: 8,
+    topicId: "dogal_sayilar",
+    slug: "karekoklu-ifadeler",
+    title: "Kareköklü İfadeler",
+    description:
+      "8. sınıf LGS kareköklü ifadeler çalışma kağıdı: kareköklü sayılarla çarpma-bölme, kök içine alma/dışına çıkarma, toplama-çıkarma. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Kareköklü ifadeler LGS'nin vazgeçilmez konularından biridir. Bu çalışma kağıdı tam kare sayıları tanımayı, kök içindeki çarpanı dışarı çıkarmayı, kareköklü sayılarla dört işlemi ve kareköklü ifadeleri karşılaştırmayı kapsar.",
+    skills: [
+      "Tam kare sayıların kareköklerini bulma",
+      "Kök içine alma ve kök dışına çarpan çıkarma",
+      "Kareköklü sayılarla çarpma ve bölme",
+      "Benzer kareköklü ifadelerde toplama-çıkarma",
+      "Kareköklü ifadeleri ondalık değerle karşılaştırma",
+    ],
+    difficulty: [
+      "Tam kare köklerini bulma, basit sadeleştirme.",
+      "Kök dışına çıkarma ve dört işlem birlikte.",
+      "LGS tarzı kareköklü ifade problemleri.",
+    ],
+    family: "karekoklu-ifadeler",
+  }),
+  ak({
+    grade: 8,
+    topicId: "dogal_sayilar",
+    slug: "carpanlar-ve-katlar",
+    title: "Çarpanlar ve Katlar (EBOB - EKOK)",
+    description:
+      "8. sınıf LGS çarpanlar ve katlar çalışma kağıdı: asal çarpanlar, EBOB-EKOK ve problem uygulamaları. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz üret.",
+    intro:
+      "Çarpanlar ve katlar (EBOB-EKOK) LGS'de hem doğrudan hem de günlük hayat problemi olarak sık çıkar. Bu çalışma kağıdı asal çarpanlara ayırmayı, ortak bölen/kat bulmayı ve EBOB-EKOK'u problemlerde kullanmayı pekiştirir.",
+    skills: [
+      "Bir sayıyı asal çarpanlarına ayırma",
+      "İki sayının EBOB'unu bulma",
+      "İki sayının EKOK'unu bulma",
+      "EBOB-EKOK ile günlük hayat problemleri çözme",
+      "Aralarında asal sayıları tanıma",
+    ],
+    difficulty: [
+      "Küçük sayılarda EBOB-EKOK bulma.",
+      "Asal çarpan tablosuyla EBOB-EKOK.",
+      "LGS tarzı çok adımlı EBOB-EKOK problemleri.",
+    ],
+    family: "carpanlar-katlar",
+  }),
+  ak({
+    grade: 8,
+    topicId: "dogal_sayilar",
+    slug: "gercek-sayilar",
+    title: "Gerçek Sayılar (Rasyonel ve İrrasyonel)",
+    description:
+      "8. sınıf LGS gerçek sayılar çalışma kağıdı: rasyonel ve irrasyonel sayıları tanıma, sayı kümeleri ve sayı doğrusunda yerleştirme. PDF + cevap anahtarı + çözüm.",
+    intro:
+      "Gerçek sayılar, rasyonel ve irrasyonel sayıların birleşimidir. Bu çalışma kağıdı bir sayının hangi kümeye ait olduğunu belirlemeyi, irrasyonel sayıları tanımayı ve gerçek sayıları sayı doğrusunda karşılaştırmayı pekiştirir.",
+    skills: [
+      "Rasyonel ve irrasyonel sayıları ayırt etme",
+      "Sayı kümeleri arasındaki kapsama ilişkisini kurma",
+      "İrrasyonel sayıları sayı doğrusunda yaklaşık yerleştirme",
+      "Gerçek sayıları karşılaştırma ve sıralama",
+    ],
+    difficulty: [
+      "Verilen sayının türünü belirleme.",
+      "Küme ilişkileri ve karşılaştırma.",
+      "LGS tarzı sayı kümesi muhakeme soruları.",
+    ],
+  }),
+  ak({
+    grade: 8,
+    topicId: "cebir",
+    slug: "carpanlara-ayirma",
+    title: "Çarpanlara Ayırma",
+    description:
+      "8. sınıf LGS çarpanlara ayırma çalışma kağıdı: ortak çarpan parantezine alma, özdeşliklerle çarpanlara ayırma. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz.",
+    intro:
+      "Çarpanlara ayırma, cebirsel ifadeleri sadeleştirmenin ve denklem çözmenin anahtarıdır; LGS'de özdeşliklerle birlikte sık sorulur. Bu çalışma kağıdı ortak çarpan parantezine almayı ve özdeşlik kalıplarını kullanarak çarpanlara ayırmayı pekiştirir.",
+    skills: [
+      "Ortak çarpanı parantezine alma",
+      "İki kare farkı ile çarpanlara ayırma",
+      "Tam kare özdeşliğini tanıyıp çarpanlara ayırma",
+      "Çarpanlara ayırarak cebirsel ifade sadeleştirme",
+    ],
+    difficulty: [
+      "Tek terimli ortak çarpan parantezi.",
+      "İki kare farkı ve tam kare ile ayırma.",
+      "LGS tarzı çok adımlı çarpanlara ayırma.",
+    ],
+    family: "carpanlara-ayirma",
+  }),
+  ak({
+    grade: 8,
+    topicId: "cebir",
+    slug: "ozdeslikler",
+    title: "Cebirsel İfadeler ve Özdeşlikler",
+    description:
+      "8. sınıf LGS özdeşlikler çalışma kağıdı: tam kare ve iki kare farkı özdeşlikleri, cebirsel ifadelerde işlemler. PDF, cevap anahtarı ve adım adım çözüm, ücretsiz.",
+    intro:
+      "Cebirsel özdeşlikler LGS'de hem doğrudan hem de geometrik modellerle (alan) sorulur. Bu çalışma kağıdı tam kare ((a±b)²) ve iki kare farkı (a²−b²) özdeşliklerini açmayı, modellemeyi ve hesaplamalarda kullanmayı pekiştirir.",
+    skills: [
+      "(a+b)² ve (a−b)² tam kare özdeşliklerini açma",
+      "a²−b² iki kare farkı özdeşliğini kullanma",
+      "Özdeşlikleri alan modeliyle ilişkilendirme",
+      "Özdeşliklerle pratik hesap yapma (örn. 99², 101×99)",
+    ],
+    difficulty: [
+      "Özdeşliği doğrudan açma.",
+      "Modelle ilişkilendirme ve pratik hesap.",
+      "LGS tarzı özdeşlik muhakeme soruları.",
+    ],
+    family: "ozdeslikler",
+  }),
+  ak({
+    grade: 8,
+    topicId: "cebir",
+    slug: "dogrusal-denklemler",
+    title: "Doğrusal Denklemler",
+    description:
+      "8. sınıf LGS doğrusal denklemler çalışma kağıdı: birinci dereceden denklem kurma ve çözme, koordinat düzleminde doğru. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Doğrusal denklemler LGS cebir sorularının omurgasıdır. Bu çalışma kağıdı birinci dereceden bir bilinmeyenli denklem kurmayı ve çözmeyi, denklemi koordinat düzleminde doğruyla ilişkilendirmeyi ve problem çözmeyi pekiştirir.",
+    skills: [
+      "Birinci dereceden denklem kurma ve çözme",
+      "Denklemi sözel problemden modelleme",
+      "Doğrusal denklemi koordinat düzleminde gösterme",
+      "Doğru üzerindeki noktaları belirleme",
+    ],
+    difficulty: [
+      "Tek adımlı denklem çözme.",
+      "Problemden denklem kurup çözme.",
+      "LGS tarzı doğru-denklem ilişkisi soruları.",
+    ],
+    family: "dogrusal-denklemler",
+  }),
+  ak({
+    grade: 8,
+    topicId: "cebir",
+    slug: "dogrunun-egimi",
+    title: "Doğrunun Eğimi",
+    description:
+      "8. sınıf LGS doğrunun eğimi çalışma kağıdı: eğimi hesaplama, eğim ile diklik-paralellik, grafikten eğim okuma. PDF, cevap anahtarı ve adım adım çözüm, ücretsiz.",
+    intro:
+      "Doğrunun eğimi, LGS'de grafik yorumlama sorularında öne çıkar. Bu çalışma kağıdı iki noktadan geçen doğrunun eğimini hesaplamayı, eğimin işaretini yorumlamayı ve grafikten eğim okumayı pekiştirir.",
+    skills: [
+      "İki noktası verilen doğrunun eğimini hesaplama",
+      "Eğimin işaretini (artan/azalan) yorumlama",
+      "Grafikten doğrunun eğimini okuma",
+      "Yatay ve düşey doğruların eğimini belirleme",
+    ],
+    difficulty: [
+      "İki noktadan eğim hesaplama.",
+      "Grafikten eğim okuma ve yorumlama.",
+      "LGS tarzı eğim muhakeme soruları.",
+    ],
+  }),
+  ak({
+    grade: 8,
+    topicId: "cebir",
+    slug: "esitsizlikler",
+    title: "Eşitsizlikler",
+    description:
+      "8. sınıf LGS eşitsizlikler çalışma kağıdı: birinci dereceden bir bilinmeyenli eşitsizlik çözme ve sayı doğrusunda gösterme. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Eşitsizlikler LGS cebir konusunun önemli bir parçasıdır. Bu çalışma kağıdı birinci dereceden bir bilinmeyenli eşitsizlikleri çözmeyi, çözüm kümesini sayı doğrusunda göstermeyi ve eşitsizlik problemlerini modellemeyi pekiştirir.",
+    skills: [
+      "Birinci dereceden eşitsizlik çözme",
+      "Çözüm kümesini sayı doğrusunda gösterme",
+      "Negatifle çarpma/bölmede yön değiştirmeyi uygulama",
+      "Sözel problemden eşitsizlik kurma",
+    ],
+    difficulty: [
+      "Tek adımlı eşitsizlik çözme.",
+      "Yön değiştirme ve sayı doğrusu gösterimi.",
+      "LGS tarzı eşitsizlik problemleri.",
+    ],
+  }),
+  ak({
+    grade: 8,
+    topicId: "geometri",
+    slug: "ucgenler-pisagor",
+    title: "Üçgenler ve Pisagor Bağıntısı",
+    description:
+      "8. sınıf LGS üçgenler ve Pisagor çalışma kağıdı: dik üçgende Pisagor bağıntısı, kenar-açı ilişkileri, üçgen eşitsizliği. PDF, cevap anahtarı ve çözüm, ücretsiz.",
+    intro:
+      "Üçgenler ve Pisagor bağıntısı LGS geometrinin en çok soru çıkan başlığıdır. Bu çalışma kağıdı dik üçgende kenar uzunluğu bulmayı, üçgen eşitsizliğini ve kenar-açı ilişkilerini pekiştirir.",
+    skills: [
+      "Dik üçgende Pisagor bağıntısıyla kenar bulma",
+      "Pisagor üçlülerini tanıma (3-4-5, 5-12-13 ...)",
+      "Üçgen eşitsizliğini uygulama",
+      "Kenar-açı ilişkilerini yorumlama",
+      "Pisagor'u günlük hayat problemlerinde kullanma",
+    ],
+    difficulty: [
+      "Tanıdık Pisagor üçlüleriyle kenar bulma.",
+      "Pisagor bağıntısıyla hesap ve eşitsizlik.",
+      "LGS tarzı çok adımlı üçgen problemleri.",
+    ],
+    family: "ucgenler",
+  }),
+  ak({
+    grade: 8,
+    topicId: "geometri",
+    slug: "donusum-geometrisi",
+    title: "Dönüşüm Geometrisi (Öteleme - Yansıma - Dönme)",
+    description:
+      "8. sınıf LGS dönüşüm geometrisi çalışma kağıdı: öteleme, yansıma ve dönme; koordinat düzleminde dönüşümler. PDF + cevap anahtarı + adım adım çözüm, ücretsiz.",
+    intro:
+      "Dönüşüm geometrisi LGS'de koordinat düzlemiyle birleşerek soru olarak çıkar. Bu çalışma kağıdı bir şeklin ötelenmesini, bir doğruya göre yansımasını ve bir nokta etrafında dönmesini koordinatlarla belirlemeyi pekiştirir.",
+    skills: [
+      "Koordinat düzleminde öteleme yapma",
+      "Eksenlere göre yansımayı belirleme",
+      "Bir nokta etrafında dönme (90°, 180°)",
+      "Dönüşüm sonrası koordinatları bulma",
+      "Birden çok dönüşümü sırayla uygulama",
+    ],
+    difficulty: [
+      "Tek bir öteleme veya yansıma.",
+      "Dönme ve koordinat hesabı.",
+      "LGS tarzı çoklu dönüşüm soruları.",
+    ],
+  }),
+  ak({
+    grade: 8,
+    topicId: "geometri",
+    slug: "geometrik-cisimler",
+    title: "Geometrik Cisimler (Silindir - Koni - Piramit)",
+    description:
+      "8. sınıf LGS geometrik cisimler çalışma kağıdı: dik prizma, silindir, koni ve piramidin yüzey alanı ve hacmi. PDF, cevap anahtarı ve adım adım çözüm, ücretsiz.",
+    intro:
+      "Geometrik cisimler LGS'de hacim ve yüzey alanı hesaplarıyla çıkar. Bu çalışma kağıdı dik prizma, silindir, koni ve piramidin temel elemanlarını tanımayı, hacim ve yüzey alanı hesaplamayı pekiştirir.",
+    skills: [
+      "Silindirin hacmini ve yüzey alanını hesaplama",
+      "Dik prizmaların hacmini bulma",
+      "Koni ve piramidin temel elemanlarını tanıma",
+      "Hacim-yüzey alanı problemlerini çözme",
+    ],
+    difficulty: [
+      "Tanıdık ölçülerle silindir/prizma hacmi.",
+      "Yüzey alanı ve birden çok cisim.",
+      "LGS tarzı çok adımlı hacim problemleri.",
+    ],
+  }),
+  ak({
+    grade: 8,
+    topicId: "veri_isleme",
+    slug: "veri-analizi",
+    title: "Veri Analizi ve Grafikler",
+    description:
+      "8. sınıf LGS veri analizi çalışma kağıdı: daire, sütun ve çizgi grafiği okuma-yorumlama, uygun grafik türü seçme. PDF + cevap anahtarı + çözüm, ücretsiz.",
+    intro:
+      "Veri analizi LGS'de grafik okuma ve yorumlama soruları olarak çıkar. Bu çalışma kağıdı daire, sütun ve çizgi grafiklerini okumayı, karşılaştırmayı ve veriye uygun grafik türünü seçmeyi pekiştirir.",
+    skills: [
+      "Daire grafiğini okuma ve yüzde-açı hesabı",
+      "Sütun ve çizgi grafiğini yorumlama",
+      "Veriye uygun grafik türünü seçme",
+      "Grafikler arası karşılaştırma yapma",
+    ],
+    difficulty: [
+      "Tek grafikten doğrudan okuma.",
+      "Yüzde-açı hesabı ve karşılaştırma.",
+      "LGS tarzı çoklu grafik yorumlama.",
+    ],
+    family: "veri-analizi",
+  }),
+  ak({
+    grade: 8,
+    topicId: "olasilik",
+    slug: "basit-olaylarin-olasiligi",
+    title: "Basit Olayların Olasılığı",
+    description:
+      "8. sınıf LGS olasılık çalışma kağıdı: basit bir olayın olasılığını hesaplama, olası durumları sayma. PDF, cevap anahtarı ve adım adım çözüm ile ücretsiz üret.",
+    intro:
+      "Olasılık LGS'de kısa ama garanti soru çıkan konudur. Bu çalışma kağıdı bir olayın olası tüm durumlarını saymayı, istenen durum sayısını belirlemeyi ve basit olasılığı kesir/yüzde olarak hesaplamayı pekiştirir.",
+    skills: [
+      "Bir deneyin olası tüm durumlarını sayma",
+      "İstenen durum sayısını belirleme",
+      "Basit bir olayın olasılığını hesaplama",
+      "Olasılığı kesir, ondalık ve yüzde olarak ifade etme",
+    ],
+    difficulty: [
+      "Zar/para gibi tanıdık deneylerde olasılık.",
+      "Olası durumları sayıp olasılık hesabı.",
+      "LGS tarzı olasılık muhakeme soruları.",
+    ],
+    family: "olasilik",
+  }),
 ];
 
 export function getAltKonu(
