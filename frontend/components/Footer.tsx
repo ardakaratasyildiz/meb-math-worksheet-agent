@@ -24,6 +24,7 @@ export function Footer() {
             title="Ürün"
             links={[
               { label: "Üretim", href: "/generate" },
+              { label: "LGS Matematik Hazırlık", href: "/lgs-matematik" },
               { label: "Özellikler", href: "/features" },
               { label: "Fiyatlandırma", href: "/pricing" },
               { label: "Sıkça Sorulanlar", href: "/faq" },

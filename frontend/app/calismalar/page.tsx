@@ -55,6 +55,28 @@ export default function CalismalarHubPage() {
         body="MEB müfredatına uygun 1.-8. sınıf tüm konular (8. sınıf LGS hazırlık dahil). Sınıfını ve istediğin konuyu seçerek o konuya özel kazanım kodu bazlı çalışma kağıdı üretebilirsin."
       />
 
+      <section className="pt-10">
+        <div className="container max-w-5xl">
+          <Link
+            href="/lgs-matematik"
+            className="group flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-accent p-5 transition hover:border-primary/60"
+          >
+            <div>
+              <p className="font-semibold text-accent-foreground">
+                8. sınıftaysan: LGS Matematik Hazırlık
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Tüm LGS matematik konuları, en çok çıkan alt-başlıklar ve sık
+                sorulanlar tek sayfada.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+              LGS sayfasına git <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+        </div>
+      </section>
+
       <section className="py-16">
         <div className="container max-w-5xl space-y-12">
           {Array.from(byGrade.entries()).map(([grade, topics]) => (
