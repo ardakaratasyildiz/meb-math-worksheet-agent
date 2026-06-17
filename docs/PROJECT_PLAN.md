@@ -231,10 +231,10 @@ otomatik public.
   - ✅ `app/q/[code]/page.tsx` (public): `QuizSolver` **shared mod** (`shareCode` prop);
     misafir "Adın" input'u; çözüm sonrası **üye-ol CTA**.
   - ✅ `lib/api.ts` + `lib/types.ts` + GA4 event'leri (`quiz_share_create/open/attempt/signup`).
-- **PR C — Sahip sonuç panosu** (backend ✅ PR #48'de geldi) ← SIRADAKİ (frontend)
-  - Kalan = frontend: `app/practice/shares/page.tsx` (liste) + `[shareId]/page.tsx`
-    (sonuç tablosu); `/practice` hub'ına "Paylaşımlarım" kartı. (`GET /api/me/shares`
-    + `/shares/{id}/results` zaten canlı.)
+- **PR C — Sahip sonuç panosu** ✅ DONE (frontend; backend PR #48'de gelmişti)
+  - ✅ `app/practice/shares/page.tsx` (`SharesList`) + `[shareId]/page.tsx`
+    (`ShareResultsView` sonuç tablosu); `/practice` hub'ına "Paylaşımlarım" kartı +
+    her paylaşımda "linki kopyala". (`GET /api/me/shares` + `/shares/{id}/results`.)
 - **PR D — (sonra) uygulama-içi paylaşım** — `share_type='user'` + kullanıcı bulma
   (kullanıcı adı/davet) + gelen kutusu. `LEARNING_PLATFORM_PLAN` §13 açık sorusu çözülünce.
 
@@ -320,7 +320,7 @@ arar) → native'in faydası acquisition değil **retention**. PWA zaten kurulu 
 1. **Faz 0.2** — north-star dashboard (kör uçuşu bitir; her şeyin önkoşulu).
 2. **Faz 0.4** — PAT revoke + legal (güvenlik + para önkoşulu, düşük efor).
 3. **Faz 2 ölçüm** — dönüşüm + viral döngü GA4'te gerçekten ölçülüyor mu?
-4. **Faz 3 paylaşım** — PR A (#48) + PR B (#49) ✅ MERGED & canlı (link paylaş + public `/q/[code]` + GA4 funnel). **Sıradaki = PR C frontend** (`/practice/shares` sahip sonuç panosu; backend hazır). Detay `SHARING_PLAN.md`.
+4. **Faz 3 paylaşım** — PR A (#48) + PR B (#49) + PR C (sahip panosu `/practice/shares`) ✅ DONE. Kalan tek opsiyonel parça: **PR D** (uygulama-içi kullanıcı→kullanıcı paylaşım — `LEARNING_PLATFORM_PLAN` §13 açık sorusu çözülünce). Detay `SHARING_PLAN.md`.
 5. **Faz 1B** — içerik→SEO sayfa otomasyonu + 8.sınıf indeks takibi.
 6. **Mobil** — PWA Web Push (retention, ~$0; §6 adım 2).
 
