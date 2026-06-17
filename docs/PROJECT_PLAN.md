@@ -126,7 +126,7 @@ organik trafik). İki öncelik tek çark:
 ### 🟡 Açık gerçek boşluklar (fazlar bunları hedefler)
 - North-star **dashboard** yok (Faz 0.2) · **PAT revoke + legal** (Faz 0.4)
 - Faz 2 dönüşüm/viral **ölçümü** eksik (özellik var, ölçüm yok)
-- **`/practice` paylaşımı: PR A+B ✅ canlı** (link paylaş + public `/q/[code]` çözme + üye-ol funnel). Kalan: PR C frontend (sahip sonuç panosu) + PR D (uygulama-içi paylaşım)
+- **`/practice` paylaşımı: PR A+B+C ✅ canlı** (link paylaş + public çözme + üye-ol funnel + sahip panosu). Sıradaki: **Faz 3.5 Sınıf/Ödev** (PR D yerine sınıf modeli — yapımda)
 - SEO otomasyonu (içerik→sayfa codegen) ✅ DONE (Faz 1B); kalan: 8.sınıf SC indeks takibi (ops)
 - **Yeni dersler** yok (Faz 4) · **para kazanma** yok (Faz 5)
 - 🔴 **Gemini billing/kota planı** yok (ölçek önkoşulu)
@@ -242,14 +242,53 @@ otomatik public.
   - ✅ `app/practice/shares/page.tsx` (`SharesList`) + `[shareId]/page.tsx`
     (`ShareResultsView` sonuç tablosu); `/practice` hub'ına "Paylaşımlarım" kartı +
     her paylaşımda "linki kopyala". (`GET /api/me/shares` + `/shares/{id}/results`.)
-- **PR D — (sonra) uygulama-içi paylaşım** — `share_type='user'` + kullanıcı bulma
-  (kullanıcı adı/davet) + gelen kutusu. `LEARNING_PLATFORM_PLAN` §13 açık sorusu çözülünce.
+- **PR D — uygulama-içi paylaşım → SINIF MODELİNE YÜKSELTİLDİ (Faz 3.5).** Karar
+  (2026-06-17): tek tek e-posta paylaşımı yerine **sınıf (classroom)** modeli —
+  katılma kodu, kullanıcı-bulma sorununu çözer ve daha güçlü (viral + retention +
+  B2B tohum). Bkz. **Faz 3.5** ve `SHARING_PLAN.md`.
 
-**Sıra:** A → B (viral döngüyü açar, en yüksek değer) → C (sahip değeri) → D (sonra).
+**Sıra:** A → B (viral döngüyü açar) → C (sahip değeri) → 3.5 (sınıf).
 **Çıkış kapısı:** paylaşılan quiz→çözülme→üye oranı GA4'te ölçülüyor.
 
 **Mevcutu bozmama:** `/generate`, `/api/worksheets/*`, PDF, mevcut `get()`/`submit_attempt`
 → sıfır dokunuş; eklenen alanlar opsiyonel; `/q/*` silinse `/practice`+`/generate` etkilenmez.
+
+---
+
+### FAZ 3.5 — Sınıf / Ödev (Classroom) — yapımda
+> Karar (2026-06-17): PR D (e-posta paylaşımı) yerine **sınıf modeli**. Öğretmen/veli
+> sınıf açar → **katılma kodu** ile öğrenciler katılır → öğretmen çözülebilir quiz'i
+> **ödev** atar → öğrenci "Ödevlerim"de görüp çözer (kendi hesabına işlenir) →
+> öğretmen sınıf panosunda sonuçları görür. Gerçek kullanıcı (öğretmen) = en güçlü
+> viral kaldıraç (1 öğretmen → 30 öğrenci) + retention + Faz 5 B2B tohumu.
+
+**Bağlayıcı kararlar:**
+- **Öğrenci ÜYE olur** (Clerk) — isimli sonuç + kalıcı ilerleme + cihazlar arası için.
+- **MVP yalnız çözülebilir quiz** (otomatik puanlama hazır); PDF ödev sonraya.
+- Alıcı belirleme = **katılma kodu** (kullanıcı dizini/e-posta eşleştirme gerekmez).
+
+**Yeniden kullanım:** quiz üretimi, çözülebilir quiz + otomatik puanlama, atfedilen
+çözme (`solver_tenant_id`), sonuç toplama (`share_results` deseni), mastery — hazır.
+
+**Yeni veri:** `classrooms` (owner, ad, join_code), `classroom_members`
+(classroom_id, student_tenant_id, display_name), `assignments` (classroom_id,
+quiz_id, due_date?), `attempts.assignment_id` (çözümü ödeve bağlar).
+
+**Rotalar (İngilizce):** `/practice/classes` (sınıflarım), `/practice/classes/[id]`
+(öğretmen panosu / üye görünümü), `/practice/assignments` (öğrenci ödevleri).
+
+**Fazlama (her biri ayrı PR):**
+- **PR 1 ✅ DONE:** sınıf oluştur + kodla katıl + listele/detay. `classroom_store.py`
+  (classrooms/classroom_members/assignments tabloları), `app/routers/classrooms.py`
+  (POST `/api/classrooms`, POST `/join`, GET liste, GET `/{id}`), `tests/test_classroom.py`;
+  frontend `/practice/classes` + `[id]` + hub "Sınıflarım" kartı.
+- **PR 2:** ödev atama + "Ödevlerim" (öğrenci çözer → mevcut akışa bağlanır, `assignment_id`).
+- **PR 3:** öğretmen sınıf panosu (üyeler + ödev başına sonuçlar — `share_results` deseni).
+- **(sonra):** due-date, e-posta/in-app bildirim, PDF ödev, çoklu sınıf yönetimi.
+
+**Çıkış kapısı:** öğretmen sınıf açıp ödev atıyor, öğrenci çözüyor, sonuçlar panoda görünüyor.
+**Mevcutu bozmama:** tümü ek (`/api/classrooms/*`, yeni tablolar, `/practice/classes/*`);
+mevcut paylaşım/çözme/PDF akışlarına dokunulmaz.
 
 ---
 
@@ -327,7 +366,7 @@ arar) → native'in faydası acquisition değil **retention**. PWA zaten kurulu 
 1. **Faz 0.2** — north-star dashboard (kör uçuşu bitir; her şeyin önkoşulu).
 2. **Faz 0.4** — PAT revoke + legal (güvenlik + para önkoşulu, düşük efor).
 3. **Faz 2 ölçüm** — dönüşüm + viral döngü GA4'te gerçekten ölçülüyor mu?
-4. **Faz 3 paylaşım** — PR A (#48) + PR B (#49) + PR C (sahip panosu `/practice/shares`) ✅ DONE. Kalan tek opsiyonel parça: **PR D** (uygulama-içi kullanıcı→kullanıcı paylaşım — `LEARNING_PLATFORM_PLAN` §13 açık sorusu çözülünce). Detay `SHARING_PLAN.md`.
+4. **Faz 3 paylaşım** — PR A (#48) + PR B (#49) + PR C (#51) ✅ DONE. **Faz 3.5 Sınıf/Ödev** (PR D yerine sınıf modeli) yapımda — PR 1 (sınıf oluştur+katıl) başladı.
 5. **Faz 1B** — içerik→SEO sayfa otomasyonu (codegen) ✅; kalan 8.sınıf SC indeks takibi (ops, senin tarafın).
 6. **Mobil** — PWA Web Push (retention, ~$0; §6 adım 2).
 

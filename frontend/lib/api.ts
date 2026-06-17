@@ -8,6 +8,8 @@ import type {
   AttemptDetail,
   AttemptHistoryItem,
   AttemptResult,
+  ClassroomDetail,
+  ClassroomsResponse,
   CreateQuizRequest,
   CreateShareResponse,
   Difficulty,
@@ -15,6 +17,7 @@ import type {
   GenerateWorksheetRequest,
   GenerateWorksheetResponse,
   GradeInfo,
+  JoinClassroomResponse,
   KazanimInfo,
   ProgressResponse,
   Question,
@@ -454,6 +457,52 @@ export async function getShareResults(
 ): Promise<ShareResultsResponse> {
   return request<ShareResultsResponse>(
     `/api/me/shares/${encodeURIComponent(shareId)}/results?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+// ---- Sınıf / Ödev (Faz 3.5) ---------------------------------------------
+
+/** Yeni sınıf oluştur (öğretmen). Katılma kodu + detay döner. */
+export async function createClassroom(
+  tenantId: string,
+  name: string,
+): Promise<ClassroomDetail> {
+  return request<ClassroomDetail>("/api/classrooms", {
+    method: "POST",
+    headers: tenantHeader(tenantId),
+    body: JSON.stringify({ tenant_id: tenantId, name }),
+  });
+}
+
+/** Öğrenci katılma koduyla sınıfa katılır. */
+export async function joinClassroom(
+  tenantId: string,
+  code: string,
+  displayName: string,
+): Promise<JoinClassroomResponse> {
+  return request<JoinClassroomResponse>("/api/classrooms/join", {
+    method: "POST",
+    headers: tenantHeader(tenantId),
+    body: JSON.stringify({ tenant_id: tenantId, code, display_name: displayName }),
+  });
+}
+
+/** Kullanıcının sınıfları: sahip olunanlar (teaching) + katılınanlar (enrolled). */
+export async function listClassrooms(
+  tenantId: string,
+): Promise<ClassroomsResponse> {
+  return request<ClassroomsResponse>(
+    `/api/classrooms?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Sınıf detayı (sahip: kod + üyeler; üye: ad + sayı). */
+export async function getClassroom(
+  classroomId: string,
+  tenantId: string,
+): Promise<ClassroomDetail> {
+  return request<ClassroomDetail>(
+    `/api/classrooms/${encodeURIComponent(classroomId)}?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 

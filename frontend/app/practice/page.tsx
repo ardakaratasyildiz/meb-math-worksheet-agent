@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, History, Share2, Sparkles, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  GraduationCap,
+  History,
+  Share2,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { PracticeTodayCard } from "@/components/PracticeTodayCard";
@@ -28,7 +35,7 @@ export default function CozHubPage() {
 
       <PracticeTodayCard />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link href="/practice/new" className="group">
           <Card className="flex h-full flex-col gap-3 p-6 shadow-pop transition-transform hover:-translate-y-1">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-coral/15 text-2xl">
@@ -96,6 +103,25 @@ export default function CozHubPage() {
               </p>
             </div>
             <span className="mt-auto inline-flex items-center gap-1 font-display text-sm font-semibold text-grape">
+              Aç
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Card>
+        </Link>
+
+        <Link href="/practice/classes" className="group">
+          <Card className="flex h-full flex-col gap-3 p-6 shadow-pop transition-transform hover:-translate-y-1">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-400/15 text-2xl">
+              <GraduationCap className="h-6 w-6 text-amber-500" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="font-display text-lg font-bold">Sınıflarım</h2>
+              <p className="text-sm text-muted-foreground">
+                Sınıf aç, öğrencilerini katılma koduyla davet et; ya da bir sınıfa
+                katıl.
+              </p>
+            </div>
+            <span className="mt-auto inline-flex items-center gap-1 font-display text-sm font-semibold text-amber-500">
               Aç
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </span>

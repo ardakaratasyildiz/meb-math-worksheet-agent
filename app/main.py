@@ -8,6 +8,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from app.config import settings
 from app.routers import (
     admin,
+    classrooms,
     curriculum,
     health,
     me,
@@ -79,6 +80,7 @@ app.include_router(curriculum.router, prefix="/api/curriculum", tags=["curriculu
 app.include_router(worksheets.router, prefix="/api/worksheets", tags=["worksheets"])
 app.include_router(quizzes.router, prefix="/api/quizzes", tags=["quizzes"])
 app.include_router(shared.router, prefix="/api/shared", tags=["shared"])
+app.include_router(classrooms.router, prefix="/api/classrooms", tags=["classrooms"])
 app.include_router(me.router, prefix="/api/me", tags=["me"])
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
 app.include_router(health.router, tags=["system"])

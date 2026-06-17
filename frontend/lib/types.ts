@@ -267,6 +267,43 @@ export interface ShareResultsResponse {
   items: ShareResultItem[];
 }
 
+// ── Sınıf / Ödev (Faz 3.5) ───────────────────────────────────────────────────
+
+export interface ClassroomSummary {
+  id: string;
+  name: string;
+  role: "owner" | "student";
+  member_count: number;
+  created_at: string;
+  join_code?: string | null; // yalnız sahip
+}
+
+export interface ClassroomsResponse {
+  teaching: ClassroomSummary[]; // sahip olunan
+  enrolled: ClassroomSummary[]; // katılınan
+}
+
+export interface ClassroomMember {
+  student_tenant_id: string;
+  display_name: string;
+  joined_at: string;
+}
+
+export interface ClassroomDetail {
+  id: string;
+  name: string;
+  is_owner: boolean;
+  member_count: number;
+  created_at: string;
+  join_code?: string | null; // yalnız sahip
+  members: ClassroomMember[]; // yalnız sahip için dolu
+}
+
+export interface JoinClassroomResponse {
+  classroom_id: string;
+  name: string;
+}
+
 // ── Quiz geçmişi ───────────────────────────────────────────────────────────
 
 export interface AttemptHistoryItem {

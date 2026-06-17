@@ -729,3 +729,78 @@ class AttemptDetail(BaseModel):
     per_kazanim: list[KazanimBreakdown] = []
     review: list[AttemptReviewItem] = []
     has_detail: bool = True
+
+
+# ── Sınıf / Ödev (Faz 3.5 — Sınıf modeli) ────────────────────────────────────
+
+
+class CreateClassroomRequest(BaseModel):
+    tenant_id: str = Field(..., min_length=1, max_length=64)
+    name: str = Field(..., min_length=1, max_length=80)
+
+    @field_validator("tenant_id", "name")
+    @classmethod
+    def _strip(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("boş olamaz")
+        return v
+
+
+class JoinClassroomRequest(BaseModel):
+    tenant_id: str = Field(..., min_length=1, max_length=64)
+    code: str = Field(..., min_length=4, max_length=12)
+    display_name: str = Field(..., min_length=1, max_length=80)
+
+    @field_validator("tenant_id", "display_name")
+    @classmethod
+    def _strip(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("boş olamaz")
+        return v
+
+    @field_validator("code")
+    @classmethod
+    def _norm_code(cls, v: str) -> str:
+        v = v.strip().upper()
+        if not v:
+            raise ValueError("kod boş olamaz")
+        return v
+
+
+class JoinClassroomResponse(BaseModel):
+    classroom_id: str
+    name: str
+
+
+class ClassroomSummary(BaseModel):
+    """Sınıf listesi satırı. join_code yalnız sahibi için doldurulur."""
+
+    id: str
+    name: str
+    role: str  # 'owner' | 'student'
+    member_count: int
+    created_at: str
+    join_code: str | None = None
+
+
+class ClassroomsResponse(BaseModel):
+    teaching: list[ClassroomSummary]  # sahip olunan sınıflar
+    enrolled: list[ClassroomSummary]  # katılınan sınıflar
+
+
+class ClassroomMember(BaseModel):
+    student_tenant_id: str
+    display_name: str
+    joined_at: str
+
+
+class ClassroomDetail(BaseModel):
+    id: str
+    name: str
+    is_owner: bool
+    member_count: int
+    created_at: str
+    join_code: str | None = None  # yalnız sahip
+    members: list[ClassroomMember] = []  # yalnız sahip için dolu
