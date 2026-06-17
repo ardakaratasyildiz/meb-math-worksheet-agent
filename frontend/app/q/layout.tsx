@@ -7,14 +7,14 @@ export const metadata = {
 };
 
 // Paylaşılan quiz çözme yüzeyi — PUBLIC (login GEREKMEZ; middleware'de /q korumalı
-// değil). /coz'un kişisel/login-gated alanından ayrı; aynı sıcak/oyunsu temayı kullanır.
+// değil). /practice'un kişisel/login-gated alanından ayrı; aynı sıcak/oyunsu temayı kullanır.
 export default function SharedQuizLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="coz-theme min-h-screen">
+    <div className="practice-theme min-h-screen">
       <div className="container py-8">{children}</div>
     </div>
   );

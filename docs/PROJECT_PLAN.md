@@ -27,7 +27,7 @@ Tek cümlelik çalışma kuralı:
 **Ne:** Soru Atölyesi — MEB matematik müfredatına (1–8. sınıf + LGS) uygun çalışma
 kağıdı/quiz üreten, RAG tabanlı, Gemini destekli üretim platformu. İki yüzey:
 - **`/generate`** → üret → **PDF indir** (gel-al, açık-uçlu dahil tüm tipler).
-- **`/coz`** → üret → **site içinde çöz → otomatik puanla → geliş** (yalnız
+- **`/practice`** → üret → **site içinde çöz → otomatik puanla → geliş** (yalnız
   otomatik-puanlanabilir tipler; kişisel, login zorunlu).
 
 **Canlı:** soruatolyesi.com (frontend Vercel), backend Render, DB Turso.
@@ -48,7 +48,7 @@ Frontend (Next.js 15 · App Router · Vercel)
   components/     GenerateForm · QuizSolver · ... (shadcn/ui tabanlı)
   lib/            api.ts(backend wrapper) · types.ts · curriculum.ts · analytics.ts(GA4)
                   store.ts(zustand)
-  middleware.ts   Clerk auth — /coz, /history, /admin login-gated; gerisi public
+  middleware.ts   Clerk auth — /practice, /history, /admin login-gated; gerisi public
   manifest.ts     PWA
 
 Veri & servisler
@@ -70,6 +70,12 @@ Veri & servisler
   build edilemez** (node yok) → `frontend-ci` GitHub Action (lint+typecheck) ile doğrula.
 - **Doğrulama:** routing/SSR/render değişiminde **merge öncesi Vercel preview URL'ini
   curl'le** (CI runtime hatası yakalamaz).
+- **İsimlendirme (karar 2026-06-17):** kodda **İngilizce** route/identifier/dosya
+  isimleri kullan; kullanıcıya görünen **Türkçe metin** (UI label, "Çöz & Geliş")
+  ve **SEO keyword slug'ları** (`/lgs-matematik`, `/5-sinif-*`) Türkçe kalır. Bu
+  gereği `/coz` → **`/practice`** rename'i yapıldı (alt: `/new`, `/progress`,
+  `/history`, `/quiz`, `/shares`; `.coz-theme`→`.practice-theme`; `CozTodayCard`→
+  `PracticeTodayCard`); eski `/coz/*` → 301 redirect (`next.config.mjs`).
 
 ---
 
@@ -89,7 +95,7 @@ organik trafik). İki öncelik tek çark:
             │                                                ▼
    Hız + maliyet (cache)  ◄──  Kullanım verisi  ◄──  PDF/QR + paylaşım → yeni kullanıcı
             │                                                │
-            └───────────────  Dönüşüm + retention (/coz)  ◄──┘
+            └───────────────  Dönüşüm + retention (/practice)  ◄──┘
 ```
 
 ### Yöneten metrik (her işin sınavı)
@@ -98,7 +104,7 @@ organik trafik). İki öncelik tek çark:
 | **Organik oturum / hafta** | SC + GA4 organik trafik | Search Console, GA4 |
 | **Haftalık aktif kullanıcı (WAU)** | Haftada ≥1 worksheet **veya** quiz üreten/çözen benzersiz kullanıcı | GA4 + Turso |
 
-İkincil: ziyaret→ilk-üretim dönüşümü, indekslenen sayfa sayısı, `/coz` dönen-kullanıcı
+İkincil: ziyaret→ilk-üretim dönüşümü, indekslenen sayfa sayısı, `/practice` dönen-kullanıcı
 + seri (streak), PDF/QR→yeni-ziyaret, **paylaşılan quiz→çözülme→üye oranı**.
 
 ---
@@ -114,13 +120,13 @@ organik trafik). İki öncelik tek çark:
 | White-label PDF | header'a kurum/öğretmen logosu (`#40`) |
 | PWA + paylaşım | kurulabilir PWA (`app/manifest.ts`) + "WhatsApp'a at" (`#39`) |
 | Programatik SEO | LGS hub + 71+ long-tail landing (`#41/#42/#44`); SC = DNS TXT doğrulanmış |
-| `/coz` öğrenme döngüsü | `yeni · quiz/[id] · ilerleme · history` + oyunlaştırma rozet/seviye/seri (`#36`) + 30 günlük grafik (`#35`); API `quizzes.py`+`me.py` |
+| `/practice` öğrenme döngüsü | `yeni · quiz/[id] · ilerleme · history` + oyunlaştırma rozet/seviye/seri (`#36`) + 30 günlük grafik (`#35`); API `quizzes.py`+`me.py` |
 | Mobil web UX | navbar hamburger (`#37`), responsive |
 
 ### 🟡 Açık gerçek boşluklar (fazlar bunları hedefler)
 - North-star **dashboard** yok (Faz 0.2) · **PAT revoke + legal** (Faz 0.4)
 - Faz 2 dönüşüm/viral **ölçümü** eksik (özellik var, ölçüm yok)
-- **`/coz` paylaşımı yok** (Faz 3 — en güçlü viral kaldıraç)
+- **`/practice` paylaşımı: PR A+B ✅ canlı** (link paylaş + public `/q/[code]` çözme + üye-ol funnel). Kalan: PR C frontend (sahip sonuç panosu) + PR D (uygulama-içi paylaşım)
 - SEO **otomasyonu** yok (içerik→sayfa elle) (Faz 1B)
 - **Yeni dersler** yok (Faz 4) · **para kazanma** yok (Faz 5)
 - 🔴 **Gemini billing/kota planı** yok (ölçek önkoşulu)
@@ -185,12 +191,12 @@ Burada içerik (#4) ve büyüme (#1) birleşir: her içerik damlası → SEO yü
 
 ---
 
-### FAZ 3 — Retention + Paylaşım (`/coz`) — v1 DONE, paylaşım = SIRADAKİ BÜYÜK İŞ
-`/coz` kişisel döngüsü canlı (çöz→puanla→ilerleme→oyunlaştırma). **Açık ve en yüksek
+### FAZ 3 — Retention + Paylaşım (`/practice`) — v1 DONE, paylaşım = SIRADAKİ BÜYÜK İŞ
+`/practice` kişisel döngüsü canlı (çöz→puanla→ilerleme→oyunlaştırma). **Açık ve en yüksek
 büyüme değerli kalem: quiz paylaşımı** — retention'ı acquisition'a bağlayan viral kaldıraç.
 
 #### Neden bu, neden şimdi
-Bugün `/coz` kapalı kişisel döngü. Paylaşım dışarı açar (öğretmen→öğrenci,
+Bugün `/practice` kapalı kişisel döngü. Paylaşım dışarı açar (öğretmen→öğrenci,
 öğrenci→arkadaş): her paylaşılan quiz, **login duvarı olmadan** çözülebilen bir viral
 giriş noktası → çözen değer görür → "ilerlemeni takip et" ile üye olur.
 **Ölçülen döngü: paylaş → link açıldı → çözüldü → üye oldu.**
@@ -209,9 +215,9 @@ otomatik public.
 4. Giriş yapmış çözenin denemesi kendi mastery'sine sayılır; misafirinki yalnız sahip panosuna.
 
 #### Alt-fazlar (her PR bağımsız, tek başına test edilebilir)
-> **Tam dosya/satır seviyesi detay: `COZ_SHARING_PLAN.md`.** Aşağısı sıra + kapsam.
+> **Tam dosya/satır seviyesi detay: `SHARING_PLAN.md`.** Aşağısı sıra + kapsam.
 
-- **PR A — Backend paylaşım + public çözme** ✅ DONE (branch `feat/coz-share-backend`)
+- **PR A — Backend paylaşım + public çözme** ✅ DONE & MERGED (PR #48)
   - ✅ `shares` tablosu + `attempts` migration (`share_id`, `solver_label`) → `quiz_store.py`.
   - ✅ `QuizStore`: `create_share` (idempotent), `get_share_by_code`, `get_quiz_by_id`
     (owner-scope'suz), `revoke_share`, `record_attempt(..., share_id, solver_label)`,
@@ -220,16 +226,15 @@ otomatik public.
     `GET /{code}` (cevapsız), `POST /{code}/attempt` (per-IP rate-limit, misafir+üye).
   - ✅ `POST /api/quizzes/{id}/share` + `GET /api/me/shares` + `/shares/{id}/results`.
   - ✅ Şemalar + `tests/test_sharing.py` (anti-kopya regresyon dahil) — tüm suite geçti.
-- **PR B — Frontend paylaş + public çözme sayfası** → **viral döngü canlı**
-  - `ShareQuizButton` (link kopyala + WhatsApp `navigator.share`) → `QuizSolver` sonuç ekranı + quiz geçmişi.
-  - `app/q/[code]/page.tsx` (public): `QuizSolver`'ı **shared mod**'da yeniden kullan
-    (`shareCode` prop); misafir "Adın" input'u; çözüm sonrası **üye-ol CTA**.
-  - `lib/api.ts` + `lib/types.ts` fonksiyon/tipleri; GA4 event'leri
-    (`quiz_share_create/open/attempt/signup`).
-- **PR C — Sahip sonuç panosu**
-  - `GET /api/me/shares` + `GET /api/me/shares/{id}/results`.
-  - `app/coz/paylasimlarim/page.tsx` (liste) + `[shareId]/page.tsx` (sonuç tablosu);
-    `/coz` hub'ına "Paylaşımlarım" kartı; revoke.
+- **PR B — Frontend paylaş + public çözme sayfası** ✅ DONE & MERGED (PR #49) → **viral döngü canlı**
+  - ✅ `ShareQuizButton` (link kopyala + WhatsApp `navigator.share`) → `QuizSolver` sonuç ekranı.
+  - ✅ `app/q/[code]/page.tsx` (public): `QuizSolver` **shared mod** (`shareCode` prop);
+    misafir "Adın" input'u; çözüm sonrası **üye-ol CTA**.
+  - ✅ `lib/api.ts` + `lib/types.ts` + GA4 event'leri (`quiz_share_create/open/attempt/signup`).
+- **PR C — Sahip sonuç panosu** (backend ✅ PR #48'de geldi) ← SIRADAKİ (frontend)
+  - Kalan = frontend: `app/practice/shares/page.tsx` (liste) + `[shareId]/page.tsx`
+    (sonuç tablosu); `/practice` hub'ına "Paylaşımlarım" kartı. (`GET /api/me/shares`
+    + `/shares/{id}/results` zaten canlı.)
 - **PR D — (sonra) uygulama-içi paylaşım** — `share_type='user'` + kullanıcı bulma
   (kullanıcı adı/davet) + gelen kutusu. `LEARNING_PLATFORM_PLAN` §13 açık sorusu çözülünce.
 
@@ -237,7 +242,7 @@ otomatik public.
 **Çıkış kapısı:** paylaşılan quiz→çözülme→üye oranı GA4'te ölçülüyor.
 
 **Mevcutu bozmama:** `/generate`, `/api/worksheets/*`, PDF, mevcut `get()`/`submit_attempt`
-→ sıfır dokunuş; eklenen alanlar opsiyonel; `/q/*` silinse `/coz`+`/generate` etkilenmez.
+→ sıfır dokunuş; eklenen alanlar opsiyonel; `/q/*` silinse `/practice`+`/generate` etkilenmez.
 
 ---
 
@@ -277,10 +282,10 @@ arar) → native'in faydası acquisition değil **retention**. PWA zaten kurulu 
 
 **Aşamalı yol (ucuzdan pahalıya, her adım metrik kapılı):**
 1. **Şimdi:** PWA'yı sıkılaştır (offline kabuk, "ana ekrana ekle" teşviki, ikon/splash) — ~$0.
-2. **Sonra:** **PWA Web Push** — `/coz` seri/streak bildirimi ("serini koru"). Native'in
+2. **Sonra:** **PWA Web Push** — `/practice` seri/streak bildirimi ("serini koru"). Native'in
    en büyük retention avantajı; native'siz alınır (iOS 16.4+ destekler). Service worker +
    Web Push API; subscription Turso'da. — ~$0.
-3. **KAPI — native'e ancak şu üçü birden olunca geç:** (a) `/coz`'da anlamlı dönen-kullanıcı/
+3. **KAPI — native'e ancak şu üçü birden olunca geç:** (a) `/practice`'da anlamlı dönen-kullanıcı/
    streak kohortu var, (b) PWA push retention'a **yetmedi** (ölçüldü), (c) çift kod tabanı
    + store maliyetini taşıyacak kapasite var (≈ Faz 5).
 4. **Geçilirse — teknoloji:** önce **Capacitor** (mevcut Next.js/PWA'yı sarıp App
@@ -315,7 +320,7 @@ arar) → native'in faydası acquisition değil **retention**. PWA zaten kurulu 
 1. **Faz 0.2** — north-star dashboard (kör uçuşu bitir; her şeyin önkoşulu).
 2. **Faz 0.4** — PAT revoke + legal (güvenlik + para önkoşulu, düşük efor).
 3. **Faz 2 ölçüm** — dönüşüm + viral döngü GA4'te gerçekten ölçülüyor mu?
-4. **Faz 3 paylaşım** — PR A ✅ DONE (backend, branch `feat/coz-share-backend`); **sıradaki = PR B** (frontend paylaş butonu + `/q/[code]` public çözme + GA4) → viral döngü canlı. Detay `COZ_SHARING_PLAN.md`.
+4. **Faz 3 paylaşım** — PR A (#48) + PR B (#49) ✅ MERGED & canlı (link paylaş + public `/q/[code]` + GA4 funnel). **Sıradaki = PR C frontend** (`/practice/shares` sahip sonuç panosu; backend hazır). Detay `SHARING_PLAN.md`.
 5. **Faz 1B** — içerik→SEO sayfa otomasyonu + 8.sınıf indeks takibi.
 6. **Mobil** — PWA Web Push (retention, ~$0; §6 adım 2).
 
@@ -324,11 +329,11 @@ arar) → native'in faydası acquisition değil **retention**. PWA zaten kurulu 
 ## 10. Detay doküman haritası (bu planın ekleri)
 | Doküman | Kapsam | Bu planda |
 |---|---|---|
-| `COZ_SHARING_PLAN.md` | Quiz paylaşımı — dosya/satır seviyesi | Faz 3 |
+| `SHARING_PLAN.md` | Quiz paylaşımı — dosya/satır seviyesi | Faz 3 |
 | `GRADE8_LGS_PLAN.md` | 8.sınıf+LGS içerik hattı | Faz 1A (✅) |
 | `LGS_SEO_PLAN.md` | Programatik SEO deseni | Faz 1B |
 | `FUNNEL_FIXES_PLAN.md`, `ANON_GENERATION_PLAN.md` | Dönüşüm/anonim üretim | Faz 2 (✅) |
-| `LEARNING_PLATFORM_PLAN.md` | `/coz` öğrenme döngüsü vizyonu | Faz 3 |
+| `LEARNING_PLATFORM_PLAN.md` | `/practice` öğrenme döngüsü vizyonu | Faz 3 |
 | `GROWTH_ROADMAP.md` | Bu planın atası (büyüme fazları) | §2/§5 |
 | `RAG_ROADMAP.md`, `RAG_PDF_*` | İçerik kalite/RAG altyapısı | Faz 1/4 besler |
 

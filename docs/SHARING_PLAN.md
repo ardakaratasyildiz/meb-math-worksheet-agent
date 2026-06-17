@@ -1,4 +1,4 @@
-# /coz Quiz Paylaşımı — Somut Uygulama Planı
+# /practice Quiz Paylaşımı — Somut Uygulama Planı
 
 > Durum: **uygulama planı** (2026-06-17). `PROJECT_PLAN.md` Faz 3'ün açık kalemi:
 > retention'ı acquisition'a bağlayan **viral kaldıraç**. Kaynak vizyon:
@@ -9,7 +9,7 @@
 
 ## 1. Amaç ve büyüme mantığı
 
-Bugün `/coz` kapalı bir kişisel döngü: kullanıcı kendi quiz'ini üretir → çözer →
+Bugün `/practice` kapalı bir kişisel döngü: kullanıcı kendi quiz'ini üretir → çözer →
 gelişir. **Paylaşım, döngüyü dışarı açar:** öğretmen→öğrenci, öğrenci→arkadaş,
 veli→çocuk. Her paylaşılan quiz, login duvarı olmadan çözülebilen bir **viral giriş
 noktası** olur → çözen kişi değer görür → "kendi ilerlemeni takip et" ile üye olur.
@@ -28,7 +28,7 @@ noktası** olur → çözen kişi değer görür → "kendi ilerlemeni takip et"
 | `attempts` tablosu `solver_tenant_id` + `quiz_id` ile (`quiz_store.py:70`) | Paylaşılan deneme çözenin kendi tenant'ına yazılır → **çözenin ilerlemesine otomatik akar** |
 | `update_mastery()` (`quiz_store.py:354`) | Giriş yapmış çözen, paylaşılan quiz'den de ustalık kazanır — ek iş yok |
 | Migration deseni (`ALTER TABLE attempts ADD COLUMN`, `quiz_store.py:93`) | `share_id` / `solver_label` sütunları aynı idempotent desenle eklenir |
-| `/coz(.*)` login-gated; `/q/*` public olur (`middleware.ts:10`) | Çözme public, sahip panosu login arkasında |
+| `/practice(.*)` login-gated; `/q/*` public olur (`middleware.ts:10`) | Çözme public, sahip panosu login arkasında |
 | `track()` GA4 (`analytics.ts:19`) | Viral döngü event'leri |
 
 **Tek gerçek mimari engel:** `QUIZ_STORE.get(quiz_id, owner_tenant_id)` (`quiz_store.py:155`)
@@ -201,8 +201,8 @@ Tipler `frontend/lib/types.ts`'e eklenir (mevcut quiz tip blokunun yanına).
   - Gönderim: `submitSharedAttempt(code, …)`.
   - Sonuç ekranı (`ResultsView`) aynen çalışır; ek olarak misafire **"İlerlemeni
     kaydetmek için üye ol"** CTA'sı (`SignUpButton`, funnel).
-- Bu rota **`/coz` layout'unun dışında** (login-gated değil) → `app/q/` kendi sade
-  layout'unu kullanır (coz-theme istenirse className ile uygulanır, login zorunlu DEĞİL).
+- Bu rota **`/practice` layout'unun dışında** (login-gated değil) → `app/q/` kendi sade
+  layout'unu kullanır (practice-theme istenirse className ile uygulanır, login zorunlu DEĞİL).
 
 ### 6.3 "Paylaş" aksiyonu (yeni bileşen `frontend/components/ShareQuizButton.tsx`)
 - Nerede: `QuizSolver` `ResultsView` aksiyon satırı (`QuizSolver.tsx:413`) + quiz
@@ -211,13 +211,13 @@ Tipler `frontend/lib/types.ts`'e eklenir (mevcut quiz tip blokunun yanına).
   at** (mevcut PWA paylaşım deseni #39, `navigator.share`) + link önizleme.
 - Idempotent: aynı quiz'e tekrar basınca aynı link.
 
-### 6.4 Sahip sonuç panosu: `frontend/app/coz/paylasimlarim/page.tsx` (login-gated)
-- `/coz` altında → otomatik login zorunlu.
+### 6.4 Sahip sonuç panosu: `frontend/app/practice/shares/page.tsx` (login-gated)
+- `/practice` altında → otomatik login zorunlu.
 - `listMyShares(userId)` → kartlar (quiz başlığı, çözülme sayısı, ort. skor, link kopyala).
-- Karta tıkla → `frontend/app/coz/paylasimlarim/[shareId]/page.tsx` → `getShareResults`
+- Karta tıkla → `frontend/app/practice/shares/[shareId]/page.tsx` → `getShareResults`
   → tablo (çözen adı, skor, süre, tarih).
-- `/coz` hub'ına (`app/coz/page.tsx`) 4. kart: **"Paylaşımlarım"**.
-- `/coz` layout sekme çubuğu varsa oraya da ekle.
+- `/practice` hub'ına (`app/practice/page.tsx`) 4. kart: **"Paylaşımlarım"**.
+- `/practice` layout sekme çubuğu varsa oraya da ekle.
 
 ### 6.5 GA4 event'leri (`frontend/lib/analytics.ts` `track()`)
 | Event | Nerede |
@@ -237,7 +237,7 @@ Funnel: `create → open → attempt → signup` = viral katsayı ölçümü.
 |---|---|---|
 | **A — Backend paylaşım + public çözme** ✅ DONE | `shares` tablosu + attempts migration; `quiz_store` metotları; `shared.py` router (`GET /{code}`, `POST /{code}/attempt`); `POST /api/quizzes/{id}/share`; şemalar; per-IP rate-limit; `tests/test_sharing.py`. **C'nin backend'i de bu PR'da geldi** (`GET /api/me/shares` + `/results` + `revoke_share`). | API ile link üret + misafir çöz + puanla |
 | **B — Frontend paylaş + public çözme sayfası** ← SIRADAKİ | `ShareQuizButton`; `/q/[code]` (QuizSolver shared mod + misafir isim + üye-ol CTA); api.ts/types.ts; GA4 event'leri | **Viral döngü canlı** (paylaş→çöz→üye) |
-| **C — Sahip sonuç panosu** (backend ✅) | Kalan = frontend: `/coz/paylasimlarim` liste + detay; hub kartı | Sahip kim çözdü/kaç doğru görür |
+| **C — Sahip sonuç panosu** (backend ✅) | Kalan = frontend: `/practice/shares` liste + detay; hub kartı | Sahip kim çözdü/kaç doğru görür |
 | **D — (sonra) uygulama-içi paylaşım** | `share_type='user'` + `target_tenant_id`; kullanıcı bulma (kullanıcı adı/davet); gelen kutusu | Kullanıcı→kullanıcı paylaşım |
 
 > Sıra: **A → B** viral döngüyü açar (en yüksek büyüme değeri). **C** sahip değerini
@@ -253,7 +253,7 @@ Funnel: `create → open → attempt → signup` = viral katsayı ölçümü.
   çözüm **ayrı** `shared.py` endpoint'inden geçer (karışmaz).
 - `record_attempt`'a eklenen `share_id`/`solver_label` **opsiyonel** → mevcut çağrı
   (`quizzes.py:274`) değişmeden çalışır.
-- `/q/*` rotası tümüyle silinse `/coz` ve `/generate` etkilenmez.
+- `/q/*` rotası tümüyle silinse `/practice` ve `/generate` etkilenmez.
 
 ---
 

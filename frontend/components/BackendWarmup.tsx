@@ -5,7 +5,7 @@ import * as React from "react";
 import { pingHealth } from "@/lib/api";
 
 // Render free tier 15 dk trafiksiz kalınca uyur (cold start ~25 sn). Bu bileşen:
-//   1. Sayfa ilk açıldığında backend'i uyandırır → kullanıcı /coz sekmelerine
+//   1. Sayfa ilk açıldığında backend'i uyandırır → kullanıcı /practice sekmelerine
 //      vardığında instance ısınmış olur (algılanan gecikme ~0).
 //   2. Sekme açık ve görünürken her 10 dk bir ping atar → aktif kullanıcı
 //      instance'ı sıcak tutar (15 dk uyku eşiğinin altında).

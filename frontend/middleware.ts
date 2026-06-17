@@ -3,13 +3,13 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 // Login zorunlu route'lar — diğerleri (landing, sign-in/up, /generate) public.
 // /generate ARTIK PUBLIC: anonim kullanıcı üretir + önizler (sorular + cevap
 // anahtarı); PDF indirme QuestionPreview'da üyelik kapısında (aktivasyon: önce
-// değer, sonra kayıt). /history (hesaba kayıtlı geçmiş) ve /coz login ister.
+// değer, sonra kayıt). /history (hesaba kayıtlı geçmiş) ve /practice login ister.
 // /admin(.*) protected → middleware unauthenticated kullanıcıyı /sign-in'e
 // gönderir. Layout ek olarak role check yapıp admin değilse notFound() çağırır
 // (defense in depth). /api/admin/* route handler'ları kendi içinde de gate'lidir.
 const isProtectedRoute = createRouteMatcher([
   "/history(.*)",
-  "/coz(.*)",
+  "/practice(.*)",
   "/admin(.*)",
 ]);
 

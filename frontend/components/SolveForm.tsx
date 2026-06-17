@@ -76,7 +76,7 @@ const ALL_TYPES_ON: Record<SolvableType, boolean> = {
 export function SolveForm() {
   const router = useRouter();
   const { userId } = useAuth();
-  // "Bu kazanımda pratik yap" derin-linki: /coz/yeni?grade=&topic=&kazanim=
+  // "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&topic=&kazanim=
   const searchParams = useSearchParams();
   const initialGrade = Number(searchParams.get("grade")) || 5;
   const initialTopic = searchParams.get("topic") ?? "";
@@ -152,7 +152,7 @@ export function SolveForm() {
         question_types,
         difficulty_mode: difficultyMode,
       });
-      router.push(`/coz/quiz/${quiz.id}`);
+      router.push(`/practice/quiz/${quiz.id}`);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
       toast.error("Quiz üretilemedi", { description: msg });

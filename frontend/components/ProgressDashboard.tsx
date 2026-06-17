@@ -192,7 +192,7 @@ export function ProgressDashboard() {
           konuların burada görünmeye başlar.
         </p>
         <Button asChild className="mt-1 gap-2">
-          <Link href="/coz/yeni">
+          <Link href="/practice/new">
             <Sparkles className="h-4 w-4" />
             İlk quizini çöz
           </Link>

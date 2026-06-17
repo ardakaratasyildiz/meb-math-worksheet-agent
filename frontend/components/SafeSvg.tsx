@@ -16,7 +16,7 @@ interface SafeSvgProps {
  *   @exodus/bytes (ESM-only) zinciri Vercel lambda runtime'ında `require()` ile
  *   yüklenince ERR_REQUIRE_ESM ile patlıyordu. Sayfa statikken (prerender) sorun
  *   görünmüyordu; /generate `searchParams` ile dynamic olunca runtime SSR'da
- *   çöktü (/coz gibi diğer dynamic + SVG sayfaları da etkiler).
+ *   çöktü (/practice gibi diğer dynamic + SVG sayfaları da etkiler).
  *
  *   SVG içeriği zaten yalnızca client'ta (üretimden sonra) var → sanitizasyonu
  *   client'a taşımak doğru mimari. DOMPurify useEffect içinde DYNAMIC import edilir

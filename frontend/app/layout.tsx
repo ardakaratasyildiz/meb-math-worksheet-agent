@@ -29,7 +29,7 @@ const manrope = Manrope({
   weight: ["500", "600", "700", "800"],
 });
 
-// Çöz & Geliş (öğrenci alanı) oyunsu teması için — yalnızca .coz-theme scope'unda
+// Çöz & Geliş (öğrenci alanı) oyunsu teması için — yalnızca .practice-theme scope'unda
 // kullanılır (bkz. globals.css). Landing/diğer yüzeyler Inter/Manrope kalır.
 const fredoka = Fredoka({
   subsets: ["latin", "latin-ext"],

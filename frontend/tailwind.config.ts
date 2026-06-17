@@ -24,7 +24,7 @@ const config = {
           "system-ui",
           "sans-serif",
         ],
-        // Çöz & Geliş oyunsu teması (.coz-theme scope'unda)
+        // Çöz & Geliş oyunsu teması (.practice-theme scope'unda)
         display: ["var(--font-fredoka)", "var(--font-manrope)", "system-ui", "sans-serif"],
         playful: ["var(--font-nunito)", "system-ui", "sans-serif"],
       },

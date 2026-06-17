@@ -15,7 +15,7 @@ import type { ProgressResponse } from "@/lib/types";
 // Hub'da "Bugün ne çözmeliyim?" önerisi — kullanıcının en zayıf kazanımından
 // mini-test önerir. Ek backend yok (mevcut getProgress'ten türetilir). Sessiz:
 // veri yoksa/hata olursa hiçbir şey göstermez (hub yine çalışır).
-export function CozTodayCard() {
+export function PracticeTodayCard() {
   const { userId, isLoaded } = useAuth();
   const [data, setData] = React.useState<ProgressResponse | null>(null);
   const [ready, setReady] = React.useState(false);
@@ -59,7 +59,7 @@ export function CozTodayCard() {
           asChild
           className="shrink-0 gap-2 rounded-full bg-sun font-display font-semibold text-grape shadow-pop-sun hover:bg-sun/90"
         >
-          <Link href="/coz/yeni">
+          <Link href="/practice/new">
             İlk quizini çöz
             <ArrowRight className="h-4 w-4" />
           </Link>

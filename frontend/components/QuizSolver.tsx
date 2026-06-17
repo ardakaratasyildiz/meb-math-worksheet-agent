@@ -38,7 +38,7 @@ interface AnswerState {
 
 /**
  * QuizSolver — iki modda çalışır:
- *  - Kişisel (quizId): /coz altında, login zorunlu, kendi quiz'in.
+ *  - Kişisel (quizId): /practice altında, login zorunlu, kendi quiz'in.
  *  - Paylaşılan (shareCode): public /q/[code], login GEREKMEZ; misafir de çözer.
  *    Giriş yapmışsa çözüm kendi ilerlemesine sayılır; misafir opsiyonel ad girer
  *    ve çözüm sonrası "üye ol" CTA'sı görür (viral funnel).
@@ -164,7 +164,7 @@ export function QuizSolver({
           {loadError ?? "Quiz bulunamadı."}
         </p>
         <Button asChild variant="outline" size="sm" className="mt-3">
-          <Link href={shared ? "/" : "/coz"}>
+          <Link href={shared ? "/" : "/practice"}>
             {shared ? "Ana sayfaya dön" : "Çöz & Geliş'e dön"}
           </Link>
         </Button>
@@ -517,7 +517,7 @@ function ResultsView({
           </Button>
         ) : (
           <Button asChild className="gap-2">
-            <Link href="/coz/yeni">
+            <Link href="/practice/new">
               <Sparkles className="h-4 w-4" />
               Yeni quiz çöz
             </Link>
@@ -530,7 +530,7 @@ function ResultsView({
         {/* Sahip (kişisel mod) → bu quiz'i paylaş (viral kaldıraç). */}
         {!shared ? <ShareQuizButton quizId={quiz.id} /> : null}
         <Button asChild variant="ghost">
-          <Link href={shared ? "/" : "/coz"}>
+          <Link href={shared ? "/" : "/practice"}>
             {shared ? "Ana sayfa" : "Çöz & Geliş'e dön"}
           </Link>
         </Button>

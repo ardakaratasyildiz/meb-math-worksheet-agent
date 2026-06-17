@@ -61,7 +61,7 @@ export function AttemptDetailView({ attemptId }: { attemptId: string }) {
       <Card className="p-6">
         <p className="text-sm text-destructive">{error ?? "Deneme bulunamadı."}</p>
         <Button asChild variant="outline" size="sm" className="mt-3">
-          <Link href="/coz/history">Geçmişe dön</Link>
+          <Link href="/practice/history">Geçmişe dön</Link>
         </Button>
       </Card>
     );
@@ -74,7 +74,7 @@ export function AttemptDetailView({ attemptId }: { attemptId: string }) {
   return (
     <div className="space-y-6">
       <Link
-        href="/coz/history"
+        href="/practice/history"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
