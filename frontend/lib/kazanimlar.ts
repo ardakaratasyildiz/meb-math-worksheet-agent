@@ -1,9 +1,9 @@
 /**
  * Kazanım-seviyesi landing page verisi (programatik SEO).
  *
- * Kaynak: scripts/export_kazanim_data.py (backend müfredatından üretir).
+ * Kaynak: scripts/export_seo_data.py (backend müfredatından OTOMATİK üretir).
  * Her kazanım benzersiz içerik (resmi metin + zorluk ipuçları) taşır → thin/
- * doorway içerik değil. 123 kazanım = 123 long-tail landing.
+ * doorway içerik değil. 1-8. sınıf = 166 long-tail landing.
  */
 import data from "./kazanimlar.json";
 
