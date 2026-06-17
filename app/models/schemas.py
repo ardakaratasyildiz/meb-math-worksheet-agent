@@ -866,3 +866,22 @@ class MyQuizItem(BaseModel):
 
 class MyQuizzesResponse(BaseModel):
     items: list[MyQuizItem]
+
+
+class AssignmentResultItem(BaseModel):
+    """Bir ödevi sınıftaki bir öğrencinin durumu (çözmeyen de listelenir)."""
+
+    student_tenant_id: str
+    display_name: str
+    solved: bool
+    score: int | None = None
+    total: int | None = None
+    completed_at: str | None = None
+
+
+class AssignmentResultsResponse(BaseModel):
+    title: str
+    question_count: int
+    member_count: int
+    solved_count: int
+    items: list[AssignmentResultItem]

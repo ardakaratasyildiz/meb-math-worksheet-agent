@@ -6,6 +6,10 @@ import { useAuth } from "@clerk/nextjs";
 import {
   ArrowLeft,
   Check,
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  Circle,
   Copy,
   Loader2,
   NotebookPen,
@@ -16,8 +20,18 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { assignQuiz, getClassroom, listMyQuizzes } from "@/lib/api";
-import type { ClassroomDetail, MyQuizItem } from "@/lib/types";
+import {
+  assignQuiz,
+  getAssignmentResults,
+  getClassroom,
+  listMyQuizzes,
+} from "@/lib/api";
+import type {
+  AssignmentResultsResponse,
+  AssignmentSummary,
+  ClassroomDetail,
+  MyQuizItem,
+} from "@/lib/types";
 
 function formatDate(iso: string): string {
   try {
@@ -242,15 +256,13 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
               Henüz ödev atamadın. Quizlerinden birini sınıfa ata.
             </p>
           ) : (
-            <ul className="divide-y">
+            <ul className="divide-y rounded-lg border">
               {data.assignments.map((a) => (
-                <li key={a.id} className="flex items-center gap-2 py-2.5 text-sm">
-                  <NotebookPen className="h-4 w-4 shrink-0 text-amber-500" />
-                  <span className="min-w-0 truncate font-medium">{a.title}</span>
-                  <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-                    {formatDate(a.created_at)}
-                  </span>
-                </li>
+                <AssignmentRow
+                  key={a.id}
+                  assignment={a}
+                  tenantId={userId as string}
+                />
               ))}
             </ul>
           )}
@@ -293,5 +305,107 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
         </Card>
       )}
     </div>
+  );
+}
+
+/** Ödev satırı — tıklayınca sonuç panosunu (sınıf roster'ı) açar. */
+function AssignmentRow({
+  assignment,
+  tenantId,
+}: {
+  assignment: AssignmentSummary;
+  tenantId: string;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const [results, setResults] = React.useState<AssignmentResultsResponse | null>(
+    null,
+  );
+  const [loading, setLoading] = React.useState(false);
+
+  async function toggle() {
+    const next = !open;
+    setOpen(next);
+    if (next && results === null) {
+      setLoading(true);
+      try {
+        setResults(await getAssignmentResults(assignment.id, tenantId));
+      } catch (e: unknown) {
+        toast.error("Sonuçlar alınamadı", {
+          description: e instanceof Error ? e.message : undefined,
+        });
+        setOpen(false);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
+  return (
+    <li className="text-sm">
+      <button
+        type="button"
+        onClick={toggle}
+        className="flex w-full items-center gap-2 px-4 py-2.5 text-left transition-colors hover:bg-accent/20"
+      >
+        {open ? (
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+        )}
+        <NotebookPen className="h-4 w-4 shrink-0 text-amber-500" />
+        <span className="min-w-0 truncate font-medium">{assignment.title}</span>
+        <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+          {results
+            ? `${results.solved_count}/${results.member_count} çözdü`
+            : formatDate(assignment.created_at)}
+        </span>
+      </button>
+
+      {open ? (
+        <div className="border-t bg-muted/30 px-4 py-3">
+          {loading ? (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Sonuçlar yükleniyor…
+            </div>
+          ) : results && results.items.length > 0 ? (
+            <ul className="space-y-1.5">
+              {results.items.map((it) => {
+                const pct =
+                  it.solved && it.total
+                    ? Math.round(((it.score ?? 0) / it.total) * 100)
+                    : 0;
+                return (
+                  <li
+                    key={it.student_tenant_id}
+                    className="flex items-center gap-2"
+                  >
+                    {it.solved ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                    ) : (
+                      <Circle className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+                    )}
+                    <span className="min-w-0 truncate">{it.display_name}</span>
+                    <span className="ml-auto shrink-0 tabular-nums text-muted-foreground">
+                      {it.solved ? (
+                        <>
+                          {it.score}/{it.total} · %{pct}
+                        </>
+                      ) : (
+                        "çözmedi"
+                      )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Sınıfta henüz öğrenci yok.
+            </p>
+          )}
+        </div>
+      ) : null}
+    </li>
   );
 }

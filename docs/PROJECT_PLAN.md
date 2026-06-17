@@ -288,10 +288,14 @@ quiz_id, due_date?), `attempts.assignment_id` (çözümü ödeve bağlar).
   POST/{id}/attempt, üyelik-gated), `me /quizzes` + `/assignments`. Frontend:
   `/practice/assignments` + `[id]` (QuizSolver **assignment modu**), ClassroomDetail
   "Ödev ata" (quiz seçici), hub "Ödevlerim" kartı. `tests/test_assignment.py`.
-- **PR 3:** öğretmen sınıf panosu (üyeler + ödev başına sonuçlar — `share_results` deseni).
+- **PR 3 ✅ DONE:** öğretmen ödev sonuç panosu. `classroom_store.assignment_results`
+  (sınıf roster'ı bazlı: çözen + çözmeyen, sahip-only); `GET /api/assignments/{id}/results`;
+  frontend `ClassroomDetailView`'de ödev satırı genişleyince roster (kim çözdü/kaç doğru) +
+  "N/M çözdü" özeti. `test_assignment.py` genişletildi.
 - **(sonra):** due-date, e-posta/in-app bildirim, PDF ödev, çoklu sınıf yönetimi.
 
-**Çıkış kapısı:** öğretmen sınıf açıp ödev atıyor, öğrenci çözüyor, sonuçlar panoda görünüyor.
+**Çıkış kapısı:** ✅ GEÇİLDİ — öğretmen sınıf açıp ödev atıyor, öğrenci çözüyor,
+sonuçlar panoda görünüyor (PR 1+2+3 canlı). Kalan opsiyonel: due-date, bildirim, PDF ödev.
 **Mevcutu bozmama:** tümü ek (`/api/classrooms/*`, yeni tablolar, `/practice/classes/*`);
 mevcut paylaşım/çözme/PDF akışlarına dokunulmaz.
 

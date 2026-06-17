@@ -13,6 +13,7 @@ Thread-safe (threading.Lock + db_connection deseni). Singleton: CLASSROOM_STORE.
 """
 from __future__ import annotations
 
+import json
 import logging
 import secrets
 import threading
@@ -421,6 +422,74 @@ class ClassroomStore:
                 }
             )
         return out
+
+    def assignment_results(
+        self, assignment_id: str, owner_tenant_id: str
+    ) -> dict | None:
+        """Bir ödevin sonuç panosu (sınıf sahibi-only). Sahip değilse None.
+
+        Sınıf roster'ı bazlı: her ÜYE bir satır (çözmeyen de görünür → kimin yapmadığı
+        belli). Dönüş: {title, question_count, member_count, solved_count,
+        items:[{student_tenant_id, display_name, solved, score, total, completed_at}]}.
+        """
+        if not assignment_id or not owner_tenant_id:
+            return None
+        with self._lock:
+            assert self._db is not None
+            a = self._db.execute(
+                "SELECT a.classroom_id, a.quiz_id, a.title, c.owner_tenant_id "
+                "FROM assignments a JOIN classrooms c ON c.id = a.classroom_id "
+                "WHERE a.id = ?",
+                (assignment_id,),
+            ).fetchone()
+            if not a or a[3] != owner_tenant_id:
+                return None
+            classroom_id, quiz_id, title = a[0], a[1], a[2]
+            qrow = self._db.execute(
+                "SELECT questions_json FROM quizzes WHERE id = ?", (quiz_id,)
+            ).fetchone()
+            rows = self._db.execute(
+                """
+                SELECT m.student_tenant_id, m.display_name,
+                       COUNT(att.id), MAX(att.score), MAX(att.total), MAX(att.completed_at)
+                FROM classroom_members m
+                LEFT JOIN attempts att
+                       ON att.assignment_id = ? AND att.solver_tenant_id = m.student_tenant_id
+                WHERE m.classroom_id = ?
+                GROUP BY m.student_tenant_id
+                ORDER BY m.display_name
+                """,
+                (assignment_id, classroom_id),
+            ).fetchall()
+        question_count = 0
+        if qrow and qrow[0]:
+            try:
+                question_count = len(json.loads(qrow[0]).get("questions", []))
+            except json.JSONDecodeError:
+                question_count = 0
+        items: list[dict] = []
+        solved_count = 0
+        for r in rows:
+            solved = int(r[2] or 0) > 0
+            if solved:
+                solved_count += 1
+            items.append(
+                {
+                    "student_tenant_id": r[0],
+                    "display_name": r[1],
+                    "solved": solved,
+                    "score": int(r[3]) if (solved and r[3] is not None) else None,
+                    "total": int(r[4]) if (solved and r[4] is not None) else None,
+                    "completed_at": _iso(r[5]) if (solved and r[5] is not None) else None,
+                }
+            )
+        return {
+            "title": title,
+            "question_count": question_count,
+            "member_count": len(items),
+            "solved_count": solved_count,
+            "items": items,
+        }
 
     def close(self) -> None:
         with self._lock:
