@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, History, Sparkles, TrendingUp } from "lucide-react";
+import { ArrowRight, History, Share2, Sparkles, TrendingUp } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { PracticeTodayCard } from "@/components/PracticeTodayCard";
@@ -28,7 +28,7 @@ export default function CozHubPage() {
 
       <PracticeTodayCard />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link href="/practice/new" className="group">
           <Card className="flex h-full flex-col gap-3 p-6 shadow-pop transition-transform hover:-translate-y-1">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-coral/15 text-2xl">
@@ -78,6 +78,24 @@ export default function CozHubPage() {
               </p>
             </div>
             <span className="mt-auto inline-flex items-center gap-1 font-display text-sm font-semibold text-mint">
+              Aç
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Card>
+        </Link>
+
+        <Link href="/practice/shares" className="group">
+          <Card className="flex h-full flex-col gap-3 p-6 shadow-pop transition-transform hover:-translate-y-1">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-grape/15 text-2xl">
+              <Share2 className="h-6 w-6 text-grape" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="font-display text-lg font-bold">Paylaşımlarım</h2>
+              <p className="text-sm text-muted-foreground">
+                Paylaştığın quizleri ve onları çözenlerin sonuçlarını gör.
+              </p>
+            </div>
+            <span className="mt-auto inline-flex items-center gap-1 font-display text-sm font-semibold text-grape">
               Aç
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </span>
