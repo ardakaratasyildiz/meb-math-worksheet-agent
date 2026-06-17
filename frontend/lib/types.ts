@@ -289,6 +289,13 @@ export interface ClassroomMember {
   joined_at: string;
 }
 
+export interface AssignmentSummary {
+  id: string;
+  quiz_id: string;
+  title: string;
+  created_at: string;
+}
+
 export interface ClassroomDetail {
   id: string;
   name: string;
@@ -297,11 +304,43 @@ export interface ClassroomDetail {
   created_at: string;
   join_code?: string | null; // yalnız sahip
   members: ClassroomMember[]; // yalnız sahip için dolu
+  assignments: AssignmentSummary[]; // sınıfa atanmış ödevler
 }
 
 export interface JoinClassroomResponse {
   classroom_id: string;
   name: string;
+}
+
+// Öğrencinin ödevi ("Ödevlerim").
+export interface MyAssignmentItem {
+  assignment_id: string;
+  classroom_id: string;
+  classroom_name: string;
+  quiz_id: string;
+  title: string;
+  created_at: string;
+  solved: boolean;
+  score?: number | null;
+  total?: number | null;
+}
+
+export interface MyAssignmentsResponse {
+  items: MyAssignmentItem[];
+}
+
+// Öğretmenin ödev atamak için seçtiği kendi quiz'i.
+export interface MyQuizItem {
+  id: string;
+  title: string;
+  grade?: number | null;
+  topic_id: string;
+  difficulty: string;
+  created_at: string;
+}
+
+export interface MyQuizzesResponse {
+  items: MyQuizItem[];
 }
 
 // ── Quiz geçmişi ───────────────────────────────────────────────────────────

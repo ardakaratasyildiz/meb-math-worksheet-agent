@@ -15,6 +15,9 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.models.schemas import (
+    AssignmentCreatedResponse,
+    AssignmentSummary,
+    AssignQuizRequest,
     ClassroomDetail,
     ClassroomMember,
     ClassroomsResponse,
@@ -25,6 +28,7 @@ from app.models.schemas import (
 )
 from app.security import require_api_key
 from app.services.classroom_store import CLASSROOM_STORE
+from app.services.quiz_store import QUIZ_STORE
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +97,7 @@ def get_classroom(
     detail = CLASSROOM_STORE.get_classroom(classroom_id, tenant_id)
     if detail is None:
         raise HTTPException(status_code=404, detail="Sınıf bulunamadı.")
+    assignments = CLASSROOM_STORE.list_assignments(classroom_id)
     return ClassroomDetail(
         id=detail["id"],
         name=detail["name"],
@@ -101,4 +106,27 @@ def get_classroom(
         created_at=detail["created_at"],
         join_code=detail["join_code"],
         members=[ClassroomMember(**m) for m in detail["members"]],
+        assignments=[AssignmentSummary(**a) for a in assignments],
     )
+
+
+@router.post("/{classroom_id}/assignments", response_model=AssignmentCreatedResponse)
+def assign_quiz(
+    classroom_id: str,
+    req: AssignQuizRequest,
+    _api_key: str = Depends(require_api_key),
+) -> AssignmentCreatedResponse:
+    """Sınıfa quiz'i ödev olarak ata — yalnız sınıf sahibi + kendi quiz'i."""
+    quiz = QUIZ_STORE.get(req.quiz_id, req.tenant_id)
+    if quiz is None:
+        raise HTTPException(status_code=404, detail="Quiz bulunamadı (senin quiz'in olmalı).")
+    res = CLASSROOM_STORE.create_assignment(
+        classroom_id=classroom_id,
+        owner_tenant_id=req.tenant_id,
+        quiz_id=req.quiz_id,
+        title=quiz["title"],
+    )
+    if res is None:
+        raise HTTPException(status_code=403, detail="Bu sınıfın sahibi değilsin.")
+    logger.info("ödev atandı: classroom=%s quiz=%s", classroom_id, req.quiz_id)
+    return AssignmentCreatedResponse(**res)

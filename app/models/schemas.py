@@ -796,6 +796,15 @@ class ClassroomMember(BaseModel):
     joined_at: str
 
 
+class AssignmentSummary(BaseModel):
+    """Sınıfa atanmış bir ödev (sınıf detayında)."""
+
+    id: str
+    quiz_id: str
+    title: str
+    created_at: str
+
+
 class ClassroomDetail(BaseModel):
     id: str
     name: str
@@ -804,3 +813,56 @@ class ClassroomDetail(BaseModel):
     created_at: str
     join_code: str | None = None  # yalnız sahip
     members: list[ClassroomMember] = []  # yalnız sahip için dolu
+    assignments: list[AssignmentSummary] = []  # sınıfa atanmış ödevler
+
+
+# ── Ödev atama + öğrenci ödevleri (Faz 3.5 PR 2) ─────────────────────────────
+
+
+class AssignQuizRequest(BaseModel):
+    tenant_id: str = Field(..., min_length=1, max_length=64)
+    quiz_id: str = Field(..., min_length=1)
+
+    @field_validator("tenant_id", "quiz_id")
+    @classmethod
+    def _strip(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("boş olamaz")
+        return v
+
+
+class AssignmentCreatedResponse(BaseModel):
+    id: str
+    created_at: str
+
+
+class MyAssignmentItem(BaseModel):
+    assignment_id: str
+    classroom_id: str
+    classroom_name: str
+    quiz_id: str
+    title: str
+    created_at: str
+    solved: bool
+    score: int | None = None
+    total: int | None = None
+
+
+class MyAssignmentsResponse(BaseModel):
+    items: list[MyAssignmentItem]
+
+
+class MyQuizItem(BaseModel):
+    """Öğretmenin ödev atamak için seçebileceği kendi quiz'i (hafif meta)."""
+
+    id: str
+    title: str
+    grade: int | None = None
+    topic_id: str
+    difficulty: str
+    created_at: str
+
+
+class MyQuizzesResponse(BaseModel):
+    items: list[MyQuizItem]

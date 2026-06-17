@@ -3,6 +3,7 @@ import {
   ArrowRight,
   GraduationCap,
   History,
+  NotebookPen,
   Share2,
   Sparkles,
   TrendingUp,
@@ -122,6 +123,24 @@ export default function CozHubPage() {
               </p>
             </div>
             <span className="mt-auto inline-flex items-center gap-1 font-display text-sm font-semibold text-amber-500">
+              Aç
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Card>
+        </Link>
+
+        <Link href="/practice/assignments" className="group">
+          <Card className="flex h-full flex-col gap-3 p-6 shadow-pop transition-transform hover:-translate-y-1">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-400/15 text-2xl">
+              <NotebookPen className="h-6 w-6 text-rose-500" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="font-display text-lg font-bold">Ödevlerim</h2>
+              <p className="text-sm text-muted-foreground">
+                Katıldığın sınıflardaki ödevleri çöz; sonucun öğretmenine işlenir.
+              </p>
+            </div>
+            <span className="mt-auto inline-flex items-center gap-1 font-display text-sm font-semibold text-rose-500">
               Aç
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </span>

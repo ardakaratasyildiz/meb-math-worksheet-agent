@@ -99,6 +99,9 @@ class QuizStore:
             self._db.execute("ALTER TABLE attempts ADD COLUMN share_id TEXT")
         if "solver_label" not in cols:
             self._db.execute("ALTER TABLE attempts ADD COLUMN solver_label TEXT")
+        # Sınıf ödevi (Faz 3.5 PR 2): deneme hangi ödevden geldi (sonuç panosu + çözüldü).
+        if "assignment_id" not in cols:
+            self._db.execute("ALTER TABLE attempts ADD COLUMN assignment_id TEXT")
         self._db.execute(
             """
             CREATE TABLE IF NOT EXISTS mastery_state (
@@ -133,6 +136,10 @@ class QuizStore:
         )
         self._db.execute(
             "CREATE INDEX IF NOT EXISTS idx_attempts_share ON attempts(share_id)"
+        )
+        self._db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_attempts_assignment "
+            "ON attempts(assignment_id, solver_tenant_id)"
         )
         self._db.commit()
 
@@ -414,13 +421,15 @@ class QuizStore:
         quiz_snapshot: dict | None = None,
         share_id: str | None = None,
         solver_label: str | None = None,
+        assignment_id: str | None = None,
     ) -> dict:
         """Çözüm denemesini kaydeder. {id, completed_at} döner.
 
         quiz_snapshot: {title, grade, topic_id, difficulty, questions:[...]} —
         denemeyi self-contained yapar; quiz FIFO-trim'lense bile geçmiş çalışır.
-        share_id/solver_label: paylaşılan quiz çözümünde dolar (Faz 3 PR A);
-        kişisel çözümde None → mevcut çağrı değişmeden çalışır.
+        share_id/solver_label: paylaşılan quiz çözümünde dolar (Faz 3 PR A).
+        assignment_id: sınıf ödevi çözümünde dolar (Faz 3.5 PR 2). Hepsi None →
+        kişisel çözüm; mevcut çağrılar değişmeden çalışır.
         """
         attempt_id = uuid.uuid4().hex
         now = time.time()
@@ -435,8 +444,8 @@ class QuizStore:
             self._db.execute(
                 "INSERT INTO attempts (id, quiz_id, solver_tenant_id, answers_json, "
                 "score, total, duration_seconds, per_kazanim_json, completed_at, "
-                "quiz_snapshot_json, share_id, solver_label) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "quiz_snapshot_json, share_id, solver_label, assignment_id) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     attempt_id,
                     quiz_id,
@@ -450,6 +459,7 @@ class QuizStore:
                     snapshot_json,
                     share_id,
                     solver_label,
+                    assignment_id,
                 ),
             )
             # FIFO trim — snapshot satırları büyüttüğü için attempts de sınırlanır.

@@ -291,6 +291,137 @@ class ClassroomStore:
             "members": members,  # yalnız sahip için dolu
         }
 
+    # ── Ödevler (Faz 3.5 PR 2) ───────────────────────────────────────────────
+
+    def is_member(self, classroom_id: str, tenant_id: str) -> bool:
+        """tenant sınıfın sahibi VEYA üyesi mi (ödev erişim kontrolü)."""
+        if not classroom_id or not tenant_id:
+            return False
+        with self._lock:
+            assert self._db is not None
+            owner = self._db.execute(
+                "SELECT 1 FROM classrooms WHERE id = ? AND owner_tenant_id = ?",
+                (classroom_id, tenant_id),
+            ).fetchone()
+            if owner:
+                return True
+            member = self._db.execute(
+                "SELECT 1 FROM classroom_members "
+                "WHERE classroom_id = ? AND student_tenant_id = ?",
+                (classroom_id, tenant_id),
+            ).fetchone()
+        return member is not None
+
+    def create_assignment(
+        self, *, classroom_id: str, owner_tenant_id: str, quiz_id: str, title: str
+    ) -> dict | None:
+        """Sınıfa ödev (quiz) atar — yalnız sınıf sahibi. Sahip değilse None.
+
+        quiz'in sahibe ait olduğu doğrulaması ÇAĞIRANA aittir (router QUIZ_STORE ile).
+        """
+        with self._lock:
+            assert self._db is not None
+            owns = self._db.execute(
+                "SELECT 1 FROM classrooms WHERE id = ? AND owner_tenant_id = ?",
+                (classroom_id, owner_tenant_id),
+            ).fetchone()
+            if not owns:
+                return None
+            aid = uuid.uuid4().hex
+            now = time.time()
+            self._db.execute(
+                "INSERT INTO assignments (id, classroom_id, quiz_id, title, due_at, created_at) "
+                "VALUES (?, ?, ?, ?, NULL, ?)",
+                (aid, classroom_id, quiz_id, title, now),
+            )
+            self._db.commit()
+        return {"id": aid, "created_at": _iso(now)}
+
+    def get_assignment(self, assignment_id: str) -> dict | None:
+        """Ödevi getirir (erişim kontrolü çağırana ait: is_member)."""
+        if not assignment_id:
+            return None
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT id, classroom_id, quiz_id, title, created_at "
+                "FROM assignments WHERE id = ?",
+                (assignment_id,),
+            ).fetchone()
+        if not row:
+            return None
+        return {
+            "id": row[0],
+            "classroom_id": row[1],
+            "quiz_id": row[2],
+            "title": row[3],
+            "created_at": _iso(row[4]),
+        }
+
+    def list_assignments(self, classroom_id: str) -> list[dict]:
+        """Sınıfa atanmış ödevler (en yeni önce). Öğretmen sınıf detayında görür."""
+        if not classroom_id:
+            return []
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                "SELECT id, quiz_id, title, created_at FROM assignments "
+                "WHERE classroom_id = ? ORDER BY created_at DESC",
+                (classroom_id,),
+            ).fetchall()
+        return [
+            {
+                "id": r[0],
+                "quiz_id": r[1],
+                "title": r[2],
+                "created_at": _iso(r[3]),
+            }
+            for r in rows
+        ]
+
+    def list_my_assignments(self, student_tenant_id: str) -> list[dict]:
+        """Öğrencinin katıldığı sınıflardaki ödevler + çözüldü durumu/skor.
+
+        attempts (quiz_store tablosu, aynı DB) ile LEFT JOIN — solved = deneme var mı.
+        Çok denemede en iyi skor gösterilir.
+        """
+        if not student_tenant_id:
+            return []
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                """
+                SELECT a.id, a.classroom_id, c.name, a.quiz_id, a.title, a.created_at,
+                       COUNT(att.id), MAX(att.score), MAX(att.total)
+                FROM classroom_members m
+                JOIN assignments a ON a.classroom_id = m.classroom_id
+                JOIN classrooms c ON c.id = a.classroom_id
+                LEFT JOIN attempts att
+                       ON att.assignment_id = a.id AND att.solver_tenant_id = ?
+                WHERE m.student_tenant_id = ?
+                GROUP BY a.id
+                ORDER BY a.created_at DESC
+                """,
+                (student_tenant_id, student_tenant_id),
+            ).fetchall()
+        out: list[dict] = []
+        for r in rows:
+            solved = int(r[6] or 0) > 0
+            out.append(
+                {
+                    "assignment_id": r[0],
+                    "classroom_id": r[1],
+                    "classroom_name": r[2],
+                    "quiz_id": r[3],
+                    "title": r[4],
+                    "created_at": _iso(r[5]),
+                    "solved": solved,
+                    "score": int(r[7]) if (solved and r[7] is not None) else None,
+                    "total": int(r[8]) if (solved and r[8] is not None) else None,
+                }
+            )
+        return out
+
     def close(self) -> None:
         with self._lock:
             if self._db is not None:
