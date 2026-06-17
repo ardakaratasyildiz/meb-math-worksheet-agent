@@ -211,15 +211,15 @@ otomatik public.
 #### Alt-fazlar (her PR bağımsız, tek başına test edilebilir)
 > **Tam dosya/satır seviyesi detay: `COZ_SHARING_PLAN.md`.** Aşağısı sıra + kapsam.
 
-- **PR A — Backend paylaşım + public çözme**
-  - `shares` tablosu (`id, quiz_id, owner_tenant_id, share_code UNIQUE, share_type,
-    target_tenant_id, revoked, created_at`) → `quiz_store.py:_init_db`.
-  - `attempts` migration (idempotent): `+ share_id`, `+ solver_label`.
-  - `QuizStore`: `create_share` (idempotent), `get_share_by_code`, `get_quiz_by_id`
-    (owner-scope'suz), `record_attempt(..., share_id, solver_label)`, `list_shares`, `share_results`.
-  - Yeni public router `app/routers/shared.py` → `main.py`'de `prefix="/api/shared"`:
-    `GET /{code}` (cevapsız QuizPublic), `POST /{code}/attempt` (**per-IP rate-limit**).
-  - `POST /api/quizzes/{id}/share` (owner). Şemalar + unit testler + anti-kopya regresyon.
+- **PR A — Backend paylaşım + public çözme** ✅ DONE (branch `feat/coz-share-backend`)
+  - ✅ `shares` tablosu + `attempts` migration (`share_id`, `solver_label`) → `quiz_store.py`.
+  - ✅ `QuizStore`: `create_share` (idempotent), `get_share_by_code`, `get_quiz_by_id`
+    (owner-scope'suz), `revoke_share`, `record_attempt(..., share_id, solver_label)`,
+    `list_shares`, `share_results`.
+  - ✅ Public router `app/routers/shared.py` (`main.py` `prefix="/api/shared"`):
+    `GET /{code}` (cevapsız), `POST /{code}/attempt` (per-IP rate-limit, misafir+üye).
+  - ✅ `POST /api/quizzes/{id}/share` + `GET /api/me/shares` + `/shares/{id}/results`.
+  - ✅ Şemalar + `tests/test_sharing.py` (anti-kopya regresyon dahil) — tüm suite geçti.
 - **PR B — Frontend paylaş + public çözme sayfası** → **viral döngü canlı**
   - `ShareQuizButton` (link kopyala + WhatsApp `navigator.share`) → `QuizSolver` sonuç ekranı + quiz geçmişi.
   - `app/q/[code]/page.tsx` (public): `QuizSolver`'ı **shared mod**'da yeniden kullan
@@ -315,7 +315,7 @@ arar) → native'in faydası acquisition değil **retention**. PWA zaten kurulu 
 1. **Faz 0.2** — north-star dashboard (kör uçuşu bitir; her şeyin önkoşulu).
 2. **Faz 0.4** — PAT revoke + legal (güvenlik + para önkoşulu, düşük efor).
 3. **Faz 2 ölçüm** — dönüşüm + viral döngü GA4'te gerçekten ölçülüyor mu?
-4. **Faz 3 paylaşım PR A→B** — `/coz` quiz paylaşımı (en güçlü viral kaldıraç; detay `COZ_SHARING_PLAN.md`).
+4. **Faz 3 paylaşım** — PR A ✅ DONE (backend, branch `feat/coz-share-backend`); **sıradaki = PR B** (frontend paylaş butonu + `/q/[code]` public çözme + GA4) → viral döngü canlı. Detay `COZ_SHARING_PLAN.md`.
 5. **Faz 1B** — içerik→SEO sayfa otomasyonu + 8.sınıf indeks takibi.
 6. **Mobil** — PWA Web Push (retention, ~$0; §6 adım 2).
 

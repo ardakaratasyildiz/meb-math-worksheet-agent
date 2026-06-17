@@ -17,6 +17,10 @@ from app.models.schemas import (
     GamificationResponse,
     ProgressResponse,
     Question,
+    ShareResultItem,
+    ShareResultsResponse,
+    SharesResponse,
+    ShareSummary,
     SubmittedAnswer,
 )
 from app.security import require_api_key
@@ -115,4 +119,34 @@ def get_attempt_detail(
         submitted=submitted,
         duration_seconds=rec.get("duration_seconds"),
         completed_at=rec["completed_at"],
+    )
+
+
+# ── Paylaşım sonuç panosu (Faz 3 PR A) ───────────────────────────────────────
+
+
+@router.get("/shares", response_model=SharesResponse)
+def list_my_shares(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> SharesResponse:
+    """Kullanıcının oluşturduğu aktif paylaşımlar + çözülme sayısı + ort. skor."""
+    rows = QUIZ_STORE.list_shares(tenant_id)
+    return SharesResponse(items=[ShareSummary(**r) for r in rows])
+
+
+@router.get("/shares/{share_id}/results", response_model=ShareResultsResponse)
+def get_share_results(
+    share_id: str,
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> ShareResultsResponse:
+    """Bir paylaşımın sonuç panosu — kim çözdü, kaç doğru, ne sürede (sahip-only)."""
+    data = QUIZ_STORE.share_results(share_id, tenant_id)
+    if data is None:
+        raise HTTPException(status_code=404, detail="Paylaşım bulunamadı.")
+    return ShareResultsResponse(
+        title=data["title"],
+        question_count=data["question_count"],
+        items=[ShareResultItem(**i) for i in data["items"]],
     )

@@ -620,6 +620,80 @@ class AttemptHistoryItem(BaseModel):
     has_detail: bool  # soru-bazlı detay reconstruct edilebilir mi
 
 
+# ── Paylaşım (Faz 3 PR A) ────────────────────────────────────────────────────
+
+
+class CreateShareResponse(BaseModel):
+    """Quiz paylaşımı oluşturma yanıtı. share_url görece (/q/{code}); frontend
+    origin'i ekler."""
+
+    share_code: str
+    share_url: str
+
+
+class SharedAttemptRequest(BaseModel):
+    """Paylaşılan quiz çözümü — tenant_id OPSİYONEL (misafir login'siz çözebilir).
+
+    Giriş yapmışsa tenant_id gönderilir → çözenin ilerlemesine sayılır. Misafir
+    için tenant_id None; solver_label opsiyonel ad (sahip panosunda görünür).
+    """
+
+    tenant_id: str | None = Field(None, max_length=64)
+    solver_label: str | None = Field(None, max_length=80)
+    answers: list[SubmittedAnswer] = Field(default_factory=list)
+    duration_seconds: int | None = Field(None, ge=0)
+
+    @field_validator("tenant_id")
+    @classmethod
+    def _strip_tenant(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        v = v.strip()
+        return v or None
+
+    @field_validator("solver_label")
+    @classmethod
+    def _strip_label(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        v = v.strip()
+        return v[:80] or None
+
+
+class ShareSummary(BaseModel):
+    """Sahip panosu satırı — bir paylaşım + özet sayaçlar."""
+
+    share_id: str
+    share_code: str
+    quiz_id: str
+    title: str
+    grade: int | None = None
+    topic_id: str
+    created_at: str
+    attempt_count: int
+    avg_score_pct: int | None = None
+
+
+class SharesResponse(BaseModel):
+    items: list[ShareSummary]
+
+
+class ShareResultItem(BaseModel):
+    """Bir paylaşımı çözen tek kişinin sonucu (sahip panosu)."""
+
+    solver_label: str | None = None
+    score: int
+    total: int
+    duration_seconds: int | None = None
+    completed_at: str
+
+
+class ShareResultsResponse(BaseModel):
+    title: str
+    question_count: int
+    items: list[ShareResultItem]
+
+
 class AttemptHistoryResponse(BaseModel):
     items: list[AttemptHistoryItem]
 
