@@ -5,6 +5,7 @@
  */
 import type { HistoryItem } from "./history";
 import type {
+  AssignmentResultsResponse,
   AttemptDetail,
   AttemptHistoryItem,
   AttemptResult,
@@ -531,6 +532,16 @@ export async function assignQuiz(
       headers: tenantHeader(tenantId),
       body: JSON.stringify({ tenant_id: tenantId, quiz_id: quizId }),
     },
+  );
+}
+
+/** Ödevin sonuç panosu (sınıf sahibi) — roster: kim çözdü, kaç doğru. */
+export async function getAssignmentResults(
+  assignmentId: string,
+  tenantId: string,
+): Promise<AssignmentResultsResponse> {
+  return request<AssignmentResultsResponse>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}/results?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 

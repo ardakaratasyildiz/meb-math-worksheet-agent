@@ -16,6 +16,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.models.enums import Difficulty
 from app.models.schemas import (
+    AssignmentResultItem,
+    AssignmentResultsResponse,
     AttemptResult,
     Question,
     QuizPublic,
@@ -115,4 +117,23 @@ def submit_assignment_attempt(
         per_kazanim=per_kazanim,
         results=results,
         completed_at=attempt["completed_at"],
+    )
+
+
+@router.get("/{assignment_id}/results", response_model=AssignmentResultsResponse)
+def get_assignment_results(
+    assignment_id: str,
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> AssignmentResultsResponse:
+    """Ödevin sonuç panosu — sınıf roster'ı bazlı (çözen/çözmeyen). Yalnız sınıf sahibi."""
+    data = CLASSROOM_STORE.assignment_results(assignment_id, tenant_id)
+    if data is None:
+        raise HTTPException(status_code=404, detail="Ödev bulunamadı.")
+    return AssignmentResultsResponse(
+        title=data["title"],
+        question_count=data["question_count"],
+        member_count=data["member_count"],
+        solved_count=data["solved_count"],
+        items=[AssignmentResultItem(**i) for i in data["items"]],
     )

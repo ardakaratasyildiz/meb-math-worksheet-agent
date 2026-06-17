@@ -115,6 +115,43 @@ def test_my_assignments_solved() -> None:
             cs.close(); qs.close()
 
 
+def test_assignment_results() -> None:
+    print("öğretmen sonuç panosu (roster: çözen/çözmeyen)")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        db = str(Path(tmp) / "t.sqlite3")
+        qs = QuizStore(db_path=db)
+        cs = ClassroomStore(db_path=db)
+        try:
+            quiz_id = _make_quiz(qs, "teacher-1")
+            c = cs.create_classroom(owner_tenant_id="teacher-1", name="5/A")
+            cs.join_classroom(code=c["join_code"], student_tenant_id="stu-1", display_name="Ali")
+            cs.join_classroom(code=c["join_code"], student_tenant_id="stu-2", display_name="Ayşe")
+            a = cs.create_assignment(
+                classroom_id=c["id"], owner_tenant_id="teacher-1",
+                quiz_id=quiz_id, title="Ödev 1",
+            )
+            # Sadece stu-1 çözer
+            qs.record_attempt(
+                quiz_id=quiz_id, solver_tenant_id="stu-1",
+                answers=[{"number": 1, "texts": ["4"]}],
+                score=1, total=1, duration_seconds=12,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 1, "total": 1}],
+                assignment_id=a["id"],
+            )
+            res = cs.assignment_results(a["id"], "teacher-1")
+            check(res is not None, "sahip sonuç panosunu aldı")
+            check(res["member_count"] == 2, f"2 üye roster: {res['member_count']}")
+            check(res["solved_count"] == 1, f"1 çözen: {res['solved_count']}")
+            check(res["question_count"] == 1, f"soru sayısı 1: {res['question_count']}")
+            by = {i["display_name"]: i for i in res["items"]}
+            check(by["Ali"]["solved"] is True and by["Ali"]["score"] == 1, "Ali çözdü 1/1")
+            check(by["Ayşe"]["solved"] is False, "Ayşe çözmedi (roster'da görünür)")
+            # Sahip olmayan göremez
+            check(cs.assignment_results(a["id"], "stu-1") is None, "sahip-olmayan None")
+        finally:
+            cs.close(); qs.close()
+
+
 def test_app_imports() -> None:
     print("uygulama import — assignment endpoint'leri kayıtlı")
     from app.main import app  # noqa: PLC0415
@@ -122,13 +159,19 @@ def test_app_imports() -> None:
     paths = {r.path for r in app.routes}
     check("/api/assignments/{assignment_id}" in paths, "GET /api/assignments/{id}")
     check("/api/assignments/{assignment_id}/attempt" in paths, "POST .../attempt")
+    check("/api/assignments/{assignment_id}/results" in paths, "GET .../results")
     check("/api/classrooms/{classroom_id}/assignments" in paths, "POST classroom assignments")
     check("/api/me/quizzes" in paths, "GET /api/me/quizzes")
     check("/api/me/assignments" in paths, "GET /api/me/assignments")
 
 
 def main() -> int:
-    for fn in (test_assign_and_access, test_my_assignments_solved, test_app_imports):
+    for fn in (
+        test_assign_and_access,
+        test_my_assignments_solved,
+        test_assignment_results,
+        test_app_imports,
+    ):
         fn()
     print()
     if _failures:

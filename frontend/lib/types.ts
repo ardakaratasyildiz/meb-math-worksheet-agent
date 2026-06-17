@@ -343,6 +343,24 @@ export interface MyQuizzesResponse {
   items: MyQuizItem[];
 }
 
+// Öğretmen ödev sonuç panosu (sınıf roster'ı: çözen/çözmeyen).
+export interface AssignmentResultItem {
+  student_tenant_id: string;
+  display_name: string;
+  solved: boolean;
+  score?: number | null;
+  total?: number | null;
+  completed_at?: string | null;
+}
+
+export interface AssignmentResultsResponse {
+  title: string;
+  question_count: number;
+  member_count: number;
+  solved_count: number;
+  items: AssignmentResultItem[];
+}
+
 // ── Quiz geçmişi ───────────────────────────────────────────────────────────
 
 export interface AttemptHistoryItem {
