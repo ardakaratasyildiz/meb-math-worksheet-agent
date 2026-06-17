@@ -127,7 +127,7 @@ organik trafik). İki öncelik tek çark:
 - North-star **dashboard** yok (Faz 0.2) · **PAT revoke + legal** (Faz 0.4)
 - Faz 2 dönüşüm/viral **ölçümü** eksik (özellik var, ölçüm yok)
 - **`/practice` paylaşımı: PR A+B ✅ canlı** (link paylaş + public `/q/[code]` çözme + üye-ol funnel). Kalan: PR C frontend (sahip sonuç panosu) + PR D (uygulama-içi paylaşım)
-- SEO **otomasyonu** yok (içerik→sayfa elle) (Faz 1B)
+- SEO otomasyonu (içerik→sayfa codegen) ✅ DONE (Faz 1B); kalan: 8.sınıf SC indeks takibi (ops)
 - **Yeni dersler** yok (Faz 4) · **para kazanma** yok (Faz 5)
 - 🔴 **Gemini billing/kota planı** yok (ölçek önkoşulu)
 
@@ -172,12 +172,19 @@ Amaç: kör uçuşu bitir, dönüşüm sızıntılarını kapat (config/borç, �
 Burada içerik (#4) ve büyüme (#1) birleşir: her içerik damlası → SEO yüzeyi.
 
 - **1A 8.sınıf + LGS içeriği** ✅ DONE (detay: `GRADE8_LGS_PLAN.md`).
-- **1B 🟡 Programatik SEO otomasyonu** — desen kurulu (71+ sayfa, `LGS_SEO_PLAN.md`).
-  Açık iş: içerik→sayfa'yı **mekanikleştir** — yeni sınıf/konu/ders eklenince SEO
-  sayfaları `CURRICULUM`'dan otomatik üretilip sitemap'e girsin (elle sayfa yazma yok).
-  8.sınıf konu/kazanım sayfalarının SC'de indekslenmesini izle.
+- **1B ✅ Programatik SEO otomasyonu (codegen)** — içerik→sayfa artık MEKANİK:
+  `scripts/export_seo_data.py` backend `app/data/curriculum.py`'den **hem**
+  `curriculum-pages.json` (konu sayfaları) **hem** `kazanimlar.json` (kazanım
+  sayfaları) üretir; `lib/curriculum.ts` + `lib/kazanimlar.ts` bu JSON'lardan okur;
+  `sitemap.ts` otomatik toplar. Yeni sınıf/konu/ders → `curriculum.py`'ye ekle +
+  scripti çalıştır → SEO sayfaları + sitemap otomatik (elle TS düzenleme YOK; drift
+  bitti — 8.sınıf elle-kopyada drift etmişti, kaynağa hizalandı). Eski hardcoded
+  `CURRICULUM_PAGES` array'i + tek-amaçlı `export_kazanim_data.py` kaldırıldı.
+  🟡 Kalan (ops, senin tarafın): 8.sınıf konu/kazanım sayfalarının SC'de
+  indekslenmesini izle.
 
-**Çıkış kapısı:** 8.sınıf SEO sayfaları indeksleniyor + organik oturum trend yukarı.
+**Çıkış kapısı:** 8.sınıf SEO sayfaları indeksleniyor + organik oturum trend yukarı
+(codegen ✅; indeks takibi açık).
 
 ---
 
@@ -321,7 +328,7 @@ arar) → native'in faydası acquisition değil **retention**. PWA zaten kurulu 
 2. **Faz 0.4** — PAT revoke + legal (güvenlik + para önkoşulu, düşük efor).
 3. **Faz 2 ölçüm** — dönüşüm + viral döngü GA4'te gerçekten ölçülüyor mu?
 4. **Faz 3 paylaşım** — PR A (#48) + PR B (#49) + PR C (sahip panosu `/practice/shares`) ✅ DONE. Kalan tek opsiyonel parça: **PR D** (uygulama-içi kullanıcı→kullanıcı paylaşım — `LEARNING_PLATFORM_PLAN` §13 açık sorusu çözülünce). Detay `SHARING_PLAN.md`.
-5. **Faz 1B** — içerik→SEO sayfa otomasyonu + 8.sınıf indeks takibi.
+5. **Faz 1B** — içerik→SEO sayfa otomasyonu (codegen) ✅; kalan 8.sınıf SC indeks takibi (ops, senin tarafın).
 6. **Mobil** — PWA Web Push (retention, ~$0; §6 adım 2).
 
 ---
