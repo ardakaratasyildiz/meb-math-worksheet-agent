@@ -226,6 +226,47 @@ export interface AttemptResult {
   completed_at: string;
 }
 
+// ── Paylaşım (Faz 3) ─────────────────────────────────────────────────────────
+
+export interface CreateShareResponse {
+  share_code: string;
+  share_url: string; // görece: /q/{code}
+}
+
+// Paylaşılan quiz çözümü — tenant_id opsiyonel (misafir login'siz çözer).
+export interface SharedAttemptRequest {
+  tenant_id?: string | null;
+  solver_label?: string | null;
+  answers: SubmittedAnswer[];
+  duration_seconds?: number | null;
+}
+
+export interface ShareSummary {
+  share_id: string;
+  share_code: string;
+  quiz_id: string;
+  title: string;
+  grade?: number | null;
+  topic_id: string;
+  created_at: string;
+  attempt_count: number;
+  avg_score_pct?: number | null;
+}
+
+export interface ShareResultItem {
+  solver_label?: string | null;
+  score: number;
+  total: number;
+  duration_seconds?: number | null;
+  completed_at: string;
+}
+
+export interface ShareResultsResponse {
+  title: string;
+  question_count: number;
+  items: ShareResultItem[];
+}
+
 // ── Quiz geçmişi ───────────────────────────────────────────────────────────
 
 export interface AttemptHistoryItem {

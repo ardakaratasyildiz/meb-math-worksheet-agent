@@ -3,8 +3,8 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
-import { FileText, Loader2, Sparkles } from "lucide-react";
+import { SignUpButton, useAuth } from "@clerk/nextjs";
+import { FileText, Loader2, Sparkles, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -12,13 +12,15 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MarkdownQuestion } from "@/components/MarkdownQuestion";
 import { ScoreRing } from "@/components/ScoreRing";
+import { ShareQuizButton } from "@/components/ShareQuizButton";
 import {
   OPTION_LETTERS,
   QuestionReview,
   stripInlineOptions,
 } from "@/components/QuestionReview";
 
-import { getQuiz, submitAttempt } from "@/lib/api";
+import { getQuiz, getSharedQuiz, submitAttempt, submitSharedAttempt } from "@/lib/api";
+import { track } from "@/lib/analytics";
 import { findKazanimByKod, practiceHref, rollupByTopic } from "@/lib/curriculum";
 import { useGenerateStore } from "@/lib/store";
 import type {
@@ -34,30 +36,56 @@ interface AnswerState {
   texts?: string[];
 }
 
-export function QuizSolver({ quizId }: { quizId: string }) {
+/**
+ * QuizSolver — iki modda çalışır:
+ *  - Kişisel (quizId): /coz altında, login zorunlu, kendi quiz'in.
+ *  - Paylaşılan (shareCode): public /q/[code], login GEREKMEZ; misafir de çözer.
+ *    Giriş yapmışsa çözüm kendi ilerlemesine sayılır; misafir opsiyonel ad girer
+ *    ve çözüm sonrası "üye ol" CTA'sı görür (viral funnel).
+ */
+export function QuizSolver({
+  quizId,
+  shareCode,
+}: {
+  quizId?: string;
+  shareCode?: string;
+}) {
+  const shared = !!shareCode;
   const { userId, isLoaded } = useAuth();
 
   const [quiz, setQuiz] = React.useState<QuizPublic | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [loadError, setLoadError] = React.useState<string | null>(null);
   const [answers, setAnswers] = React.useState<Record<number, AnswerState>>({});
+  const [guestName, setGuestName] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
   const [result, setResult] = React.useState<AttemptResult | null>(null);
   const [submittedPayload, setSubmittedPayload] = React.useState<
     SubmittedAnswer[]
   >([]);
   const startedAtRef = React.useRef<number>(0);
+  const openTrackedRef = React.useRef(false);
 
   React.useEffect(() => {
-    if (!isLoaded) return;
-    if (!userId) {
-      setLoadError("Oturum bulunamadı.");
-      setLoading(false);
-      return;
+    // Kişisel modda auth + userId şart; paylaşılan modda auth'u beklemeden yükle.
+    if (!shared) {
+      if (!isLoaded) return;
+      if (!userId) {
+        setLoadError("Oturum bulunamadı.");
+        setLoading(false);
+        return;
+      }
+    }
+    if (shared && !openTrackedRef.current) {
+      openTrackedRef.current = true;
+      track("quiz_share_open", { code: shareCode });
     }
     let active = true;
     setLoading(true);
-    getQuiz(quizId, userId)
+    const loader = shared
+      ? getSharedQuiz(shareCode as string)
+      : getQuiz(quizId as string, userId as string);
+    loader
       .then((q) => {
         if (!active) return;
         setQuiz(q);
@@ -73,14 +101,15 @@ export function QuizSolver({ quizId }: { quizId: string }) {
     return () => {
       active = false;
     };
-  }, [quizId, userId, isLoaded]);
+  }, [quizId, shareCode, shared, userId, isLoaded]);
 
   function setAnswer(num: number, patch: AnswerState) {
     setAnswers((prev) => ({ ...prev, [num]: { ...prev[num], ...patch } }));
   }
 
   async function onSubmit() {
-    if (!quiz || !userId) return;
+    if (!quiz) return;
+    if (!shared && !userId) return;
     const payload: SubmittedAnswer[] = quiz.questions.map((q) => {
       const a = answers[q.number] ?? {};
       return {
@@ -93,11 +122,21 @@ export function QuizSolver({ quizId }: { quizId: string }) {
     setSubmitting(true);
     try {
       const duration = Math.round((Date.now() - startedAtRef.current) / 1000);
-      const res = await submitAttempt(quiz.id, {
-        tenant_id: userId,
-        answers: payload,
-        duration_seconds: duration,
-      });
+      const res = shared
+        ? await submitSharedAttempt(shareCode as string, {
+            tenant_id: userId ?? null,
+            solver_label: guestName.trim() || null,
+            answers: payload,
+            duration_seconds: duration,
+          })
+        : await submitAttempt(quiz.id, {
+            tenant_id: userId as string,
+            answers: payload,
+            duration_seconds: duration,
+          });
+      if (shared) {
+        track("quiz_share_attempt", { logged_in: !!userId });
+      }
       setSubmittedPayload(payload);
       setResult(res);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -125,7 +164,9 @@ export function QuizSolver({ quizId }: { quizId: string }) {
           {loadError ?? "Quiz bulunamadı."}
         </p>
         <Button asChild variant="outline" size="sm" className="mt-3">
-          <Link href="/coz">Çöz & Geliş&apos;e dön</Link>
+          <Link href={shared ? "/" : "/coz"}>
+            {shared ? "Ana sayfaya dön" : "Çöz & Geliş'e dön"}
+          </Link>
         </Button>
       </Card>
     );
@@ -133,7 +174,13 @@ export function QuizSolver({ quizId }: { quizId: string }) {
 
   if (result) {
     return (
-      <ResultsView quiz={quiz} result={result} submitted={submittedPayload} />
+      <ResultsView
+        quiz={quiz}
+        result={result}
+        submitted={submittedPayload}
+        shared={shared}
+        loggedIn={!!userId}
+      />
     );
   }
 
@@ -149,6 +196,25 @@ export function QuizSolver({ quizId }: { quizId: string }) {
 
   return (
     <div className="space-y-5">
+      {/* Paylaşılan + misafir: opsiyonel isim (sahip sonuç panosunda görünür). */}
+      {shared && !userId ? (
+        <Card className="space-y-2 p-4">
+          <label
+            htmlFor="guest-name"
+            className="text-sm font-medium text-muted-foreground"
+          >
+            Adın (opsiyonel) — quizi paylaşan kişi sonucunu bu isimle görür
+          </label>
+          <Input
+            id="guest-name"
+            placeholder="Adın"
+            value={guestName}
+            onChange={(e) => setGuestName(e.target.value)}
+            className="max-w-xs"
+          />
+        </Card>
+      ) : null}
+
       <ol className="space-y-4">
         {quiz.questions.map((q) => {
           const a = answers[q.number] ?? {};
@@ -276,10 +342,14 @@ function ResultsView({
   quiz,
   result,
   submitted,
+  shared,
+  loggedIn,
 }: {
   quiz: QuizPublic;
   result: AttemptResult;
   submitted: SubmittedAnswer[];
+  shared: boolean;
+  loggedIn: boolean;
 }) {
   const pct = result.total
     ? Math.round((result.score / result.total) * 100)
@@ -308,6 +378,9 @@ function ResultsView({
     )[0];
   const weakestKod =
     weakest && weakest.correct < weakest.total ? weakest.kazanim_kod : null;
+
+  // Misafir (paylaşılan quiz'i login'siz çözen) → üye ol funnel CTA.
+  const guestOnShared = shared && !loggedIn;
 
   function onCreateWorksheet() {
     // Çöz→PDF köprüsü: zayıf konuyu PDF üreticiye ön-doldur (Zustand deseni).
@@ -361,6 +434,30 @@ function ResultsView({
         ) : null}
       </Card>
 
+      {/* Misafir → üye ol funnel (paylaşılan quiz çözüldükten sonra) */}
+      {guestOnShared ? (
+        <Card className="flex flex-col items-start gap-3 border-primary/30 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="font-display text-lg font-bold">
+              İlerlemeni kaydet 🚀
+            </h2>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              Ücretsiz üye ol; çözdüğün quizler, gelişimin ve eksik kazanımların
+              hesabında birikir.
+            </p>
+          </div>
+          <SignUpButton mode="modal">
+            <Button
+              className="shrink-0 gap-2"
+              onClick={() => track("quiz_share_signup", {})}
+            >
+              <UserPlus className="h-4 w-4" />
+              Ücretsiz üye ol
+            </Button>
+          </SignUpButton>
+        </Card>
+      ) : null}
+
       {/* Konu bazlı kırılım */}
       {topics.length ? (
         <Card className="space-y-3 p-5">
@@ -410,7 +507,7 @@ function ResultsView({
         })}
       </ol>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         {weakestKod ? (
           <Button asChild className="gap-2">
             <Link href={practiceHref(weakestKod)}>
@@ -430,8 +527,12 @@ function ResultsView({
           <FileText className="h-4 w-4" />
           Bu konuda çalışma kağıdı
         </Button>
+        {/* Sahip (kişisel mod) → bu quiz'i paylaş (viral kaldıraç). */}
+        {!shared ? <ShareQuizButton quizId={quiz.id} /> : null}
         <Button asChild variant="ghost">
-          <Link href="/coz">Çöz &amp; Geliş&apos;e dön</Link>
+          <Link href={shared ? "/" : "/coz"}>
+            {shared ? "Ana sayfa" : "Çöz & Geliş'e dön"}
+          </Link>
         </Button>
       </div>
     </div>

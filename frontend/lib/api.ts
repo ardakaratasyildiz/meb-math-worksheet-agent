@@ -9,6 +9,7 @@ import type {
   AttemptHistoryItem,
   AttemptResult,
   CreateQuizRequest,
+  CreateShareResponse,
   Difficulty,
   GamificationResponse,
   GenerateWorksheetRequest,
@@ -19,6 +20,8 @@ import type {
   Question,
   QuestionType,
   QuizPublic,
+  ShareResultsResponse,
+  ShareSummary,
   SubmittedAnswer,
   TopicInfo,
   Worksheet,
@@ -391,6 +394,66 @@ export async function getGamification(
 ): Promise<GamificationResponse> {
   return request<GamificationResponse>(
     `/api/me/gamification?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+// ---- Quiz paylaşımı (Faz 3) ---------------------------------------------
+
+/** Quiz için link paylaşımı oluştur (idempotent) — yalnız sahibi. */
+export async function createShare(
+  quizId: string,
+  tenantId: string,
+): Promise<CreateShareResponse> {
+  return request<CreateShareResponse>(
+    `/api/quizzes/${encodeURIComponent(quizId)}/share?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "POST", headers: tenantHeader(tenantId) },
+  );
+}
+
+/** Paylaşılan quiz'i çözmek için getir (cevapsız, PUBLIC — login gerekmez). */
+export async function getSharedQuiz(code: string): Promise<QuizPublic> {
+  return request<QuizPublic>(`/api/shared/${encodeURIComponent(code)}`);
+}
+
+/**
+ * Paylaşılan quiz cevaplarını gönder → sunucuda puanla → sonuç.
+ * Misafir: tenant_id yok (solver_label opsiyonel). Üye: tenant_id gönderilir →
+ * kendi ilerlemesine sayılır. Rate-limit kimliği için üyede X-Tenant-Id header'ı.
+ */
+export async function submitSharedAttempt(
+  code: string,
+  body: {
+    tenant_id?: string | null;
+    solver_label?: string | null;
+    answers: SubmittedAnswer[];
+    duration_seconds?: number;
+  },
+): Promise<AttemptResult> {
+  return request<AttemptResult>(
+    `/api/shared/${encodeURIComponent(code)}/attempt`,
+    {
+      method: "POST",
+      headers: tenantHeader(body.tenant_id),
+      body: JSON.stringify(body),
+    },
+  );
+}
+
+/** Kullanıcının oluşturduğu paylaşımlar + çözülme sayısı + ort. skor (sahip panosu). */
+export async function listMyShares(tenantId: string): Promise<ShareSummary[]> {
+  const r = await request<{ items: ShareSummary[] }>(
+    `/api/me/shares?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+/** Bir paylaşımın sonuç panosu — kim çözdü, kaç doğru (sahip-only). */
+export async function getShareResults(
+  shareId: string,
+  tenantId: string,
+): Promise<ShareResultsResponse> {
+  return request<ShareResultsResponse>(
+    `/api/me/shares/${encodeURIComponent(shareId)}/results?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 
