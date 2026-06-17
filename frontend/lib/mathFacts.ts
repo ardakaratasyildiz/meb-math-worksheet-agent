@@ -1,5 +1,5 @@
 // "Bunu biliyor muydun?" — üretim beklerken gösterilen matematik bilgileri.
-// Hem PDF üretiminde (QuestionPreview) hem quiz üretiminde (SolveForm/coz)
+// Hem PDF üretiminde (QuestionPreview) hem quiz üretiminde (SolveForm/practice)
 // kullanılır. Tek kaynak → iki yüzeyde de çeşitli ve tutarlı içerik.
 // Rastgele başlangıç + 6 sn'de bir dönüş sayesinde her oturumda farklı bilgiler
 // görünür.

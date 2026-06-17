@@ -84,7 +84,7 @@ export function QuizHistoryList() {
           İlk quizini çöz; burada geçmiş denemelerin ve cevapların birikir.
         </p>
         <Button asChild className="mt-1 gap-2">
-          <Link href="/coz/yeni">
+          <Link href="/practice/new">
             <Sparkles className="h-4 w-4" />
             İlk quizini çöz
           </Link>
@@ -98,7 +98,7 @@ export function QuizHistoryList() {
       {items.map((it) => {
         const pct = it.total ? Math.round((it.score / it.total) * 100) : 0;
         return (
-          <Link key={it.attempt_id} href={`/coz/history/${it.attempt_id}`}>
+          <Link key={it.attempt_id} href={`/practice/history/${it.attempt_id}`}>
             <Card className="flex items-center justify-between gap-3 p-4 transition-colors hover:border-primary/40 hover:bg-accent/20">
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{it.title}</p>

@@ -82,12 +82,12 @@
 
 @layer base {
   /*
-   * Çöz & Geliş (öğrenci alanı) oyunsu teması — yalnızca .coz-theme scope'unda.
+   * Çöz & Geliş (öğrenci alanı) oyunsu teması — yalnızca .practice-theme scope'unda.
    * Aynı shadcn değişkenlerini sıcak/oyunsu palete çevirir; böylece Card/Button
    * gibi mevcut bileşenler otomatik bu görünüme bürünür. Landing/diğer yüzeyler
    * etkilenmez. Zemin = sıcak krem #FFF4EA, primary = grape #7C5BD6 (AA kontrast).
    */
-  .coz-theme {
+  .practice-theme {
     --background: 28 100% 96%; /* krem #FFF4EA */
     --foreground: 267 25% 23%; /* ink #3A2C4A */
 
@@ -126,14 +126,14 @@
       radial-gradient(40% 34% at 88% 94%, rgba(255, 107, 107, 0.1), transparent 62%);
     background-attachment: fixed;
   }
-  .coz-theme :is(h1, h2, h3, h4, h5, h6) {
+  .practice-theme :is(h1, h2, h3, h4, h5, h6) {
     font-family: var(--font-fredoka), var(--font-manrope), system-ui, sans-serif;
     letter-spacing: -0.01em;
   }
 
   /*
    * Public/marketing yüzeyi teması — güven-forward sıcak marka (landing, features,
-   * pricing, faq, calismalar). .coz-theme ile aynı palet ama daha ölçülü (radius
+   * pricing, faq, calismalar). .practice-theme ile aynı palet ama daha ölçülü (radius
    * 1rem, oyunsu animasyon/maskot yok). Root layout sarmalayıcısına uygulanır;
    * tüm public sayfalar tek seferde dönüşür. Koyu mod için warm-dark varyant var.
    */

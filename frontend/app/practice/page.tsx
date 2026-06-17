@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, History, Sparkles, TrendingUp } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
-import { CozTodayCard } from "@/components/CozTodayCard";
+import { PracticeTodayCard } from "@/components/PracticeTodayCard";
 
 export default function CozHubPage() {
   return (
@@ -26,10 +26,10 @@ export default function CozHubPage() {
         </p>
       </header>
 
-      <CozTodayCard />
+      <PracticeTodayCard />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Link href="/coz/yeni" className="group">
+        <Link href="/practice/new" className="group">
           <Card className="flex h-full flex-col gap-3 p-6 shadow-pop transition-transform hover:-translate-y-1">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-coral/15 text-2xl">
               <Sparkles className="h-6 w-6 text-coral" />
@@ -48,7 +48,7 @@ export default function CozHubPage() {
           </Card>
         </Link>
 
-        <Link href="/coz/ilerleme" className="group">
+        <Link href="/practice/progress" className="group">
           <Card className="flex h-full flex-col gap-3 p-6 shadow-pop transition-transform hover:-translate-y-1">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-400/15 text-2xl">
               <TrendingUp className="h-6 w-6 text-sky-500" />
@@ -66,7 +66,7 @@ export default function CozHubPage() {
           </Card>
         </Link>
 
-        <Link href="/coz/history" className="group">
+        <Link href="/practice/history" className="group">
           <Card className="flex h-full flex-col gap-3 p-6 shadow-pop transition-transform hover:-translate-y-1">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/15 text-2xl">
               <History className="h-6 w-6 text-mint" />

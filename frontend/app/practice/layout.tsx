@@ -6,16 +6,16 @@ export const metadata = {
     "Soru üret, site içinde test gibi çöz, kaç doğru kaç yanlış yaptığını gör ve eksik kazanımlarına göre pratik yap.",
 };
 
-// /coz nested layout — kişisel öğrenme alanı. Login zorunlu (middleware).
+// /practice nested layout — kişisel öğrenme alanı. Login zorunlu (middleware).
 // Mevcut /generate (PDF) akışından tamamen ayrı yüzey.
 export default function CozLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // .coz-theme → öğrenci alanına özel sıcak/oyunsu tema (bkz. globals.css).
+  // .practice-theme → öğrenci alanına özel sıcak/oyunsu tema (bkz. globals.css).
   return (
-    <div className="coz-theme min-h-screen">
+    <div className="practice-theme min-h-screen">
       <div className="container py-8">{children}</div>
     </div>
   );

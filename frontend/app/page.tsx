@@ -106,7 +106,7 @@ function Hero() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="gap-2 px-7">
-              <Link href="/coz">
+              <Link href="/practice">
                 Çözerek çalış <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
@@ -256,7 +256,7 @@ function SolveAndGrow() {
                 size="lg"
                 className="mt-6 gap-2 bg-white text-primary hover:bg-white/90"
               >
-                <Link href="/coz">
+                <Link href="/practice">
                   Çöz &amp; Geliş&apos;i keşfet <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>

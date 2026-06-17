@@ -43,6 +43,14 @@ const nextConfig = {
         destination: "https://soruatolyesi.com/:path*",
         permanent: true,
       },
+      // Eski Türkçe /coz route'ları → İngilizce /practice (301). Bookmark/paylaşılmış
+      // eski linkler kırılmasın. Spesifik segment yeniden adları catch-all'dan ÖNCE
+      // gelmeli (yeni/ilerleme → new/progress); gerisi (history, quiz) catch-all ile
+      // birebir eşlenir.
+      { source: "/coz/yeni", destination: "/practice/new", permanent: true },
+      { source: "/coz/ilerleme", destination: "/practice/progress", permanent: true },
+      { source: "/coz", destination: "/practice", permanent: true },
+      { source: "/coz/:path*", destination: "/practice/:path*", permanent: true },
     ];
   },
 };

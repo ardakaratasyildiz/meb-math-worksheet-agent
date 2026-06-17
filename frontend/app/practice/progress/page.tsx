@@ -8,7 +8,7 @@ export default function CozIlerlemePage() {
     <div className="space-y-6">
       <div className="space-y-2">
         <Link
-          href="/coz"
+          href="/practice"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />

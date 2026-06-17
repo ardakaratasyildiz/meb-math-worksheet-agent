@@ -39,7 +39,7 @@ function headers(extra: Record<string, string> = {}): HeadersInit {
 /**
  * Backend'i uyandırma ping'i (fire-and-forget). Render free tier 15 dk
  * trafiksiz kalınca container'ı uyutur; uyanması ~25 sn sürer. Kullanıcı
- * siteye girer girmez bu ping backend'i uyandırmaya başlar → /coz sekmelerine
+ * siteye girer girmez bu ping backend'i uyandırmaya başlar → /practice sekmelerine
  * vardığında instance ısınmış/ısınmakta olur. Hata yutulur (asla throw etmez).
  */
 export function pingHealth(): void {
