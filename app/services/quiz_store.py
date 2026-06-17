@@ -94,6 +94,11 @@ class QuizStore:
             self._db.execute(
                 "ALTER TABLE attempts ADD COLUMN quiz_snapshot_json TEXT"
             )
+        # Paylaşım (Faz 3 PR A): deneme hangi paylaşımdan geldi + misafir adı.
+        if "share_id" not in cols:
+            self._db.execute("ALTER TABLE attempts ADD COLUMN share_id TEXT")
+        if "solver_label" not in cols:
+            self._db.execute("ALTER TABLE attempts ADD COLUMN solver_label TEXT")
         self._db.execute(
             """
             CREATE TABLE IF NOT EXISTS mastery_state (
@@ -105,6 +110,29 @@ class QuizStore:
                 PRIMARY KEY (tenant_id, kazanim_kod)
             )
             """
+        )
+        # shares — bir quiz'in link/kod ile paylaşılması (Faz 3 PR A). share_type
+        # 'link' (MVP); 'user' + target_tenant_id sonraki dilim (uygulama-içi).
+        self._db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS shares (
+                id TEXT PRIMARY KEY,
+                quiz_id TEXT NOT NULL,
+                owner_tenant_id TEXT NOT NULL,
+                share_code TEXT NOT NULL UNIQUE,
+                share_type TEXT NOT NULL DEFAULT 'link',
+                target_tenant_id TEXT,
+                revoked INTEGER NOT NULL DEFAULT 0,
+                created_at REAL NOT NULL
+            )
+            """
+        )
+        self._db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_shares_owner "
+            "ON shares(owner_tenant_id, created_at DESC)"
+        )
+        self._db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_attempts_share ON attempts(share_id)"
         )
         self._db.commit()
 
@@ -186,6 +214,191 @@ class QuizStore:
             "questions": body.get("questions", []),
         }
 
+    def get_quiz_by_id(self, quiz_id: str) -> dict | None:
+        """Quiz'i sahip filtresi OLMADAN getirir (CEVAPLI tam kayıt).
+
+        YALNIZ geçerli bir share çözümlendikten sonra çağrılmalı (paylaşılan
+        çözme). Owner-only `get()` korunur; bu metot paylaşım yolu içindir.
+        """
+        if not quiz_id:
+            return None
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT id, owner_tenant_id, title, grade, topic_id, difficulty, "
+                "questions_json FROM quizzes WHERE id = ?",
+                (quiz_id,),
+            ).fetchone()
+        if not row:
+            return None
+        try:
+            body = json.loads(row[6])
+        except json.JSONDecodeError:
+            logger.error("quizzes kaydı bozuk JSON: id=%s", quiz_id)
+            return None
+        return {
+            "id": row[0],
+            "owner_tenant_id": row[1],
+            "title": row[2],
+            "grade": row[3],
+            "topic_id": row[4],
+            "difficulty": row[5],
+            "created_at": body.get("created_at", ""),
+            "questions": body.get("questions", []),
+        }
+
+    # ── Paylaşım (Faz 3 PR A) ────────────────────────────────────────────────
+
+    def create_share(self, *, quiz_id: str, owner_tenant_id: str) -> dict | None:
+        """Quiz için link paylaşımı oluşturur (idempotent). {id, share_code} döner.
+
+        Quiz sahibe ait değilse None. Aynı quiz'e aktif (revoked=0) share varsa
+        onu döndürür → tekrar basınca çift link üremez.
+        """
+        # get() kilidi kendi alır → kilit DIŞINDA çağır (re-entrant değil).
+        if self.get(quiz_id, owner_tenant_id) is None:
+            return None
+        with self._lock:
+            assert self._db is not None
+            existing = self._db.execute(
+                "SELECT id, share_code FROM shares WHERE quiz_id = ? AND "
+                "owner_tenant_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1",
+                (quiz_id, owner_tenant_id),
+            ).fetchone()
+            if existing:
+                return {"id": existing[0], "share_code": existing[1]}
+            share_id = uuid.uuid4().hex
+            share_code = uuid.uuid4().hex[:10]
+            self._db.execute(
+                "INSERT INTO shares (id, quiz_id, owner_tenant_id, share_code, "
+                "share_type, target_tenant_id, revoked, created_at) "
+                "VALUES (?, ?, ?, ?, 'link', NULL, 0, ?)",
+                (share_id, quiz_id, owner_tenant_id, share_code, time.time()),
+            )
+            self._db.commit()
+        return {"id": share_id, "share_code": share_code}
+
+    def get_share_by_code(self, code: str) -> dict | None:
+        """Aktif (revoked=0) paylaşımı koduyla getirir. Yoksa/kaldırılmışsa None."""
+        if not code:
+            return None
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT id, quiz_id, owner_tenant_id, share_type FROM shares "
+                "WHERE share_code = ? AND revoked = 0",
+                (code,),
+            ).fetchone()
+        if not row:
+            return None
+        return {
+            "id": row[0],
+            "quiz_id": row[1],
+            "owner_tenant_id": row[2],
+            "share_type": row[3],
+        }
+
+    def revoke_share(self, share_id: str, owner_tenant_id: str) -> bool:
+        """Paylaşımı kaldırır (sahip doğrulamasıyla). Başarılıysa True."""
+        if not share_id or not owner_tenant_id:
+            return False
+        with self._lock:
+            assert self._db is not None
+            cur = self._db.execute(
+                "UPDATE shares SET revoked = 1 WHERE id = ? AND owner_tenant_id = ?",
+                (share_id, owner_tenant_id),
+            )
+            self._db.commit()
+            return cur.rowcount > 0
+
+    def list_shares(self, owner_tenant_id: str) -> list[dict]:
+        """Sahibin aktif paylaşımları + çözülme sayısı + ortalama skor (panosu)."""
+        if not owner_tenant_id:
+            return []
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                """
+                SELECT s.id, s.share_code, s.quiz_id, s.created_at,
+                       q.title, q.grade, q.topic_id,
+                       COUNT(a.id),
+                       AVG(CASE WHEN a.total > 0 THEN a.score * 100.0 / a.total END)
+                FROM shares s
+                LEFT JOIN quizzes q ON q.id = s.quiz_id
+                LEFT JOIN attempts a ON a.share_id = s.id
+                WHERE s.owner_tenant_id = ? AND s.revoked = 0
+                GROUP BY s.id
+                ORDER BY s.created_at DESC
+                """,
+                (owner_tenant_id,),
+            ).fetchall()
+        return [
+            {
+                "share_id": r[0],
+                "share_code": r[1],
+                "quiz_id": r[2],
+                "created_at": datetime.fromtimestamp(r[3], tz=timezone.utc).isoformat(),
+                "title": r[4] or "Quiz",
+                "grade": r[5],
+                "topic_id": r[6] or "",
+                "attempt_count": int(r[7] or 0),
+                "avg_score_pct": round(r[8]) if r[8] is not None else None,
+            }
+            for r in rows
+        ]
+
+    def share_results(
+        self, share_id: str, owner_tenant_id: str, limit: int = 200
+    ) -> dict | None:
+        """Paylaşımın sonuç panosu (sahip doğrulamasıyla). Sahip değilse None.
+
+        Dönüş: {title, question_count, items:[{solver_label, score, total,
+        duration_seconds, completed_at}]}. En yeni önce.
+        """
+        if not share_id or not owner_tenant_id:
+            return None
+        lim = max(1, min(self._max, limit))
+        with self._lock:
+            assert self._db is not None
+            srow = self._db.execute(
+                "SELECT s.quiz_id, q.title, q.questions_json FROM shares s "
+                "LEFT JOIN quizzes q ON q.id = s.quiz_id "
+                "WHERE s.id = ? AND s.owner_tenant_id = ?",
+                (share_id, owner_tenant_id),
+            ).fetchone()
+            if not srow:
+                return None
+            rows = self._db.execute(
+                "SELECT solver_label, score, total, duration_seconds, completed_at "
+                "FROM attempts WHERE share_id = ? ORDER BY completed_at DESC LIMIT ?",
+                (share_id, lim),
+            ).fetchall()
+        question_count = 0
+        if srow[2]:
+            try:
+                question_count = len(json.loads(srow[2]).get("questions", []))
+            except json.JSONDecodeError:
+                question_count = 0
+        if not question_count and rows:
+            question_count = int(rows[0][2] or 0)  # ilk denemenin total'ı (fallback)
+        items = [
+            {
+                "solver_label": r[0],
+                "score": r[1],
+                "total": r[2],
+                "duration_seconds": r[3],
+                "completed_at": datetime.fromtimestamp(
+                    r[4], tz=timezone.utc
+                ).isoformat(),
+            }
+            for r in rows
+        ]
+        return {
+            "title": srow[1] or "Quiz",
+            "question_count": question_count,
+            "items": items,
+        }
+
     # ── Attempts + mastery (Adım 2) ──────────────────────────────────────────
 
     def record_attempt(
@@ -199,11 +412,15 @@ class QuizStore:
         duration_seconds: int | None,
         per_kazanim: list[dict],
         quiz_snapshot: dict | None = None,
+        share_id: str | None = None,
+        solver_label: str | None = None,
     ) -> dict:
         """Çözüm denemesini kaydeder. {id, completed_at} döner.
 
         quiz_snapshot: {title, grade, topic_id, difficulty, questions:[...]} —
         denemeyi self-contained yapar; quiz FIFO-trim'lense bile geçmiş çalışır.
+        share_id/solver_label: paylaşılan quiz çözümünde dolar (Faz 3 PR A);
+        kişisel çözümde None → mevcut çağrı değişmeden çalışır.
         """
         attempt_id = uuid.uuid4().hex
         now = time.time()
@@ -218,7 +435,8 @@ class QuizStore:
             self._db.execute(
                 "INSERT INTO attempts (id, quiz_id, solver_tenant_id, answers_json, "
                 "score, total, duration_seconds, per_kazanim_json, completed_at, "
-                "quiz_snapshot_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "quiz_snapshot_json, share_id, solver_label) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     attempt_id,
                     quiz_id,
@@ -230,6 +448,8 @@ class QuizStore:
                     json.dumps(per_kazanim, ensure_ascii=False),
                     now,
                     snapshot_json,
+                    share_id,
+                    solver_label,
                 ),
             )
             # FIFO trim — snapshot satırları büyüttüğü için attempts de sınırlanır.

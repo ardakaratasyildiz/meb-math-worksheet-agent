@@ -235,9 +235,9 @@ Funnel: `create → open → attempt → signup` = viral katsayı ölçümü.
 
 | PR | Kapsam | Çıktı |
 |---|---|---|
-| **A — Backend paylaşım + public çözme** | `shares` tablosu + attempts migration; `quiz_store` metotları; `shared.py` router (`GET /{code}`, `POST /{code}/attempt`); `POST /api/quizzes/{id}/share`; şemalar; per-IP rate-limit; unit testler | API ile link üret + misafir çöz + puanla |
-| **B — Frontend paylaş + public çözme sayfası** | `ShareQuizButton`; `/q/[code]` (QuizSolver shared mod + misafir isim + üye-ol CTA); api.ts/types.ts; GA4 event'leri | **Viral döngü canlı** (paylaş→çöz→üye) |
-| **C — Sahip sonuç panosu** | `GET /api/me/shares` + `/results`; `/coz/paylasimlarim` liste + detay; hub kartı; revoke | Sahip kim çözdü/kaç doğru görür |
+| **A — Backend paylaşım + public çözme** ✅ DONE | `shares` tablosu + attempts migration; `quiz_store` metotları; `shared.py` router (`GET /{code}`, `POST /{code}/attempt`); `POST /api/quizzes/{id}/share`; şemalar; per-IP rate-limit; `tests/test_sharing.py`. **C'nin backend'i de bu PR'da geldi** (`GET /api/me/shares` + `/results` + `revoke_share`). | API ile link üret + misafir çöz + puanla |
+| **B — Frontend paylaş + public çözme sayfası** ← SIRADAKİ | `ShareQuizButton`; `/q/[code]` (QuizSolver shared mod + misafir isim + üye-ol CTA); api.ts/types.ts; GA4 event'leri | **Viral döngü canlı** (paylaş→çöz→üye) |
+| **C — Sahip sonuç panosu** (backend ✅) | Kalan = frontend: `/coz/paylasimlarim` liste + detay; hub kartı | Sahip kim çözdü/kaç doğru görür |
 | **D — (sonra) uygulama-içi paylaşım** | `share_type='user'` + `target_tenant_id`; kullanıcı bulma (kullanıcı adı/davet); gelen kutusu | Kullanıcı→kullanıcı paylaşım |
 
 > Sıra: **A → B** viral döngüyü açar (en yüksek büyüme değeri). **C** sahip değerini

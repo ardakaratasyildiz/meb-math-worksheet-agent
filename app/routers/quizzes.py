@@ -23,6 +23,7 @@ from app.models.enums import Difficulty, QuestionType
 from app.models.schemas import (
     AttemptResult,
     CreateQuizRequest,
+    CreateShareResponse,
     Question,
     QuizPublic,
     QuizQuestionPublic,
@@ -307,4 +308,23 @@ def submit_attempt(
         per_kazanim=per_kazanim,
         results=results,
         completed_at=attempt["completed_at"],
+    )
+
+
+@router.post("/{quiz_id}/share", response_model=CreateShareResponse)
+def share_quiz(
+    quiz_id: str,
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> CreateShareResponse:
+    """Quiz için link paylaşımı oluştur (idempotent) — yalnız sahibi.
+
+    Dönen share_url görecedir (/q/{code}); frontend origin'i ekler.
+    """
+    res = QUIZ_STORE.create_share(quiz_id=quiz_id, owner_tenant_id=tenant_id)
+    if res is None:
+        raise HTTPException(status_code=404, detail="Quiz bulunamadı.")
+    return CreateShareResponse(
+        share_code=res["share_code"],
+        share_url=f"/q/{res['share_code']}",
     )
