@@ -15,6 +15,10 @@ from app.models.schemas import (
     AttemptHistoryItem,
     AttemptHistoryResponse,
     GamificationResponse,
+    MyAssignmentItem,
+    MyAssignmentsResponse,
+    MyQuizItem,
+    MyQuizzesResponse,
     ProgressResponse,
     Question,
     ShareResultItem,
@@ -25,6 +29,7 @@ from app.models.schemas import (
 )
 from app.security import require_api_key
 from app.services.attempt_review import build_attempt_detail
+from app.services.classroom_store import CLASSROOM_STORE
 from app.services.gamification import build_gamification
 from app.services.progress import build_daily_trend, build_progress
 from app.services.quiz_store import QUIZ_STORE
@@ -150,3 +155,26 @@ def get_share_results(
         question_count=data["question_count"],
         items=[ShareResultItem(**i) for i in data["items"]],
     )
+
+
+# ── Sınıf / Ödev (Faz 3.5 PR 2) ──────────────────────────────────────────────
+
+
+@router.get("/quizzes", response_model=MyQuizzesResponse)
+def list_my_quizzes(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> MyQuizzesResponse:
+    """Kullanıcının ürettiği quiz'ler (hafif meta) — ödev atamak için seçim listesi."""
+    rows = QUIZ_STORE.list(tenant_id)
+    return MyQuizzesResponse(items=[MyQuizItem(**r) for r in rows])
+
+
+@router.get("/assignments", response_model=MyAssignmentsResponse)
+def list_my_assignments(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> MyAssignmentsResponse:
+    """Öğrencinin katıldığı sınıflardaki ödevler + çözüldü durumu/skor ('Ödevlerim')."""
+    rows = CLASSROOM_STORE.list_my_assignments(tenant_id)
+    return MyAssignmentsResponse(items=[MyAssignmentItem(**r) for r in rows])

@@ -19,7 +19,14 @@ import {
   stripInlineOptions,
 } from "@/components/QuestionReview";
 
-import { getQuiz, getSharedQuiz, submitAttempt, submitSharedAttempt } from "@/lib/api";
+import {
+  getAssignmentQuiz,
+  getQuiz,
+  getSharedQuiz,
+  submitAssignmentAttempt,
+  submitAttempt,
+  submitSharedAttempt,
+} from "@/lib/api";
 import { track } from "@/lib/analytics";
 import { findKazanimByKod, practiceHref, rollupByTopic } from "@/lib/curriculum";
 import { useGenerateStore } from "@/lib/store";
@@ -37,21 +44,37 @@ interface AnswerState {
 }
 
 /**
- * QuizSolver — iki modda çalışır:
+ * QuizSolver — üç modda çalışır:
  *  - Kişisel (quizId): /practice altında, login zorunlu, kendi quiz'in.
  *  - Paylaşılan (shareCode): public /q/[code], login GEREKMEZ; misafir de çözer.
  *    Giriş yapmışsa çözüm kendi ilerlemesine sayılır; misafir opsiyonel ad girer
  *    ve çözüm sonrası "üye ol" CTA'sı görür (viral funnel).
+ *  - Ödev (assignmentId): /practice/assignments altında, login zorunlu; sınıf
+ *    ödevini çözer, kendi ilerlemesine + ödeve işlenir.
  */
 export function QuizSolver({
   quizId,
   shareCode,
+  assignmentId,
 }: {
   quizId?: string;
   shareCode?: string;
+  assignmentId?: string;
 }) {
   const shared = !!shareCode;
+  const isAssignment = !!assignmentId;
   const { userId, isLoaded } = useAuth();
+
+  const backHref = shared
+    ? "/"
+    : isAssignment
+      ? "/practice/assignments"
+      : "/practice";
+  const backLabel = shared
+    ? "Ana sayfa"
+    : isAssignment
+      ? "Ödevlerim"
+      : "Çöz & Geliş'e dön";
 
   const [quiz, setQuiz] = React.useState<QuizPublic | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -84,7 +107,9 @@ export function QuizSolver({
     setLoading(true);
     const loader = shared
       ? getSharedQuiz(shareCode as string)
-      : getQuiz(quizId as string, userId as string);
+      : isAssignment
+        ? getAssignmentQuiz(assignmentId as string, userId as string)
+        : getQuiz(quizId as string, userId as string);
     loader
       .then((q) => {
         if (!active) return;
@@ -101,7 +126,7 @@ export function QuizSolver({
     return () => {
       active = false;
     };
-  }, [quizId, shareCode, shared, userId, isLoaded]);
+  }, [quizId, shareCode, assignmentId, shared, isAssignment, userId, isLoaded]);
 
   function setAnswer(num: number, patch: AnswerState) {
     setAnswers((prev) => ({ ...prev, [num]: { ...prev[num], ...patch } }));
@@ -129,11 +154,17 @@ export function QuizSolver({
             answers: payload,
             duration_seconds: duration,
           })
-        : await submitAttempt(quiz.id, {
-            tenant_id: userId as string,
-            answers: payload,
-            duration_seconds: duration,
-          });
+        : isAssignment
+          ? await submitAssignmentAttempt(assignmentId as string, {
+              tenant_id: userId as string,
+              answers: payload,
+              duration_seconds: duration,
+            })
+          : await submitAttempt(quiz.id, {
+              tenant_id: userId as string,
+              answers: payload,
+              duration_seconds: duration,
+            });
       if (shared) {
         track("quiz_share_attempt", { logged_in: !!userId });
       }
@@ -164,9 +195,7 @@ export function QuizSolver({
           {loadError ?? "Quiz bulunamadı."}
         </p>
         <Button asChild variant="outline" size="sm" className="mt-3">
-          <Link href={shared ? "/" : "/practice"}>
-            {shared ? "Ana sayfaya dön" : "Çöz & Geliş'e dön"}
-          </Link>
+          <Link href={backHref}>{backLabel}</Link>
         </Button>
       </Card>
     );
@@ -179,7 +208,10 @@ export function QuizSolver({
         result={result}
         submitted={submittedPayload}
         shared={shared}
+        isAssignment={isAssignment}
         loggedIn={!!userId}
+        backHref={backHref}
+        backLabel={backLabel}
       />
     );
   }
@@ -343,13 +375,19 @@ function ResultsView({
   result,
   submitted,
   shared,
+  isAssignment,
   loggedIn,
+  backHref,
+  backLabel,
 }: {
   quiz: QuizPublic;
   result: AttemptResult;
   submitted: SubmittedAnswer[];
   shared: boolean;
+  isAssignment: boolean;
   loggedIn: boolean;
+  backHref: string;
+  backLabel: string;
 }) {
   const pct = result.total
     ? Math.round((result.score / result.total) * 100)
@@ -527,12 +565,10 @@ function ResultsView({
           <FileText className="h-4 w-4" />
           Bu konuda çalışma kağıdı
         </Button>
-        {/* Sahip (kişisel mod) → bu quiz'i paylaş (viral kaldıraç). */}
-        {!shared ? <ShareQuizButton quizId={quiz.id} /> : null}
+        {/* Sahip (kişisel mod) → bu quiz'i paylaş (viral kaldıraç). Ödevde gizli. */}
+        {!shared && !isAssignment ? <ShareQuizButton quizId={quiz.id} /> : null}
         <Button asChild variant="ghost">
-          <Link href={shared ? "/" : "/practice"}>
-            {shared ? "Ana sayfa" : "Çöz & Geliş'e dön"}
-          </Link>
+          <Link href={backHref}>{backLabel}</Link>
         </Button>
       </div>
     </div>

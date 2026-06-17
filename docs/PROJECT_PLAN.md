@@ -282,7 +282,12 @@ quiz_id, due_date?), `attempts.assignment_id` (çözümü ödeve bağlar).
   (classrooms/classroom_members/assignments tabloları), `app/routers/classrooms.py`
   (POST `/api/classrooms`, POST `/join`, GET liste, GET `/{id}`), `tests/test_classroom.py`;
   frontend `/practice/classes` + `[id]` + hub "Sınıflarım" kartı.
-- **PR 2:** ödev atama + "Ödevlerim" (öğrenci çözer → mevcut akışa bağlanır, `assignment_id`).
+- **PR 2 ✅ DONE:** ödev atama + "Ödevlerim". `attempts.assignment_id` migration;
+  `classroom_store` create/get/list_assignments + `list_my_assignments` (çözüldü/skor);
+  `POST /api/classrooms/{id}/assignments`, `app/routers/assignments.py` (GET/{id} +
+  POST/{id}/attempt, üyelik-gated), `me /quizzes` + `/assignments`. Frontend:
+  `/practice/assignments` + `[id]` (QuizSolver **assignment modu**), ClassroomDetail
+  "Ödev ata" (quiz seçici), hub "Ödevlerim" kartı. `tests/test_assignment.py`.
 - **PR 3:** öğretmen sınıf panosu (üyeler + ödev başına sonuçlar — `share_results` deseni).
 - **(sonra):** due-date, e-posta/in-app bildirim, PDF ödev, çoklu sınıf yönetimi.
 

@@ -19,6 +19,8 @@ import type {
   GradeInfo,
   JoinClassroomResponse,
   KazanimInfo,
+  MyAssignmentItem,
+  MyQuizItem,
   ProgressResponse,
   Question,
   QuestionType,
@@ -503,6 +505,71 @@ export async function getClassroom(
 ): Promise<ClassroomDetail> {
   return request<ClassroomDetail>(
     `/api/classrooms/${encodeURIComponent(classroomId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+// ---- Ödev (Faz 3.5 PR 2) -------------------------------------------------
+
+/** Öğretmenin ödev atamak için seçebileceği kendi quiz'leri. */
+export async function listMyQuizzes(tenantId: string): Promise<MyQuizItem[]> {
+  const r = await request<{ items: MyQuizItem[] }>(
+    `/api/me/quizzes?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+/** Sınıfa quiz'i ödev olarak ata (yalnız sınıf sahibi). */
+export async function assignQuiz(
+  classroomId: string,
+  tenantId: string,
+  quizId: string,
+): Promise<{ id: string; created_at: string }> {
+  return request<{ id: string; created_at: string }>(
+    `/api/classrooms/${encodeURIComponent(classroomId)}/assignments`,
+    {
+      method: "POST",
+      headers: tenantHeader(tenantId),
+      body: JSON.stringify({ tenant_id: tenantId, quiz_id: quizId }),
+    },
+  );
+}
+
+/** Öğrencinin ödevleri ("Ödevlerim") + çözüldü durumu. */
+export async function listMyAssignments(
+  tenantId: string,
+): Promise<MyAssignmentItem[]> {
+  const r = await request<{ items: MyAssignmentItem[] }>(
+    `/api/me/assignments?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+/** Ödev quiz'ini çözmek için getir (cevapsız, sınıf üyesi/sahibi). */
+export async function getAssignmentQuiz(
+  assignmentId: string,
+  tenantId: string,
+): Promise<QuizPublic> {
+  return request<QuizPublic>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Ödev cevaplarını gönder → puanla → öğrencinin ilerlemesine + ödeve kaydet. */
+export async function submitAssignmentAttempt(
+  assignmentId: string,
+  body: {
+    tenant_id: string;
+    answers: SubmittedAnswer[];
+    duration_seconds?: number;
+  },
+): Promise<AttemptResult> {
+  return request<AttemptResult>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}/attempt`,
+    {
+      method: "POST",
+      headers: tenantHeader(body.tenant_id),
+      body: JSON.stringify(body),
+    },
   );
 }
 

@@ -3,13 +3,21 @@
 import * as React from "react";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
-import { ArrowLeft, Check, Copy, Loader2, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Copy,
+  Loader2,
+  NotebookPen,
+  Plus,
+  Users,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getClassroom } from "@/lib/api";
-import type { ClassroomDetail } from "@/lib/types";
+import { assignQuiz, getClassroom, listMyQuizzes } from "@/lib/api";
+import type { ClassroomDetail, MyQuizItem } from "@/lib/types";
 
 function formatDate(iso: string): string {
   try {
@@ -30,6 +38,17 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
   const [error, setError] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState(false);
 
+  // Ödev atama paneli
+  const [picking, setPicking] = React.useState(false);
+  const [myQuizzes, setMyQuizzes] = React.useState<MyQuizItem[] | null>(null);
+  const [assigningId, setAssigningId] = React.useState<string | null>(null);
+
+  const reload = React.useCallback(async () => {
+    if (!userId) return;
+    const d = await getClassroom(classroomId, userId);
+    setData(d);
+  }, [classroomId, userId]);
+
   React.useEffect(() => {
     if (!isLoaded) return;
     if (!userId) {
@@ -49,6 +68,38 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
       active = false;
     };
   }, [classroomId, userId, isLoaded]);
+
+  async function openPicker() {
+    if (!userId) return;
+    setPicking(true);
+    if (myQuizzes === null) {
+      try {
+        setMyQuizzes(await listMyQuizzes(userId));
+      } catch (e: unknown) {
+        toast.error("Quizlerin alınamadı", {
+          description: e instanceof Error ? e.message : undefined,
+        });
+        setMyQuizzes([]);
+      }
+    }
+  }
+
+  async function onAssign(quizId: string) {
+    if (!userId) return;
+    setAssigningId(quizId);
+    try {
+      await assignQuiz(classroomId, userId, quizId);
+      toast.success("Ödev atandı");
+      setPicking(false);
+      await reload();
+    } catch (e: unknown) {
+      toast.error("Ödev atanamadı", {
+        description: e instanceof Error ? e.message : undefined,
+      });
+    } finally {
+      setAssigningId(null);
+    }
+  }
 
   async function copyCode() {
     if (!data?.join_code) return;
@@ -123,6 +174,89 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
         </Card>
       ) : null}
 
+      {/* Sahip: ödevler (ata + liste) */}
+      {data.is_owner ? (
+        <Card className="space-y-3 p-5">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="font-display font-bold">
+              Ödevler ({data.assignments.length})
+            </h2>
+            {!picking ? (
+              <Button onClick={openPicker} size="sm" className="gap-1.5">
+                <Plus className="h-4 w-4" />
+                Ödev ata
+              </Button>
+            ) : (
+              <Button onClick={() => setPicking(false)} size="sm" variant="ghost">
+                Kapat
+              </Button>
+            )}
+          </div>
+
+          {/* Quiz seçici (kendi quizlerinden ata) */}
+          {picking ? (
+            myQuizzes === null ? (
+              <div className="flex items-center gap-2 py-3 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Quizlerin yükleniyor…
+              </div>
+            ) : myQuizzes.length === 0 ? (
+              <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                Henüz quiz üretmedin.{" "}
+                <Link href="/practice/new" className="font-medium text-primary underline">
+                  Yeni quiz üret
+                </Link>{" "}
+                sonra buradan ödev olarak ata.
+              </div>
+            ) : (
+              <ul className="divide-y rounded-lg border">
+                {myQuizzes.map((q) => (
+                  <li
+                    key={q.id}
+                    className="flex items-center justify-between gap-2 px-4 py-2.5 text-sm"
+                  >
+                    <span className="min-w-0 truncate">{q.title}</span>
+                    <Button
+                      onClick={() => onAssign(q.id)}
+                      disabled={assigningId !== null}
+                      size="sm"
+                      variant="outline"
+                      className="shrink-0 gap-1"
+                    >
+                      {assigningId === q.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Plus className="h-4 w-4" />
+                      )}
+                      Ata
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )
+          ) : null}
+
+          {/* Atanmış ödevler */}
+          {data.assignments.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Henüz ödev atamadın. Quizlerinden birini sınıfa ata.
+            </p>
+          ) : (
+            <ul className="divide-y">
+              {data.assignments.map((a) => (
+                <li key={a.id} className="flex items-center gap-2 py-2.5 text-sm">
+                  <NotebookPen className="h-4 w-4 shrink-0 text-amber-500" />
+                  <span className="min-w-0 truncate font-medium">{a.title}</span>
+                  <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+                    {formatDate(a.created_at)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      ) : null}
+
       {/* Sahip: öğrenci listesi */}
       {data.is_owner ? (
         <Card className="overflow-hidden">
@@ -151,8 +285,11 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
         </Card>
       ) : (
         <Card className="p-5 text-sm text-muted-foreground">
-          Bu sınıfa katıldın. Öğretmenin ödev verdiğinde{" "}
-          <strong>Ödevlerim</strong> sayfanda görünecek (yakında).
+          Bu sınıfa katıldın. Öğretmenin verdiği ödevler{" "}
+          <Link href="/practice/assignments" className="font-medium text-primary underline">
+            Ödevlerim
+          </Link>{" "}
+          sayfanda görünür.
         </Card>
       )}
     </div>
