@@ -303,7 +303,10 @@ açılacağı GİRİŞ KAPISINA göre (URL): navbar **"Çöz & Geliş"** → ö�
 aç" CTA'sı (keşif + SEO). `PracticeHub` bileşeni saf URL-güdümlü — **sayfa içi toggle
 KALDIRILDI** (navbar iki kapı varken gereksiz + kafa karıştırıcıydı; kullanıcı geri bildirimi).
 
-Kalan opsiyonel: due-date, bildirim (uygulama-içi/e-posta/push), PDF ödev, çoklu sınıf.
+**Due-date + uygulama-içi bildirim ✅:** öğretmen ödev atarken opsiyonel son teslim
+(`due_at`); öğrenci "Ödevlerim"de + hub'da gecikmiş/yakında-son vurgusu; öğrenci hub'ında
+`AssignmentAlert` (çözülmemiş ödev sayacı bildirimi, sıfır altyapı). Kalan opsiyonel:
+e-posta/push bildirim (provider ister), PDF ödev, çoklu sınıf yönetimi.
 **Mevcutu bozmama:** tümü ek (`/api/classrooms/*`, yeni tablolar, `/practice/classes/*`);
 mevcut paylaşım/çözme/PDF akışlarına dokunulmaz.
 

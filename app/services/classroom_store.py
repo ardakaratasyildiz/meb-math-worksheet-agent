@@ -314,11 +314,18 @@ class ClassroomStore:
         return member is not None
 
     def create_assignment(
-        self, *, classroom_id: str, owner_tenant_id: str, quiz_id: str, title: str
+        self,
+        *,
+        classroom_id: str,
+        owner_tenant_id: str,
+        quiz_id: str,
+        title: str,
+        due_at: float | None = None,
     ) -> dict | None:
         """Sınıfa ödev (quiz) atar — yalnız sınıf sahibi. Sahip değilse None.
 
         quiz'in sahibe ait olduğu doğrulaması ÇAĞIRANA aittir (router QUIZ_STORE ile).
+        due_at: opsiyonel son teslim epoch'u (çağıran YYYY-MM-DD'den çevirir).
         """
         with self._lock:
             assert self._db is not None
@@ -332,8 +339,8 @@ class ClassroomStore:
             now = time.time()
             self._db.execute(
                 "INSERT INTO assignments (id, classroom_id, quiz_id, title, due_at, created_at) "
-                "VALUES (?, ?, ?, ?, NULL, ?)",
-                (aid, classroom_id, quiz_id, title, now),
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (aid, classroom_id, quiz_id, title, due_at, now),
             )
             self._db.commit()
         return {"id": aid, "created_at": _iso(now)}
@@ -366,7 +373,7 @@ class ClassroomStore:
         with self._lock:
             assert self._db is not None
             rows = self._db.execute(
-                "SELECT id, quiz_id, title, created_at FROM assignments "
+                "SELECT id, quiz_id, title, created_at, due_at FROM assignments "
                 "WHERE classroom_id = ? ORDER BY created_at DESC",
                 (classroom_id,),
             ).fetchall()
@@ -376,6 +383,7 @@ class ClassroomStore:
                 "quiz_id": r[1],
                 "title": r[2],
                 "created_at": _iso(r[3]),
+                "due_at": _iso(r[4]) if r[4] is not None else None,
             }
             for r in rows
         ]
@@ -393,7 +401,7 @@ class ClassroomStore:
             rows = self._db.execute(
                 """
                 SELECT a.id, a.classroom_id, c.name, a.quiz_id, a.title, a.created_at,
-                       COUNT(att.id), MAX(att.score), MAX(att.total)
+                       COUNT(att.id), MAX(att.score), MAX(att.total), a.due_at
                 FROM classroom_members m
                 JOIN assignments a ON a.classroom_id = m.classroom_id
                 JOIN classrooms c ON c.id = a.classroom_id
@@ -419,6 +427,7 @@ class ClassroomStore:
                     "solved": solved,
                     "score": int(r[7]) if (solved and r[7] is not None) else None,
                     "total": int(r[8]) if (solved and r[8] is not None) else None,
+                    "due_at": _iso(r[9]) if r[9] is not None else None,
                 }
             )
         return out

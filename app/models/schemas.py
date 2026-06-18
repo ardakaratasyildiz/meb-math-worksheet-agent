@@ -803,6 +803,7 @@ class AssignmentSummary(BaseModel):
     quiz_id: str
     title: str
     created_at: str
+    due_at: str | None = None  # son teslim (ISO); yoksa null
 
 
 class ClassroomDetail(BaseModel):
@@ -822,6 +823,8 @@ class ClassroomDetail(BaseModel):
 class AssignQuizRequest(BaseModel):
     tenant_id: str = Field(..., min_length=1, max_length=64)
     quiz_id: str = Field(..., min_length=1)
+    # Opsiyonel son teslim tarihi (YYYY-MM-DD); sunucuda gün sonu (TR) epoch'a çevrilir.
+    due_date: str | None = Field(None, max_length=10)
 
     @field_validator("tenant_id", "quiz_id")
     @classmethod
@@ -830,6 +833,14 @@ class AssignQuizRequest(BaseModel):
         if not v:
             raise ValueError("boş olamaz")
         return v
+
+    @field_validator("due_date")
+    @classmethod
+    def _strip_due(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        v = v.strip()
+        return v or None
 
 
 class AssignmentCreatedResponse(BaseModel):
@@ -847,6 +858,7 @@ class MyAssignmentItem(BaseModel):
     solved: bool
     score: int | None = None
     total: int | None = None
+    due_at: str | None = None  # son teslim (ISO); yoksa null
 
 
 class MyAssignmentsResponse(BaseModel):

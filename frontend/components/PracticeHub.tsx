@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { AssignmentAlert } from "@/components/AssignmentAlert";
 import { PracticeTodayCard } from "@/components/PracticeTodayCard";
 
 type Role = "student" | "teacher";
@@ -97,6 +98,7 @@ export function PracticeHub({ roleParam }: { roleParam: Role | null }) {
 
       {isStudent ? (
         <>
+          <AssignmentAlert />
           <PracticeTodayCard />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <HubCard

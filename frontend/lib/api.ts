@@ -519,18 +519,23 @@ export async function listMyQuizzes(tenantId: string): Promise<MyQuizItem[]> {
   return r.items;
 }
 
-/** Sınıfa quiz'i ödev olarak ata (yalnız sınıf sahibi). */
+/** Sınıfa quiz'i ödev olarak ata (yalnız sınıf sahibi). dueDate opsiyonel (YYYY-MM-DD). */
 export async function assignQuiz(
   classroomId: string,
   tenantId: string,
   quizId: string,
+  dueDate?: string | null,
 ): Promise<{ id: string; created_at: string }> {
   return request<{ id: string; created_at: string }>(
     `/api/classrooms/${encodeURIComponent(classroomId)}/assignments`,
     {
       method: "POST",
       headers: tenantHeader(tenantId),
-      body: JSON.stringify({ tenant_id: tenantId, quiz_id: quizId }),
+      body: JSON.stringify({
+        tenant_id: tenantId,
+        quiz_id: quizId,
+        due_date: dueDate || null,
+      }),
     },
   );
 }
