@@ -1,0 +1,4 @@
+# scripts/metrics_report.py bağımlılıkları (ops/GA4 raporlama)
+google-analytics-data
+google-api-python-client
+google-auth
