@@ -28,7 +28,8 @@ export function AssignmentAlert() {
       .then((items) => {
         if (!active) return;
         const now = Date.now();
-        const open = items.filter((a) => !a.solved);
+        // PDF ödevlerin site-içi "çözüldü" takibi yok → uyarıda sayma (sürekli nag olmasın).
+        const open = items.filter((a) => !a.solved && a.assignment_type !== "pdf");
         let od = 0;
         let soon = 0;
         for (const a of open) {

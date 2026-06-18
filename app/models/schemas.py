@@ -804,6 +804,7 @@ class AssignmentSummary(BaseModel):
     title: str
     created_at: str
     due_at: str | None = None  # son teslim (ISO); yoksa null
+    assignment_type: str = "quiz"  # 'quiz' (çözülebilir) | 'pdf' (indirilebilir)
 
 
 class ClassroomDetail(BaseModel):
@@ -848,6 +849,37 @@ class AssignmentCreatedResponse(BaseModel):
     created_at: str
 
 
+class AssignPdfRequest(BaseModel):
+    """PDF ödev atama — öğretmenin ürettiği bir çalışma kağıdı (worksheet) snapshot'ı."""
+
+    tenant_id: str = Field(..., min_length=1, max_length=64)
+    worksheet: Worksheet
+    due_date: str | None = Field(None, max_length=10)
+
+    @field_validator("tenant_id")
+    @classmethod
+    def _strip(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("boş olamaz")
+        return v
+
+    @field_validator("due_date")
+    @classmethod
+    def _strip_due(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        v = v.strip()
+        return v or None
+
+
+class AssignmentWorksheetResponse(BaseModel):
+    """PDF ödevinin worksheet'i (öğrenci istemcide PDF'e render eder)."""
+
+    title: str
+    worksheet: Worksheet
+
+
 class MyAssignmentItem(BaseModel):
     assignment_id: str
     classroom_id: str
@@ -859,6 +891,7 @@ class MyAssignmentItem(BaseModel):
     score: int | None = None
     total: int | None = None
     due_at: str | None = None  # son teslim (ISO); yoksa null
+    assignment_type: str = "quiz"  # 'quiz' (çözülür) | 'pdf' (indirilir)
 
 
 class MyAssignmentsResponse(BaseModel):

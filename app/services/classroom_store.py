@@ -96,6 +96,18 @@ class ClassroomStore:
             "CREATE INDEX IF NOT EXISTS idx_assignments_classroom "
             "ON assignments(classroom_id, created_at DESC)"
         )
+        # PDF ödev (Faz 3.5 follow-up): tip ('quiz'|'pdf') + worksheet snapshot.
+        # Idempotent migration — mevcut DB'lerde sütun yoksa eklenir (quiz_store deseni).
+        acols = {
+            r[1]
+            for r in self._db.execute("PRAGMA table_info(assignments)").fetchall()
+        }
+        if "assignment_type" not in acols:
+            self._db.execute(
+                "ALTER TABLE assignments ADD COLUMN assignment_type TEXT NOT NULL DEFAULT 'quiz'"
+            )
+        if "worksheet_json" not in acols:
+            self._db.execute("ALTER TABLE assignments ADD COLUMN worksheet_json TEXT")
         self._db.commit()
 
     def _member_count(self, classroom_id: str) -> int:
@@ -321,11 +333,14 @@ class ClassroomStore:
         quiz_id: str,
         title: str,
         due_at: float | None = None,
+        assignment_type: str = "quiz",
+        worksheet_json: str | None = None,
     ) -> dict | None:
-        """Sınıfa ödev (quiz) atar — yalnız sınıf sahibi. Sahip değilse None.
+        """Sınıfa ödev atar — yalnız sınıf sahibi. Sahip değilse None.
 
-        quiz'in sahibe ait olduğu doğrulaması ÇAĞIRANA aittir (router QUIZ_STORE ile).
-        due_at: opsiyonel son teslim epoch'u (çağıran YYYY-MM-DD'den çevirir).
+        assignment_type='quiz' → quiz_id + (çağıranın doğruladığı) sahiplik; çözülebilir.
+        assignment_type='pdf'  → worksheet_json snapshot (öğrenci indirir); quiz_id="".
+        due_at: opsiyonel son teslim epoch'u.
         """
         with self._lock:
             assert self._db is not None
@@ -338,9 +353,10 @@ class ClassroomStore:
             aid = uuid.uuid4().hex
             now = time.time()
             self._db.execute(
-                "INSERT INTO assignments (id, classroom_id, quiz_id, title, due_at, created_at) "
-                "VALUES (?, ?, ?, ?, ?, ?)",
-                (aid, classroom_id, quiz_id, title, due_at, now),
+                "INSERT INTO assignments (id, classroom_id, quiz_id, title, due_at, "
+                "created_at, assignment_type, worksheet_json) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (aid, classroom_id, quiz_id, title, due_at, now, assignment_type, worksheet_json),
             )
             self._db.commit()
         return {"id": aid, "created_at": _iso(now)}
@@ -352,8 +368,8 @@ class ClassroomStore:
         with self._lock:
             assert self._db is not None
             row = self._db.execute(
-                "SELECT id, classroom_id, quiz_id, title, created_at "
-                "FROM assignments WHERE id = ?",
+                "SELECT id, classroom_id, quiz_id, title, created_at, assignment_type, "
+                "worksheet_json FROM assignments WHERE id = ?",
                 (assignment_id,),
             ).fetchone()
         if not row:
@@ -364,6 +380,8 @@ class ClassroomStore:
             "quiz_id": row[2],
             "title": row[3],
             "created_at": _iso(row[4]),
+            "assignment_type": row[5] or "quiz",
+            "worksheet_json": row[6],
         }
 
     def list_assignments(self, classroom_id: str) -> list[dict]:
@@ -373,8 +391,8 @@ class ClassroomStore:
         with self._lock:
             assert self._db is not None
             rows = self._db.execute(
-                "SELECT id, quiz_id, title, created_at, due_at FROM assignments "
-                "WHERE classroom_id = ? ORDER BY created_at DESC",
+                "SELECT id, quiz_id, title, created_at, due_at, assignment_type "
+                "FROM assignments WHERE classroom_id = ? ORDER BY created_at DESC",
                 (classroom_id,),
             ).fetchall()
         return [
@@ -384,6 +402,7 @@ class ClassroomStore:
                 "title": r[2],
                 "created_at": _iso(r[3]),
                 "due_at": _iso(r[4]) if r[4] is not None else None,
+                "assignment_type": r[5] or "quiz",
             }
             for r in rows
         ]
@@ -401,7 +420,8 @@ class ClassroomStore:
             rows = self._db.execute(
                 """
                 SELECT a.id, a.classroom_id, c.name, a.quiz_id, a.title, a.created_at,
-                       COUNT(att.id), MAX(att.score), MAX(att.total), a.due_at
+                       COUNT(att.id), MAX(att.score), MAX(att.total), a.due_at,
+                       a.assignment_type
                 FROM classroom_members m
                 JOIN assignments a ON a.classroom_id = m.classroom_id
                 JOIN classrooms c ON c.id = a.classroom_id
@@ -428,6 +448,7 @@ class ClassroomStore:
                     "score": int(r[7]) if (solved and r[7] is not None) else None,
                     "total": int(r[8]) if (solved and r[8] is not None) else None,
                     "due_at": _iso(r[9]) if r[9] is not None else None,
+                    "assignment_type": r[10] or "quiz",
                 }
             )
         return out
