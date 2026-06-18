@@ -41,6 +41,7 @@ export default function LandingPage() {
       <SocialProof />
       <Showroom />
       <SolveAndGrow />
+      <ClassroomCta />
       <SystemSummary />
       <HowItWorks />
       <UseCases />
@@ -50,6 +51,42 @@ export default function LandingPage() {
       <FinalCta />
       <Footer />
     </>
+  );
+}
+
+// ─── ÖĞRETMEN / VELİ CTA — sınıf modeli kapısı (keşfedilebilirlik + SEO) ─────
+
+function ClassroomCta() {
+  return (
+    <section className="py-16">
+      <div className="container">
+        <div className="relative overflow-hidden rounded-3xl border bg-card p-8 shadow-pop sm:p-10">
+          <div className="grid items-center gap-6 sm:grid-cols-[1fr_auto]">
+            <div className="space-y-3">
+              <span className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 px-3 py-1 font-display text-sm font-semibold text-amber-600 dark:text-amber-400">
+                <GraduationCap className="h-4 w-4" />
+                Öğretmen &amp; veli
+              </span>
+              <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                Öğretmen veya veli misin? Sınıfını aç.
+              </h2>
+              <p className="max-w-xl text-muted-foreground">
+                Sınıf oluştur, öğrencilerini katılma koduyla davet et, çözülebilir
+                quizleri ödev olarak ata; kimin çözdüğünü ve kaç doğru yaptığını tek
+                ekrandan izle.
+              </p>
+            </div>
+            <Button asChild size="lg" className="gap-2 sm:shrink-0">
+              <Link href="/practice?role=teacher">
+                <Users className="h-4 w-4" />
+                Sınıf oluştur
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
