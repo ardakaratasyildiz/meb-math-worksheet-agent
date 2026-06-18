@@ -27,3 +27,8 @@ knowledge_base/eval/run_*.log
 # Referans baseline run repo'da kalsın — thresholds.json bunu işaret ediyor.
 !knowledge_base/eval/ab_raw_20260501_181943.json
 !knowledge_base/eval/ab_report_20260501_181943.md
+
+# Service account / API keys — ASLA commit etme
+secrets/
+gen-lang-client-*.json
+*-sa.json
