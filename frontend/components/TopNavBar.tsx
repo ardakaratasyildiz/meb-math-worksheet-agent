@@ -20,6 +20,8 @@ import {
 const NAV_LINKS = [
   { href: "/generate", label: "Üretim" },
   { href: "/practice", label: "Çöz & Geliş" },
+  // Öğretmen/veli kapısı — aynı sayfaya gider ama öğretmen yüzünü açar (?role=teacher).
+  { href: "/practice?role=teacher", label: "Sınıfım" },
   { href: "/features", label: "Özellikler" },
   { href: "/pricing", label: "Fiyatlandırma" },
   { href: "/faq", label: "Sıkça Sorulanlar" },
