@@ -3,7 +3,15 @@ import { ArrowLeft } from "lucide-react";
 
 import { ClassesView } from "@/components/ClassesView";
 
-export default function ClassesPage() {
+// ?join=KOD → katılma linkinden gelen öğrenci için kod ön-dolu gelir.
+export default async function ClassesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ join?: string }>;
+}) {
+  const sp = await searchParams;
+  const initialJoinCode =
+    typeof sp.join === "string" ? sp.join.toUpperCase().slice(0, 12) : "";
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -20,7 +28,7 @@ export default function ClassesPage() {
         </p>
       </div>
 
-      <ClassesView />
+      <ClassesView initialJoinCode={initialJoinCode} />
     </div>
   );
 }

@@ -14,6 +14,7 @@ import {
   Loader2,
   NotebookPen,
   Plus,
+  Share2,
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -168,6 +169,32 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
     }
   }
 
+  // Katılma linki — öğrenci tıklayınca /practice/classes'ta kod ön-dolu gelir.
+  function joinUrl(): string {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    return `${origin}/practice/classes?join=${data?.join_code ?? ""}`;
+  }
+
+  async function shareCode() {
+    if (!data?.join_code) return;
+    const text = `"${data.name}" sınıfına katıl. Katılma kodu: ${data.join_code}`;
+    const url = joinUrl();
+    const nav = typeof navigator !== "undefined" ? navigator : undefined;
+    if (nav && typeof nav.share === "function") {
+      try {
+        await nav.share({ title: "Soru Atölyesi — Sınıfa katıl", text, url });
+        return;
+      } catch {
+        /* iptal / desteklenmiyor → WhatsApp fallback */
+      }
+    }
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20 text-muted-foreground">
@@ -211,9 +238,11 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
         <Card className="space-y-2 p-5">
           <h2 className="font-display font-bold">Katılma kodu</h2>
           <p className="text-sm text-muted-foreground">
-            Öğrencilerin <strong>Sınıfa katıl</strong> ekranına bu kodu girsin.
+            Öğrencilerin <strong>Sınıfa katıl</strong> ekranına bu kodu girsin —
+            ya da aşağıdaki <strong>Paylaş</strong> ile linki gönder (tıklayınca kod
+            otomatik dolar).
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="rounded-lg bg-muted px-4 py-2 font-mono text-2xl font-bold tracking-[0.3em]">
               {data.join_code}
             </span>
@@ -224,6 +253,10 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
                 <Copy className="h-4 w-4" />
               )}
               Kopyala
+            </Button>
+            <Button onClick={shareCode} size="sm" className="gap-1.5">
+              <Share2 className="h-4 w-4" />
+              Paylaş
             </Button>
           </div>
         </Card>
@@ -275,6 +308,31 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
                   Çalışma kağıdı (PDF)
                 </button>
               </div>
+
+              {/* Açıklama — öğretmen listenin nereden geldiğini anlasın. */}
+              <p className="rounded-lg bg-muted/50 p-3 text-xs text-muted-foreground">
+                {pickerSource === "quiz" ? (
+                  <>
+                    Aşağıdaki liste <strong>senin daha önce ürettiğin çözülebilir
+                    quizler</strong> (öğrenciler site içinde çözer, otomatik puanlanır).
+                    Yeni quiz üretmek için{" "}
+                    <Link href="/practice/new" className="font-medium text-primary underline">
+                      Quiz üret
+                    </Link>
+                    , sonra buraya gelip ata.
+                  </>
+                ) : (
+                  <>
+                    Aşağıdaki liste <strong>üretip kaydettiğin çalışma kağıtların</strong>
+                    {" "}(öğrenci PDF olarak indirir, çevrimdışı yapar). Yeni kağıt üretmek
+                    için{" "}
+                    <Link href="/generate" className="font-medium text-primary underline">
+                      Çalışma kağıdı üret
+                    </Link>
+                    , sonra buraya gelip ata.
+                  </>
+                )}
+              </p>
 
               <label className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 Son teslim (opsiyonel):

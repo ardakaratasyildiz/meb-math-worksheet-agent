@@ -13,7 +13,11 @@ import { Input } from "@/components/ui/input";
 import { createClassroom, joinClassroom, listClassrooms } from "@/lib/api";
 import type { ClassroomSummary } from "@/lib/types";
 
-export function ClassesView() {
+export function ClassesView({
+  initialJoinCode = "",
+}: {
+  initialJoinCode?: string;
+}) {
   const { userId, isLoaded } = useAuth();
   const { user } = useUser();
   const router = useRouter();
@@ -24,7 +28,7 @@ export function ClassesView() {
   const [error, setError] = React.useState<string | null>(null);
 
   const [newName, setNewName] = React.useState("");
-  const [joinCode, setJoinCode] = React.useState("");
+  const [joinCode, setJoinCode] = React.useState(initialJoinCode);
   const [joinName, setJoinName] = React.useState("");
   const [creating, setCreating] = React.useState(false);
   const [joining, setJoining] = React.useState(false);
