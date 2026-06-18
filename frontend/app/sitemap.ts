@@ -33,6 +33,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/legal/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
   ];
 
+  // Sınıf-bazlı matematik hub'ları (1-7) — head-term landing'ler. 8 = /lgs-matematik.
+  const gradeHubPages: MetadataRoute.Sitemap = [1, 2, 3, 4, 5, 6, 7].map((g) => ({
+    url: `${SITE_URL}/${g}-sinif-matematik`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.9,
+  }));
+
   const curriculumPages: MetadataRoute.Sitemap = CURRICULUM_PAGES.map((p) => ({
     url: `${SITE_URL}/calismalar/${p.slug}`,
     lastModified: now,
@@ -56,5 +64,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...curriculumPages, ...kazanimPages, ...altKonuPages];
+  return [
+    ...staticPages,
+    ...gradeHubPages,
+    ...curriculumPages,
+    ...kazanimPages,
+    ...altKonuPages,
+  ];
 }
