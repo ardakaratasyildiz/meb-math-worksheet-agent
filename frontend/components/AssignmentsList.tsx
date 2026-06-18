@@ -82,8 +82,9 @@ export function AssignmentsList() {
             <Card className="flex items-center justify-between gap-3 p-4 transition-colors hover:border-primary/40 hover:bg-accent/20">
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{a.title}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {a.classroom_name}
+                <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                  <span>{a.classroom_name}</span>
+                  {a.due_at && !a.solved ? <DueChip dueAt={a.due_at} /> : null}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-3">
@@ -107,5 +108,24 @@ export function AssignmentsList() {
         );
       })}
     </div>
+  );
+}
+
+/** Son teslim rozeti — geçmişse "süresi doldu" (kırmızı), 48 saat içindeyse amber. */
+function DueChip({ dueAt }: { dueAt: string }) {
+  const due = new Date(dueAt);
+  const now = new Date();
+  const overdue = due.getTime() < now.getTime();
+  const soon = !overdue && due.getTime() - now.getTime() < 48 * 3600 * 1000;
+  const label = due.toLocaleDateString("tr-TR", { day: "2-digit", month: "short" });
+  const cls = overdue
+    ? "text-rose-500"
+    : soon
+      ? "text-amber-600 dark:text-amber-400"
+      : "text-muted-foreground";
+  return (
+    <span className={`font-semibold ${cls}`}>
+      {overdue ? "⏰ süresi doldu" : `son: ${label}`}
+    </span>
   );
 }

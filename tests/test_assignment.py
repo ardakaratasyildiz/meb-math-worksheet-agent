@@ -74,6 +74,21 @@ def test_assign_and_access() -> None:
             check(cs.is_member(c["id"], "stranger") is False, "yabancı is_member değil")
             # list_assignments
             check(len(cs.list_assignments(c["id"])) == 1, "sınıfta 1 ödev")
+
+            # due_at (son teslim) — opsiyonel; verilince listede döner
+            import time as _t
+            due = _t.time() + 3 * 86400
+            a2 = cs.create_assignment(
+                classroom_id=c["id"], owner_tenant_id="teacher-1",
+                quiz_id=quiz_id, title="Süreli ödev", due_at=due,
+            )
+            row = next(x for x in cs.list_assignments(c["id"]) if x["id"] == a2["id"])
+            check(row["due_at"] is not None, "due_at listede döndü")
+            mine = next(
+                x for x in cs.list_my_assignments("stu-1")
+                if x["assignment_id"] == a2["id"]
+            )
+            check(mine["due_at"] is not None, "öğrenci ödevinde due_at var")
         finally:
             cs.close(); qs.close()
 

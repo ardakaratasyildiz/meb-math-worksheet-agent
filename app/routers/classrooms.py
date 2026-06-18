@@ -11,6 +11,7 @@ yalnız API key auth (mevcut güven modeli: tenant_id istemciden, doğrulanmadan
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -33,6 +34,19 @@ from app.services.quiz_store import QUIZ_STORE
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+_TR = timezone(timedelta(hours=3))
+
+
+def _due_epoch(due_date: str | None) -> float | None:
+    """'YYYY-MM-DD' → gün sonu (TR) epoch. Geçersiz/boş → None."""
+    if not due_date:
+        return None
+    try:
+        d = datetime.strptime(due_date.strip(), "%Y-%m-%d")
+    except ValueError:
+        return None
+    return d.replace(hour=23, minute=59, second=59, tzinfo=_TR).timestamp()
 
 
 @router.post("", response_model=ClassroomDetail)
@@ -125,6 +139,7 @@ def assign_quiz(
         owner_tenant_id=req.tenant_id,
         quiz_id=req.quiz_id,
         title=quiz["title"],
+        due_at=_due_epoch(req.due_date),
     )
     if res is None:
         raise HTTPException(status_code=403, detail="Bu sınıfın sahibi değilsin.")

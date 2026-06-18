@@ -20,6 +20,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   assignQuiz,
   getAssignmentResults,
@@ -56,6 +57,7 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
   const [picking, setPicking] = React.useState(false);
   const [myQuizzes, setMyQuizzes] = React.useState<MyQuizItem[] | null>(null);
   const [assigningId, setAssigningId] = React.useState<string | null>(null);
+  const [dueDate, setDueDate] = React.useState(""); // YYYY-MM-DD, opsiyonel
 
   const reload = React.useCallback(async () => {
     if (!userId) return;
@@ -102,9 +104,10 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
     if (!userId) return;
     setAssigningId(quizId);
     try {
-      await assignQuiz(classroomId, userId, quizId);
+      await assignQuiz(classroomId, userId, quizId, dueDate || null);
       toast.success("Ödev atandı");
       setPicking(false);
+      setDueDate("");
       await reload();
     } catch (e: unknown) {
       toast.error("Ödev atanamadı", {
@@ -223,14 +226,33 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
                 sonra buradan ödev olarak ata.
               </div>
             ) : (
-              <ul className="divide-y rounded-lg border">
-                {myQuizzes.map((q) => (
-                  <li
-                    key={q.id}
-                    className="flex items-center justify-between gap-2 px-4 py-2.5 text-sm"
-                  >
-                    <span className="min-w-0 truncate">{q.title}</span>
-                    <Button
+              <>
+                <label className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                  Son teslim (opsiyonel):
+                  <Input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="h-9 w-auto"
+                  />
+                  {dueDate ? (
+                    <button
+                      type="button"
+                      onClick={() => setDueDate("")}
+                      className="text-xs underline hover:text-foreground"
+                    >
+                      temizle
+                    </button>
+                  ) : null}
+                </label>
+                <ul className="divide-y rounded-lg border">
+                  {myQuizzes.map((q) => (
+                    <li
+                      key={q.id}
+                      className="flex items-center justify-between gap-2 px-4 py-2.5 text-sm"
+                    >
+                      <span className="min-w-0 truncate">{q.title}</span>
+                      <Button
                       onClick={() => onAssign(q.id)}
                       disabled={assigningId !== null}
                       size="sm"
@@ -246,7 +268,8 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
                     </Button>
                   </li>
                 ))}
-              </ul>
+                </ul>
+              </>
             )
           ) : null}
 
@@ -354,6 +377,17 @@ function AssignmentRow({
         )}
         <NotebookPen className="h-4 w-4 shrink-0 text-amber-500" />
         <span className="min-w-0 truncate font-medium">{assignment.title}</span>
+        {assignment.due_at ? (
+          <span
+            className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+              new Date(assignment.due_at) < new Date()
+                ? "bg-rose-400/15 text-rose-500"
+                : "bg-amber-400/15 text-amber-600 dark:text-amber-400"
+            }`}
+          >
+            son: {formatDate(assignment.due_at)}
+          </span>
+        ) : null}
         <span className="ml-auto shrink-0 text-xs text-muted-foreground">
           {results
             ? `${results.solved_count}/${results.member_count} çözdü`

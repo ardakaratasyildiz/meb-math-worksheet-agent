@@ -294,6 +294,7 @@ export interface AssignmentSummary {
   quiz_id: string;
   title: string;
   created_at: string;
+  due_at?: string | null; // son teslim (ISO); yoksa null
 }
 
 export interface ClassroomDetail {
@@ -323,6 +324,7 @@ export interface MyAssignmentItem {
   solved: boolean;
   score?: number | null;
   total?: number | null;
+  due_at?: string | null; // son teslim (ISO); yoksa null
 }
 
 export interface MyAssignmentsResponse {
