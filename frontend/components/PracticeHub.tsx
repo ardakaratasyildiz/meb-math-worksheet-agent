@@ -11,6 +11,7 @@ import {
 
 import { Card } from "@/components/ui/card";
 import { AssignmentAlert } from "@/components/AssignmentAlert";
+import { EmailOptInCard } from "@/components/EmailOptInCard";
 import { PracticeTodayCard } from "@/components/PracticeTodayCard";
 
 type Role = "student" | "teacher";
@@ -95,6 +96,8 @@ export function PracticeHub({ roleParam }: { roleParam: Role | null }) {
             : "Sınıf aç, öğrencilerini katılma koduyla davet et, ödev ata ve sonuçlarını izle."}
         </p>
       </header>
+
+      <EmailOptInCard />
 
       {isStudent ? (
         <>

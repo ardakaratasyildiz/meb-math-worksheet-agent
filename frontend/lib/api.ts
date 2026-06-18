@@ -13,6 +13,7 @@ import type {
   ClassroomDetail,
   ClassroomsResponse,
   CreateQuizRequest,
+  EmailPrefsResponse,
   CreateShareResponse,
   Difficulty,
   GamificationResponse,
@@ -619,6 +620,34 @@ export async function submitAssignmentAttempt(
       body: JSON.stringify(body),
     },
   );
+}
+
+// ---- E-posta tercihleri (KVKK opt-in) -----------------------------------
+
+/** Kullanıcının e-posta tercihi. is_set=false → onay kartı gösterilir. */
+export async function getEmailPrefs(
+  tenantId: string,
+): Promise<EmailPrefsResponse> {
+  return request<EmailPrefsResponse>(
+    `/api/me/email-prefs?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** E-posta tercihini kaydet (bülten + hatırlatma izni). */
+export async function setEmailPrefs(
+  tenantId: string,
+  email: string | null,
+  newsletterOptin: boolean,
+): Promise<EmailPrefsResponse> {
+  return request<EmailPrefsResponse>("/api/me/email-prefs", {
+    method: "POST",
+    headers: tenantHeader(tenantId),
+    body: JSON.stringify({
+      tenant_id: tenantId,
+      email,
+      newsletter_optin: newsletterOptin,
+    }),
+  });
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

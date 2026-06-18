@@ -14,12 +14,14 @@ from app.models.schemas import (
     AttemptDetail,
     AttemptHistoryItem,
     AttemptHistoryResponse,
+    EmailPrefsResponse,
     GamificationResponse,
     MyAssignmentItem,
     MyAssignmentsResponse,
     MyQuizItem,
     MyQuizzesResponse,
     ProgressResponse,
+    SetEmailPrefsRequest,
     Question,
     ShareResultItem,
     ShareResultsResponse,
@@ -30,6 +32,7 @@ from app.models.schemas import (
 from app.security import require_api_key
 from app.services.attempt_review import build_attempt_detail
 from app.services.classroom_store import CLASSROOM_STORE
+from app.services.email_prefs_store import EMAIL_PREFS
 from app.services.gamification import build_gamification
 from app.services.progress import build_daily_trend, build_progress
 from app.services.quiz_store import QUIZ_STORE
@@ -178,3 +181,40 @@ def list_my_assignments(
     """Öğrencinin katıldığı sınıflardaki ödevler + çözüldü durumu/skor ('Ödevlerim')."""
     rows = CLASSROOM_STORE.list_my_assignments(tenant_id)
     return MyAssignmentsResponse(items=[MyAssignmentItem(**r) for r in rows])
+
+
+# ── E-posta tercihleri (KVKK opt-in — Track 2) ───────────────────────────────
+
+
+@router.get("/email-prefs", response_model=EmailPrefsResponse)
+def get_email_prefs(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> EmailPrefsResponse:
+    """Kullanıcının e-posta tercihi. Hiç ayarlamadıysa is_set=false (onay kartı gösterilir)."""
+    pref = EMAIL_PREFS.get(tenant_id)
+    if pref is None:
+        return EmailPrefsResponse(is_set=False)
+    return EmailPrefsResponse(
+        is_set=True,
+        newsletter_optin=pref["newsletter_optin"],
+        email=pref["email"],
+    )
+
+
+@router.post("/email-prefs", response_model=EmailPrefsResponse)
+def set_email_prefs(
+    req: SetEmailPrefsRequest,
+    _api_key: str = Depends(require_api_key),
+) -> EmailPrefsResponse:
+    """E-posta tercihini kaydet (bülten + hatırlatma izni). E-posta sonraki gönderim için saklanır."""
+    EMAIL_PREFS.set(
+        tenant_id=req.tenant_id,
+        email=req.email,
+        newsletter_optin=req.newsletter_optin,
+    )
+    return EmailPrefsResponse(
+        is_set=True,
+        newsletter_optin=req.newsletter_optin,
+        email=req.email,
+    )
