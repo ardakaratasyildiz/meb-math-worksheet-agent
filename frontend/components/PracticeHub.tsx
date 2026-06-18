@@ -1,6 +1,3 @@
-"use client";
-
-import * as React from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -67,40 +64,14 @@ function HubCard({
 
 /**
  * /practice hub — "iki yüz, tek hesap" (LEARNING_PLATFORM_PLAN §2).
- * Öğrenci / Öğretmen-veli rol toggle'ı; navbar "Sınıfım" kapısı ?role=teacher ile
- * öğretmen yüzünü açar. Son seçim localStorage'da hatırlanır.
+ * Hangi yüz açılacağı GİRİŞ KAPISINA göre belirlenir (navbar'da iki link):
+ *   "Çöz & Geliş" → /practice            → öğrenci yüzü
+ *   "Sınıfım"     → /practice?role=teacher → öğretmen/veli yüzü
+ * Sayfa içi toggle yok (kafa karışıklığını önlemek için); kapılar arası geçiş
+ * navbar'dan yapılır.
  */
 export function PracticeHub({ roleParam }: { roleParam: Role | null }) {
-  const [role, setRoleState] = React.useState<Role>(roleParam ?? "student");
-
-  React.useEffect(() => {
-    // URL'de açık rol (?role=) varsa o kazanır + hatırlanır; yoksa son seçimi oku.
-    if (roleParam) {
-      try {
-        localStorage.setItem("practiceRole", roleParam);
-      } catch {
-        /* ignore */
-      }
-      return;
-    }
-    try {
-      const saved = localStorage.getItem("practiceRole");
-      if (saved === "teacher" || saved === "student") setRoleState(saved);
-    } catch {
-      /* ignore */
-    }
-  }, [roleParam]);
-
-  function choose(r: Role) {
-    setRoleState(r);
-    try {
-      localStorage.setItem("practiceRole", r);
-    } catch {
-      /* ignore */
-    }
-  }
-
-  const isStudent = role === "student";
+  const isStudent = roleParam !== "teacher";
 
   return (
     <div className="space-y-7">
@@ -112,7 +83,7 @@ export function PracticeHub({ roleParam }: { roleParam: Role | null }) {
           {isStudent ? "🦊" : "🎓"}
         </span>
         <p className="font-display text-sm font-semibold text-grape">
-          Çöz &amp; Geliş 👋
+          {isStudent ? "Çöz & Geliş 👋" : "Sınıfım 🎓"}
         </p>
         <h1 className="mt-1 font-display text-3xl font-bold tracking-tight">
           {isStudent ? "Bugün de matematiğe devam!" : "Sınıfını yönet"}
@@ -123,32 +94,6 @@ export function PracticeHub({ roleParam }: { roleParam: Role | null }) {
             : "Sınıf aç, öğrencilerini katılma koduyla davet et, ödev ata ve sonuçlarını izle."}
         </p>
       </header>
-
-      {/* Rol toggle — iki yüz arasında geçiş */}
-      <div className="inline-flex gap-1 rounded-full bg-muted p-1">
-        <button
-          type="button"
-          onClick={() => choose("student")}
-          className={`rounded-full px-5 py-2 font-display text-sm font-semibold transition-colors ${
-            isStudent
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          🧒 Öğrenci
-        </button>
-        <button
-          type="button"
-          onClick={() => choose("teacher")}
-          className={`rounded-full px-5 py-2 font-display text-sm font-semibold transition-colors ${
-            !isStudent
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          🎓 Öğretmen / Veli
-        </button>
-      </div>
 
       {isStudent ? (
         <>
