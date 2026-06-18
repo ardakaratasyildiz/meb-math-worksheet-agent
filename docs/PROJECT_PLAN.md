@@ -183,8 +183,15 @@ Burada içerik (#4) ve büyüme (#1) birleşir: her içerik damlası → SEO yü
   🟡 Kalan (ops, senin tarafın): 8.sınıf konu/kazanım sayfalarının SC'de
   indekslenmesini izle.
 
+- **1C ✅ Sınıf hub'ları (head-term)** — `/lgs-matematik` deseni 1-7'ye çoğaltıldı:
+  `/5-sinif-matematik` … (`GradeMathHub` bileşeni, 7 statik rota). Her hub head-term
+  H1 + benzersiz içerik + konu/alt-konu iç-link kümesi + FAQPage (rich snippet) +
+  CollectionPage JSON-LD + sitemap (priority 0.9). `/calismalar` sınıf başlıkları
+  hub'lara linkli (topical authority). Ölçüm: `scripts/metrics_report.py` (organik
+  oturum 28g=13 → bu sayfalar indekslendikçe izlenecek).
+
 **Çıkış kapısı:** 8.sınıf SEO sayfaları indeksleniyor + organik oturum trend yukarı
-(codegen ✅; indeks takibi açık).
+(codegen ✅ + sınıf hub'ları ✅; indeks takibi/organik izleme metrics_report ile açık).
 
 ---
 

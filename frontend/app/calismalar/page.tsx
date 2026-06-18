@@ -81,10 +81,14 @@ export default function CalismalarHubPage() {
         <div className="container max-w-5xl space-y-12">
           {Array.from(byGrade.entries()).map(([grade, topics]) => (
             <div key={grade}>
-              <h2 className="mb-5 flex items-center gap-2 text-xl font-semibold text-foreground">
+              <Link
+                href={grade === 8 ? "/lgs-matematik" : `/${grade}-sinif-matematik`}
+                className="group mb-5 inline-flex items-center gap-2 text-xl font-semibold text-foreground transition hover:text-primary"
+              >
                 <GraduationCap className="h-5 w-5 text-primary" />
                 {grade}. Sınıf Matematik
-              </h2>
+                <ArrowRight className="h-4 w-4 text-primary opacity-0 transition group-hover:opacity-100" />
+              </Link>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {topics.map((t) => (
                   <Link
