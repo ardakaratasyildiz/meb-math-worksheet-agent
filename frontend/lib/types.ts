@@ -319,6 +319,13 @@ export interface JoinClassroomResponse {
   name: string;
 }
 
+// E-posta tercihi (KVKK opt-in). is_set=false → onay kartı gösterilir.
+export interface EmailPrefsResponse {
+  is_set: boolean;
+  newsletter_optin: boolean;
+  email?: string | null;
+}
+
 // Öğrencinin ödevi ("Ödevlerim").
 export interface MyAssignmentItem {
   assignment_id: string;

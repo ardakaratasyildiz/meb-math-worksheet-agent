@@ -930,3 +930,26 @@ class AssignmentResultsResponse(BaseModel):
     member_count: int
     solved_count: int
     items: list[AssignmentResultItem]
+
+
+# ── E-posta tercihleri (KVKK opt-in — Track 2) ───────────────────────────────
+
+
+class EmailPrefsResponse(BaseModel):
+    is_set: bool  # kullanıcı hiç tercih belirtti mi (false → onay kartı göster)
+    newsletter_optin: bool = False
+    email: str | None = None
+
+
+class SetEmailPrefsRequest(BaseModel):
+    tenant_id: str = Field(..., min_length=1, max_length=64)
+    email: str | None = Field(None, max_length=200)
+    newsletter_optin: bool
+
+    @field_validator("tenant_id")
+    @classmethod
+    def _strip(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("boş olamaz")
+        return v

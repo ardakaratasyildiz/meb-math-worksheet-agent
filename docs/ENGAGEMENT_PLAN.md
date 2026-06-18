@@ -20,6 +20,13 @@
 ## Track 2 — E-posta (re-engagement + bülten) — provider + KVKK gerektirir
 Sıra: önce izin/altyapı, sonra mailler.
 
+**✅ Opt-in altyapısı yapıldı (PR: feat/email-optin):** `email_prefs` tablosu
+(`EmailPrefsStore`) + `GET/POST /api/me/email-prefs` + `EmailOptInCard` (kullanıcı
+tercih belirtmediyse hub'da bir kez "e-posta almak ister misin?" → Evet/Hayır,
+KVKK açık onay + "vazgeç" vaadi). E-posta + onay saklanır; cron gönderimde
+`EMAIL_PREFS.list_opted_in()` okunur. **Kalan:** Resend key (env) + Clerk webhook
+(opsiyonel — e-posta zaten opt-in anında saklanıyor) + cron + unsubscribe endpoint.
+
 1. **Email provider** — öneri **Resend** (basit, cömert free tier). API key → `RESEND_API_KEY`
    env (kullanıcı sağlar).
 2. **Kullanıcı e-postası** — Clerk'te var; backend'e **Clerk webhook** (`user.created`/`updated`)
