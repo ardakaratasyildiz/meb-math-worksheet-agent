@@ -297,10 +297,11 @@ quiz_id, due_date?), `attempts.assignment_id` (çözümü ödeve bağlar).
 **Çıkış kapısı:** ✅ GEÇİLDİ — öğretmen sınıf açıp ödev atıyor, öğrenci çözüyor,
 sonuçlar panoda görünüyor (PR 1+2+3 canlı).
 
-**IA iyileştirmesi ✅ (rol görünümleri):** `/practice` artık **öğrenci / öğretmen-veli
-rol toggle**'ı ("iki yüz, tek hesap"); navbar'da **"Sınıfım"** kapısı (`?role=teacher`)
-→ öğretmen kendi alanını bulur; son seçim localStorage'da; landing'e "Öğretmen/veli
-misin? Sınıf aç" CTA'sı (keşif + SEO). `PracticeHub` bileşeni.
+**IA iyileştirmesi ✅ (rol görünümleri):** `/practice` "iki yüz, tek hesap". Hangi yüz
+açılacağı GİRİŞ KAPISINA göre (URL): navbar **"Çöz & Geliş"** → öğrenci yüzü,
+**"Sınıfım"** (`?role=teacher`) → öğretmen yüzü. Landing'e "Öğretmen/veli misin? Sınıf
+aç" CTA'sı (keşif + SEO). `PracticeHub` bileşeni saf URL-güdümlü — **sayfa içi toggle
+KALDIRILDI** (navbar iki kapı varken gereksiz + kafa karıştırıcıydı; kullanıcı geri bildirimi).
 
 Kalan opsiyonel: due-date, bildirim (uygulama-içi/e-posta/push), PDF ödev, çoklu sınıf.
 **Mevcutu bozmama:** tümü ek (`/api/classrooms/*`, yeni tablolar, `/practice/classes/*`);
