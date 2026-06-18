@@ -22,11 +22,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
+  assignPdf,
   assignQuiz,
   getAssignmentResults,
   getClassroom,
   listMyQuizzes,
+  listWorksheetHistory,
 } from "@/lib/api";
+import type { HistoryItem } from "@/lib/history";
 import type {
   AssignmentResultsResponse,
   AssignmentSummary,
@@ -55,7 +58,9 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
 
   // Ödev atama paneli
   const [picking, setPicking] = React.useState(false);
+  const [pickerSource, setPickerSource] = React.useState<"quiz" | "pdf">("quiz");
   const [myQuizzes, setMyQuizzes] = React.useState<MyQuizItem[] | null>(null);
+  const [myWorksheets, setMyWorksheets] = React.useState<HistoryItem[] | null>(null);
   const [assigningId, setAssigningId] = React.useState<string | null>(null);
   const [dueDate, setDueDate] = React.useState(""); // YYYY-MM-DD, opsiyonel
 
@@ -88,6 +93,7 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
   async function openPicker() {
     if (!userId) return;
     setPicking(true);
+    setPickerSource("quiz");
     if (myQuizzes === null) {
       try {
         setMyQuizzes(await listMyQuizzes(userId));
@@ -100,17 +106,49 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
     }
   }
 
+  async function selectPdfSource() {
+    setPickerSource("pdf");
+    if (!userId || myWorksheets !== null) return;
+    try {
+      setMyWorksheets(await listWorksheetHistory(userId));
+    } catch (e: unknown) {
+      toast.error("Çalışma kağıtların alınamadı", {
+        description: e instanceof Error ? e.message : undefined,
+      });
+      setMyWorksheets([]);
+    }
+  }
+
+  async function finishAssign(label: string) {
+    toast.success(label);
+    setPicking(false);
+    setDueDate("");
+    await reload();
+  }
+
   async function onAssign(quizId: string) {
     if (!userId) return;
     setAssigningId(quizId);
     try {
       await assignQuiz(classroomId, userId, quizId, dueDate || null);
-      toast.success("Ödev atandı");
-      setPicking(false);
-      setDueDate("");
-      await reload();
+      await finishAssign("Ödev atandı");
     } catch (e: unknown) {
       toast.error("Ödev atanamadı", {
+        description: e instanceof Error ? e.message : undefined,
+      });
+    } finally {
+      setAssigningId(null);
+    }
+  }
+
+  async function onAssignPdf(item: HistoryItem) {
+    if (!userId) return;
+    setAssigningId(item.id);
+    try {
+      await assignPdf(classroomId, userId, item.response.worksheet, dueDate || null);
+      await finishAssign("PDF ödev atandı");
+    } catch (e: unknown) {
+      toast.error("PDF ödev atanamadı", {
         description: e instanceof Error ? e.message : undefined,
       });
     } finally {
@@ -210,67 +248,133 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
             )}
           </div>
 
-          {/* Quiz seçici (kendi quizlerinden ata) */}
+          {/* Ödev kaynağı: çözülebilir Quiz veya PDF çalışma kağıdı */}
           {picking ? (
-            myQuizzes === null ? (
-              <div className="flex items-center gap-2 py-3 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Quizlerin yükleniyor…
+            <div className="space-y-3">
+              <div className="inline-flex gap-1 rounded-lg bg-muted p-1 text-sm">
+                <button
+                  type="button"
+                  onClick={() => setPickerSource("quiz")}
+                  className={`rounded-md px-3 py-1.5 font-medium transition-colors ${
+                    pickerSource === "quiz"
+                      ? "bg-background shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Quiz (çözülebilir)
+                </button>
+                <button
+                  type="button"
+                  onClick={selectPdfSource}
+                  className={`rounded-md px-3 py-1.5 font-medium transition-colors ${
+                    pickerSource === "pdf"
+                      ? "bg-background shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Çalışma kağıdı (PDF)
+                </button>
               </div>
-            ) : myQuizzes.length === 0 ? (
-              <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                Henüz quiz üretmedin.{" "}
-                <Link href="/practice/new" className="font-medium text-primary underline">
-                  Yeni quiz üret
-                </Link>{" "}
-                sonra buradan ödev olarak ata.
-              </div>
-            ) : (
-              <>
-                <label className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                  Son teslim (opsiyonel):
-                  <Input
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className="h-9 w-auto"
-                  />
-                  {dueDate ? (
-                    <button
-                      type="button"
-                      onClick={() => setDueDate("")}
-                      className="text-xs underline hover:text-foreground"
-                    >
-                      temizle
-                    </button>
-                  ) : null}
-                </label>
+
+              <label className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                Son teslim (opsiyonel):
+                <Input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  className="h-9 w-auto"
+                />
+                {dueDate ? (
+                  <button
+                    type="button"
+                    onClick={() => setDueDate("")}
+                    className="text-xs underline hover:text-foreground"
+                  >
+                    temizle
+                  </button>
+                ) : null}
+              </label>
+
+              {pickerSource === "quiz" ? (
+                myQuizzes === null ? (
+                  <p className="flex items-center gap-2 py-3 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" /> Quizlerin yükleniyor…
+                  </p>
+                ) : myQuizzes.length === 0 ? (
+                  <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                    Henüz quiz üretmedin.{" "}
+                    <Link href="/practice/new" className="font-medium text-primary underline">
+                      Yeni quiz üret
+                    </Link>{" "}
+                    sonra buradan ödev olarak ata.
+                  </div>
+                ) : (
+                  <ul className="divide-y rounded-lg border">
+                    {myQuizzes.map((q) => (
+                      <li
+                        key={q.id}
+                        className="flex items-center justify-between gap-2 px-4 py-2.5 text-sm"
+                      >
+                        <span className="min-w-0 truncate">{q.title}</span>
+                        <Button
+                          onClick={() => onAssign(q.id)}
+                          disabled={assigningId !== null}
+                          size="sm"
+                          variant="outline"
+                          className="shrink-0 gap-1"
+                        >
+                          {assigningId === q.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Plus className="h-4 w-4" />
+                          )}
+                          Ata
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                )
+              ) : myWorksheets === null ? (
+                <p className="flex items-center gap-2 py-3 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Çalışma kağıtların yükleniyor…
+                </p>
+              ) : myWorksheets.length === 0 ? (
+                <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                  Henüz çalışma kağıdı üretmedin.{" "}
+                  <Link href="/generate" className="font-medium text-primary underline">
+                    Çalışma kağıdı üret
+                  </Link>{" "}
+                  sonra PDF ödev olarak ata.
+                </div>
+              ) : (
                 <ul className="divide-y rounded-lg border">
-                  {myQuizzes.map((q) => (
+                  {myWorksheets.map((it) => (
                     <li
-                      key={q.id}
+                      key={it.id}
                       className="flex items-center justify-between gap-2 px-4 py-2.5 text-sm"
                     >
-                      <span className="min-w-0 truncate">{q.title}</span>
+                      <span className="min-w-0 truncate">
+                        {it.response.worksheet.title}
+                      </span>
                       <Button
-                      onClick={() => onAssign(q.id)}
-                      disabled={assigningId !== null}
-                      size="sm"
-                      variant="outline"
-                      className="shrink-0 gap-1"
-                    >
-                      {assigningId === q.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Plus className="h-4 w-4" />
-                      )}
-                      Ata
-                    </Button>
-                  </li>
-                ))}
+                        onClick={() => onAssignPdf(it)}
+                        disabled={assigningId !== null}
+                        size="sm"
+                        variant="outline"
+                        className="shrink-0 gap-1"
+                      >
+                        {assigningId === it.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Plus className="h-4 w-4" />
+                        )}
+                        Ata
+                      </Button>
+                    </li>
+                  ))}
                 </ul>
-              </>
-            )
+              )}
+            </div>
           ) : null}
 
           {/* Atanmış ödevler */}
@@ -344,6 +448,28 @@ function AssignmentRow({
     null,
   );
   const [loading, setLoading] = React.useState(false);
+  const isPdf = assignment.assignment_type === "pdf";
+
+  // PDF ödev: site içi çözüm/sonuç yok → genişlemeyen sade satır.
+  if (isPdf) {
+    return (
+      <li className="flex items-center gap-2 px-4 py-2.5 text-sm">
+        <NotebookPen className="h-4 w-4 shrink-0 text-rose-500" />
+        <span className="min-w-0 truncate font-medium">{assignment.title}</span>
+        <span className="shrink-0 rounded-full bg-rose-400/15 px-2 py-0.5 text-[11px] font-semibold text-rose-500">
+          PDF
+        </span>
+        {assignment.due_at ? (
+          <span className="shrink-0 text-[11px] text-muted-foreground">
+            son: {formatDate(assignment.due_at)}
+          </span>
+        ) : null}
+        <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+          indirilebilir · takip yok
+        </span>
+      </li>
+    );
+  }
 
   async function toggle() {
     const next = !open;

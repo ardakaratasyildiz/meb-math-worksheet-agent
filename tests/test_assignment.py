@@ -167,6 +167,35 @@ def test_assignment_results() -> None:
             cs.close(); qs.close()
 
 
+def test_pdf_assignment() -> None:
+    print("PDF ödev — tip + worksheet snapshot")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        db = str(Path(tmp) / "t.sqlite3")
+        qs = QuizStore(db_path=db)
+        cs = ClassroomStore(db_path=db)
+        try:
+            c = cs.create_classroom(owner_tenant_id="teacher-1", name="5/A")
+            cs.join_classroom(code=c["join_code"], student_tenant_id="stu-1", display_name="Ali")
+            ws = '{"title":"Kesirler Kağıdı","grade":5,"topic":"kesirler"}'
+            a = cs.create_assignment(
+                classroom_id=c["id"], owner_tenant_id="teacher-1",
+                quiz_id="", title="Kesirler Kağıdı",
+                assignment_type="pdf", worksheet_json=ws,
+            )
+            check(a is not None, "pdf ödev atandı")
+            got = cs.get_assignment(a["id"])
+            check(got["assignment_type"] == "pdf", "tip pdf")
+            check(got["worksheet_json"] == ws, "worksheet snapshot saklandı")
+            # Listede tip görünür
+            la = cs.list_assignments(c["id"])[0]
+            check(la["assignment_type"] == "pdf", "list_assignments tip pdf")
+            mine = cs.list_my_assignments("stu-1")[0]
+            check(mine["assignment_type"] == "pdf", "öğrenci ödevinde tip pdf")
+            check(mine["solved"] is False, "pdf ödev solved değil (takip yok)")
+        finally:
+            cs.close(); qs.close()
+
+
 def test_app_imports() -> None:
     print("uygulama import — assignment endpoint'leri kayıtlı")
     from app.main import app  # noqa: PLC0415
@@ -175,7 +204,9 @@ def test_app_imports() -> None:
     check("/api/assignments/{assignment_id}" in paths, "GET /api/assignments/{id}")
     check("/api/assignments/{assignment_id}/attempt" in paths, "POST .../attempt")
     check("/api/assignments/{assignment_id}/results" in paths, "GET .../results")
+    check("/api/assignments/{assignment_id}/worksheet" in paths, "GET .../worksheet (pdf)")
     check("/api/classrooms/{classroom_id}/assignments" in paths, "POST classroom assignments")
+    check("/api/classrooms/{classroom_id}/assignments/pdf" in paths, "POST pdf assignment")
     check("/api/me/quizzes" in paths, "GET /api/me/quizzes")
     check("/api/me/assignments" in paths, "GET /api/me/assignments")
 
@@ -185,6 +216,7 @@ def main() -> int:
         test_assign_and_access,
         test_my_assignments_solved,
         test_assignment_results,
+        test_pdf_assignment,
         test_app_imports,
     ):
         fn()

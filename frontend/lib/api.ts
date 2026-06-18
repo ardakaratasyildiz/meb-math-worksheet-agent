@@ -6,6 +6,7 @@
 import type { HistoryItem } from "./history";
 import type {
   AssignmentResultsResponse,
+  AssignmentWorksheetResponse,
   AttemptDetail,
   AttemptHistoryItem,
   AttemptResult,
@@ -547,6 +548,37 @@ export async function getAssignmentResults(
 ): Promise<AssignmentResultsResponse> {
   return request<AssignmentResultsResponse>(
     `/api/assignments/${encodeURIComponent(assignmentId)}/results?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Sınıfa PDF (çalışma kağıdı) ödevi ata — worksheet snapshot'ı gönderilir. */
+export async function assignPdf(
+  classroomId: string,
+  tenantId: string,
+  worksheet: Worksheet,
+  dueDate?: string | null,
+): Promise<{ id: string; created_at: string }> {
+  return request<{ id: string; created_at: string }>(
+    `/api/classrooms/${encodeURIComponent(classroomId)}/assignments/pdf`,
+    {
+      method: "POST",
+      headers: tenantHeader(tenantId),
+      body: JSON.stringify({
+        tenant_id: tenantId,
+        worksheet,
+        due_date: dueDate || null,
+      }),
+    },
+  );
+}
+
+/** PDF ödevinin worksheet'ini getir (öğrenci istemcide PDF'e render eder). */
+export async function getAssignmentWorksheet(
+  assignmentId: string,
+  tenantId: string,
+): Promise<AssignmentWorksheetResponse> {
+  return request<AssignmentWorksheetResponse>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}/worksheet?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 

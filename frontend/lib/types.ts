@@ -295,6 +295,12 @@ export interface AssignmentSummary {
   title: string;
   created_at: string;
   due_at?: string | null; // son teslim (ISO); yoksa null
+  assignment_type?: "quiz" | "pdf";
+}
+
+export interface AssignmentWorksheetResponse {
+  title: string;
+  worksheet: Worksheet;
 }
 
 export interface ClassroomDetail {
@@ -325,6 +331,7 @@ export interface MyAssignmentItem {
   score?: number | null;
   total?: number | null;
   due_at?: string | null; // son teslim (ISO); yoksa null
+  assignment_type?: "quiz" | "pdf";
 }
 
 export interface MyAssignmentsResponse {

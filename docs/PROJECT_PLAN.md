@@ -305,8 +305,11 @@ KALDIRILDI** (navbar iki kapı varken gereksiz + kafa karıştırıcıydı; kull
 
 **Due-date + uygulama-içi bildirim ✅:** öğretmen ödev atarken opsiyonel son teslim
 (`due_at`); öğrenci "Ödevlerim"de + hub'da gecikmiş/yakında-son vurgusu; öğrenci hub'ında
-`AssignmentAlert` (çözülmemiş ödev sayacı bildirimi, sıfır altyapı). Kalan opsiyonel:
-e-posta/push bildirim (provider ister), PDF ödev, çoklu sınıf yönetimi.
+`AssignmentAlert` (çözülmemiş ödev sayacı bildirimi, sıfır altyapı).
+**PDF ödev ✅:** öğretmen ürettiği çalışma kağıdını (worksheet history) sınıfa ödev atar
+(`assignment_type='pdf'` + worksheet snapshot); öğrenci "Ödevlerim"de **İndir** ile cevapsız
+PDF alır. Quiz ödev = çözülür+puanlanır; PDF ödev = indirilir (site içi takip yok).
+Kalan opsiyonel: e-posta/push bildirim (provider ister), çoklu sınıf yönetimi.
 **Mevcutu bozmama:** tümü ek (`/api/classrooms/*`, yeni tablolar, `/practice/classes/*`);
 mevcut paylaşım/çözme/PDF akışlarına dokunulmaz.
 

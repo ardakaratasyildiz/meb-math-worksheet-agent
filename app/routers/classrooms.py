@@ -10,6 +10,7 @@ yalnız API key auth (mevcut güven modeli: tenant_id istemciden, doğrulanmadan
 """
 from __future__ import annotations
 
+import json
 import logging
 from datetime import datetime, timedelta, timezone
 
@@ -18,6 +19,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.models.schemas import (
     AssignmentCreatedResponse,
     AssignmentSummary,
+    AssignPdfRequest,
     AssignQuizRequest,
     ClassroomDetail,
     ClassroomMember,
@@ -144,4 +146,26 @@ def assign_quiz(
     if res is None:
         raise HTTPException(status_code=403, detail="Bu sınıfın sahibi değilsin.")
     logger.info("ödev atandı: classroom=%s quiz=%s", classroom_id, req.quiz_id)
+    return AssignmentCreatedResponse(**res)
+
+
+@router.post("/{classroom_id}/assignments/pdf", response_model=AssignmentCreatedResponse)
+def assign_pdf(
+    classroom_id: str,
+    req: AssignPdfRequest,
+    _api_key: str = Depends(require_api_key),
+) -> AssignmentCreatedResponse:
+    """Sınıfa PDF (çalışma kağıdı) ödevi ata — öğrenci indirir, site içi çözüm yok."""
+    res = CLASSROOM_STORE.create_assignment(
+        classroom_id=classroom_id,
+        owner_tenant_id=req.tenant_id,
+        quiz_id="",
+        title=req.worksheet.title,
+        due_at=_due_epoch(req.due_date),
+        assignment_type="pdf",
+        worksheet_json=json.dumps(req.worksheet.model_dump(mode="json"), ensure_ascii=False),
+    )
+    if res is None:
+        raise HTTPException(status_code=403, detail="Bu sınıfın sahibi değilsin.")
+    logger.info("pdf ödev atandı: classroom=%s", classroom_id)
     return AssignmentCreatedResponse(**res)

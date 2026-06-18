@@ -10,6 +10,7 @@ Anti-kopya: cevaplar sunucuda; _to_public ile soyma; puanlama sunucuda (grade_qu
 """
 from __future__ import annotations
 
+import json
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -18,10 +19,12 @@ from app.models.enums import Difficulty
 from app.models.schemas import (
     AssignmentResultItem,
     AssignmentResultsResponse,
+    AssignmentWorksheetResponse,
     AttemptResult,
     Question,
     QuizPublic,
     SubmitAttemptRequest,
+    Worksheet,
 )
 from app.routers.quizzes import _to_public
 from app.security import require_api_key
@@ -118,6 +121,30 @@ def submit_assignment_attempt(
         results=results,
         completed_at=attempt["completed_at"],
     )
+
+
+@router.get("/{assignment_id}/worksheet", response_model=AssignmentWorksheetResponse)
+def get_assignment_worksheet(
+    assignment_id: str,
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> AssignmentWorksheetResponse:
+    """PDF ödevinin worksheet'ini getir — yalnız sınıf üyesi/sahibi. Öğrenci istemcide
+    PDF'e render eder (cevap anahtarı kapalı)."""
+    assignment = CLASSROOM_STORE.get_assignment(assignment_id)
+    if assignment is None:
+        raise HTTPException(status_code=404, detail="Ödev bulunamadı.")
+    if not CLASSROOM_STORE.is_member(assignment["classroom_id"], tenant_id):
+        raise HTTPException(status_code=403, detail="Bu ödeve erişimin yok.")
+    if assignment.get("assignment_type") != "pdf" or not assignment.get("worksheet_json"):
+        raise HTTPException(status_code=404, detail="Bu ödev bir PDF ödevi değil.")
+    try:
+        data = json.loads(assignment["worksheet_json"])
+        worksheet = Worksheet(**data)
+    except (json.JSONDecodeError, ValueError, TypeError) as exc:
+        logger.error("pdf ödev worksheet parse hatası: %s", exc)
+        raise HTTPException(status_code=500, detail="Ödev içeriği okunamadı.") from exc
+    return AssignmentWorksheetResponse(title=assignment["title"], worksheet=worksheet)
 
 
 @router.get("/{assignment_id}/results", response_model=AssignmentResultsResponse)

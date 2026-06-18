@@ -3,12 +3,23 @@
 import * as React from "react";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
-import { CheckCircle2, ChevronRight, Loader2, NotebookPen } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronRight,
+  Download,
+  Loader2,
+  NotebookPen,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { listMyAssignments } from "@/lib/api";
+import {
+  downloadBlob,
+  getAssignmentWorksheet,
+  listMyAssignments,
+  renderPdf,
+} from "@/lib/api";
 import type { MyAssignmentItem } from "@/lib/types";
 
 export function AssignmentsList() {
@@ -75,6 +86,15 @@ export function AssignmentsList() {
   return (
     <div className="space-y-3">
       {items.map((a) => {
+        if (a.assignment_type === "pdf") {
+          return (
+            <PdfAssignmentRow
+              key={a.assignment_id}
+              a={a}
+              tenantId={userId as string}
+            />
+          );
+        }
         const pct =
           a.solved && a.total ? Math.round(((a.score ?? 0) / a.total) * 100) : 0;
         return (
@@ -108,6 +128,64 @@ export function AssignmentsList() {
         );
       })}
     </div>
+  );
+}
+
+/** PDF ödev satırı — çözme yok; worksheet'i indir (öğrenci sürümü, cevapsız). */
+function PdfAssignmentRow({
+  a,
+  tenantId,
+}: {
+  a: MyAssignmentItem;
+  tenantId: string;
+}) {
+  const [downloading, setDownloading] = React.useState(false);
+
+  async function onDownload() {
+    setDownloading(true);
+    try {
+      const res = await getAssignmentWorksheet(a.assignment_id, tenantId);
+      const blob = await renderPdf(res.worksheet, {
+        include_answer_key: false,
+        include_solutions: false,
+      });
+      const safe = (res.title || "odev").replace(/[^\w.-]+/g, "_");
+      downloadBlob(blob, `${safe}.pdf`);
+    } catch (e: unknown) {
+      toast.error("PDF indirilemedi", {
+        description: e instanceof Error ? e.message : undefined,
+      });
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  return (
+    <Card className="flex items-center justify-between gap-3 p-4">
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-medium">{a.title}</p>
+        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+          <span>{a.classroom_name}</span>
+          <span className="rounded-full bg-rose-400/15 px-2 py-0.5 font-semibold text-rose-500">
+            PDF
+          </span>
+          {a.due_at ? <DueChip dueAt={a.due_at} /> : null}
+        </p>
+      </div>
+      <Button
+        onClick={onDownload}
+        disabled={downloading}
+        size="sm"
+        className="shrink-0 gap-1.5"
+      >
+        {downloading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Download className="h-4 w-4" />
+        )}
+        İndir
+      </Button>
+    </Card>
   );
 }
 
