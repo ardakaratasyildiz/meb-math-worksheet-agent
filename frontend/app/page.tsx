@@ -43,6 +43,7 @@ export default function LandingPage() {
       <SolveAndGrow />
       <ClassroomCta />
       <SystemSummary />
+      <BrowseByGrade />
       <HowItWorks />
       <UseCases />
       <Features />
@@ -470,6 +471,68 @@ function SystemSummary() {
             güvenebilirsin. Çıktı baskıya hazır: sorular, cevap anahtarı ve adım
             adım çözüm.
           </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── SINIFA GÖRE GÖZ AT — içerik ağacına iç link (SEO) ───────────────────────
+// Ana sayfa sitenin TEK güçlü indeksli/otoriteli sayfası; buradan sınıf hub'larına
+// crawlable link vererek otoritenin içerik ağacına (hub → konu → kazanım) akmasını
+// sağlıyoruz. Bu blok olmadan 300+ SEO sayfası yalnızca sitemap'ten keşfediliyordu
+// (otorite taşımaz) → "unknown to Google" / "crawled - not indexed".
+
+const GRADE_HUBS: { label: string; sub: string; href: string }[] = [
+  { label: "1. Sınıf", sub: "Matematik", href: "/1-sinif-matematik" },
+  { label: "2. Sınıf", sub: "Matematik", href: "/2-sinif-matematik" },
+  { label: "3. Sınıf", sub: "Matematik", href: "/3-sinif-matematik" },
+  { label: "4. Sınıf", sub: "Matematik", href: "/4-sinif-matematik" },
+  { label: "5. Sınıf", sub: "Matematik", href: "/5-sinif-matematik" },
+  { label: "6. Sınıf", sub: "Matematik", href: "/6-sinif-matematik" },
+  { label: "7. Sınıf", sub: "Matematik", href: "/7-sinif-matematik" },
+  { label: "8. Sınıf", sub: "LGS hazırlık", href: "/lgs-matematik" },
+];
+
+function BrowseByGrade() {
+  return (
+    <section className="py-20">
+      <div className="container">
+        <SectionHeader
+          eyebrow="Sınıfa göre göz at"
+          title="Sınıf ve konu bazlı çalışma kağıtları"
+          body="Sınıfını seç; o sınıfın MEB matematik konularına ve kazanımlarına uygun hazır çalışma kağıtlarına göz at."
+        />
+        <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {GRADE_HUBS.map((g) => (
+            <Link
+              key={g.href}
+              href={g.href}
+              className="group flex items-center justify-between gap-3 rounded-xl border bg-card p-5 shadow-pop transition-colors hover:border-primary/40"
+            >
+              <span className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+                  <GraduationCap className="h-5 w-5" />
+                </span>
+                <span>
+                  <span className="block font-display text-base font-bold text-foreground">
+                    {g.label}
+                  </span>
+                  <span className="block text-xs text-muted-foreground">
+                    {g.sub}
+                  </span>
+                </span>
+              </span>
+              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+            </Link>
+          ))}
+        </div>
+        <div className="mt-8 flex justify-center">
+          <Button asChild variant="outline" className="gap-2">
+            <Link href="/calismalar">
+              Tüm sınıf ve konular <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
