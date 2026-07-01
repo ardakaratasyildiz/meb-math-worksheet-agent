@@ -1,0 +1,1747 @@
+{
+  "review_queue": [
+    {
+      "source": "5.SINIF DOĞAL SAYILAR MEB ÇIKMIŞ SORULAR.pdf",
+      "question_no": 13,
+      "stem_preview": "Verilen şekil örüntüsü devam ettirildiğinde bu örüntünün 5. adımında kaç üçgen olur?",
+      "visual_type": "desen",
+      "skip_reason": "Görselde belirtilen 'şekil örüntüsü' bulunmamaktadır. Soru metni bir şekil örüntüsüne atıfta bulunsa da, görselde sadece metin tabanlı matematik soruları yer almaktadır."
+    },
+    {
+      "source": "5.SINIF DOĞAL SAYILAR MEB ÇIKMIŞ SORULAR.pdf",
+      "question_no": 14,
+      "stem_preview": "Verilen şekil örüntüsü devam ettirildiğinde bu örüntünün 13. adımında kaç tane maviye boyalı dörtgen olur?",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görselde soru kökünde bahsedilen 'şekil örüntüsü' bulunmamaktadır. Görsel, metin tabanlı matematik soruları içermektedir."
+    },
+    {
+      "source": "5.SINIF KESİRLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 24,
+      "stem_preview": "65 kg unun 2/5'si ile börek, kalanın 3/1'i ile pasta yapılmıştır. Buna göre pasta yapımında kullanılan un miktarı kaç ki",
+      "skip_reason": "Soru kökündeki 'kalanın 3/1'i' ifadesi matematiksel olarak anlamsızdır, muhtemelen bir yazım hatasıdır. Şıklara göre en makul cevap 30 kg olsa da, bu varsayıma dayanmaktadır."
+    },
+    {
+      "source": "5.SINIF YÜZDELER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 22,
+      "stem_preview": "Aşağıdaki şekillerden hangisinde, taralı alan bütünün %25'inden azdır?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, belirtilen soruya ait şekilleri içermemektedir."
+    },
+    {
+      "source": "5.SINIF YÜZDELER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 23,
+      "stem_preview": "Görseldeki 6 tane pembe, 15 tane sarı ve 4 tane mavi renkli iç içe geçebilen oyuncak parçalarının üzerine sırasıyla P, S",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen oyuncak parçaları ve oluşturulan yapıya ait görsel, verilen resimde bulunmamaktadır. Verilen resim, sorunun kendisiyle ilgili olmayan bir sınav sayfasının fotoğrafıdır."
+    },
+    {
+      "source": "5.SINIF TEMEL GEOMETRİK KAVRAMLAR VE ÇİZİMLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 6,
+      "stem_preview": "Kareli zemin üzerinde [AB], [CD], [EF], [KL], [MN], [PR] ve [GH] doğru parçaları verilmiştir. Buna göre, uzunlukları eşi",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen doğru parçalarını içeren görsel, verilen resimlerde bulunmamaktadır."
+    },
+    {
+      "source": "5.SINIF TEMEL GEOMETRİK KAVRAMLAR VE ÇİZİMLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 12,
+      "stem_preview": "Kareli kağıt üzerine çizilen açılardan hangisi geniş açıdır?",
+      "visual_type": "geometri",
+      "skip_reason": "Görseldeki açılardan hiçbiri matematiksel olarak geniş açı tanımına (90° < açı < 180°) uymamaktadır. AOB açısı 90° (dik açı), diğer açılar (AOC, KTM, KTL) ise 180° (doğru açı) olarak çizilmiştir. Bu durumda sorunun tek bir doğru cevabı olamaz."
+    },
+    {
+      "source": "5.SINIF TEMEL GEOMETRİK KAVRAMLAR VE ÇİZİMLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 21,
+      "stem_preview": "Görseldeki saatlerde akrep ile yelkovanın arasındaki açılar sırasıyla a, b, c ve d ile gösterilmiştir. Buna göre bu açıl",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen saat görselleri, sağlanan görselde bulunmamaktadır."
+    },
+    {
+      "source": "5.SINIF ÜÇGEN VE DÖRTGENLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 7,
+      "stem_preview": "Aşağıdaki dörtgenlerin hangisinde birbirine paralel olmayan karşılıklı kenarlar bulunur?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metninde doğrudan bir görsel bulunmamaktadır ve ekteki görseldeki sorular arasında bu soru yer almamaktadır."
+    },
+    {
+      "source": "5.SINIF ÜÇGEN VE DÖRTGENLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 11,
+      "stem_preview": "Kareli kağıt üzerinde K, L ve M harfleriyle gösterilmiş üçgenler verilmiştir. Buna göre K, L ve M üçgenlerinin açı özell",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen K, L ve M harfleriyle gösterilmiş üçgenler görselde bulunmamaktadır."
+    },
+    {
+      "source": "5.SINIF ÜÇGEN VE DÖRTGENLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 18,
+      "stem_preview": "Şekilde ABCD dörtgen ve m(B) = 62°, m(C) = 78° ve m(D) = 150° dir. Buna göre m(A) kaç derecedir?",
+      "visual_type": "geometri",
+      "skip_reason": "Sorunun kendisiyle birlikte bir görsel sağlanmamıştır. Sağlanan görseller başka sorulara aittir."
+    },
+    {
+      "source": "5.SINIF ÜÇGEN VE DÖRTGENLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 20,
+      "stem_preview": "Kareli kağıt üzerinde üçgenler verilmiştir. Buna göre aşağıdaki üçgen çeşitlerinden hangisi bu üçgenlerden biri olamaz?",
+      "visual_type": "geometri",
+      "skip_reason": "Görselde, verilen soru metnine ait üçgenler bulunmamaktadır. Görselde farklı sorular yer almaktadır."
+    },
+    {
+      "source": "5.SINIF ÜÇGEN VE DÖRTGENLER ÇIKMIŞ SORULAR.pdf",
+      "question_no": 27,
+      "stem_preview": "Şekilde adlandırılan noktalardan L, M, R ve T bir beşgenin köşelerinden dört tanesidir. Bu beşgenin beşinci köşesi aşağı",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan soru metni ile görsel arasında bir eşleşme bulunmamaktadır. Görselde L, M, R, T noktaları veya beşgenin beşinci köşesini bulma sorusu yer almamaktadır."
+    },
+    {
+      "source": "1-5.Sınıf Temel Geometrik Kavramlar ve İnşalar.pdf",
+      "question_no": 8,
+      "stem_preview": "Yukarıda verilen k doğrusuna K, L, M, N ve O noktalarından dikme çizilecektir. Buna göre aşağıdaki doğru parçalarından h",
+      "visual_type": "geometri",
+      "skip_reason": "Soru kökünde görsel bulunmamaktadır."
+    },
+    {
+      "source": "1-5.Sınıf Temel Geometrik Kavramlar ve İnşalar.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıdakilerden hangisi yukarıdaki açının gösterimlerinden birisi olamaz?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metninde bahsedilen 'yukarıdaki açı' görseli, sağlanan görselde bulunmamaktadır. Görselde farklı geometri şekilleri yer almaktadır."
+    },
+    {
+      "source": "1-5.Sınıf Temel Geometrik Kavramlar ve İnşalar.pdf",
+      "question_no": 10,
+      "stem_preview": "Yukarıda verilen kareli kağıtta d doğrusuna P noktasından [PA], [PB], [PC] ve [PD] doğru parçaları çizilecektir. Bu doğr",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen görsel (kareli kağıt, P noktası, d doğrusu ve A, B, C, D noktaları) verilen resimde bulunmamaktadır. Bu nedenle görsel yeniden üretilememiştir."
+    },
+    {
+      "source": "1-5.Sınıf Temel Geometrik Kavramlar ve İnşalar.pdf",
+      "question_no": 11,
+      "stem_preview": "Aşağıdakilerden hangisi O merkezli ve 3 cm yarıçaplı çemberdir?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metnine (Aşağıdakilerden hangisi O merkezli ve 3 cm yarıçaplı çemberdir?) ait bir görsel, sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "17-temel-geometrik-kavramlar-ve-cizimler.pdf",
+      "question_no": 9,
+      "stem_preview": "Kareli kağıtta verilen doğrulara göre aşağıdakilerden hangileri doğrudur?\nI. a // c\nII. b ⊥ c\nIII. d // f\nIV. a ⊥ d",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metnine ait görsel, sağlanan resimlerde bulunmamaktadır. Resimdeki sorular (1-8) ve görselleri, kullanıcının sorduğu 'a, b, c, d, f' doğrularını içeren sorudan farklıdır."
+    },
+    {
+      "source": "17-temel-geometrik-kavramlar-ve-cizimler.pdf",
+      "question_no": 10,
+      "stem_preview": "Yukarıdaki kareli zeminde verilen B noktasının A noktasına göre konumu aşağıdakilerden hangisidir?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metnine uygun A ve B noktalarını içeren kareli zemin görseli, sağlanan resimlerde bulunmamaktadır."
+    },
+    {
+      "source": "17-temel-geometrik-kavramlar-ve-cizimler.pdf",
+      "question_no": 11,
+      "stem_preview": "Işıl hangisinin 2 br yukarısının 5 br sağındadır?",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru köküne ait bir görsel bulunmamaktadır. Sağlanan görselde farklı geometri soruları yer almaktadır, ancak 'Işıl hangisinin 2 br yukarısının 5 br sağındadır?' sorusuyla doğrudan ilişkili bir şekil yoktur."
+    },
+    {
+      "source": "17-temel-geometrik-kavramlar-ve-cizimler.pdf",
+      "question_no": 12,
+      "stem_preview": "Yukarıda verilen doğru parçalarından hangi ikisi eşit uzunluktadır?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metni ('Yukarıda verilen doğru parçalarından hangi ikisi eşit uzunluktadır?') görselde bir başlık veya konu açıklaması olarak yer almaktadır, belirli bir soruya ait görsel bulunmamaktadır. Bu nedenle görsel dönüştürme yapılamamıştır."
+    },
+    {
+      "source": "17-temel-geometrik-kavramlar-ve-cizimler.pdf",
+      "question_no": 13,
+      "stem_preview": "Yukarıda verilen kareli kağıttaki [AB]'na eşit uzunlukta bir doğru parçası çizmek isteyen Barış C noktası ile hangi nokt",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel çok fazla nesne içerdiği için (20'den fazla) SVG olarak yeniden üretilemedi."
+    },
+    {
+      "source": "17-temel-geometrik-kavramlar-ve-cizimler.pdf",
+      "question_no": 14,
+      "stem_preview": "Yukarıda verilen doğru parçalarından hangi ikisi hem birbirine dik hem de eşit uzunluktadır?",
+      "visual_type": "geometri",
+      "skip_reason": "The visual corresponding to the user's specific question (multiple line segments to choose from, identifying two that are perpendicular and equal length) is not present in the provided image."
+    },
+    {
+      "source": "2-5.Sınıf Açı Ölçme Testi.pdf",
+      "question_no": 11,
+      "stem_preview": "Aşağıdaki tabloda A ve B açılarının tümler ve bütünler açılarının ölçüleri verilmiştir. Buna göre m - n kaç derecedir?",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen tablo görseli, sağlanan görselde bulunmamaktadır."
+    },
+    {
+      "source": "10-Kesirler Testi.pdf",
+      "question_no": 8,
+      "stem_preview": "A + 4/9 kesri bir bileşik kesir olduğuna göre A yerine aşağıdaki sayılardan hangisi yazılamaz?",
+      "skip_reason": "Soru kökünde ifade edilen 'A + 4/9 kesri bir bileşik kesir olduğuna göre A yerine aşağıdaki sayılardan hangisi yazılamaz?' ifadesi, A'nın bir tam sayı olduğu varsayımıyla bileşik kesir tanımına göre her zaman bileşik kesir oluşturur. Bu durumda şıklardaki tüm sayılar A yerine yazılabilir. Sorunun mantığı eksik veya hatalıdır."
+    },
+    {
+      "source": "10-Kesirler Testi.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıdaki karşılaştırmalardan hangisi yanlıştır?",
+      "skip_reason": "Tüm şıklar doğru ifade içermektedir, bu da sorunun hatalı olduğunu gösterir. 'Yanlıştır' ifadesine uyan bir şık bulunmamaktadır."
+    },
+    {
+      "source": "10-Kesirler Testi.pdf",
+      "question_no": 11,
+      "stem_preview": "Yukarıda verilen sıralamalardan hangileri doğrudur?",
+      "skip_reason": "Verilen sıralamaların çoğu hatalıdır ve şıklarda doğru bir kombinasyon bulunmamaktadır. Soru hatalıdır."
+    },
+    {
+      "source": "10-Kesirler Testi.pdf",
+      "question_no": 15,
+      "stem_preview": "Aşağıda verilen eşitliklerden hangisi yanlıştır?",
+      "skip_reason": "Soruda birden fazla yanlış şık bulunmaktadır (C ve D şıkları da yanlıştır), bu da sorunun hatalı olduğunu gösterir."
+    },
+    {
+      "source": "5. Sınıf - Denk Kesirler.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıdaki kesirlerden hangisi verilen kesre denktir?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, sorudaki 'verilen kesir'i içermemektedir. Sadece bir başlık sayfasıdır ve matematiksel bir görsel olarak dönüştürülemez."
+    },
+    {
+      "source": "5. Sınıf - Denk Kesirler.pdf",
+      "question_no": 2,
+      "stem_preview": "Yandaki kesri 3 ile genişletilerek elde edilen denk kesir aşağıdakilerden hangisidir?",
+      "visual_type": "desen",
+      "skip_reason": "Görselde soruda bahsedilen kesir bulunmamaktadır. Görsel, sorunun çözümü için gerekli matematiksel bir şekil veya grafik içermemektedir."
+    },
+    {
+      "source": "5. Sınıf - Denk Kesirler.pdf",
+      "question_no": 3,
+      "stem_preview": "4/6 = ▲/42 olduğuna göre ▲'in değeri nedir?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen görsel, matematiksel sorunun kendisiyle doğrudan ilgili bir matematiksel görsel değildir. Soru metinle tam olarak ifade edilebilir. Görsel, karmaşık bir logo, metin ve QR kodları içeren bir sayfa başlığıdır ve matematiksel bir şekil, grafik, tablo veya örüntü olarak sınıflandırılamaz."
+    },
+    {
+      "source": "5. Sınıf - Denk Kesirler.pdf",
+      "question_no": 4,
+      "stem_preview": "Modellerde gösterilen kesirlerin denk olabilmesi için Model-2'deki dilimlerden kaç tanesi boyanmalıdır?",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, soruda bahsedilen 'Model-1' ve 'Model-2' kesir modellerini içermemektedir. Görsel, bir ders materyalinin kapak sayfasıdır ve sorunun çözümü için gerekli matematiksel şekilleri barındırmamaktadır."
+    },
+    {
+      "source": "5. Sınıf - Denk Kesirler.pdf",
+      "question_no": 6,
+      "stem_preview": "Yukarıdaki kesirlerden kaç tanesi 15/10 kesrine denktir?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, soruda bahsedilen kesirleri içermemektedir. Yalnızca bir başlık sayfası veya tanıtım görselidir ve sorunun çözümü için gerekli matematiksel içeriği barındırmaz. Bu nedenle görselin dönüştürülmesi sorunun çözümüne katkı sağlamaz."
+    },
+    {
+      "source": "5. Sınıf - Denk Kesirler.pdf",
+      "question_no": 7,
+      "stem_preview": "Şeyma ve Mehmet Ali 'nin oluşturduğu denk kesirlerde ★ + ▲ 'in değeri nedir?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, sorudaki matematiksel problemi (denk kesirler ve semboller) içermemektedir. Sadece bir başlık/kapak sayfasıdır ve sorunun çözümü için gerekli bir görsel öğe değildir."
+    },
+    {
+      "source": "5. Sınıf - Denk Kesirler.pdf",
+      "question_no": 8,
+      "stem_preview": "4/6 = A-1/42 olduğuna göre ▲'in değeri nedir?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen matematiksel soruyla doğrudan ilgili bir geometri şekli, grafik, tablo veya örüntü içermemektedir. Soru metinle tam ifade edilebilir ve görselin matematiksel içeriğe katkısı yoktur. Görsel, bir ders materyalinin kapak sayfası niteliğindedir."
+    },
+    {
+      "source": "16-bir-coklugun-yuzdesini-bulma.pdf",
+      "question_no": 4,
+      "stem_preview": "Bir otomobilin deposundaki 40 litre benzinin %25'i harcanmıştır. Buna göre arabanın deposunda kaç litre benzin kalmıştır",
+      "visual_type": "geometri",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "13-ondalik-gosterim-testi.pdf",
+      "question_no": 8,
+      "stem_preview": "Yukarıda verilen ondalık gösterimde 6 rakamının basamak değeri kaçtır?",
+      "skip_reason": "Soru metni ve görseldeki sayı ile şıklar arasında tutarsızlık var. Görseldeki 27,364 sayısında 6 rakamının basamak değeri 0,06'dır, ancak bu şıklarda yok. Cevap anahtarı D dediği için 0,006 kabul edilmiştir, bu da 6'nın binde birler basamağında olması anlamına gelir ki bu görseldeki sayıyla çelişir."
+    },
+    {
+      "source": "13-ondalik-gosterim-testi.pdf",
+      "question_no": 11,
+      "stem_preview": "Aşağıdaki eşitliklerden hangisi yanlıştır?",
+      "skip_reason": "Soruda iki yanlış şık bulunmaktadır (A ve D). Cevap anahtarı A olarak belirtildiği için A şıkkı doğru kabul edilmiştir."
+    },
+    {
+      "source": "04193346_5.sYnYf_matematik_kazanYm_testi.pdf",
+      "question_no": 15,
+      "stem_preview": "Yukarıdaki kavanozların birinde 600 tane mavi bilye, diğerinde de 800 tane kırmızı bilye vardır. Barış, kavanozlardan ma",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni herhangi bir görsel içermemektedir. Sağlanan görsel (JPG dosyası) sorunun kendisiyle ilgili değildir."
+    },
+    {
+      "source": "04193346_5.sYnYf_matematik_kazanYm_testi.pdf",
+      "question_no": 16,
+      "stem_preview": "Eni 37 santimetre ve boyu 22 santimetre olan, dikdörtgen şeklindeki afişin çevre uzunluğu kaç santimetredir?",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, metinle tam ifade edilebilir ve soruda doğrudan bir görsel bulunmamaktadır."
+    },
+    {
+      "source": "04193346_5.sYnYf_matematik_kazanYm_testi.pdf",
+      "question_no": 24,
+      "stem_preview": "Yanda verilen dikdörtgenler prizmasının içinde 10 tane birim küp bulunmaktadır. Bu dikdörtgenler prizmasını, hiç boşluk ",
+      "visual_type": "geometri",
+      "skip_reason": "svg_gate: geçersiz svg: XML parse hatası: Attribute y1 redefined, line 1, column 2575 (<string>, line 1)"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıdaki ifadelerden hangisi yanlıştır?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, bir matematiksel görselden ziyade bir kitap sayfasının fotoğrafıdır. İçeriği metin ve karmaşık bir fotoğraf (Türk bayrağı ve Atatürk portresi) içermektedir, bu da onu belirtilen SVG veya Markdown formatlarına dönüştürmek için çok karmaşık ve uygunsuz kılmaktadır. Ayrıca, fotoğraf/gerçek nesne görüntüsü kategorisine girmektedir. Bu nedenle, görselin matematiksel bir görsel türüne (geometri, grafik, tablo, örüntü) atanması uygun değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Uzunluğu 4 birim olan doğru parçası hangi seçenekte doğru verilmiştir?",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, soruda bahsedilen matematiksel şekilleri (doğru parçaları) içermemektedir. Verilen görsel bir kitap sayfasıdır ve soruyla doğrudan ilgili bir matematiksel görsel bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Çizime göre aşağıdaki doğru parçalarından hangisi en uzundur?",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, soruda bahsedilen 'çizim' veya 'doğru parçaları' içermemektedir. Sağlanan görsel bir kitap kapağı/iç sayfasıdır ve soruyla ilişkili bir geometri çizimi bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 6,
+      "stem_preview": "Aşağıda verilen hangi dört noktanın sırasıyla birleştirilmesi ile oluşan kapalı şekil kare oluşturmaz?",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, sorudaki matematiksel görselle ilgili değil; bir kitap sayfası fotoğrafı ve çok karmaşık."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 9,
+      "stem_preview": "Yukarıda verilen çizimlerden kaç tanesinin okunuşu doğru verilmiştir?",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel, birden fazla alt sorunun çizimlerini içerdiği ve toplamda 20'den fazla nesne barındırdığı için çok karmaşıktır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıda sembollerle verilen çizimlerden hangi ikisinin kesişim noktası vardır?",
+      "visual_type": "geometri",
+      "skip_reason": "Soru kökünde doğrudan bir görsel bulunmamaktadır, sadece 'aşağıdaki çizimler'e atıf yapılmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Yukarıda bir futbolcunun attığı şut önce rakip takımın oyuncusuna, daha sonra kale üst çizgisinden dışarı doğru fırlamış",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen futbol topunun izlediği yolu gösteren görsel, verilen resimde bulunmamaktadır. Resimde farklı sorulara ait görseller yer almaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Yukarıda verilen orta dikme çizimi için aşağıdaki işlemlerden hangisi yapılamamıştır?\nA) KS doğru parçası çizilmiştir.\nB",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metninde bahsedilen 'orta dikme çizimi' görseli, verilen görselde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda verilen durumlardan hangisi yukarıda verilen her iki kutucuktaki doğruların ortak durumudur?",
+      "visual_type": "desen",
+      "skip_reason": "svg_gate: geçersiz svg: XML parse hatası: Attribute y1 redefined, line 1, column 2497 (<string>, line 1)"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Yukarıda A kutucuğunda gösterilen ABD ile DBC açıları eştir. Ayrıca m(ABC) = 150°dir. B kutucuğunda gösterilen TNS ile P",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen 'A kutucuğu' ve 'B kutucuğu'ndaki açılar (ABD, DBC, TNS, PNR) verilen görselde bulunmamaktadır. Görselde farklı bir matematik sorusu yer almaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 12,
+      "stem_preview": "Birim kareli kağıtlarda verilen doğru çiftlerinden hangisinin doğrultusu ile 4 tane dik açı elde edilir?",
+      "visual_type": "geometri",
+      "skip_reason": "svg_gate: geçersiz svg: XML parse hatası: Attribute y1 redefined, line 1, column 1949 (<string>, line 1)"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 14,
+      "stem_preview": "Yukarıda verilen XYZ açısı 140°'dir. TYX ile XYZ açıları komşu bütünler olduğuna göre TYX kaç derecedir?",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, soruyu çözmek için gerekli değildir ve metinle tam olarak ifade edilebilir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda gösterilen saatlerden hangisinde yarım saat sonra akrep ile yelkovan birbirine dik olur?",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni (saatler hakkında) ile sağlanan görsel (telefon şifreleri ve kelime bulmacası) birbiriyle uyuşmamaktadır. Görselde saat bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıda açıölçerle gösterilen açı ölçülerinden hangisi dik açıdır?",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, verilen soru metninde bahsedilen açıölçerle gösterilen açı ölçülerini içermemektedir. Görselde telefon kilit desenleri ve kelime arama bulmacası bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Yukarıda birim kareli kâğıtta bir yerleşim yerinin sokakları gösterilmiştir. Buna göre aşağıdaki bilgilerden hangisi doğ",
+      "visual_type": "grafik",
+      "skip_reason": "Sağlanan görsel, soru metninde bahsedilen 'birim kareli kâğıtta bir yerleşim yerinin sokakları' görseliyle uyuşmamaktadır. Görselde telefon şifre desenleri ve kelime avı bulmacası bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıdakilerden hangisi çokgen değildir?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru kökü ('Aşağıdakilerden hangisi çokgen değildir?') sağlanan görselde bulunmamaktadır ve bu soruya ait bir görsel mevcut değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıda geometri tahtasında renkli lastiklerle çokgenler oluşturulmuştur. Buna göre oluşturulan çokgenlerden hangisi ken",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen geometri tahtasındaki çokgenleri içeren görsel, sağlanan tam sayfa görselde bulunmamaktadır. Soru metni belirli bir görsel setine atıfta bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Merve aşağıda gösterilen dikdörtgen biçimindeki kâğıdın iki ucundan iki tane üçgensel parçayı kesip atıyor. Buna göre ka",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor ve metinde 'aşağıda gösterilen' ifadesi olmasına rağmen görsel sağlanmamıştır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda gösterilen çokgenlerin belirtilen doğrultularda kesimi yapılacaktır. Buna göre bu çokgenlerden kaç tanesinin kes",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metni ile doğrudan ilişkilendirilebilecek tekil bir görsel bulunmamaktadır. Soru, sayfadaki birden fazla görseli veya belirtilmeyen bir görsel setini ima etmektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "A merkezli çemberin yarıçapı uzunluğu, B merkezli çemberlerin yarıçap uzunluğundan daha büyüktür. ABC bir ..............",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, verilen soru metniyle eşleşmiyor. Soru metni için uygun bir görsel bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Buz kütlesinin yüksekliğini ölçmek isteyen bir grup araştırmacı bir araya gelerek buzun su üstünde kalan kısmının yüksek",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metinle tam ifade edilebilir, görsel bir öğe içermemektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Hale aşağıda gösterildiği gibi üç bölükten oluşan ve her bölükte üçer daire bulunan bir sistem oluşturuyor. Buna göre Ha",
+      "visual_type": "desen",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 11,
+      "stem_preview": "Yukarıda verilen bölüklerdeki rakamlar birer kez kullanılarak en büyük doğal sayı yazılacaktır.",
+      "visual_type": "tablo",
+      "skip_reason": "Verilen soru metnine ait görsel (bölüklerdeki rakamlar), sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "İş insanı olan Zarife Hanım'ın uçakla yaptığı iş ziyaretleri yukarıda metre cinsinden gösterilmiştir.\nBuna göre aşağıdak",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, metinle tam olarak ifade edilebilen bir liste şeklindedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Tolga sınav günlerinin olduğu tarihleri ikişerli olarak bölüklere yazıyor. Tolga'nın sınavları sadece hafta içi günlerde",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan görsel, verilen metin sorusuyla ilgili bir görsel içermemektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Mehmet, meşe ağacının, Sibel kayın ağacının, Hülya karaçam ağacının ve Murat kızılçam ağacının sayılarının çözümlemesini",
+      "visual_type": "tablo",
+      "skip_reason": "Verilen soru metni görsel içermemektedir. Sağlanan görsel, sorunun kendisiyle ilgili değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Yukarıda iki marketin yaptığı günlük kârlar gösterilmiştir. Buna göre iki günün sonunda bu marketlerin kârı için ne söyl",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan görsel, soruda bahsedilen 'iki marketin günlük kârları' tablosunu içermemektedir. Görselde sayılarla ilgili farklı matematik problemleri bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Suna Hanım evine aşağıda gösterilen oturma grubunu kampanyalı fiyattan alıyor. Aldığı oturma grubunun 19 990 TL'sini peş",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen 'oturma grubu' görseli, verilen resimde bulunmamaktadır. Verilen resimdeki görseller sorunun içeriğiyle alakasızdır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Hilmi aşağıdaki afişi gördükten sonra her gün 10.000 adım atmaya karar veriyor ve telefonundaki adımsayar programını açı",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen 'afiş' görseli, verilen resimde bulunmamaktadır. Soru, görsel olmadan metinle tam olarak ifade edilebilir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 6,
+      "stem_preview": "Yavuz aşağıda 1 kilogramlık fiyatları verilen kuru yemişlerden belli miktarlarda alıp karışık çerez yapacaktır. Fındık: ",
+      "visual_type": "tablo",
+      "skip_reason": "Verilen soru metinsel bir problemdir ve görsel bir temsile ihtiyaç duymamaktadır. Sağlanan görsel, sorunun kendisiyle ilgili değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Hilmi Bey İstanbul'dan hiç mola vermeden Gaziantep'e saatte 134 km hızla gidiyor. Buna göre Hilmi Bey kaç saatte İstanbu",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen 'Hilmi Bey' sorusu sağlanan görselde bulunmamaktadır. Bu nedenle sorunun görseli dönüştürülemedi."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Akif yukarıda fiyatları verilen ürünlerden birer tane alıp borcunun tamamını 5 taksite bölüyor. Buna göre Akif'in ödediğ",
+      "visual_type": "tablo",
+      "skip_reason": "Soru kökünde bahsedilen ürün fiyatlarını içeren görsel bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Safiye Hanım aşağıda gösterilen bidonlarda bulunan sütleri şişelere dolduracaktır. Safiye Hanım sütleri verilen şişelere",
+      "visual_type": "tablo",
+      "skip_reason": "Kullanıcının sorduğu soru metnine ait görsel, sağlanan resim içerisinde yer almamaktadır. Sağlanan resim, farklı matematik sorularını içeren bir test sayfasıdır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Alya, Berna, Ceyda ve Derya yukarıda gösterilen geometri tahtasından dört nokta seçip ellerindeki ipleri bu noktaların e",
+      "visual_type": "geometri",
+      "skip_reason": "svg_gate: kapanmamış/bozuk svg bloğu"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda verilen dikdörtgen şeklindeki bir kartondan kenar uzunluğu 5 cm olan iki tane kare kesilip atılıyor. Buna göre e",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen 'dikdörtgen şeklindeki bir karton'un boyutları görselde 9 cm x 5 cm olarak gösterilmektedir. Ancak, bu boyutlardaki bir kartondan kenar uzunluğu 5 cm olan iki adet kare kesilmesi geometrik olarak mümkün değildir. Bu nedenle, görsel ile soru metni arasında temel bir uyumsuzluk bulunmaktadır ve görselin soruyu temsil edecek şekilde dönüştürülmesi mümkün değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıda gösterilen dikdörtgen biçimindeki bir karton, okun gösterildiği yönlerde katlanıyor. Buna göre oluşan son şeklin",
+      "visual_type": "geometri",
+      "skip_reason": "The input image only shows the initial rectangle and its dimensions. The folding process and the resulting final shape, which are crucial for answering the question, are not depicted in the provided visual. Therefore, the complete visual as described in the question text cannot be reproduced."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıda birim kareli kâğıtta gösterilen ABCD dikdörtgenin alanı kaç birimkaredir?",
+      "visual_type": "geometri",
+      "skip_reason": "Kullanıcının sorduğu 'ABCD dikdörtgenin alanı' sorusuna ait spesifik bir görsel (ABCD etiketli dikdörtgen) verilen görselde bulunmamaktadır. Verilen görsel bir test sayfasının tamamıdır ve kullanıcının sorusuyla doğrudan eşleşen bir görsel içermemektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Yukarıda kısa ve uzun kenarları verilen ABCD dikdörtgeninin alanı kaç cm²'dir?",
+      "visual_type": "geometri",
+      "skip_reason": "Görselde, verilen soru metnine doğrudan karşılık gelen bir dikdörtgen görseli bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 6,
+      "stem_preview": "Yukarıda gösterilen KLMN dikdörtgeninin alanı 24 cm²'dir. Bu dikdörtgenin uzun kenarı 8 cm olduğuna göre kısa kenarı kaç",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metni görsel içermemektedir. 'Yukarıda gösterilen' ifadesine rağmen, soruya eşlik eden belirli bir görsel bulunmamaktadır ve soru metinle tam olarak ifade edilebilir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıdaki dikdörtgenlerden hangisi yukarıdaki dikdörtgenin alanına eşittir?",
+      "visual_type": "desen",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Mehmet elinde bulunan 10 metrelik 3 tane metal tel ile çeşitli dikdörtgenler yapıyor. Mehmet'in yaptığı dikdörtgenler aş",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmemektedir. Soru metni 'Mehmet'in yaptığı dikdörtgenler aşağıda gösterilmiştir' ifadesini içerirken, ekteki görselde 'Ahmet Bey'in aldığı halılar' başlığı altında farklı dikdörtgenler gösterilmektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 11,
+      "stem_preview": "Uzun kenarı 18 cm ve kısa kenarı 7 cm olan dikdörtgenin uzun ve kısa kenarı boyunca yukarıda gösterildiği gibi kesim yap",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen 'yukarıda gösterildiği gibi' ifadesine karşılık gelen görsel, sağlanan resim içerisinde bulunmamaktadır. Sağlanan resim, farklı problemlerin görsellerini içermektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 13,
+      "stem_preview": "Mehtap'ın bahçesinin çevresinin uzunluğu 160 metredir. Mehtap bahçesinin her 25 metrekarelik alanına bir üzüm fidesi dik",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metninin doğrudan bir görseli bulunmamaktadır. Soru, metinle tam olarak ifade edilebilir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 14,
+      "stem_preview": "Hülya en büyük ve en küçük alanlı dikdörtgenleri Semra ise geriye kalan dikdörtgenleri alıp birer kenarları çakışacak bi",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metninde doğrudan bir görsel bulunmamaktadır ve ekteki görsel (soru sayfası) Hülya ve Semra'nın bahsettiği dikdörtgen setini doğrudan temsil etmemektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Yukarıdaki sayı doğrusunda R noktasına karşılık gelen kesir aşağıdakilerden hangisidir?",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen sayı doğrusu ve R noktası görselde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 13,
+      "stem_preview": "Yukarıda verilen eşitliklerden kaç tanesi doğrudur?",
+      "skip_reason": "Cevap anahtarı B diyor, ancak 4 tanesi doğru. Cevap anahtarı ile çözüm uyuşmuyor."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 14,
+      "stem_preview": "Verilen ondalık gösterim ve kesir karşılığı olarak ve sembolü ile gösterilmiştir. oranındaki oradaki değerler hangisidir",
+      "skip_reason": "Soru metni ve görseldeki semboller eksik veya hatalı, şıklar ile tam olarak eşleşmiyor. Anlaşılması güç."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 15,
+      "stem_preview": "Halil 500 TL'lik bir alışverişin 400 TL'sini ödedi. Buna göre Halil alışverişin % kaçını ödedi?",
+      "skip_reason": "Cevap anahtarı B diyor, ancak çözüm %80 yani D şıkkı. Cevap anahtarı ile çözüm uyuşmuyor."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Aşağıdaki öğrencilerden hangisinin ondalık okuyuşu yukarıdaki sayılardan birine ait değildir?",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan soru metni için bir görsel bulunmamaktadır. Verilen görsel, soru metniyle ilişkili olmayan farklı matematik sorularını içermektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Yukarıda gösterilen A, B, C ve D şekillerinin boyalı bölgelerini ifade eden kesirler her bir şeklin altına yazılmıştır. ",
+      "skip_reason": "Cevap anahtarı C diyor, ancak C şıkkındaki kesir değeri doğru. Soruda veya cevap anahtarında hata var gibi görünüyor."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Yukarıda verilen algoritma doğru çalışmaktadır. Programdan çıkan ondalık sayı kaçtır?",
+      "skip_reason": "Algoritma adımları eksik ve belirsiz, doğru cevaba ulaşılamıyor."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Yukarıda verilen sıralamalarda ▲ ve ■ sembollerinin en küçük doğal sayı değerleri bulunuyor. Buna göre; ▲ + ■ = 15, ▲ = ",
+      "skip_reason": "Soru metni ve görseli ile cevap anahtarı arasında tutarsızlık var, özellikle ■ değeri için doğal sayı bulunamıyor."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 7,
+      "stem_preview": "Kesir karşılaştırmalarındaki noktalı yerlere sırasıyla <, > sembollerinden hangileri yazılmalıdır?",
+      "visual_type": "desen",
+      "skip_reason": "svg_gate: geçersiz svg: XML parse hatası: Attribute y1 redefined, line 1, column 1854 (<string>, line 1)"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 10,
+      "stem_preview": "Hamdi'nin yakaladığı balıkların kütleleri 9/6 < C < 9/2 sıralaması ile veriliyor. C yerine aşağıdakilerden hangisi geleb",
+      "skip_reason": "Soru kökü ve şıklar arasında tutarsızlık bulunmaktadır. Cevap anahtarı A şıkkını işaret etse de, 9/6 < C < 9/2 (1.5 < C < 4.5) aralığına A şıkkı (9/11 ≈ 0.81) girmemektedir. C şıkkı (11/4 = 2.75) bu aralığa girmektedir. Bu nedenle soru hatalıdır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 11,
+      "stem_preview": "5, 6, 7 ve 8 rakamlarını kullanarak yazılacak en büyük kesir aşağıdakilerden hangisidir?",
+      "skip_reason": "Soru kökünde 'en büyük kesir' ifadesi ile şıklardaki değerler ve cevap anahtarı arasında tutarsızlık bulunmaktadır. Verilen rakamlarla oluşturulabilecek en büyük kesir 8/5'tir (1.6), ancak cevap anahtarı B şıkkı olan 8/6'yı (yaklaşık 1.33) göstermektedir. Bu nedenle soru hatalıdır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 12,
+      "stem_preview": "Yukarıda verilen karşılaştırmalardan kaç tanesi doğrudur? %09 < %11, %50 < %27, %15 > %21, %14 > %4",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metinle tam ifade edilebilir, görselleştirme gerektirmez."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 13,
+      "stem_preview": "Bazı öğrencilerin boy uzunlukları aşağıdaki tabloda verilmiştir. Buna göre öğrenciler en uzun boydan en kısa boya göre s",
+      "skip_reason": "Soru kökünde 'en uzun boydan en kısa boya göre sıralandığında baştan üçüncüsü' ifadesi ile cevap anahtarı arasında tutarsızlık bulunmaktadır. Doğru sıralama Zümrüt (1.46), Filiz (1.34), Arzu (1.33), Hilal (1.28) olup, baştan üçüncü Arzu'dur. Ancak cevap anahtarı B şıkkı olan Zümrüt'ü göstermektedir. Bu nedenle soru hatalıdır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 15,
+      "stem_preview": "Aşağıdaki ondalık gösterimlerden hangisi 6,9'dan büyük, kesir kısmı iki basamaklı en küçük ondalık sayıdır?",
+      "skip_reason": "Soru kökünde '6,9'dan büyük, kesir kısmı iki basamaklı en küçük ondalık sayı' ifadesi ile cevap anahtarı arasında tutarsızlık bulunmaktadır. 6,9'dan büyük ve kesir kısmı iki basamaklı en küçük sayı 6,91'dir (C şıkkı). Ancak cevap anahtarı B şıkkı olan 6,95'i göstermektedir. Bu nedenle soru hatalıdır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Bilgi: Haneli Kuleleri, bir matematik oyunu ve bulmacadır. Üç direk ve farklı boyutlarda disklerden oluşur. Bulmaca bir ",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, verilen soru metniyle ilgili bir görsel içermemektedir. Soru metni, disklerin yukarıdan görünüşünü soran şıklara ait bir görsel beklemektedir, ancak bu görsel mevcut değildir. Sağlanan resim, sayfanın diğer sorularına ait görselleri içermektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 6,
+      "stem_preview": "Bir yarışmaya katılan 4 koşucunun yarışı bitirme süreleri aşağıda verilmiştir. Buna göre bu 4 koşucudan hangisi yarışman",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan görsel, soru metninde açıklanan '4 koşucunun yarışı bitirme süreleri' görselini içermemektedir. Görselde Asya, Buse, Ceren ve Derya'nın boy uzunlukları ile ilgili bir problem bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Buna göre Hakan hangi oyuncağı almıştır?",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan görsel, soruda belirtilen \"Hakan hangi oyuncağı almıştır?\" sorusuyla ilgili bir içerik taşımamaktadır. Görsel, matematik testindeki farklı soruları içermektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Buna göre bu koşu parkurunu en kısa sürede tamamlayan yarışmacı hangisidir?",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni ('koşu parkuru', 'yarışmacı') ile sağlanan görsel (matematik test sayfası) arasında bir eşleşme bulunmamaktadır. Soru metnine uygun bir görsel mevcut değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Buna göre Eda'nın sıralamasıyla hangi kelime elde edilir?",
+      "visual_type": "tablo",
+      "skip_reason": "Verilen soru metni ('Eda'nın sıralamasıyla hangi kelime elde edilir?') ile sağlanan görsel arasında doğrudan bir ilişki bulunmamaktadır. Görsel, genel matematik soruları içermekte olup, Eda'nın sıralaması veya kelime elde etme ile ilgili bir desen/örüntü içermemektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 6,
+      "stem_preview": "Sınıf başkanlığı için aday olan Asya, Adem, Yusuf ve Atalay'ın aldığı oylar sıklık tablosunda verilmiştir. Bu sıklık tab",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen Asya, Adem, Yusuf ve Atalay'ın oy dağılımını gösteren sıklık tablosu veya sütun grafiği verilen görselde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıdaki sütun grafiğinde okulun 5 – A, 5 – B, 5 – C, 5 – D şubelerindeki öğrenci sayıları gösterilmiştir. Verilen graf",
+      "visual_type": "grafik",
+      "skip_reason": "Görseldeki grafik, soru metninde belirtilen 'okulun 5 – A, 5 – B, 5 – C, 5 – D şubelerindeki öğrenci sayıları' grafiği ile uyuşmamaktadır. Görselde 'Sayfa Sayısı' ve 'Mine, Ayfer, Hülya, Narin' etiketli bir grafik bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıdaki tablo bir iş yerindeki çalışanların çalışma sürelerini göstermektedir. Buna göre hangi gün daha çok çalışılmış",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen 'çalışma sürelerini gösteren tablo' görseli, sağlanan resimde bulunmamaktadır. Resimde başka sorulara ait tablolar mevcuttur."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Üç arkadaşın sahip oldukları bilyelerin toplamı 48'dir. Bu arkadaşların bilyelerinin sayısı aşağıdaki çetele tablosunda ",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen 'çetele tablosu' görseli, verilen resimde bulunmamaktadır. Resimdeki görseller farklı sorulara aittir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Furkan 1. kutucuktaki boncukların tamamını 4. kutucuğa ve 2. kutucuktaki boncukların tamamını 3. kutucuğa aktarıyor. Fur",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görsel, soru metninde açıklanan görselle eşleşmiyor. Soru metni boncuk dağılımını gösteren bir daire grafiği isterken, verilen görselde fabrika üretimleri ve öğrenci dağılımlarını gösteren sütun grafikleri bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 6,
+      "stem_preview": "Yukarıda bir okulda bu yıl okuyan öğrenci sayıları verilmiştir. Bu okulda önümüzdeki yıl için 400 tane öğrenci 5. sınıfa",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metni okul öğrenci sayıları ve daire grafiği seçenekleri beklerken, görselde fabrika üretim miktarları ve derslere göre öğrenci dağılımı sütun grafikleri bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıda verilen terazi dengede olduğuna göre mavi kutucuğun değerinin bulunması için aşağıdakilerden hangisi yapılmalıd",
+      "visual_type": "geometri",
+      "skip_reason": "Görselde terazi veya mavi kutucuk bulunmamaktadır. Sağlanan görselde terazi yerine grafikler ve tablolar bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Yukarıda verilen terazi dengede olduğuna göre kırmızı üçgenin değeri nasıl ve kaç olarak bulunur?",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen terazi ve kırmızı üçgen görseli verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Bir konferans salonunun oturma düzeni aşağıda gösterildiği gibi 15 sıra ve her sırada 18 koltuk olacak biçimdedir. Tüm k",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metninde bahsedilen 'konferans salonunun oturma düzeni' görseli, ekteki resimde bulunmamaktadır. Ekteki resimde koridor ve kapılar ile içecek menüsü ve siparişleri gibi farklı sorulara ait görseller yer almaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Mira'nın mart ayında yaptığı etkinlikler aşağıdaki gibidir.\nTakvimde bir sayının karesi olan tarihlerde yüzme kursuna gi",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan görsel, soruda bahsedilen takvim görselini içermemektedir. Sağlanan görsel bir matematik test sayfasıdır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Melek, Erman, Nazlı ve Utku'nun çevirdiği çark oyununda aldıkları puanların bölgeleri aşağıda gösterilmiştir.\nBölgelerde",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen soru metninde açıklanan 'çark oyunu' görselini içermemektedir. Sağlanan görsel, farklı matematik soruları içeren bir ders kitabı sayfasıdır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıda verilen örüntülerde 1, 2 ve 3. örüntüde \"?\" yerine çizilecek toplam şekil sayısı kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Çok karmaşık (20+ nesne) şekil"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 9,
+      "stem_preview": "Yukarıda verilen örüntüde kuralı bozan sayı hangisidir?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metni ('Yukarıda verilen örüntüde kuralı bozan sayı hangisidir?') doğrudan görseldeki belirli bir soruya veya görsel bir örüntüye karşılık gelmemektedir. Görseldeki örüntü sorularının çoğu metin tabanlı sayı dizileridir ve SVG veya Markdown formatına dönüştürülmeleri gerekmez (metinle tam ifade edilebilirler)."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 13,
+      "stem_preview": "Yukarıda verilen şekil örüntüsünün 8. adımında kaç tane kare vardır?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru kökünde bahsedilen 'karelerden oluşan şekil örüntüsü' görselde bulunmamaktadır. Görselde altıgenlerden oluşan bir örüntü (5. soru) ve sayı örüntüleri mevcuttur."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 16,
+      "stem_preview": "Bir basketbolcunun maçlarda attığı basket sayıları aşağıdaki şekilde bir örüntü oluşturmuştur. Bu örüntüye göre basketbo",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen görsel (basketbolcunun attığı basket sayıları örüntüsü) metin içinde veya ekli resimde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Yukarıda bir otobüsün oturma planı verilmiştir. Bu otobüsün dolu olan koltukları kırmızı, boş olan koltukları yeşil renk",
+      "visual_type": "tablo",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Lale ile Kaan'ın her ay kumbaralarında biriktirdikleri para miktarları aşağıdaki gibidir. Lale ile Kaan 5. ayın sonunda ",
+      "visual_type": "tablo",
+      "skip_reason": "Verilen soru metnine ait görsel, sağlanan resimlerde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 6,
+      "stem_preview": "Aşağıda yuvarlak masa ve etrafında bulunan sandalyelerin dizilişi verilmiştir. Dizilişin ilk üç adımı yukarıda gösterilm",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor. Soru metni 'yuvarlak masa ve sandalyeler' dizilişinden bahsederken, sağlanan görselde küpler, otobüs koltukları ve üçgen-kare desenleri bulunmaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 18,
+      "stem_preview": "Yukarıda verilen akış diyagramına göre aşağıdaki sonuçlardan hangisi elde edilemez?",
+      "visual_type": "desen",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıda gösterilen öğrencilerin dördü kütlelerini ölçmeye çalışıyor. Ahmet'in kütlesi 48 kg ve Mehmet'in kütlesi 50 kg'd",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde görsel bulunmamaktadır. 'Aşağıda gösterilen' ifadesine rağmen, soru metniyle doğrudan ilişkili bir görsel sağlanmamıştır. Ek olarak verilen görsel (akış şemaları), bu soru metniyle ilgili değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "İzzet Usta aşağıdaki çivileri ağırlıklarına göre ders notları 1 kg 1. kalite A TL, 1 kg 2. kalite (A - 10) TL, 1 kg 3. k",
+      "visual_type": "tablo",
+      "skip_reason": "Verilen soru metninin kendisi bir görsel içermemektedir. Sağlanan görselde başka sorulara ait akış şemaları bulunmaktadır, ancak bu soru için bir görsel bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Eren yukarıda fiyatı verilen takım elbisenin fiyatının yarısının 400 TL eksiğini peşin ödüyor. Eren geriye kalan borcunu",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen takım elbise fiyatı görselde bulunmamaktadır. Görselde sadece akış şemaları yer almaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Halime anne aşağıda uzunlukları verilen iplerin belli bir kısmını kullanarak bir hırka işliyor. Buna göre Halime annenin",
+      "visual_type": "tablo",
+      "skip_reason": "Verilen soru metni ile sağlanan görsel arasında bir eşleşme bulunmamaktadır. Görselde 'Halime anne' veya 'ip uzunlukları' ile ilgili bir bilgi yer almamaktadır. Görsel, farklı matematik sorularına ait tablolar ve akış şemaları içermektedir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 2,
+      "stem_preview": "Akif Bey Aydın'dan Iğdır'a giderken önce yolun yarısının 150 km eksiğini daha sonra da kalan kısmın yarısını gidip mola ",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni bir görsel içermemektedir ve metinle tam ifade edilebilir. Sağlanan görsel, soru metniyle ilişkili değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda eşit uzunlukta iki boru gösterilmiştir. Bu iki borunun montajı yapıldığında (2 x A - 10) santimetrelik bir uzunl",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen metinle eşleşmiyor. Metinde bahsedilen boru görseli, sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Yukarıda verilen değerlere göre aşağıdaki işlemlerin sonuçlarını bulunuz. a + b + d = ... c + e + d = ... d - b - c = ..",
+      "visual_type": "tablo",
+      "skip_reason": "Kullanıcının sorduğu 'a, b, c, d, e' değişkenlerini içeren görsel (tablo), verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 7,
+      "stem_preview": "Yukarıda verilen örüntünün kuralını ve 5. adımındaki kare sayısını yazınız.",
+      "visual_type": "desen",
+      "skip_reason": "Görselde belirtilen 'örüntü' bulunmamaktadır. Verilen görselde su depoları, akış şemaları ve tablolar yer almaktadır, ancak bir şekil örüntüsü mevcut değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 7,
+      "stem_preview": "Yukarıda gösterilen dart tahtasına 1 atış yapılıyor. Buna göre hangi numaralı bölgeye isabet ettirilmesi imkânsız bir ol",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel metinde bahsedilmesine rağmen, sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıda gösterilen toplar; içinde 0, 21, 22, 23 ve 24 yazılı olan topların bulunduğu bir torbaya atılıyor. Bu torbadan ",
+      "visual_type": "desen",
+      "skip_reason": "Görsel soruda belirtilmesine rağmen, sağlanan resimde bulunmamaktadır ve metinle tam ifade edilebilir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 4,
+      "stem_preview": "Atılan bir ok olayında aşağıdaki yorumlardan hangisi yanlıştır?",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni ('Atılan bir ok olayında aşağıdaki yorumlardan hangisi yanlıştır?') ile sağlanan görsel arasında doğrudan bir eşleşme bulunmamaktadır. Görselde ok atma olayı ile ilgili bir şekil yer almamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Yukarıda A, B, C ve D kavanozları gösterilmektedir. Bu kavanozlarda bulunan boncuk sayıları her kavanozun altına yazılmı",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen A, B, C ve D kavanozları görseli, sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 5,
+      "stem_preview": "Yukarıda verilen kelimelerin sesli harfleri ayrı ayrı yazılarak torbalara atılıyor. Bu torbalardan rastgele bir harf çek",
+      "skip_reason": "Cevap anahtarı ile mantıksal çözüm çelişiyor."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 10,
+      "stem_preview": "Yukarıdaki çark bir kez döndürülüyor. Buna göre aşağıdaki olasılıklardan hangisi çok olasılıklıdır?",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen 'çark' görseli verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 12,
+      "stem_preview": "Yukarıdaki kavanozda bulunan mavi (M) ve kırmızı (K) top sayıları verilmiştir. Bu kavanoza aşağıdaki işlemlerden hangisi",
+      "visual_type": "desen",
+      "skip_reason": "Görselde veya soru metninde mavi (M) ve kırmızı (K) topların başlangıç sayıları belirtilmemiştir. Bu bilgi olmadan kavanozun görselini oluşturmak mümkün değildir."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 15,
+      "stem_preview": "Yukarıdaki torbada bulunan bilyelerin renklerine göre sayıları verilmiştir. Buna göre aşağıdaki işlemlerden hangisi yapı",
+      "skip_reason": "Soru kökü ve cevap anahtarı arasında çelişki var."
+    },
+    {
+      "source": "5-sinif-matematik-soru-bankasi.pdf",
+      "question_no": 6,
+      "stem_preview": "Başlangıçta boş olan 4. kavanoza 2. kavanozdaki topların tamamı ile 1. kavanozdaki kırmızı ve 3. kavanozdaki yeşil topla",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soruya ait kavanoz ve top görselleri, sağlanan görselde bulunmamaktadır. Sağlanan görselde başka olasılık sorularına ait görseller mevcuttur."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıda dokuz basamaklı bir doğal sayının gösterildiği dijital ekran verilmiştir. Bu ekranda her 5 dk.'da birler bölüğün",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen 'dokuz basamaklı bir doğal sayının gösterildiği dijital ekran' görseli, verilen resimde bulunmamaktadır. Sadece soru metni mevcuttur ve başlangıç sayısı görselde olması beklenirken eksiktir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Bir arının günlere göre yapmış olduğu altıgen hücreler aşağıda gösterildiği gibi bir örüntü oluşturmaktadır. Bu arı, pet",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen soru metniyle eşleşmiyor veya eksik. Kullanıcının sağladığı görselde arı peteği örüntüsü bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıda verilen belli sayıdaki kalemliklere bir öncekinden 3 adet fazla olacak şekilde kalem yerleştirilecektir. Kalem y",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan soru metni, verilen görselde karşılık gelen bir görsel öğeye sahip değildir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Jale'nin beğendiği giysilerin etiket fiyatı verilmiştir. Jale beğendiği tişört ile eteğin etiket fiyatını en yakın onluğ",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen Jale'nin beğendiği giysilerin etiket fiyatlarını gösteren görsel, sağlanan resimde bulunmamaktadır. Sağlanan resim, Jale'nin sorusuyla ilgili olmayan başka matematik problemlerini içermektedir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Dikdörtgenin alanı, kısa kenarının uzunluğu ile uzun kenarının uzunluğu çarpılarak bulunur. Aşağıda iki reklam panosuna ",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen 'iki reklam panosuna asılan afişlerin kenar uzunlukları' görseli, sağlanan görselde (matematik test sayfası) bulunmamaktadır. Bu nedenle görsel dönüştürme yapılamamıştır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıda verilen 2496 L sıvı sabunun yarısı 12 L'lik, diğer yarısı ise 16 L'lik bidonlara doldurulacaktır. Buna göre bu i",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda görsel bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Arda Bey, bu şekilde her gün eşit sayıda üretim yapıldığında 44 günde üretilecek olan toplam yumurta sayısını tahmin etm",
+      "visual_type": "desen",
+      "skip_reason": "Soru metninde doğrudan bir görsel bulunmamaktadır. 'Bu şekilde' ifadesi, metinde verilmeyen harici bir görsele atıfta bulunmaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Dikdörtgenin alanı, kısa kenarının uzunluğu ile uzun kenarının uzunluğu çarpılarak bulunur. Aşağıda İlhan amcanın soğan ",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metninde bahsedilen tarlanın ölçülerini gösteren görsel, sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Deniz'in boyu 147 cm olduğuna göre yapıyı oluştururken kullandığı kutulardan birinin yüksekliği kaç santimetredir?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metni, sağlanan görselde bulunmamaktadır. Bu nedenle görselleştirme yapılamamıştır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Pastanesinde dört çeşit pasta satan Ayşenur Hanım, 1 ve 2. günün sonunda kalan pasta miktarlarını aşağıdaki gibi not alm",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen görsel (pasta miktarları tablosu) verilen görselde bulunmamaktadır. Verilen görsel bir matematik testidir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Yunus Öğretmen, parkurda 6 metre çizgisi kırmızı renge boyamış ve ciridi bu çizgiyi geçen öğrencileri takıma seçmiştir. ",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen tablo görseli, verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Bir pastanedeki özdeş kaplarda bulunan meyve sularının pastanenin sabah açılışındaki görüntüsü Şekil 1'de, akşam kapanış",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen 'Şekil 1' ve 'Şekil 2' görselleri, verilen resimde bulunmamaktadır. Resim, farklı matematik sorularını içermektedir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Bu oyuna bilet alan seyircilerin 5/7'si öğrenci. Sadece öğrencilerin aldığı biletlerden elde edilen gelir 850 lira olduğ",
+      "visual_type": "tablo",
+      "skip_reason": "Görselde verilen soru metin tabanlıdır ve herhangi bir şekil, grafik veya tablo içermemektedir. Bu nedenle görselleştirme gereksizdir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıda Melek Hanım'ın satın aldığı elbise, çanta ve ayakkabının etiket fiyatları verilmiştir. Melek Hanım bu ürünler iç",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metninde bahsedilen görsel (elbise, çanta, ayakkabı etiket fiyatları) verilen resimde mevcut değildir. Resim, ondalık sayılarla ilgili farklı matematik problemleri içermektedir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıda üç farklı su şişesinin ücretleri verilmiştir. Her bir şişeden eşit sayıda alan biri toplam 51 TL ödemiştir. Buna",
+      "visual_type": "tablo",
+      "skip_reason": "Görselde belirtilen \"üç farklı su şişesinin ücretleri\" bilgisi bulunmamaktadır. Görsel, genel bir test sayfasını göstermektedir ve soruda bahsedilen spesifik görsel içeriği içermemektedir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Bir oyuncak araba santimetre ölçekli bir cetvel üzerine aşağıdaki gibi yerleştirilmiştir. Daha sonra aracın arka tamponu",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen görselde soru kökünde bahsedilen oyuncak araba ve cetvel bulunmamaktadır. Görsel, farklı matematik soruları içermektedir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıda Şekil 1'de 15 eş parçaya ayrılmış bir telefon bataryasının tam dolu hâli gösterilmiştir. Bu telefon 1 saat kulla",
+      "visual_type": "grafik",
+      "skip_reason": "Soruda bahsedilen Şekil 1 ve Şekil 2 görselleri, sağlanan görselde bulunmamaktadır. Sağlanan görsel, farklı sorular içeren bir test kağıdıdır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıda sadece gümüş ve altından oluşan üç farklı kolyenin içindeki gümüş oranı verilmiştir. Buna göre aşağıdaki gösteri",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metnine ait bir görsel bulunmamaktadır. Sağlanan görsel, farklı sorular içeren bir test kağıdıdır ve belirtilen soru bu kağıtta yer almamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Aşağıda bir sinema salonundaki eşit süreli üç farklı filmin aynı andaki tamamlanma oranları verilmiştir. Salon 1: 0,469,",
+      "visual_type": "tablo",
+      "skip_reason": "Metinle tam ifade edilebilir (görsele gerek yok)"
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "1 ve 2. depodaki suyun tamamı 3. depoya boşaltılıyor. Buna göre son durumda 3. deponun doluluk oranı yüzde kaç olur?",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen 1, 2 ve 3 numaralı depoların kapasitelerini ve mevcut doluluk oranlarını gösteren görsel, sağlanan resimlerde bulunmamaktadır. Bu nedenle görselleştirme yapılamamıştır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "İlanı favoriye ekleyenlerin %40'ı ilan için birer adet mesaj atmıştır. Buna göre kaç kişi ilanı görüntülemiş ancak ne fa",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan soru metnine karşılık gelen bir görsel, verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıda verilen birim kareli kâğıt üzerinde bir üçgen çizilmiştir. Buna göre ABC üçgeninin A köşesine göre konumu aşağıd",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metnine ait görsel, sağlanan resim içerisinde bulunmamaktadır. Resimde farklı sorulara ait görseller mevcuttur."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 10,
+      "stem_preview": "Bir masanın karşılıklı kenarlarında oturan Aslı ve Mete üst yüzeyi birim karelere ayrılmış olan masadaki taşlarla oynama",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen 'birim karelere ayrılmış masa' ve 'taşlar' görseli, verilen resimde bulunmamaktadır. Resimdeki sorular (1-7) bu soruyla ilgili değildir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 2,
+      "stem_preview": "Aşağıdaki birim kareli kâğıtlarda verilen doğru parçalarından hangileri eşit uzunlukta değildir?",
+      "visual_type": "geometri",
+      "skip_reason": "svg_gate: geçersiz svg: XML parse hatası: Attribute y1 redefined, line 1, column 4042 (<string>, line 1)"
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıdaki kareli zeminde d doğrusu ve dışındaki bir P noktası gösterilmiştir. P noktası ile M noktası birleştirildiğine ",
+      "visual_type": "geometri",
+      "skip_reason": "The provided question text does not match any of the questions in the given image."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıda birim karelere ayrılmış zemin üzerinde Türkiye haritası verilmiştir. Konumları karelerin köşe noktalarında veril",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen Türkiye haritası görseli mevcut değil."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıdaki kareli zeminde oynanan bir bayrak dikme oyununda verilen talimatlara göre A noktasından harekete başlayan robo",
+      "visual_type": "grafik",
+      "skip_reason": "Görselde, soruda bahsedilen kareli zemin ve robotun hareket talimatları bulunmamaktadır. Bu nedenle görselleştirme yapılamamıştır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıdaki birim kareli kağıtlarda verilen dörtgen ve isim eşleştirmelerinden hangisi yanlıştır?",
+      "visual_type": "geometri",
+      "skip_reason": "svg_gate: geçersiz svg: XML parse hatası: Attribute y1 redefined, line 1, column 3331 (<string>, line 1)"
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 9,
+      "stem_preview": "Aşağıda üçgen biçimindeki kayısı, elma ve kiraz bahçelerinin olduğu bir arazide bahçelerin kenarlarından geçen yollar gö",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel sağlanmadı. Soru metni bir görselden bahsetse de, bu soruya ait görsel kullanıcı tarafından iletilmemiştir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 3,
+      "stem_preview": "Verilen eşitlikte üçgen ve kare yerine yazılması gereken sayılar aşağıdakilerden hangisidir? (1 ay = 30 gün)",
+      "visual_type": "tablo",
+      "skip_reason": "Sağlanan soru metni (\"Verilen eşitlikte üçgen ve kare yerine yazılması gereken sayılar aşağıdakilerden hangisidir?\") ile verilen görseldeki içerik (uzunluk ölçü birimleri ve geometrik şekillerle ilgili problemler) birbiriyle eşleşmemektedir. Görselde, üçgen ve kare sembollerinin bir eşitlikte sayı yerine geçtiği bir durum bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıda dikdörtgen biçimindeki bir kartonun kenar uzunlukları verilmiştir. Buna göre bu kartonun bir yüzünün dikdörtgeni",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen 'dikdörtgen biçimindeki bir kartonun kenar uzunlukları' görseli, verilen resimde bulunmamaktadır. Resimdeki görseller farklı sorulara (randevu sistemi ve elektrikli bisiklet kiralama) aittir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıda verilen kareli zeminde bir dikdörtgen çizilmiştir. Buna göre çizilen bu dikdörtgenin alanı kaç santimetrekaredir",
+      "visual_type": "geometri",
+      "skip_reason": "Görselde, soru metninde bahsedilen kareli zemin üzerinde çizilmiş bir dikdörtgen bulunmamaktadır. Verilen görsel, farklı matematik sorularını içermektedir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 7,
+      "stem_preview": "Aşağıdaki birim kareli kâğıtta bir şekil verilmiştir. Buna göre bu şeklin birimkare cinsinden gerçek alanına en yakın ta",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen birim kareli kağıttaki şekil görselde bulunmamaktadır. Görsel, soru metniyle alakasız başka soruları içermektedir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 8,
+      "stem_preview": "Aşağıdaki kareli zeminde bir şekil verilmiştir. Buna göre bu şeklin santimetrekare cinsinden alanına en yakın tahmini ve",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen 'kareli zeminde bir şekil' görseli, sağlanan resimde bulunmamaktadır. Sağlanan resim, farklı soruları (9 ve 10) içermektedir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 1,
+      "stem_preview": "Ömer defterine alanı 24 cm² olan dikdörtgenler çizmiştir. Buna göre aşağıdakilerden hangisi bu dikdörtgenlerden biri ola",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel bulunmamaktadır, soru metinle tam ifade edilebilir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıda ABCD dikdörtgeninin ve KLMN karesinin kenar uzunlukları verilmiştir. Buna göre mavi boyalı bölgenin alanı kaç sa",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, soruda bahsedilen ABCD dikdörtgeni ve KLMN karesini içermemektedir. Görselde farklı sorulara ait şekiller bulunmaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda verilen dikdörtgen biçimindeki kartondan turuncu boyalı kısım kesilip atılıyor. Buna göre kartonun kalan kısmını",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan soru metni, verilen görseldeki hiçbir şekil veya durumu tanımlamamaktadır. Görselde turuncu boyalı bir kısım bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıdaki nesnelerden hangisi dikdörtgenler prizmasına model olabilir?",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen soru köküne ait seçenekleri veya şekli içermemektedir. Sağlanan görselde 8, 9 ve 10 numaralı soruların görselleri bulunmaktadır, ancak 'dikdörtgenler prizmasına model olabilecek nesneler' sorusunun görselleri eksiktir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 2,
+      "stem_preview": "Verilen dikdörtgenler prizmasında \"▲\", \"■\" ve \"●\" sembolleri ile belirtilen elemanların isimleri aşağıdakilerden hangisi",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, soruda bahsedilen dikdörtgenler prizması ve sembolleri içermemektedir. Görselde farklı matematik problemleri bulunmaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıda üç farklı dikdörtgenler prizması verilmiştir. Buna göre verilen prizmaların yüzey alanlarının büyükten küçüğe do",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel çok karmaşık (birden fazla nesne, detaylı çizimler ve dört farklı açınım seçeneği içeriyor) ve metinle ifade edilemez. Ayrıca, verilen soru metni ile görseldeki soru (10. soru) birbiriyle uyuşmamaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 7,
+      "stem_preview": "Aşağıda bir küp ve bir dikdörtgenler prizmasının ayrıt uzunlukları verilmiştir. Buna göre küpün yüzey alanı, dikdörtgenl",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metnindeki küp ve dikdörtgenler prizmasının ayrıt uzunluklarını gösteren görsel, sağlanan resimler arasında bulunmamaktadır. Sağlanan resimler farklı geometri sorularına aittir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıda dört arkadaşın kilogram cinsinden kütleleri verilmiştir. Bu dört arkadaşın kütleleri küçükten büyüğe olacak şeki",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni herhangi bir görsel içermemektedir. Sağlanan görsel (geometri problemleri içeren bir test kağıdı ekran görüntüsü) soru metniyle ilişkili değildir. Ayrıca, sağlanan görsel birden fazla karmaşık geometri şekli ve insan figürleri içerdiğinden, tek bir inline SVG olarak dönüştürülmesi 'çok karmaşık' veya 'fotoğraf/gerçek nesne görüntüsü' koşullarına uymaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 3,
+      "stem_preview": "Aşağıda Salih'in restoranda yediği yemeklerin fiyatları verilmiştir. Salih yemekler için 100 lira ödediğine göre para üs",
+      "visual_type": "tablo",
+      "skip_reason": "Görselde verilen soru metni ile görsel içeriği birbiriyle uyuşmamaktadır. Görselde matematiksel geometri problemleri bulunurken, soru metni yemek fiyatları ile ilgili bir tablo veya liste beklemektedir. İlgili görsel bilgisi eksiktir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 4,
+      "stem_preview": "Ayhan, bahçesinden topladığı çileklerin 2/9'sini komşularına, 1/3'ini ise arkadaşlarına dağıtmıştır. Ayhan'ın geriye aşa",
+      "visual_type": "grafik",
+      "skip_reason": "Verilen soru metni ile sağlanan görsel arasında bir ilişki bulunmamaktadır. Görsel, soru metnindeki 'çilek miktarı'nı temsil etmemektedir. Görselde iki adet geometri sorusu bulunmaktadır."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 5,
+      "stem_preview": "Aşağıdaki ABCD yamuğunda B ve D açılarının ölçüleri verilmiştir. Buna göre yamuğun A ve C açılarının ölçüleri toplamı ka",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen ABCD yamuğuna ait görsel, verilen resimde bulunmamaktadır. Resimdeki görseller farklı geometri problemlerine aittir."
+    },
+    {
+      "source": "5. Sınıf  1-40. Hafta Yaprak Testleri.pdf",
+      "question_no": 6,
+      "stem_preview": "Aşağıda bir ürünlerin etkililiğini katılan 5. sınıf öğrencilerin şubelere göre dağılımı sütun grafiği ile gösterilmiştir",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen 'sütun grafiği' görselde bulunmamaktadır. Görselde geometri soruları yer almaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 9,
+      "stem_preview": "624 sayısının en yakın yüzlüğe yuvarlarsak ★ olur. 57 sayısının en yakın onluğa yuvarlarsak ◆ olur. Buna göre ★ ÷ ◆ sonu",
+      "visual_type": "desen",
+      "skip_reason": "Görseldeki dekoratif öğe (Noel Baba illüstrasyonu) matematiksel içeriğe katkıda bulunmadığı ve metinle tam ifade edilebildiği için atlanmıştır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "5² + 4² + 3² toplamının sonucu kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Metinle tam ifade edilebilir (görsele gerek yok)"
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 5,
+      "stem_preview": "(23 – 14) x (15 + 13) işleminin sonucu kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Metinle tam ifade edilebilir (görsele gerek yok)"
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 11,
+      "stem_preview": "15 x (19 – 14) işleminin sonucu kaçtır?",
+      "skip_reason": "Soru kökünde belirtilen işlem ile şıklardaki değerler arasında tutarsızlık var. Görseldeki işlem 15 x (19-14) = 75 iken şıklar 4 basamaklı sayılar. Soru eksik veya hatalı."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 13,
+      "stem_preview": "1200 ÷ 100 = E\n250 ÷ 10 = F\nYukarıdaki işlemlere göre E x F nin sonucu kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Metinle tam ifade edilebilir (görsele gerek yok)"
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 14,
+      "stem_preview": "7 x (12 + 13) işleminin sonucu kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Metinle tam ifade edilebilir (görsele gerek yok)"
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "40 kg'lık bir torba şeker 500 gr'lık paketlere ayrılacaktır. Bu işlem sonunda kaç paket oluşur?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen soruyla ilgili değil ve soru metinle tam ifade edilebilir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 2,
+      "stem_preview": "187 tane gömlek 15'erli paketlere konacaktır. Buna göre kaç paket tam dolar?",
+      "visual_type": "desen",
+      "skip_reason": "Soruda görsel bir öğe bulunmamaktadır, sadece metinsel bir matematik problemi verilmiştir. Bu nedenle görsel dönüştürme işlemi uygulanamaz."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 6,
+      "stem_preview": "Toplamları 126 olan iki sayıdan biri diğerinden 14 fazladır. Buna göre küçük sayı kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan metin sorusuna karşılık gelen bir görsel bulunmamaktadır. Görselde farklı matematik sorularına ait görseller yer almaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 7,
+      "stem_preview": "Toplamları 140 olan iki sayıdan biri diğerinden 10 azdır. Buna göre küçük sayı kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metninde görsel bir öğe bulunmamaktadır ve ekteki görsel bu soruya ait değildir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıda verilen birim kesirlerden hangisi aşağıda verilen seçeneklerde yoktur?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metni ('Yukarıda verilen birim kesirlerden hangisi aşağıda verilen seçeneklerde yoktur?') için uygun bir görsel, sağlanan görsel içeriğinde bulunmamaktadır. Sağlanan görsel, farklı matematik sorularını içeren bir test sayfasıdır ve bu soruyla doğrudan ilişkili bir görsel içermemektedir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 2,
+      "stem_preview": "1/5 < a < 1/2 Aşağıdakilerden hangisi yukarıdaki sıralamaya uygun a değeri olabilir?",
+      "skip_reason": "Soru kökü ve şıklar arasında tutarsızlık var. 'a' bir tam sayı mı yoksa 1/a şeklinde bir kesir mi olduğu belirtilmemiş. Şıklardaki değerler tam sayı olarak verilmiş, ancak kesir sıralaması isteniyor. Eğer şıklar payda olarak düşünülürse, 1/4 doğru cevap olurken, cevap anahtarı C (6) olarak verilmiş, bu da 1/6'nın aralığa uymadığı anlamına gelir. Bu nedenle soru anlaşılamamıştır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıda verilen birim kesirlerden hangisi en büyüktür?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metni ('Aşağıda verilen birim kesirlerden hangisi en büyüktür?') için sağlanan görselde doğrudan ilgili bir görsel bulunmamaktadır. Soru, metinle tam olarak ifade edilebilir ve görsel bir temsile ihtiyaç duymaz."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 6,
+      "stem_preview": "Yukarıdaki sayı doğrusunda verilen K, L ve M noktalarının yazılımı hangi seçenekte doğru olarak verilmiştir?",
+      "visual_type": "grafik",
+      "skip_reason": "Görselde, soru metninde bahsedilen 'sayı doğrusu' bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 12,
+      "stem_preview": "1200 TL'yi 5 arkadaş paylaşacaklardır. Arkadaşlardan biri parasının olduğunu ve para istemediğini söylüyor. Buna göre ki",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, sorunun matematiksel içeriğini ifade etmiyor, sadece dekoratif bir ögedir. Soru metinle tam ifade edilebilir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıdaki sayı doğrusu ile verilen işlem aşağıdakilerden hangisidir?",
+      "visual_type": "grafik",
+      "skip_reason": "Soru metninde bahsedilen sayı doğrusu görselde bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 4,
+      "stem_preview": "Yukarıdaki zemini, 0,4 ondalıklı ifadesini gösterecek şekilde modellemek için, kaç tane alan boyamalıyız?",
+      "visual_type": "desen",
+      "skip_reason": "Soruda bahsedilen 'zemin' görseli, verilen resimde bulunmamaktadır. Bu nedenle görselleştirme yapılamamıştır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 5,
+      "stem_preview": "2 tam 2/10 kesrinin ondalıklı gösterimi aşağıdakilerden hangisidir?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soruya ait bir görsel bulunmamaktadır ve soru metinle tam ifade edilebilir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıda verilen kesrin yüzdelik olarak ifadesi nedir?",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görselde, soruda bahsedilen kesre ait bir görsel bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 4,
+      "stem_preview": "Aşağıda verilen şekillerden hangisinin %60'ı boyanmıştır?",
+      "visual_type": "desen",
+      "skip_reason": "İstenen soruya ait görsel, sağlanan kaynak görselde mevcut değildir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "800'ün %15'i kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soruya ait bir görsel bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 2,
+      "stem_preview": "600'ün %25'i ile %30'u toplamı kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metin tabanlıdır ve herhangi bir görsel içermemektedir. Sağlanan görsel, kullanıcının sorduğu soruya ait değildir, başka soruları içermektedir. Bu nedenle görsel dönüştürme işlemi yapılamamıştır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 3,
+      "stem_preview": "120 TL'lik ürün %20 kâr ile kaç TL'ye satılır?",
+      "visual_type": "desen",
+      "skip_reason": "Soru metinle tam ifade edilebilir, görsel bir bileşen içermemektedir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 4,
+      "stem_preview": "150 TL'ye satılan bir paltoya %30 indirim uygulanıyor. Son durumda palto kaç TL'ye satılır?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metni ('150 TL'ye satılan bir paltoya %30 indirim uygulanıyor...') ile sağlanan görsel arasında doğrudan bir eşleşme bulunmamaktadır. Görselde palto indirimi ile ilgili bir şekil veya grafik yer almamaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 5,
+      "stem_preview": "Pamuklu bir elbise yıkanınca %20'si kadar çekiyor. Boyu 160 cm olan elbise yıkanınca kaç cm olur?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metin tabanlıdır ve görsel bir bileşen içermemektedir. Sağlanan görselde bu soruya ait bir şekil bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 6,
+      "stem_preview": "800 kg yükü olan bir kamyonet yükünün %30'unu boşaltınca kaç kg yükü kalır?",
+      "visual_type": "desen",
+      "skip_reason": "Verilen soru metni ile görsel arasında bir ilişki bulunmamaktadır. Soru metni görsel bir öğe içermemektedir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "80 kg otun 7/20'sini yiyen bir inek kaç kg ot yemiş olur?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel içermeyen, tamamen metinle ifade edilebilen bir soru."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 2,
+      "stem_preview": "Yukarıdaki izometrik kağıtta verilen A, B, C, D, E noktalarından hangileri doğrusaldır?",
+      "visual_type": "geometri",
+      "skip_reason": "İstenen görsel (izometrik kağıtta A, B, C, D, E noktaları) sağlanan resimde bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 3,
+      "stem_preview": "Yukarıdaki kareli zeminde verilen şekle göre aşağıdakilerden hangisi doğrudur?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru kökünde bahsedilen kareli zemindeki şekil, sağlanan görselde bulunmamaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 4,
+      "stem_preview": "Yukarıdaki kareli zeminde verilen noktalarından hangilerinden geçen doğru AB'nu kesmez?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metni, sağlanan görselde bulunan sorularla eşleşmiyor. Kareli zemin ve AB doğrusu içeren bir görsel bulunamadı."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 2,
+      "stem_preview": "Yukarıdaki çokgenin üzerindeki noktalardan kaç tanesi köşedir?",
+      "visual_type": "geometri",
+      "skip_reason": "svg_gate: kapanmamış/bozuk svg bloğu"
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 4,
+      "stem_preview": "Yukarıdaki çokgen üzerinde verilen [GA], [AF], [AE], [AD] ve [DB] doğru parçalarından kaç tanesi köşegendir?",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metninde bahsedilen 'çokgen' (G, A, F, E, D, B köşelerine sahip) verilen görselde bulunmamaktadır. Görsel, soru metniyle eşleşmiyor."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 12,
+      "stem_preview": "Bir beşgenin köşe sayısı kenar sayısından kaç fazladır?",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, sorunun kendisi için gerekli olmayan, sadece şıkların sayısal değerlerini gösteren basit etiketlerden ibarettir. Metinle tam ifade edilebilir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "Aşağıda verilen üçgenlerden hangisi çeşitkenar üçgen değildir?",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görselde, soruda bahsedilen üçgenler bulunmamaktadır. Görselde dörtgenler, beşgenler ve altıgenler gibi farklı çokgenler yer almaktadır, bu nedenle sorudaki görsel öğeler (üçgenler) yeniden üretilememiştir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 2,
+      "stem_preview": "Aşağıda verilen üçgenlerden hangisi çeşitkenar üçgendir?",
+      "visual_type": "geometri",
+      "skip_reason": "Görselde soru kökünde bahsedilen üçgenler veya seçenekler bulunmamaktadır. Verilen görselde çokgenler ile ilgili farklı sorular yer almaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 4,
+      "stem_preview": "Yukarıda verilen ABC üçgeninde C açısı kaç derecedir?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru kökünde (ABC üçgeninde C açısı) bahsedilen görsel, sağlanan resimde bulunmamaktadır. Resim, farklı çokgen soruları içermektedir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 6,
+      "stem_preview": "Aşağıdaki üçgenlerden hangisi dik üçgendir?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen görselde soru kökünde bahsedilen üçgenler veya seçenekler bulunmamaktadır. Görsel, çokgenlerle ilgili farklı sorular içermektedir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 2,
+      "stem_preview": "Yukarıda verilen dörtgenlerden kaç tanesinin tüm iç açıları birbirine eşittir?",
+      "visual_type": "desen",
+      "skip_reason": "Soru metninde 'dörtgenler'den bahsedilmesine rağmen, verilen görselde herhangi bir dörtgen bulunmamaktadır. Görselde sadece üçgenler yer almaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 4,
+      "stem_preview": "ABCD paralelkenarında s(C) = 70° olduğuna göre s(B) kaç derecedir?",
+      "visual_type": "geometri",
+      "skip_reason": "Görselde ABCD paralelkenarı bulunmamaktadır. Verilen görselde üçgenler ve diğer sorulara ait şekiller yer almaktadır."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 5,
+      "stem_preview": "ABCD eşkenar dörtgeninde s(D) = 100° olduğuna göre s(B) kaç derecedir?",
+      "visual_type": "geometri",
+      "skip_reason": "Sorunun görseli verilen resimde bulunmamaktadır ve metinle tam ifade edilebilir."
+    },
+    {
+      "source": "5. Sınıf Matematik Yaprak Test_Ornek.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıda verilen eşkenar dörtgenin köşegenleri uzunlukları toplamı kaç br dir?",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen eşkenar dörtgenin görseli (köşegen uzunlukları ile birlikte) verilen resimde bulunmamaktadır. Resimdeki diğer sorulara ait görseller mevcuttur ancak bu soruya ait görsel eksiktir."
+    },
+    {
+      "source": "5.Sınıf Matematik 1.Dönem Genel Tekrar Testi.pdf",
+      "question_no": 13,
+      "stem_preview": "Aşağıda renkleri dışında özdeş üç çubuk orta noktaları kesişecek şekilde yerleştirilmiştir. d ve f çubukları birbirine d",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen görsel (üç çubuğun kesişimi ve açılar) verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "5.Sınıf Matematik 1.Dönem Genel Tekrar Testi.pdf",
+      "question_no": 15,
+      "stem_preview": "Aşağıda bir çokgen verilmiştir. Buna göre bu çokgenin bir köşesinden kaç adet köşegen çizilebilir?",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen çokgen görseli verilen resimde bulunmamaktadır."
+    },
+    {
+      "source": "5.Sınıf Matematik 1.Dönem Genel Tekrar Testi.pdf",
+      "question_no": 23,
+      "stem_preview": "Yukarıda verilen sayının okunuşu aşağıdakilerden hangisidir? 45 086 368 704",
+      "visual_type": "tablo",
+      "skip_reason": "Soru metin tabanlıdır ve görsel içermemektedir. Görsel dönüştürme işlemi uygulanamaz."
+    },
+    {
+      "source": "5.Sınıf Matematik 1.Dönem Genel Tekrar Testi.pdf",
+      "question_no": 24,
+      "stem_preview": "Yukarıda verilen sayının milyarlar basamağı ile on binler basamağındaki rakamların toplamı kaçtır? 368 924 048 702",
+      "visual_type": "tablo",
+      "skip_reason": "Görsel bulunmamaktadır, soru metinle tam ifade edilebilir."
+    },
+    {
+      "source": "5.Sınıf Matematik 1.Dönem Genel Tekrar Testi.pdf",
+      "question_no": 27,
+      "stem_preview": "Yukarıda verilen rakamlar birer kez kullanılarak milyonlar bölüğündeki rakamların toplamı 16 olan dokuz basamaklı bir sa",
+      "visual_type": "tablo",
+      "skip_reason": "Soru kökünde bahsedilen 'verilen rakamlar' görselde bulunmamaktadır. Bu nedenle görselleştirme yapılamamıştır."
+    },
+    {
+      "source": "5.Sınıf Matematik Kasım Ayı Ara Tatil Ödev Fasikülü.pdf",
+      "question_no": 15,
+      "stem_preview": "Aşağıdakilerden hangisinin sembolle gösterimi yanlıştır?",
+      "visual_type": "geometri",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "5.Sınıf Matematik Kasım Ayı Ara Tatil Ödev Fasikülü.pdf",
+      "question_no": 20,
+      "stem_preview": "Yukarıdaki birim kareli zeminde verilen [MN] doğru parçası ile çizilecek olan [TP] doğru parçası birbirine paralel olaca",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan soru metni ('Yukarıdaki birim kareli zeminde verilen [MN] doğru parçası ile çizilecek olan [TP] doğru parçası birbirine paralel olacaklarına göre P noktası aşağıdaki noktalardan hangisi olabilir?') verilen görseldeki hiçbir şekle karşılık gelmemektedir. Bu nedenle, sorunun görseli dönüştürülemedi."
+    },
+    {
+      "source": "5.Sınıf Matematik Kasım Ayı Ara Tatil Ödev Fasikülü.pdf",
+      "question_no": 21,
+      "stem_preview": "Yukarıda verilen açılardan hangileri komşu açı değildir?",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda belirtilen 'Yukarıda verilen açılardan hangileri komşu açı değildir?' ifadesine karşılık gelen görsel, sağlanan resimler arasında bulunmamaktadır. Sağlanan resimlerdeki soruların hiçbiri komşu açılarla ilgili bir görsel içermemektedir."
+    },
+    {
+      "source": "5.Sınıf Matematik Kasım Ayı Ara Tatil Ödev Fasikülü.pdf",
+      "question_no": 24,
+      "stem_preview": "Kareli kağıtta verilen A, B, C, D noktalarından hangigi üçünün köşe olduğu üçgen dar açılı üçgendir?",
+      "visual_type": "geometri",
+      "skip_reason": "Görsel, verilen soru köküyle eşleşmiyor. Soru kökünde bahsedilen A, B, C, D noktalarını içeren kareli kağıt görseli mevcut değil."
+    },
+    {
+      "source": "5.Sınıf Matematik Kasım Ayı Ara Tatil Ödev Fasikülü.pdf",
+      "question_no": 25,
+      "stem_preview": "M noktasından geçen yukarıdaki doğru dışında kaç farklı doğru daha çizilebilir?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen soru metni için özel bir görsel bulunmamaktadır ve sorunun kendisi metinle tam olarak ifade edilebilir."
+    },
+    {
+      "source": "5.Sınıf Matematik Kasım Ayı Ara Tatil Ödev Fasikülü.pdf",
+      "question_no": 33,
+      "stem_preview": "Yukarıdaki şekilde üç doğru \"O\" noktasında kesişmektedir. Buna göre aşağıdaki açılardan hangisi geniş açıdır?",
+      "visual_type": "geometri",
+      "skip_reason": "svg_gate: geçersiz svg: XML parse hatası: Attribute y1 redefined, line 1, column 2500 (<string>, line 1)"
+    },
+    {
+      "source": "5.Sınıf Matematik Kasım Ayı Ara Tatil Ödev Fasikülü.pdf",
+      "question_no": 35,
+      "stem_preview": "Yukarıdaki şekilde verilen T noktasından [EF]'ye dik olacak şekilde çizilecek olan [TK]’nin uzunluğu kaç birim olur? (K ",
+      "visual_type": "geometri",
+      "skip_reason": "Soru metninde bahsedilen görsel (T noktası ve EF doğru parçası içeren) sağlanmamıştır. Bu nedenle görselin inline formata çevrilmesi mümkün değildir."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 5,
+      "stem_preview": "Akkuş ve Güzel yolcu otobüsü firmalarının bilet fiyatları ve yolcu kapasiteleri aşağıdaki tabloda verilmiştir. Otobüsler",
+      "visual_type": "tablo",
+      "skip_reason": "Soruda bahsedilen tablo görseli eksik. Verilen görseldeki tablo, sorudaki firmalarla ilgili değildir."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 9,
+      "stem_preview": "Yukarıdaki toplama işleminin sonucu tahmin edilirken sayılar en yakın yüzlüğe yuvarlanacaktır. Buna göre gerçek sonuç il",
+      "visual_type": "grafik",
+      "skip_reason": "Soru kökünde bahsedilen 'toplama işlemi' görselde bulunmamaktadır."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 10,
+      "stem_preview": "Kaman/Çatal Höyük kazı alanını gezmek için gelen turist sayıları aşağıda verilmiştir. Buna göre bu beş yılda gelen topla",
+      "visual_type": "tablo",
+      "skip_reason": "Görselde, soruda bahsedilen 'Kaman/Çatal Höyük kazı alanını gezmek için gelen turist sayıları' tablosu bulunmamaktadır. Görselde farklı bir tablo (Bilet Türüne Göre Fiyat ve Bagaj Hakkı Bilgileri) yer almaktadır."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 1,
+      "stem_preview": "Yukarıdaki paraların toplam tutarı kaç liradır?",
+      "visual_type": "desen",
+      "skip_reason": "Sağlanan görselde soru kökünde bahsedilen 'paralar' bulunmamaktadır. Görselde matematik problemleri ve sayı doğruları yer almaktadır."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 5,
+      "stem_preview": "M kabındaki suyun tamamı L kabına boşaltıldığında K kabının yüzde kaçı dolmuş olur?",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen K, L, M kaplarına ait görsel, sağlanan resimlerde bulunmamaktadır."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 7,
+      "stem_preview": "Etiket Fiyatı: 21,35 TL, İndirimli Fiyatı: 16,65 TL olan çikolatada yapılan indirim kaç liradır?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, sorunun çözümüne katkı sağlamayan bir fotoğraf/gerçek nesne görüntüsüdür ve metinle tam ifade edilebilir."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 1,
+      "stem_preview": "Arkadaşıyla buluşmak isteyen Yaman, telefonundaki navigasyon uygulamasını kullanarak arkadaşının aşağıda birim kareli ek",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel, verilen resimlerde bulunmamaktadır."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 2,
+      "stem_preview": "Yukarıdaki birim kareli zeminde verilen açılardan kaç tanesi geniş açıdır?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen resimde bulunmamaktadır. Soru metni birim kareli zeminde açılar içeren bir görselden bahsetmektedir, ancak sağlanan resimde böyle bir görsel mevcut değildir."
+    },
+    {
+      "source": "Günay Yayınları 5. Sınıf Matematik Nisan Ara Tatil Tarama Testi.pdf",
+      "question_no": 3,
+      "stem_preview": "Verilen şekilde birbirine paralel olan doğru parçalarının uzunlukları toplamı kaç birimdir?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel bir fotoğraf/gerçek nesne görüntüsüdür ve metinle tam olarak ifade edilebilir."
+    },
+    {
+      "source": "Isparta_ÖDM_5._SINIF_MAT.pdf",
+      "question_no": 8,
+      "stem_preview": "Kibrit çöpleri ile oluşturulan örüntünün ilk 3 adımı verilmiştir. Buna göre örüntünün 8. adımdaki çöp sayısı kaçtır?",
+      "visual_type": "desen",
+      "skip_reason": "Görsel, verilen metin sorusuna ait değildir ve sağlanan kaynak görselde bulunmamaktadır."
+    },
+    {
+      "source": "Isparta_ÖDM_5._SINIF_MAT.pdf",
+      "question_no": 9,
+      "stem_preview": "Yukarıda verilen doğru parçalarından hangileri birbirine paraleldir?",
+      "visual_type": "geometri",
+      "skip_reason": "İstenen soru metni ('Yukarıda verilen doğru parçalarından hangileri birbirine paraleldir?') ve bu soruya ait görsel, sağlanan kaynak görselde yer almamaktadır. Kaynak görselde 1, 2, 3, 4 ve 5 numaralı sorular bulunmaktadır ve hiçbiri istenen soruyla eşleşmemektedir."
+    },
+    {
+      "source": "Isparta_ÖDM_5._SINIF_MAT.pdf",
+      "question_no": 10,
+      "stem_preview": "Yukarıda kareli kağıtta verilen [KL] doğru parçasına eşit uzunlukta kaç tane doğru parçası çizilebilir?",
+      "visual_type": "geometri",
+      "skip_reason": "Görselde belirtilen [KL] doğru parçası bulunmamaktadır. Görsel, A, B, C, D, E noktalarını içeren bir kareli kağıt göstermektedir."
+    },
+    {
+      "source": "sınav4.pdf",
+      "question_no": 7,
+      "stem_preview": "Grafikteki eksenlerden soru sayısı eşit aralıklı olarak ölçeklendirilmemiştir. Dikey eksendeki sayılar (örneğin 10, 20, ",
+      "visual_type": "grafik",
+      "skip_reason": "Görsel metin içeriklidir ve metinle tam olarak ifade edilebilir, özel bir görsel formata dönüştürme gerektirmez. Kullanıcının sorusundaki 'Grafikteki eksenlerden...' ifadesine rağmen, sağlanan görsel bir grafik içermemektedir."
+    }
+  ]
+}
