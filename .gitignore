@@ -20,6 +20,7 @@ ENV/
 # (image içine girer; Render free tier kalıcı disk yok). 7000+ chunk, ~136 MB.
 # Yeniden ingest sonrası `git add knowledge_base/chroma_db/` ile güncellenir.
 knowledge_base/*.pdf
+knowledge_base/**/*.pdf
 knowledge_base/history.sqlite3
 knowledge_base/eval/ab_*.json
 knowledge_base/eval/ab_*.md

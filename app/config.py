@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-2.5-flash"
     gemini_fallback_models: str = "gemini-2.5-flash-lite,gemini-2.5-pro"
     gemini_embedding_model: str = "gemini-embedding-001"
+    # Embedding boyutu: 3072 (varsayılan) yerine 768 → ChromaDB dosyaları GitHub
+    # 100MB limitinin altında kalır (LFS gerekmez). Cosine retrieval kalitesi ~korunur.
+    # DİKKAT: ingest ve query aynı boyutu kullanmalı (ikisi de GeminiEmbedder).
+    embedding_dimensions: int = 768
 
     # Multi-provider fallback: Gemini ailesi tükenince Anthropic'e geç.
     enable_anthropic_fallback: bool = False

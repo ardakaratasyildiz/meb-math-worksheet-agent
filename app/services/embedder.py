@@ -1,11 +1,13 @@
 """Gemini embedding wrapper (gemini-embedding-001, 3072 boyut)."""
 import logging
+import math
 import random
 import time
 from typing import Iterable
 
 from google import genai
 from google.genai import errors as genai_errors
+from google.genai import types
 
 from app.config import settings
 
@@ -29,6 +31,14 @@ class GeminiEmbedder:
             raise EmbedderError("GEMINI_API_KEY ayarı boş.")
         self.client = genai.Client(api_key=key)
         self.model = model or settings.gemini_embedding_model
+        self.dimensions = settings.embedding_dimensions
+
+    @staticmethod
+    def _normalize(vec: list[float]) -> list[float]:
+        norm = math.sqrt(sum(v * v for v in vec))
+        if norm == 0:
+            return vec
+        return [v / norm for v in vec]
 
     def embed_one(self, text: str) -> list[float]:
         return self.embed_many([text])[0]
@@ -62,8 +72,10 @@ class GeminiEmbedder:
                 r = self.client.models.embed_content(
                     model=self.model,
                     contents=chunk,
+                    config=types.EmbedContentConfig(output_dimensionality=self.dimensions),
                 )
-                return [e.values for e in r.embeddings]
+                # 3072 dışı boyutlarda Gemini normalize garantisi vermez → cosine için normalize et
+                return [self._normalize(e.values) for e in r.embeddings]
             except genai_errors.ServerError as exc:
                 last_exc = exc
                 status = getattr(exc, "code", None)
