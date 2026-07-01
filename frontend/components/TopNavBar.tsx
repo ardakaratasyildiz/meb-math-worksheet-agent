@@ -22,6 +22,10 @@ const NAV_LINKS = [
   { href: "/practice", label: "Çöz & Geliş" },
   // Öğretmen/veli kapısı — aynı sayfaya gider ama öğretmen yüzünü açar (?role=teacher).
   { href: "/practice?role=teacher", label: "Sınıfım" },
+  // Sınıf/konu SEO ağacının site-geneli girişi. Bu link olmadan /calismalar ve
+  // altındaki 300+ landing sayfası hiçbir otoriteli sayfadan linklenmiyordu (orphan
+  // ada) → Google ya hiç taramıyor ya "crawled - not indexed" bırakıyordu.
+  { href: "/calismalar", label: "Konular" },
   { href: "/features", label: "Özellikler" },
   { href: "/pricing", label: "Fiyatlandırma" },
   { href: "/faq", label: "Sıkça Sorulanlar" },
