@@ -1,0 +1,39 @@
+{
+  "review_queue": [
+    {
+      "source": "6.SINIF KESİR PROBLEMLERİ MEB ÇIKMIŞ SORULAR.pdf",
+      "question_no": 26,
+      "stem_preview": "Aşağıdaki ördek heykelinin baş, boyun, gövde ve bacak kısımlarının uzunlukları verilmiştir. Buna göre, ördeğin boyu kaç ",
+      "visual_type": "geometri",
+      "skip_reason": "Soruda bahsedilen ördek heykeli görseli, sağlanan resimler arasında bulunmamaktadır."
+    },
+    {
+      "source": "6. Sınıf  -  Doğrularda Açılar.pdf",
+      "question_no": 1,
+      "stem_preview": "Şekilde birbirine paralel olan m ve n doğrularını k doğrusu kesmektedir. Buna göre aşağıdakilerden hangisi yanlıştır?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen görsel, soruda bahsedilen paralel doğrular ve kesen doğru diyagramını içermemektedir. Görsel bir ders başlığı sayfasıdır, soruya ait bir geometri şekli değildir."
+    },
+    {
+      "source": "6. Sınıf  -  Doğrularda Açılar.pdf",
+      "question_no": 2,
+      "stem_preview": "Şekilde [AB] // [CD] ve m(BEF) = 52° dir. Buna göre m(CFE) kaç derecedir?",
+      "visual_type": "geometri",
+      "skip_reason": "Sağlanan görsel, soruda bahsedilen geometrik şekil değildir. Bu görsel bir kapak sayfasıdır ve matematiksel bir geometri şekli olarak dönüştürülemez."
+    },
+    {
+      "source": "6. Sınıf  -  Doğrularda Açılar.pdf",
+      "question_no": 1,
+      "stem_preview": "Muzaffer elindeki A4 kağıdını m(BÂD)=24° olacak şekilde görseldeki gibi katladığında DEC'nin ölçüsü kaç derece olur?",
+      "visual_type": "geometri",
+      "skip_reason": "SVG çağrısı başarısız"
+    },
+    {
+      "source": "6. Sınıf -  Dörtgenlerde Açılar.pdf",
+      "question_no": 1,
+      "stem_preview": "Şekilde verilen ABCD dörtgeninde m(ADC) kaç derecedir?",
+      "visual_type": "geometri",
+      "skip_reason": "Verilen görsel, soruda bahsedilen ABCD dörtgenini içermemektedir. Görsel, bir ders materyalinin kapak sayfasıdır ve sorunun çözümü için gerekli olan geometrik şekli barındırmamaktadır. Bu nedenle görsel dönüştürülemedi."
+    }
+  ]
+}

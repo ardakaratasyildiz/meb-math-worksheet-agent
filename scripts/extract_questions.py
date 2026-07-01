@@ -591,6 +591,17 @@ def run(
     existing_examples: list[dict] = []
     if output_path.exists():
         existing_examples = json.loads(output_path.read_text(encoding="utf-8")).get("examples", [])
+
+    # Resume optimizasyonu: kayıt PDF-başına atomik → çıktıda kaynağı olan PDF TAM bitmiştir.
+    # Bu PDF'leri tekrar vision'lama (para tasarrufu). Yarıda kesilen PDF 0 örnek kaydettiği
+    # için çıktıda olmaz → yeniden işlenir.
+    completed_sources = {e.get("source", "").split("/")[-1] for e in existing_examples}
+    if completed_sources:
+        before = len(entries)
+        entries = [e for e in entries if e["file"] not in completed_sources]
+        skipped = before - len(entries)
+        if skipped:
+            logger.info("Resume: %d tamamlanmış PDF atlanıyor (tekrar vision yok)", skipped)
     existing_review: list[dict] = []
     if review_path.exists():
         existing_review = json.loads(review_path.read_text(encoding="utf-8")).get("review_queue", [])
