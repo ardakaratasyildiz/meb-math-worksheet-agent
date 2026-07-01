@@ -43,6 +43,8 @@ KEY_EVENTS = [
     "pdf_download",
     "download_signup_gate",
     "question_regenerate",
+    # Fiyatlandırma talep sinyali (billing kurulmadan önce hangi plana ilgi var)
+    "pricing_plan_interest",
     # Paylaşım (viral) funnel'ı
     "quiz_share_create",
     "quiz_share_open",
