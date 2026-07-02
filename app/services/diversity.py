@@ -130,11 +130,24 @@ def distribute_question_types(
     Yuvarlama: en büyük kalan (Hamilton) yöntemi kullanılır — düşük paylı tipler
     `int()` kırpması yüzünden sistematik olarak elenmez.
     """
-    base = YENI_NESIL_DISTRIBUTION if yeni_nesil else DIFFICULTY_DISTRIBUTIONS[difficulty]
-    visual_bias = dict(TOPIC_VISUAL_BIAS.get(topic_id or "", {}))
     if yeni_nesil:
-        # salt_islem yeni nesil ruhuna aykırı (kuru işlem); grafik/tablo/geometri kalsın.
-        visual_bias.pop(QuestionType.SALT_ISLEM, None)
+        # HARMAN (blend): normal zorluk dağılımı ile yeni nesil dağılımını 50/50
+        # ortalar → aynı kağıtta hem hızlı pratik (islem/salt_islem) hem senaryo/
+        # beceri soruları bir arada. (Tam senaryo değil; kullanıcı "karıştır" istedi.)
+        _normal: dict[QuestionType, float] = {}
+        for qt, w in DIFFICULTY_DISTRIBUTIONS[difficulty]:
+            _normal[qt] = _normal.get(qt, 0.0) + w
+        _yeni: dict[QuestionType, float] = {}
+        for qt, w in YENI_NESIL_DISTRIBUTION:
+            _yeni[qt] = _yeni.get(qt, 0.0) + w
+        base = [
+            (qt, 0.5 * _normal.get(qt, 0.0) + 0.5 * _yeni.get(qt, 0.0))
+            for qt in (set(_normal) | set(_yeni))
+        ]
+    else:
+        base = DIFFICULTY_DISTRIBUTIONS[difficulty]
+    # Harman modda salt_islem KALIR (pratik kısmı); topic bias'a dokunma.
+    visual_bias = dict(TOPIC_VISUAL_BIAS.get(topic_id or "", {}))
 
     if visual_bias:
         visual_share = min(sum(visual_bias.values()), _MAX_VISUAL_SHARE)

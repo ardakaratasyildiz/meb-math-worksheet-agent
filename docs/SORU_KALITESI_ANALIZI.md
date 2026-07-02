@@ -240,8 +240,28 @@ veri ayıklama, çeldirici veri, çok adımlı çözüm üretir.
 ② atletizm ondalık sıralama+fark — çeldirici (rekor 4,5 m). İkisi de senaryo tabanlı, çok adımlı,
 YENİ eklenen ondalık kazanımını hedefliyor → Faz A + Faz B birlikte çalışıyor.
 
-### Sıradaki (Faz C — opsiyonel)
-- [ ] Frontend: `yeni_nesil` toggle (UI'da "Yeni Nesil Sorular" anahtarı).
+## 9. Faz C — Gizli kalite kaldıracı + harman modu (tamamlandı ✅, 2026-07-02)
+
+Karar: yeni nesil ÖNYÜZDE görünmez (toggle yok). Kullanıcı sadece kalite farkını hisseder.
+Karar sunucuda, premium yetkiye göre verilir; client bir bayrak gönderemez.
+
+- **Entitlement seam** (`app/services/entitlements.py`): `is_premium(tenant_id)` + `wants_yeni_nesil(tenant_id)`.
+  Gerçek billing yok → bugün `config.py` allowlist/flag'lerinden okunur, ileride Clerk/billing'e bağlanır.
+  `config.py`: `premium_yeni_nesil` (özellik anahtarı), `premium_all`, `premium_tenant_ids` (+`premium_tenant_id_set`).
+- **Client'tan kaldırıldı:** `GenerateWorksheetRequest.yeni_nesil` silindi → ücretsiz kullanıcı istekle bypass edemez.
+  `worksheets.py`: `_yeni_nesil = wants_yeni_nesil(req.tenant_id)` sunucuda hesaplanıp `_gen`/`_gen_bucket`'a geçer.
+- **Harman (blend) modu:** Kullanıcı isteğiyle yeni nesil artık %100 senaryo DEĞİL, KARIŞIK:
+  `diversity.py` yeni nesil dağılımı normal ile 50/50 harmanlanır (hem hızlı pratik islem/salt_islem hem
+  senaryo bir arada; salt_islem korunur). `templates._YENI_NESIL_BLOCK` "harman" diline çevrildi
+  (senaryo tiplerini yeni nesil yaz, pratik tiplerini kısa bırak).
+- **Şimdilik herkes:** `premium_all=True` → ücretsiz dahil herkes harman yeni nesil alıyor. Abonelik/billing
+  canlı olunca `premium_all=False` + `premium_tenant_ids` doldur → ücretsiz=normal, premium=yeni nesil FARKI devreye girer.
+
+**Doğrulandı (gerçek üretim, anonim, grade5 kesirler 6 soru):** #1,2,6 hızlı kesir pratiği (salt_islem),
+#3 fırıncı senaryosu, #4 koşu yarışı (ondalık), #5 manav çok-adımlı → gerçek harman.
+
+### Sıradaki (Faz D — opsiyonel)
+- [ ] Abonelik/billing entegrasyonu (Clerk publicMetadata → `entitlements.is_premium`), sonra `premium_all=False`.
 - [ ] K5: eval'e "yeni nesil skoru" (bağlam uzunluğu, adım sayısı, görsel oranı, çeldirici kalitesi).
 - [ ] K4: yanılgı-temelli çeldirici (`coktan_secmeli` prompt + `distractor_rationale` + critic kontrolü).
 

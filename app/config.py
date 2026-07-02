@@ -69,6 +69,24 @@ class Settings(BaseSettings):
     # CORS — frontend domain'leri (virgülle). Boşsa "*" (yalnızca dev için).
     cors_origins: str = ""
 
+    # Premium yetkilendirme (entitlement) — "yeni nesil" GİZLİ kalite kaldıracı.
+    # Gerçek billing/abonelik henüz yok; bu ayarlar app/services/entitlements.py
+    # üzerinden okunur ve ileride Clerk publicMetadata / billing'e bağlanır.
+    #   - premium_yeni_nesil: yeni nesil (harman) mod açık mı (özellik anahtarı)
+    #   - premium_all: herkesi premium say → herkes yeni nesil alır
+    #   - premium_tenant_ids: premium Clerk userId'leri (virgülle) allowlist
+    # Karar HER ZAMAN sunucuda verilir; client bir bayrak gönderemez.
+    # ŞİMDİLİK premium_all=True → ücretsiz dahil herkes yeni nesil (harman) alıyor.
+    # Abonelik/billing canlı olunca: premium_all=False yap + premium_tenant_ids doldur
+    # → o an ücretsiz=normal, premium=yeni nesil FARKI devreye girer.
+    premium_yeni_nesil: bool = True
+    premium_all: bool = True
+    premium_tenant_ids: str = ""
+
+    @property
+    def premium_tenant_id_set(self) -> set[str]:
+        return {t.strip() for t in self.premium_tenant_ids.split(",") if t.strip()}
+
     @property
     def api_key_list(self) -> list[str]:
         return [k.strip() for k in self.api_keys.split(",") if k.strip()]

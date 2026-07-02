@@ -218,14 +218,11 @@ def build_retry_prompt(
     return original_user_prompt + extension
 
 
-_YENI_NESIL_BLOCK = """YENİ NESİL SORU MODU (AKTİF) — sorular beceri temelli olmalı. Zorluktan BAĞIMSIZ olarak şu kurallara UY:
-- Her soru 2-4 cümlelik GERÇEK YAŞAM SENARYOSU/bağlam içersin (alışveriş, spor, tarif, yolculuk, okul, doğa, üretim vb.). Kuru "şu işlemin sonucu kaçtır" sorusu YAZMA.
-- Öğrenci gerekli veriyi metinden (veya tablo/grafikten) KENDİSİ AYIKLAMALI; sayıları hazır-sıralı vermek yerine cümlenin içine yedir.
-- Mümkünse senaryoya İŞE YARAMAYAN bir bilgi (çeldirici veri) ekle; öğrenci hangi verinin gerekli olduğuna karar versin.
-- Çözüm ÇOK ADIMLI olsun (en az 2 adım); tek işlemle biten soru üretme.
-- Bağlam gerçekçi ve tutarlı olsun (fiyat, ölçü, miktar makul; birimler doğru).
-- "coktan_secmeli" tiplerinde çeldiriciler yaygın HATA TİPLERİNDEN doğsun (işlem sırası, birim karışması, eksik adım, sık yapılan kavram yanılgısı) — rastgele yakın sayı DEĞİL.
-NOT: Bu mod bağlam/yorumlama eksenini artırır; aritmetik zorluğu yine "Zorluk Kalibrasyonu" belirler (kolay senaryo da yeni nesil olabilir)."""
+_YENI_NESIL_BLOCK = """YENİ NESİL (HARMAN) MOD — bu kağıtta sorular KARIŞIK olsun: bir kısmı klasik hızlı pratik, bir kısmı yeni nesil/beceri temelli. Zorluktan BAĞIMSIZ olarak:
+- `gunluk_hayat`, `sozel_problem`, `modelleme`, `akil_yurutme` tipindeki soruları YENİ NESİL yaz: 2-4 cümlelik GERÇEK YAŞAM SENARYOSU/bağlam (alışveriş, spor, tarif, yolculuk, okul, doğa, üretim vb.); öğrenci gerekli veriyi metinden/görselden KENDİSİ ayıklasın; mümkünse İŞE YARAMAYAN bir bilgi (çeldirici veri) ekle; çözüm ÇOK ADIMLI (en az 2 adım) olsun.
+- `islem`, `salt_islem`, `kavram_sorusu` gibi tipler KISA ve doğrudan kalabilir (hızlı pratik) — hepsini senaryoya çevirme.
+- `coktan_secmeli` tiplerinde çeldiriciler yaygın HATA TİPLERİNDEN doğsun (işlem sırası, birim karışması, eksik adım, sık kavram yanılgısı) — rastgele yakın sayı DEĞİL.
+- Bağlam gerçekçi ve tutarlı olsun (fiyat, ölçü, miktar makul; birimler doğru). Aritmetik zorluğu yine "Zorluk Kalibrasyonu" belirler."""
 
 
 def build_user_prompt(

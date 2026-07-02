@@ -114,11 +114,16 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         question_types verilirse agent.generate'e allowed_types geçer.
     """
     from app.models.enums import Difficulty as _Diff
+    from app.services.entitlements import wants_yeni_nesil
     _validate_request(req)
     topic = get_topic(req.grade, req.topic_id)
     assert topic is not None
 
     agent = _agent()
+
+    # "Yeni nesil" gizli kalite kaldıracı: karar SUNUCUDA, premium yetkiye göre
+    # verilir (client bir bayrak gönderemez). Ücretsiz → normal, premium → yeni nesil.
+    _yeni_nesil = wants_yeni_nesil(req.tenant_id)
 
     def _gen(diff: _Diff, count: int) -> list:
         return agent.generate(
@@ -129,7 +134,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             question_count=count,
             tenant_id=req.tenant_id,
             allowed_types=req.question_types,
-            yeni_nesil=req.yeni_nesil,
+            yeni_nesil=_yeni_nesil,
         )
 
     if req.difficulty_mode == "single":
@@ -167,7 +172,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
                     question_count=buckets[diff],
                     tenant_id=req.tenant_id,
                     allowed_types=req.question_types,
-                    yeni_nesil=req.yeni_nesil,
+                    yeni_nesil=_yeni_nesil,
                 )
                 return diff, qs, local_agent.build_last_trace(), None
             except Exception as exc:  # noqa: BLE001
