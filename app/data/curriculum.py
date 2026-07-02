@@ -779,6 +779,24 @@ CURRICULUM: dict[int, dict[str, Topic]] = {
                         "Yüzdeyi günlük hayat bağlamında uygulama (indirim, KDV, tasarruf).",
                     ),
                 },
+                {
+                    "kod": "M.5.2.6",
+                    "metin": "Ondalık gösterimi tanır, okur, yazar ve çözümler; ondalık kısmın basamak adlarını (onda, yüzde, binde birler) bilir.",
+                    "difficulty_hints": _hints(
+                        "Modelle/kesirle verilen ondalığı yazma; onda birler basamağını okuma.",
+                        "Ondalık gösterimi çözümleme; belirli bir basamaktaki rakamın değerini bulma.",
+                        "Kesir ↔ ondalık dönüşümü ile birlikte basamak değeri çıkarımı.",
+                    ),
+                },
+                {
+                    "kod": "M.5.2.7",
+                    "metin": "Ondalık gösterimleri karşılaştırır, sıralar ve ondalık gösterimlerle toplama-çıkarma işlemi yapar.",
+                    "difficulty_hints": _hints(
+                        "İki ondalık gösterimi karşılaştırma; virgülü hizalı basit toplama.",
+                        "Üç-dört ondalığı sıralama; toplama veya çıkarma işlemi.",
+                        "Ondalıklarla çok adımlı/günlük hayat bağlamlı toplama-çıkarma problemi.",
+                    ),
+                },
             ],
         },
         TopicId.GEOMETRI.value: {

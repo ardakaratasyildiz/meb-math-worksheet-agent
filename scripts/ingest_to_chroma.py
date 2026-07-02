@@ -134,7 +134,12 @@ def _load_lgs() -> list[dict]:
 
 
 _QUESTIONS_GRADES = (5, 6, 7)
-_QTYPE_INGEST_MAP = {"acik_uclu": "sozel_problem", "siralanan": "siralama"}
+_QTYPE_INGEST_MAP = {
+    "acik_uclu": "sozel_problem",
+    "open_ended": "sozel_problem",
+    "multiple_choice": "coktan_secmeli",
+    "siralanan": "siralama",
+}
 
 
 def _load_questions() -> list[dict]:
