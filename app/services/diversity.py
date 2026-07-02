@@ -95,12 +95,27 @@ TOPIC_VISUAL_BIAS: dict[str, dict[QuestionType, float]] = {
 
 _MAX_VISUAL_SHARE = 0.65  # bias toplamı bu üst sınırla kırpılır
 
+# "Yeni nesil / beceri temelli" dağıtım — zorluktan BAĞIMSIZ eksen. Uzun bağlam +
+# yorumlama gerektiren tipler baskın; salt_islem / dogru_yanlis / eslestirme gibi
+# kısa-format tipler dışarıda bırakılır (yeni nesil ruhuna aykırı). Aritmetik zorluğu
+# yine "Zorluk Kalibrasyonu" belirler; bu profil sadece SORU KARAKTERİNİ değiştirir.
+YENI_NESIL_DISTRIBUTION: list[tuple[QuestionType, float]] = [
+    (QuestionType.GUNLUK_HAYAT, 0.28),
+    (QuestionType.SOZEL_PROBLEM, 0.24),
+    (QuestionType.AKIL_YURUTME, 0.16),
+    (QuestionType.MODELLEME, 0.12),
+    (QuestionType.COKTAN_SECMELI, 0.12),
+    (QuestionType.GRAFIK_OKUMA, 0.04),
+    (QuestionType.TABLO_SORUSU, 0.04),
+]
+
 
 def distribute_question_types(
     total: int,
     difficulty: Difficulty,
     topic_id: str | None = None,
     allowed_types: set[QuestionType] | None = None,
+    yeni_nesil: bool = False,
 ) -> dict[QuestionType, int]:
     """Toplam soruyu zorluk profiline göre soru tiplerine paylaştırır.
 
@@ -115,8 +130,11 @@ def distribute_question_types(
     Yuvarlama: en büyük kalan (Hamilton) yöntemi kullanılır — düşük paylı tipler
     `int()` kırpması yüzünden sistematik olarak elenmez.
     """
-    base = DIFFICULTY_DISTRIBUTIONS[difficulty]
-    visual_bias = TOPIC_VISUAL_BIAS.get(topic_id or "", {})
+    base = YENI_NESIL_DISTRIBUTION if yeni_nesil else DIFFICULTY_DISTRIBUTIONS[difficulty]
+    visual_bias = dict(TOPIC_VISUAL_BIAS.get(topic_id or "", {}))
+    if yeni_nesil:
+        # salt_islem yeni nesil ruhuna aykırı (kuru işlem); grafik/tablo/geometri kalsın.
+        visual_bias.pop(QuestionType.SALT_ISLEM, None)
 
     if visual_bias:
         visual_share = min(sum(visual_bias.values()), _MAX_VISUAL_SHARE)

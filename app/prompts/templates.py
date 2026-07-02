@@ -218,6 +218,16 @@ def build_retry_prompt(
     return original_user_prompt + extension
 
 
+_YENI_NESIL_BLOCK = """YENİ NESİL SORU MODU (AKTİF) — sorular beceri temelli olmalı. Zorluktan BAĞIMSIZ olarak şu kurallara UY:
+- Her soru 2-4 cümlelik GERÇEK YAŞAM SENARYOSU/bağlam içersin (alışveriş, spor, tarif, yolculuk, okul, doğa, üretim vb.). Kuru "şu işlemin sonucu kaçtır" sorusu YAZMA.
+- Öğrenci gerekli veriyi metinden (veya tablo/grafikten) KENDİSİ AYIKLAMALI; sayıları hazır-sıralı vermek yerine cümlenin içine yedir.
+- Mümkünse senaryoya İŞE YARAMAYAN bir bilgi (çeldirici veri) ekle; öğrenci hangi verinin gerekli olduğuna karar versin.
+- Çözüm ÇOK ADIMLI olsun (en az 2 adım); tek işlemle biten soru üretme.
+- Bağlam gerçekçi ve tutarlı olsun (fiyat, ölçü, miktar makul; birimler doğru).
+- "coktan_secmeli" tiplerinde çeldiriciler yaygın HATA TİPLERİNDEN doğsun (işlem sırası, birim karışması, eksik adım, sık yapılan kavram yanılgısı) — rastgele yakın sayı DEĞİL.
+NOT: Bu mod bağlam/yorumlama eksenini artırır; aritmetik zorluğu yine "Zorluk Kalibrasyonu" belirler (kolay senaryo da yeni nesil olabilir)."""
+
+
 def build_user_prompt(
     grade: int,
     topic_name: str,
@@ -229,6 +239,7 @@ def build_user_prompt(
     context_exclusions: list[str] | None = None,
     few_shot_source: str = "static",
     textbook_chunks: list[dict] | None = None,
+    yeni_nesil: bool = False,
 ) -> str:
     parts = [
         f"Sınıf: {grade}. sınıf",
@@ -237,6 +248,8 @@ def build_user_prompt(
         f"Zorluk: {difficulty.value}",
         f"Üretilecek Soru Sayısı: {question_count}",
         "",
+        _YENI_NESIL_BLOCK if yeni_nesil else None,
+        "" if yeni_nesil else None,
         _format_distribution(distribution),
         _format_few_shot(few_shot_examples, difficulty, source=few_shot_source),
         _format_textbook_context(textbook_chunks or []),

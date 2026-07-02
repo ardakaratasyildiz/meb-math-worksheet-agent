@@ -309,6 +309,7 @@ class GeminiAgent:
         include_textbook: bool = True,
         tenant_id: str | None = None,
         allowed_types: list[QuestionType] | None = None,
+        yeni_nesil: bool = False,
     ) -> list[Question]:
         # Seed jitter: aynı parametrelerle yapılan art arda çağrılar farklı sonuç versin.
         if seed is None:
@@ -334,6 +335,7 @@ class GeminiAgent:
         gen_target = _ceil(question_count * _overshoot) if _overshoot > 1.0 else question_count
         distribution = distribute_question_types(
             gen_target, difficulty, topic_id=topic_id, allowed_types=allowed_set,
+            yeni_nesil=yeni_nesil,
         )
 
         # History anahtarı — hem cache lookup hem üretim sonrası kayıt için.
@@ -349,7 +351,9 @@ class GeminiAgent:
         # Aynı (grade, topic, kazanım, zorluk, count) için önceden üretilmiş set
         # varsa LLM çağrısını atla. Kullanıcının history'sinde bulunan sorulara
         # sahip set'ler atlanır → tekrar dağıtım önlenir.
-        if settings.enable_generation_cache:
+        # Yeni nesil mod cache'i atlar: normal havuzla karışmasın (cache anahtarı
+        # yeni_nesil'i taşımıyor; farklı karakterdeki set'lerin çakışmasını önle).
+        if settings.enable_generation_cache and not yeni_nesil:
             history_seen_norm = GENERATION_HISTORY.seen_questions(history_key)
             cached = GENERATION_CACHE.get(
                 grade=grade,
@@ -457,6 +461,7 @@ class GeminiAgent:
             context_exclusions=history_contexts,
             few_shot_source=few_shot_source,
             textbook_chunks=textbook_chunks,
+            yeni_nesil=yeni_nesil,
         )
 
         dedup = BatchDeduplicator()
@@ -806,6 +811,7 @@ class GeminiAgent:
         self._last_cache_hit = False
         if (
             settings.enable_generation_cache
+            and not yeni_nesil  # yeni nesil set'leri normal cache'e yazılmaz
             and len(questions) == question_count
         ):
             try:

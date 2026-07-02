@@ -129,6 +129,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             question_count=count,
             tenant_id=req.tenant_id,
             allowed_types=req.question_types,
+            yeni_nesil=req.yeni_nesil,
         )
 
     if req.difficulty_mode == "single":
@@ -166,6 +167,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
                     question_count=buckets[diff],
                     tenant_id=req.tenant_id,
                     allowed_types=req.question_types,
+                    yeni_nesil=req.yeni_nesil,
                 )
                 return diff, qs, local_agent.build_last_trace(), None
             except Exception as exc:  # noqa: BLE001

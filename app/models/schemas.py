@@ -113,6 +113,12 @@ class GenerateWorksheetRequest(BaseModel):
         "mixed = kolay+orta+zor karışık dağıtım (4/4/2). "
         "progressive = aynı dağılım ama soru sırası kolay→orta→zor.",
     )
+    yeni_nesil: bool = Field(
+        False,
+        description="True → 'yeni nesil / beceri temelli' mod: uzun gerçek yaşam "
+        "senaryosu, veri ayıklama, çeldirici veri, çok adımlı çözüm. Zorluktan "
+        "bağımsız eksen (kolay senaryo da yeni nesil olabilir). Bu modda cache atlanır.",
+    )
     include_answer_key: bool = Field(
         True,
         description="PDF çıktısında 'Cevap Anahtarı' tablosu basılsın mı? "

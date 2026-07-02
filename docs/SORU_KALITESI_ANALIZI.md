@@ -222,8 +222,26 @@ S4/S5 (çelişki+boyut heuristic), D1 (rebuild), D2 (Claude etiketleme), D3 (ond
 (sadece ingest embedding ~$0.25). Değişen: `scripts/{validate_questions,tag_questions_by_keyword,ingest_to_chroma}.py`,
 `app/data/curriculum.py`, `knowledge_base/processed/questions_grade{5,6,7}*.json`, `knowledge_base/chroma_db/*`.
 
-### Sıradaki (Faz B)
-- [ ] K2 "yeni nesil / senaryo" üretim profili (`diversity.py` yeni dağıtım profili + `templates.py` senaryo prompt).
-- [ ] K5: eval'e "yeni nesil skoru" metrikleri (bağlam uzunluğu, adım sayısı, görsel oranı, çeldirici kalitesi).
-- [ ] K4: yanılgı-temelli çeldirici (`coktan_secmeli` prompt + critic kontrolü).
+## 8. Faz B — K2 "Yeni Nesil / Senaryo" profili (tamamlandı ✅, 2026-07-02)
+
+Zorluktan **bağımsız** bir `yeni_nesil` ekseni eklendi. Aktifken uzun gerçek yaşam senaryosu,
+veri ayıklama, çeldirici veri, çok adımlı çözüm üretir.
+
+- `diversity.py`: `YENI_NESIL_DISTRIBUTION` (gunluk_hayat/sozel/akil_yurutme/modelleme/coktan_secmeli
+  + grafik/tablo ağırlıklı; salt_islem hariç) + `distribute_question_types(..., yeni_nesil=)`.
+- `templates.py`: `_YENI_NESIL_BLOCK` senaryo talimatı + `build_user_prompt(..., yeni_nesil=)`. Retry
+  prompt `original_user_prompt`'u kapsadığı için bloğu otomatik miras alır.
+- `agent.py`: `generate(..., yeni_nesil=)`; yeni nesil modda cache lookup+write ATLANIR (normal havuzla
+  karışmasın; cache anahtarı yeni_nesil taşımıyor).
+- `schemas.py`: `GenerateWorksheetRequest.yeni_nesil: bool`. `worksheets.py`: `_gen` + `_gen_bucket`'a geçirildi.
+
+**Uçtan uca doğrulama (gerçek üretim):** grade 5, ondalık `M.5.2.7`, yeni_nesil=True →
+① "Elif 50 TL ile kırtasiye (18,75 + 24,90...)" — çeldirici veri (almadığı silgi/kalem ucu) + 2 adım,
+② atletizm ondalık sıralama+fark — çeldirici (rekor 4,5 m). İkisi de senaryo tabanlı, çok adımlı,
+YENİ eklenen ondalık kazanımını hedefliyor → Faz A + Faz B birlikte çalışıyor.
+
+### Sıradaki (Faz C — opsiyonel)
+- [ ] Frontend: `yeni_nesil` toggle (UI'da "Yeni Nesil Sorular" anahtarı).
+- [ ] K5: eval'e "yeni nesil skoru" (bağlam uzunluğu, adım sayısı, görsel oranı, çeldirici kalitesi).
+- [ ] K4: yanılgı-temelli çeldirici (`coktan_secmeli` prompt + `distractor_rationale` + critic kontrolü).
 
