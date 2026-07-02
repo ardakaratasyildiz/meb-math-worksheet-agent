@@ -6,6 +6,10 @@ class Settings(BaseSettings):
 
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
+    # Yeni nesil (kalite/premium) yolu için daha güçlü model. Kodlama-optimize →
+    # geometri SVG gibi yapısal çıktıda daha güvenilir; şekilli+bağlamsal soru için.
+    # A/B (2026-07): 3.5-flash şekilli oranı ~2x, Pro'dan hızlı (48s vs 63s).
+    gemini_model_yeni_nesil: str = "gemini-3.5-flash"
     gemini_fallback_models: str = "gemini-2.5-flash-lite,gemini-2.5-pro"
     gemini_embedding_model: str = "gemini-embedding-001"
     # Embedding boyutu: 3072 (varsayılan) yerine 768 → ChromaDB dosyaları GitHub

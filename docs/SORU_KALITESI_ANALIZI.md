@@ -260,6 +260,29 @@ Karar sunucuda, premium yetkiye göre verilir; client bir bayrak gönderemez.
 **Doğrulandı (gerçek üretim, anonim, grade5 kesirler 6 soru):** #1,2,6 hızlı kesir pratiği (salt_islem),
 #3 fırıncı senaryosu, #4 koşu yarışı (ondalık), #5 manav çok-adımlı → gerçek harman.
 
+## 10. Model kararı — yeni nesil yolu için gemini-3.5-flash (2026-07-02)
+
+**Test bulgusu:** Şekilli+bağlamsal üretim — veri işleme mükemmel (5/5, chart direktifi deterministik),
+geometri zayıftı (model SVG'yi elle çizmekte zorlanıyor). Bu yapısal-çıktı (kod) meselesi → güçlü model çözer.
+
+**Ampirik A/B (geometri, 6 soru, yeni_nesil):**
+| Model | Süre | Şekilli | Fiyat (girdi/çıktı /1M) |
+|---|---|---|---|
+| gemini-2.5-flash (eski gen) | ~30s | 1/6 | $0.30/$2.50 |
+| gemini-2.5-pro | 63s | 2/6 | $1.25/$10 |
+| **gemini-3.5-flash** ✅ | 48s | 2/6 | $1.50/$9 |
+
+gemini-3.5-flash = Pro seviyesi kalite/şekilli, Pro'dan hızlı, kodlama-optimize (SVG güvenilirliği).
+Gemini 3.x GA değil ama `-flash`/`-pro` erişilebilir; `gemini-3-flash` (preview-siz) yok.
+
+**Karar:** Yeni nesil (kalite) yolu → `gemini-3.5-flash`; normal yol → `gemini-2.5-flash` (hız/maliyet).
+- `config.py`: `gemini_model_yeni_nesil = "gemini-3.5-flash"`.
+- `worksheets.py`: `_agent_yeni_nesil()` + `_gen_bucket` model seçimi `_yeni_nesil`'e bağlı.
+- Fiyat: worksheet başına ~$0.02-0.05 (2.5-flash'ın ~4-5 katı ama mutlak değer kuruşlar; değere göre
+  fiyatlama + ~%85 marj ile ihmal edilebilir). ŞİMDİLİK herkes yeni nesil (premium_all=True) → herkes
+  3.5-flash. Billing ayrışınca ücretsiz=2.5-flash, premium=3.5-flash otomatik.
+- Uçtan uca doğrulandı: router yolu gemini-3.5-flash kullanıyor, geometri şekilli+bağlamsal (nişangah/havuz SVG).
+
 ### Sıradaki (Faz D — opsiyonel)
 - [ ] Abonelik/billing entegrasyonu (Clerk publicMetadata → `entitlements.is_premium`), sonra `premium_all=False`.
 - [ ] K5: eval'e "yeni nesil skoru" (bağlam uzunluğu, adım sayısı, görsel oranı, çeldirici kalitesi).
