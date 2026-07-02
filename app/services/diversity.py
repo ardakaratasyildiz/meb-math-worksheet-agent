@@ -148,6 +148,14 @@ def distribute_question_types(
         base = DIFFICULTY_DISTRIBUTIONS[difficulty]
     # Harman modda salt_islem KALIR (pratik kısmı); topic bias'a dokunma.
     visual_bias = dict(TOPIC_VISUAL_BIAS.get(topic_id or "", {}))
+    if yeni_nesil and visual_bias:
+        # Yeni nesil modda ŞEKİLLİ soru payını artır (kullanıcı "şekilli + bağlamsal"
+        # istedi). Yalnızca gerçek figür tipleri boost edilir; salt_islem (kuru işlem) değil.
+        _figure = {QuestionType.GORSEL_GEOMETRI, QuestionType.GRAFIK_OKUMA,
+                   QuestionType.TABLO_SORUSU, QuestionType.ORUNTU_SEKIL}
+        visual_bias = {
+            qt: (w * 1.5 if qt in _figure else w) for qt, w in visual_bias.items()
+        }
 
     if visual_bias:
         visual_share = min(sum(visual_bias.values()), _MAX_VISUAL_SHARE)

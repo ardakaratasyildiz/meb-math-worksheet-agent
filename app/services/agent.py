@@ -875,9 +875,26 @@ class GeminiAgent:
         starting_number: int = 1,
     ) -> list[Question]:
         """Ham batch'i numaralanmış Question listesine çevirir; dedup paylaşımlı."""
+        # Şekilli tipte figür ZORUNLU: model "görseldeki ölçüye göre" deyip şekil
+        # üretmezse soru cevaplanamaz → ele. (grafik_okuma direktifi bu aşamada
+        # process_chart_directives ile SVG'ye dönüşmüş olur.)
+        _figure_types = {
+            QuestionType.GORSEL_GEOMETRI,
+            QuestionType.ORUNTU_SEKIL,
+            QuestionType.GRAFIK_OKUMA,
+        }
         questions: list[Question] = []
         for raw in batch.questions:
             if dedup.is_duplicate(raw.question):
+                continue
+            q_text = process_chart_directives(
+                repair_latex_control_chars(raw.question).strip()
+            )
+            if raw.question_type in _figure_types and "<svg" not in q_text:
+                logger.info(
+                    "Şekilsiz görsel-tip sorusu atıldı (%s): %s",
+                    raw.question_type.value, raw.question[:70],
+                )
                 continue
             kod = raw.kazanim_kod if raw.kazanim_kod in valid_kazanim_codes else fallback_kazanim
             dedup.add(raw.question)
@@ -889,9 +906,7 @@ class GeminiAgent:
             questions.append(
                 Question(
                     number=starting_number + len(questions),
-                    question=process_chart_directives(
-                        repair_latex_control_chars(raw.question).strip()
-                    ),
+                    question=q_text,
                     answer=repair_latex_control_chars(raw.answer).strip(),
                     solution_steps=steps,
                     kazanim_kod=kod,
