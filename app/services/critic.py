@@ -71,6 +71,10 @@ class GeminiCritic:
         self.client = genai.Client(api_key=key)
         # Critic için flash-lite yeterli; hız önemli, yaratıcılık değil.
         self.model = model or settings.critic_model
+        # Son evaluate() çağrısının Gemini token kullanımı — maliyet ölçümü için
+        # agent bunu toplam maliyete ekler (critic ayrı bir Gemini çağrısıdır).
+        from app.services.llm_providers import TokenUsage
+        self._last_usage = TokenUsage(model_name=self.model)
 
     def evaluate(
         self,
@@ -79,6 +83,8 @@ class GeminiCritic:
         difficulty: Difficulty,
     ) -> list[CriticVerdict]:
         """Her soru için verdict döner. Critic çağrısı tamamen başarısızsa boş liste — fail-open."""
+        from app.services.llm_providers import TokenUsage
+        self._last_usage = TokenUsage(model_name=self.model)  # sıfırla
         if not questions:
             return []
 
@@ -110,6 +116,15 @@ class GeminiCritic:
         except CriticError as exc:
             logger.warning("Critic çağrısı başarısız, sorular geçiriliyor (fail-open): %s", exc)
             return []
+
+        # Token kullanımını ölç (maliyet için).
+        um = getattr(response, "usage_metadata", None)
+        if um is not None:
+            self._last_usage = TokenUsage(
+                input_tokens=getattr(um, "prompt_token_count", 0) or 0,
+                output_tokens=getattr(um, "candidates_token_count", 0) or 0,
+                model_name=self.model,
+            )
 
         try:
             batch = self._parse_response(response)

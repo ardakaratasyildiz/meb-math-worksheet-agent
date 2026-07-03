@@ -23,6 +23,7 @@ from app.models.schemas import (
 from app.security import limiter, rate_limit_string, require_api_key
 from app.services.agent import AgentError, GeminiAgent
 from app.services.pdf_renderer import render_worksheet_pdf
+from app.services.usage_ledger import USAGE_LEDGER
 from app.services.worksheet_history import WORKSHEET_HISTORY
 
 router = APIRouter()
@@ -259,6 +260,22 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         model=agent.last_model_used,
         trace=trace_for_meta,
     )
+
+    # Gemini maliyet defteri — HER üretim için (ANONİM DAHİL). Gerçek Gemini
+    # harcamasını (üretim+retry+top-up+critic+embedding) tenant/anon bazında kalıcı
+    # kaydeder → admin cost dashboard'un kaynağı. Best-effort, üretimi bozmaz.
+    if trace_for_meta is not None:
+        USAGE_LEDGER.record(
+            tenant_id=req.tenant_id,
+            model=trace_for_meta.model_used,
+            prompt_tokens=trace_for_meta.prompt_tokens,
+            completion_tokens=trace_for_meta.completion_tokens,
+            cost_usd=trace_for_meta.estimated_cost_usd,
+            grade=req.grade,
+            topic=topic["name"],
+            question_count=worksheet.question_count,
+            cache_hit=bool(getattr(trace_for_meta, "cache_hit", False)),
+        )
 
     # Kullanıcı (tenant) bazlı geçmiş kaydı — yalnızca giriş yapmış kullanıcı
     # için (tenant_id Clerk userId'sidir). Best-effort: kayıt hatası üretimi

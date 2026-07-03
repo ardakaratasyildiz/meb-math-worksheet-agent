@@ -635,6 +635,11 @@ class GeminiAgent:
             critic = self._get_critic()
             if critic is not None:
                 verdicts = critic.evaluate(questions, kazanimlar, difficulty)
+                _cu = getattr(critic, "_last_usage", None)
+                if _cu is not None:
+                    total_prompt_tokens += _cu.input_tokens
+                    total_completion_tokens += _cu.output_tokens
+                    total_cost_usd += _cu.estimated_cost_usd
                 if verdicts:
                     drop_indices: set[int] = set()
                     for v in verdicts:
@@ -741,6 +746,11 @@ class GeminiAgent:
                 critic = self._get_critic()
                 if critic is not None:
                     verdicts_c = critic.evaluate(new_questions, kazanimlar, difficulty) or []
+                    _cu2 = getattr(critic, "_last_usage", None)
+                    if _cu2 is not None:
+                        total_prompt_tokens += _cu2.input_tokens
+                        total_completion_tokens += _cu2.output_tokens
+                        total_cost_usd += _cu2.estimated_cost_usd
                     drop_c = {
                         v.question_index for v in verdicts_c
                         if (
@@ -784,6 +794,12 @@ class GeminiAgent:
         self._last_seed = seed
         self._last_requested_count = question_count
         self._last_delivered_count = len(questions)
+        # Embedding maliyeti (semantic dedup) — küçük ama "gerçek toplam" için dahil.
+        if self._embedder is not None:
+            _eu = getattr(self._embedder, "_last_usage", None)
+            if _eu is not None:
+                total_prompt_tokens += _eu.input_tokens
+                total_cost_usd += _eu.estimated_cost_usd
         self._last_prompt_tokens = total_prompt_tokens
         self._last_completion_tokens = total_completion_tokens
         self._last_cost_usd = total_cost_usd

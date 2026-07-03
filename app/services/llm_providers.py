@@ -36,6 +36,8 @@ PRICING_USD_PER_1M_TOKENS: dict[str, tuple[float, float]] = {
     "gemini-2.5-pro": (1.25, 10.00),
     "gemini-3.5-flash": (1.50, 9.00),
     "gemini-3.1-pro-preview": (2.00, 12.00),
+    # Embedding: yalnız girdi ücretlendirilir (çıktı 0). gemini-embedding-001.
+    "gemini-embedding-001": (0.15, 0.0),
     "claude-sonnet-4-6": (3.00, 15.00),
     "claude-opus-4-7": (15.00, 75.00),
     "claude-haiku-4-5-20251001": (0.80, 4.00),

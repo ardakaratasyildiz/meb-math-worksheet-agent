@@ -32,6 +32,10 @@ class GeminiEmbedder:
         self.client = genai.Client(api_key=key)
         self.model = model or settings.gemini_embedding_model
         self.dimensions = settings.embedding_dimensions
+        # Son embed_many() çağrısının maliyet ölçümü (embedding yalnız girdi ücretli).
+        # Token sayısı ~kar/4 ile tahmin edilir (Gemini embed API token döndürmez).
+        from app.services.llm_providers import TokenUsage
+        self._last_usage = TokenUsage(model_name=self.model)
 
     @staticmethod
     def _normalize(vec: list[float]) -> list[float]:
@@ -53,6 +57,10 @@ class GeminiEmbedder:
         all_texts = list(texts)
         if not all_texts:
             return []
+        # Maliyet ölçümü: embedding girdi token'ı ~toplam karakter/4.
+        from app.services.llm_providers import TokenUsage
+        _est_tokens = sum(len(t) for t in all_texts) // 4
+        self._last_usage = TokenUsage(input_tokens=_est_tokens, model_name=self.model)
         results: list[list[float]] = []
         for start in range(0, len(all_texts), _MAX_BATCH_SIZE):
             chunk = all_texts[start : start + _MAX_BATCH_SIZE]
