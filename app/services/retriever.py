@@ -66,34 +66,48 @@ def _cap_per_source(pool: list[dict], max_per_source: int = 2) -> list[dict]:
     return out
 
 
+def _source_priority(c: dict) -> float:
+    """Kaynak-önceliği çarpanı: gerçek (çıkmış/LGS) ve GÖRSELLİ örnekler few-shot
+    seçiminde öne çıksın → model gerçek görsel örnekleri daha sık görüp o mantığı öğrenir.
+    """
+    p = 1.0
+    src = (c.get("source") or "")
+    if src and not src.startswith("synthetic"):
+        p *= 1.6  # gerçek kaynak (questions/lgs/cikmis) > sentetik
+    q = c.get("question") or ""
+    if "<svg" in q or "{{chart" in q or "|---" in q:
+        p *= 1.8  # görselli soru (SVG/grafik/tablo) boost
+    return p
+
+
 def _weighted_sample(
     pool: list[dict],
     k: int,
     rng: random.Random,
 ) -> list[dict]:
-    """Distance ağırlıklı, geri konmasız örnekleme.
+    """Distance + kaynak-önceliği ağırlıklı, geri konmasız örnekleme.
 
-    Daha düşük distance (daha yakın) = daha yüksek seçilme şansı, ama her aday
-    sıfırdan büyük ağırlığa sahip olduğu için aynı sorgunun farklı çağrıları
-    farklı k seçer. Distance None olanlara nötr ağırlık verilir.
+    Daha düşük distance (daha yakın) = daha yüksek seçilme şansı; ayrıca gerçek
+    ve görselli örnekler _source_priority ile boost alır. Her aday sıfırdan büyük
+    ağırlığa sahip olduğu için aynı sorgunun farklı çağrıları farklı k seçer.
     """
     if k >= len(pool):
         return list(pool)
 
     distances = [c.get("distance") for c in pool]
     valid = [d for d in distances if isinstance(d, (int, float))]
-    if not valid:
-        # Distance yok — saf rastgele örnekleme.
-        return rng.sample(pool, k)
-
-    max_d = max(valid)
-    # Ağırlık: yakınlığa göre azalan ama her zaman pozitif.
-    # weight = (max_d - d) + small_epsilon → en uzak bile sıfırdan büyük.
-    eps = (max_d * 0.1) if max_d > 0 else 0.1
-    weights = [
-        ((max_d - d) + eps) if isinstance(d, (int, float)) else eps
-        for d in distances
-    ]
+    if valid:
+        max_d = max(valid)
+        # Ağırlık: yakınlığa göre azalan ama her zaman pozitif.
+        eps = (max_d * 0.1) if max_d > 0 else 0.1
+        base = [
+            ((max_d - d) + eps) if isinstance(d, (int, float)) else eps
+            for d in distances
+        ]
+    else:
+        # Distance yok — nötr taban (kaynak-önceliği yine uygulanır).
+        base = [1.0] * len(pool)
+    weights = [b * _source_priority(pool[i]) for i, b in enumerate(base)]
 
     selected_idx: list[int] = []
     available = list(range(len(pool)))

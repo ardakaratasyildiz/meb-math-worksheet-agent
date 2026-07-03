@@ -67,6 +67,11 @@ DIFFICULTY_DISTRIBUTIONS: dict[Difficulty, list[tuple[QuestionType, float]]] = {
 
 # Topic'e özel görsel/yapısal tip ağırlıkları. Toplamları 0.7'yi geçemez —
 # sözel çekirdek dağılım her zaman korunur, üstüne bu tipler bindirilir.
+# Her öğrenme alanına GÖRSEL/figür payı verilir — şekilli sorular sadece geometri
+# değil TÜM konularda üretilsin (kesir/ondalık modeli, sayı doğrusu, tablo, grafik,
+# cebir modeli, ölçme şekli). gorsel_geometri = "inline SVG figür" tipidir; her
+# konuda uygun bir görsel model (kesir alan modeli, sayı doğrusu, dikdörtgen model
+# vb.) çizmek için kullanılır. yeni_nesil modda bu figür payları ×1.5 boost alır.
 TOPIC_VISUAL_BIAS: dict[str, dict[QuestionType, float]] = {
     "veri_isleme": {
         QuestionType.TABLO_SORUSU: 0.30,
@@ -74,26 +79,47 @@ TOPIC_VISUAL_BIAS: dict[str, dict[QuestionType, float]] = {
     },
     "olasilik": {
         QuestionType.TABLO_SORUSU: 0.20,
+        QuestionType.GORSEL_GEOMETRI: 0.12,
     },
     "geometri": {
         QuestionType.GORSEL_GEOMETRI: 0.35,
     },
     "cebir": {
         QuestionType.ORUNTU_SEKIL: 0.15,
+        QuestionType.GORSEL_GEOMETRI: 0.12,
         QuestionType.SALT_ISLEM: 0.10,
     },
     "dogal_sayilar": {
-        QuestionType.SALT_ISLEM: 0.15,
+        QuestionType.GORSEL_GEOMETRI: 0.12,
+        QuestionType.TABLO_SORUSU: 0.10,
+        QuestionType.SALT_ISLEM: 0.13,
     },
     "kesirler": {
-        QuestionType.SALT_ISLEM: 0.20,
+        QuestionType.GORSEL_GEOMETRI: 0.15,
+        QuestionType.TABLO_SORUSU: 0.07,
+        QuestionType.SALT_ISLEM: 0.18,
     },
     "olcme": {
+        QuestionType.GORSEL_GEOMETRI: 0.15,
         QuestionType.SALT_ISLEM: 0.10,
     },
 }
 
 _MAX_VISUAL_SHARE = 0.65  # bias toplamı bu üst sınırla kırpılır
+
+# "Yeni nesil / beceri temelli" dağıtım — zorluktan BAĞIMSIZ eksen. Uzun bağlam +
+# yorumlama gerektiren tipler baskın; salt_islem / dogru_yanlis / eslestirme gibi
+# kısa-format tipler dışarıda bırakılır (yeni nesil ruhuna aykırı). Aritmetik zorluğu
+# yine "Zorluk Kalibrasyonu" belirler; bu profil sadece SORU KARAKTERİNİ değiştirir.
+YENI_NESIL_DISTRIBUTION: list[tuple[QuestionType, float]] = [
+    (QuestionType.GUNLUK_HAYAT, 0.28),
+    (QuestionType.SOZEL_PROBLEM, 0.24),
+    (QuestionType.AKIL_YURUTME, 0.16),
+    (QuestionType.MODELLEME, 0.12),
+    (QuestionType.COKTAN_SECMELI, 0.12),
+    (QuestionType.GRAFIK_OKUMA, 0.04),
+    (QuestionType.TABLO_SORUSU, 0.04),
+]
 
 
 def distribute_question_types(
@@ -101,6 +127,7 @@ def distribute_question_types(
     difficulty: Difficulty,
     topic_id: str | None = None,
     allowed_types: set[QuestionType] | None = None,
+    yeni_nesil: bool = False,
 ) -> dict[QuestionType, int]:
     """Toplam soruyu zorluk profiline göre soru tiplerine paylaştırır.
 
@@ -115,8 +142,32 @@ def distribute_question_types(
     Yuvarlama: en büyük kalan (Hamilton) yöntemi kullanılır — düşük paylı tipler
     `int()` kırpması yüzünden sistematik olarak elenmez.
     """
-    base = DIFFICULTY_DISTRIBUTIONS[difficulty]
-    visual_bias = TOPIC_VISUAL_BIAS.get(topic_id or "", {})
+    if yeni_nesil:
+        # HARMAN (blend): normal zorluk dağılımı ile yeni nesil dağılımını 50/50
+        # ortalar → aynı kağıtta hem hızlı pratik (islem/salt_islem) hem senaryo/
+        # beceri soruları bir arada. (Tam senaryo değil; kullanıcı "karıştır" istedi.)
+        _normal: dict[QuestionType, float] = {}
+        for qt, w in DIFFICULTY_DISTRIBUTIONS[difficulty]:
+            _normal[qt] = _normal.get(qt, 0.0) + w
+        _yeni: dict[QuestionType, float] = {}
+        for qt, w in YENI_NESIL_DISTRIBUTION:
+            _yeni[qt] = _yeni.get(qt, 0.0) + w
+        base = [
+            (qt, 0.5 * _normal.get(qt, 0.0) + 0.5 * _yeni.get(qt, 0.0))
+            for qt in (set(_normal) | set(_yeni))
+        ]
+    else:
+        base = DIFFICULTY_DISTRIBUTIONS[difficulty]
+    # Harman modda salt_islem KALIR (pratik kısmı); topic bias'a dokunma.
+    visual_bias = dict(TOPIC_VISUAL_BIAS.get(topic_id or "", {}))
+    if yeni_nesil and visual_bias:
+        # Yeni nesil modda ŞEKİLLİ soru payını artır (kullanıcı "şekilli + bağlamsal"
+        # istedi). Yalnızca gerçek figür tipleri boost edilir; salt_islem (kuru işlem) değil.
+        _figure = {QuestionType.GORSEL_GEOMETRI, QuestionType.GRAFIK_OKUMA,
+                   QuestionType.TABLO_SORUSU, QuestionType.ORUNTU_SEKIL}
+        visual_bias = {
+            qt: (w * 1.5 if qt in _figure else w) for qt, w in visual_bias.items()
+        }
 
     if visual_bias:
         visual_share = min(sum(visual_bias.values()), _MAX_VISUAL_SHARE)

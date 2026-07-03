@@ -41,34 +41,49 @@ def _norm(text: str) -> str:
 _RULES: dict[int, list[tuple[str, list[str]]]] = {
     5: [
         # İşlem önceliği (çok spesifik)
-        ("M.5.1.4", ["işlem önceliği", "işlem sırası", "önce hangi işlem"]),
-        # Yüzde (geometri/kesirden ÖNCE — 'yüzde kaçını' net sinyal)
-        ("M.5.2.5", ["yüzde", "indirim", "zam", "kdv"]),
-        # Geometri — spesifik
-        ("M.5.3.3", ["çevre uzunluğu", "çevresi", "çevresini"]),
-        ("M.5.3.4", ["alanı", "alanını", "birim kare"]),
-        ("M.5.3.1", ["üçgen", "ikizkenar", "çeşitkenar"]),
-        ("M.5.3.2", ["dörtgen", "yamuk", "paralelkenar", "deltoid"]),
-        ("M.5.3.5", ["açı", "açının", "açıortay", "derece", "doğru parçası",
-                     "kareli zemin", "karesel zemin", "dik açı", "dar açı", "geniş açı"]),
-        # Kesir — spesifik
+        ("M.5.1.4", ["işlem önceliği", "işlem sırası", "önce hangi işlem", "parantez içi"]),
+        # Yüzde (geometri/kesirden ÖNCE — net sinyal). "re:%\s*\d" → %25 / % 25.
+        ("M.5.2.5", ["yüzde", "indirim", "zam", "kdv", "re:%\\s*\\d", "re:\\d+\\s*%"]),
+        # Ondalık — açık kelimeyle (basamak/okunuş bağlamı 'basamak'tan ÖNCE yakalanmalı)
+        ("M.5.2.6", ["ondalık", "onda birler", "yüzde birler", "binde birler",
+                     "onda bir", "virgülden sonra", "virgüllü"]),
+        # Geometri — spesifik (çevre alandan önce; alan cm² ile)
+        ("M.5.3.3", ["çevre uzunluğu", "çevresi", "çevresini", "çevre kaç"]),
+        ("M.5.3.4", ["alanı", "alanını", "birim kare", "re:cm\\s*²", "re:cm\\s*2\\b", "kaç birim karedir"]),
+        ("M.5.3.1", ["üçgen", "ikizkenar", "çeşitkenar", "eşkenar üçgen"]),
+        ("M.5.3.2", ["dörtgen", "dikdörtgen", "yamuk", "paralelkenar", "deltoid", "eşkenar dörtgen"]),
+        ("M.5.3.5", ["açı", "açının", "açıortay", "derece", "re:\\d+\\s*°", "doğru parçası", "ışın",
+                     "kareli zemin", "karesel zemin", "dik açı", "dar açı", "geniş açı",
+                     "simetri", "yansıma", "paralel", "dikme", "çokgen", "doğrusal",
+                     "doğrular", "kesişen", "kesişir", "kesişmiş"]),
+        # Kesir — spesifik → genel
         ("M.5.2.2", ["bileşik kesir", "tam sayılı kesir", "tam sayılı"]),
         ("M.5.2.1", ["birim kesir", "kesri sırala", "sayı doğrusunda"]),
-        ("M.5.2.3", ["kesir", "kesrin", "kesirler", "payda"]),
+        ("M.5.2.4", ["paydaları eşit olmayan", "ortak payda"]),
+        ("M.5.2.3", ["kesir", "kesrin", "kesirler", "payda", "paydası"]),
         # Cebir
-        ("M.5.5.1", ["denklem", "bilinmeyen"]),
+        ("M.5.5.2", ["denklem kur", "cebirsel olarak yaz"]),
+        ("M.5.5.1", ["denklem", "bilinmeyen", "re:x\\s*[+\\-]\\s*\\d+\\s*="]),
         # Ölçme
         ("M.5.4.2", ["litre", "mililitre", "sıvı"]),
         ("M.5.4.1", ["kaç metre", "kaç santimetre", "kaç kilometre",
-                     "kilometre", "santimetre", "milimetre"]),
-        # Veri — sadece NET sinyaller ('veri'/'tablo' tek başına değil)
-        ("M.5.6.1", ["sıklık tablosu", "sütun grafiği", "grafiğe göre",
-                     "anket", "veri grubu"]),
-        # Sayılar — okunuş/basamak
-        ("M.5.1.1", ["okunuş", "okunuşu", "yazılışı", "basamak", "bölük",
-                     "çözümle", "basamak değeri", "sayı değeri"]),
-        ("M.5.1.3", ["çarpma işlemi", "bölme işlemi", "çarpımı", "bölümü"]),
-        ("M.5.1.2", ["toplama işlemi", "çıkarma işlemi"]),
+                     "kilometre", "santimetre", "milimetre", "uzunluk birim"]),
+        # Veri — NET sinyaller
+        ("M.5.6.1", ["sıklık tablosu", "sütun grafiği", "grafiğe göre", "grafikte",
+                     "tabloya göre", "anket", "veri grubu", "veri topla"]),
+        # Sayılar — okunuş/basamak/yuvarlama (Türkçe yumuşama: bölük→bölüğ)
+        ("M.5.1.1", ["okunuş", "okunuşu", "yazılışı", "basamak", "bölük", "bölüğ",
+                     "çözümle", "basamak değeri", "sayı değeri", "yuvarla", "rakamların toplamı"]),
+        # Ondalık — sayı deseni (\d+,\d+): spesifik konular elendikten SONRA
+        ("M.5.2.6", ["re:\\d+,\\d+"]),
+        # Bölme + kalan yorumu
+        ("M.5.1.5", ["kalan", "geriye kalan", "kaç tam", "artan miktar"]),
+        # Çarpma/bölme (× ÷ sembolleri dahil)
+        ("M.5.1.3", ["çarpma işlemi", "bölme işlemi", "çarpımı", "bölümü",
+                     "çarpma", "bölme", "kaç katı", "re:[×÷]"]),
+        # Toplama/çıkarma (en sonda; 'toplamı/farkı' jenerik olduğu için ÇIKARILDI —
+        # geometri/basamak sorularını yanlış yakalıyordu, isabet öncelikli)
+        ("M.5.1.2", ["toplama işlemi", "çıkarma işlemi", "toplama", "çıkarma"]),
     ],
     6: [
         ("M.6.1.7", ["bölünebilme", "bölünebilir", " ile tam bölün"]),
@@ -114,10 +129,13 @@ _RULES: dict[int, list[tuple[str, list[str]]]] = {
 }
 
 
-@lru_cache(maxsize=2048)
+@lru_cache(maxsize=4096)
 def _kw_pattern(kw: str) -> re.Pattern:
-    # Kelime-sınırı eşleşmesi: "veri" -> "verilen" YAKALAMASIN.
-    # % gibi sembolleri ve çok-kelimeli kalıpları da güvenli ele al.
+    # "re:..." önekli desenler ham regex olarak derlenir (notasyon-farkında:
+    # ondalık \d+,\d+, derece °, çarpma/bölme [×÷], yüzde %). Diğerleri kelime-sınırı
+    # eşleşmesi: "veri" -> "verilen" YAKALAMASIN.
+    if kw.startswith("re:"):
+        return re.compile(kw[3:])
     return re.compile(r"(?<!\w)" + re.escape(kw) + r"(?!\w)")
 
 

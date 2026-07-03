@@ -34,6 +34,12 @@ def _agent() -> GeminiAgent:
     return GeminiAgent()
 
 
+@lru_cache(maxsize=1)
+def _agent_yeni_nesil() -> GeminiAgent:
+    """Yeni nesil (kalite) yolu için daha güçlü modelle agent (gemini-3.5-flash)."""
+    return GeminiAgent(model=settings.gemini_model_yeni_nesil)
+
+
 def _validate_request(req: GenerateWorksheetRequest) -> None:
     valid_topic_ids = {t.value for t in TopicId}
     if req.topic_id not in valid_topic_ids:
@@ -114,11 +120,16 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         question_types verilirse agent.generate'e allowed_types geçer.
     """
     from app.models.enums import Difficulty as _Diff
+    from app.services.entitlements import wants_yeni_nesil
     _validate_request(req)
     topic = get_topic(req.grade, req.topic_id)
     assert topic is not None
 
-    agent = _agent()
+    # "Yeni nesil" gizli kalite kaldıracı: karar SUNUCUDA, premium yetkiye göre
+    # verilir (client bir bayrak gönderemez). Ücretsiz → normal, premium → yeni nesil.
+    _yeni_nesil = wants_yeni_nesil(req.tenant_id)
+    # Yeni nesil yolu daha güçlü modelle üretir (şekilli+bağlamsal kalite).
+    agent = _agent_yeni_nesil() if _yeni_nesil else _agent()
 
     def _gen(diff: _Diff, count: int) -> list:
         return agent.generate(
@@ -129,6 +140,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             question_count=count,
             tenant_id=req.tenant_id,
             allowed_types=req.question_types,
+            yeni_nesil=_yeni_nesil,
         )
 
     if req.difficulty_mode == "single":
@@ -156,7 +168,10 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
 
         def _gen_bucket(diff: "_Diff"):
             """Tek bucket üretir. Paralel modda izole agent kullanır."""
-            local_agent = GeminiAgent() if settings.parallel_difficulty_buckets else agent
+            local_agent = (
+                GeminiAgent(model=settings.gemini_model_yeni_nesil if _yeni_nesil else None)
+                if settings.parallel_difficulty_buckets else agent
+            )
             try:
                 qs = local_agent.generate(
                     grade=req.grade,
@@ -166,6 +181,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
                     question_count=buckets[diff],
                     tenant_id=req.tenant_id,
                     allowed_types=req.question_types,
+                    yeni_nesil=_yeni_nesil,
                 )
                 return diff, qs, local_agent.build_last_trace(), None
             except Exception as exc:  # noqa: BLE001

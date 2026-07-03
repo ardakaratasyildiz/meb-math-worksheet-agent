@@ -69,7 +69,7 @@ Kuralların:
    - `eslestirme`: Soru metni (yönerge) + boş satır + 2 kolonlu GFM tablo. Sol kolon "Numara/Öğe", sağ kolon "Harf/Karşılık" karıştırılmış sıralı. Tipik 3-4 satır. `answer` alanı eşleşmeler "1-c, 2-a, 3-b, 4-d" formatında. Çözüm her eşleşmenin neden olduğunu satır satır açıklar.
    - `siralama`: Soru metni (yönerge — örn. "Aşağıdaki sayıları küçükten büyüğe doğru sıralayınız") + karıştırılmış öğe listesi (madde işaretli liste veya virgülle ayrılmış). `answer` alanı doğru sıralı öğeler " → " (boşluklu ok) ile ayrılır. Çözüm sıralama kriterini ve adımları açıklar.
    - Diğer tipler (islem, sozel_problem, vs.): mevcut sözel/işlem formatında devam.
-10. Verilen örnek soruların stilini ve seviyesini referans al, AMA aynı sayıları/bağlamları KOPYALAMA.
+10. Verilen örnek soruların stilini ve seviyesini referans al, AMA aynı sayıları/bağlamları KOPYALAMA. GÖRSELLİ örneklerde (SVG/grafik/tablo): şekli OLDUĞU GİBİ KOPYALAMA — örnekteki görselin MANTIĞINI çöz (görsel neyi temsil ediyor, hangi veri şekilden okunuyor, soru şekil üzerinden neyi soruyor) ve bu mantığı KENDİ sorununa uygun FARKLI TASARIMDA yeni bir görselle uygula: farklı şekil türü, farklı düzen/yerleşim, farklı sayılar ve farklı gerçek yaşam bağlamı kullan. Örneğin bir "sayı doğrusu" örneğinden hareketle bir "kesir modeli", "geometrik şekil", "grafik" veya "tablo" da tasarlayabilirsin — yeter ki görsel soruyla matematiksel olarak TUTARLI olsun. Amaç örnekleri çoğaltmak değil, görsel kurma mantığını yeni ve özgün şekillerde üretebilmektir. Uygun olan HER konuda (sadece geometri değil; sayılar, kesir, cebir, veri, olasılık) görselli soru üretmekten çekinme.
 11. Verilen örnekler hedef zorluğa yakın seçilmiştir; üretimlerini aynı zorlukta tut.
 12. Çıktıyı MUTLAKA istenen JSON formatında üret; ek metin/açıklama EKLEME. `question` alanı Markdown içerebilir — newline (\\n), tablo, kod bloğu (```...```) serbesttir."""
 
@@ -218,6 +218,15 @@ def build_retry_prompt(
     return original_user_prompt + extension
 
 
+_YENI_NESIL_BLOCK = """YENİ NESİL (HARMAN) MOD — bu kağıtta sorular KARIŞIK olsun: bir kısmı klasik hızlı pratik, bir kısmı yeni nesil/beceri temelli. Zorluktan BAĞIMSIZ olarak:
+- `gunluk_hayat`, `sozel_problem`, `modelleme`, `akil_yurutme` tipindeki soruları YENİ NESİL yaz: 2-4 cümlelik GERÇEK YAŞAM SENARYOSU/bağlam (alışveriş, spor, tarif, yolculuk, okul, doğa, üretim vb.); öğrenci gerekli veriyi metinden/görselden KENDİSİ ayıklasın; mümkünse İŞE YARAMAYAN bir bilgi (çeldirici veri) ekle; çözüm ÇOK ADIMLI (en az 2 adım) olsun.
+- `islem`, `salt_islem`, `kavram_sorusu` gibi tipler KISA ve doğrudan kalabilir (hızlı pratik) — hepsini senaryoya çevirme.
+- `gorsel_geometri`, `grafik_okuma`, `tablo_sorusu`, `oruntu_sekil` (ŞEKİLLİ) tiplerinde şekli/tabloyu/grafiği MUTLAKA gerçek yaşam bağlamına yerleştir: çıplak "aşağıdaki şekilde..." DEĞİL; örn. bir bahçenin krokisi, bir mağazanın aylık satış grafiği, bir tarifin malzeme tablosu, bir parkın oturma düzeni. ŞEKİL + SENARYO birlikte olsun (şekilli bağlamsal soru).
+- ⚠️ KRİTİK: Şekilli tipte şekli GERÇEKTEN ÜRET. `gorsel_geometri`/`oruntu_sekil` → soru metninin içinde geçerli bir `<svg>...</svg>` bloğu OLMAK ZORUNDA; `grafik_okuma` → `{{chart:...}}` direktifi OLMAK ZORUNDA. Ölçüler/veriler şekilde görünmeli. "Görseldeki ölçüye göre" deyip şekil/direktif ÜRETMEMEK KESİNLİKLE YASAK (cevaplanamaz soru olur). Şekli üretemeyeceksen o soruyu bağlamsal SÖZEL soru (`gunluk_hayat`/`sozel_problem`) olarak yaz ve tüm ölçüleri metinde ver.
+- `coktan_secmeli` tiplerinde çeldiriciler yaygın HATA TİPLERİNDEN doğsun (işlem sırası, birim karışması, eksik adım, sık kavram yanılgısı) — rastgele yakın sayı DEĞİL.
+- Bağlam gerçekçi ve tutarlı olsun (fiyat, ölçü, miktar makul; birimler doğru). Aritmetik zorluğu yine "Zorluk Kalibrasyonu" belirler."""
+
+
 def build_user_prompt(
     grade: int,
     topic_name: str,
@@ -229,6 +238,7 @@ def build_user_prompt(
     context_exclusions: list[str] | None = None,
     few_shot_source: str = "static",
     textbook_chunks: list[dict] | None = None,
+    yeni_nesil: bool = False,
 ) -> str:
     parts = [
         f"Sınıf: {grade}. sınıf",
@@ -237,6 +247,8 @@ def build_user_prompt(
         f"Zorluk: {difficulty.value}",
         f"Üretilecek Soru Sayısı: {question_count}",
         "",
+        _YENI_NESIL_BLOCK if yeni_nesil else None,
+        "" if yeni_nesil else None,
         _format_distribution(distribution),
         _format_few_shot(few_shot_examples, difficulty, source=few_shot_source),
         _format_textbook_context(textbook_chunks or []),

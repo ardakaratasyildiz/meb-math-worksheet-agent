@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -47,8 +48,32 @@ PROCESSED_DIR = ROOT / "knowledge_base" / "processed"
 # Extractor tipleri → QuestionType enum (enum'da olmayanları eşle)
 _TYPE_MAP = {
     "acik_uclu": "sozel_problem",
+    "open_ended": "sozel_problem",
+    "multiple_choice": "coktan_secmeli",
     "siralanan": "siralama",
 }
+
+# ── Ucuz sezgisel ön-eleme (LLM'siz, deterministik) ──
+# Çıkarım artefaktlarını yakalar: çözümün cevap anahtarıyla çeliştiği ("cevap
+# anahtarı X dediği için Y'yi işaretle") ve aşırı büyük (dev SVG / birleşmiş) sorular.
+_CONTRADICTION_RE = re.compile(r"cevap anahtar\w*.{0,60}(i[şs]aretl)", re.IGNORECASE | re.DOTALL)
+_MAX_QUESTION_CHARS = 6000
+
+
+def _heuristic_reject(ex: dict) -> str | None:
+    """LLM'siz kesin-red gerekçesi döndürür (yoksa None)."""
+    q = ex.get("question") or ""
+    ans = ex.get("answer")
+    sol = ex.get("solution") or ""
+    if not q.strip():
+        return "boş soru metni"
+    if ans is None or str(ans).strip() == "":
+        return "boş cevap"
+    if len(q) > _MAX_QUESTION_CHARS:
+        return f"aşırı büyük soru ({len(q)} karakter > {_MAX_QUESTION_CHARS})"
+    if _CONTRADICTION_RE.search(sol):
+        return "çözüm-cevap çelişkisi (cevap anahtarı ile işaretlenen uyuşmuyor)"
+    return None
 
 
 def _to_question_type(raw: str) -> QuestionType:
@@ -84,7 +109,7 @@ def _to_question(ex: dict, index: int) -> Question:
     )
 
 
-def run(grade: int, use_critic: bool = True) -> None:
+def run(grade: int, use_critic: bool = True, reuse_rejects: bool = False) -> None:
     in_path = PROCESSED_DIR / f"questions_grade{grade}.json"
     if not in_path.exists():
         raise SystemExit(f"Girdi yok: {in_path} (önce extract_questions.py çalıştır)")
@@ -94,11 +119,33 @@ def run(grade: int, use_critic: bool = True) -> None:
 
     questions = [_to_question(e, i) for i, e in enumerate(examples)]
 
+    # ── Önceki critic redlerini taşı (zero-cost, LLM emeğini koru) ──
+    prior_reject: dict[int, str] = {}
+    if reuse_rejects:
+        rej_path = PROCESSED_DIR / f"questions_grade{grade}_rejected.json"
+        if rej_path.exists():
+            prev = json.loads(rej_path.read_text(encoding="utf-8")).get("examples", [])
+            prev_by_id = {e.get("id"): (e.get("reject_reason") or "önceki red") for e in prev if e.get("id")}
+            for i, e in enumerate(examples):
+                if e.get("id") in prev_by_id:
+                    prior_reject[i] = prev_by_id[e["id"]]
+            logger.info("önceki critic redleri taşındı: %d", len(prior_reject))
+        else:
+            logger.warning("--reuse-rejects verildi ama %s yok", rej_path.name)
+
+    # ── 0. Sezgisel ön-eleme (LLM'siz, deterministik) ──
+    heuristic_reject = {
+        i: reason for i, e in enumerate(examples)
+        if (reason := _heuristic_reject(e))
+    }
+    logger.info("sezgisel ön-eleme: %d REDDEDİLDİ (çelişki/boyut/boş)", len(heuristic_reject))
+
     # ── 1. math_verifier (deterministik, ücretsiz) ──
     math_verdicts = math_verifier.verify_batch(questions)
     math_reject = {
         v.question_index: v.reason for v in math_verdicts
         if v.is_verifiable and not v.is_valid
+        and v.question_index not in heuristic_reject and v.question_index not in prior_reject
     }
     math_checked = sum(1 for v in math_verdicts if v.is_verifiable)
     logger.info("math_verifier: %d soru kontrol edildi, %d REDDEDİLDİ",
@@ -113,7 +160,7 @@ def run(grade: int, use_critic: bool = True) -> None:
 
         groups: dict[tuple[str, str], list[int]] = defaultdict(list)
         for i, e in enumerate(examples):
-            if i in math_reject:
+            if i in math_reject or i in heuristic_reject or i in prior_reject:
                 continue  # zaten elendi
             groups[(e.get("kazanim_kod") or "", e.get("difficulty") or "orta")].append(i)
 
@@ -148,7 +195,11 @@ def run(grade: int, use_critic: bool = True) -> None:
     kept: list[dict] = []
     rejected: list[dict] = []
     for i, e in enumerate(examples):
-        if i in math_reject:
+        if i in heuristic_reject:
+            rejected.append({**e, "reject_reason": f"heuristic: {heuristic_reject[i]}", "reject_by": "heuristic"})
+        elif i in prior_reject:
+            rejected.append({**e, "reject_reason": prior_reject[i], "reject_by": "critic(prev)"})
+        elif i in math_reject:
             rejected.append({**e, "reject_reason": f"math: {math_reject[i]}", "reject_by": "math_verifier"})
         elif i in critic_reject:
             rejected.append({**e, "reject_reason": "; ".join(critic_reject[i]), "reject_by": "critic"})
@@ -164,6 +215,8 @@ def run(grade: int, use_critic: bool = True) -> None:
     print(f"Sınıf            : {grade}")
     print(f"Girdi            : {len(examples)}")
     print(f"KABUL            : {len(kept)}")
+    print(f"RED (heuristic)  : {len(heuristic_reject)}")
+    print(f"RED (critic-prev): {len(prior_reject)}")
     print(f"RED (math)       : {len(math_reject)}")
     print(f"RED (critic)     : {len(critic_reject)}")
     print(f"Kabul oranı      : {len(kept)/len(examples)*100:.0f}%")
@@ -173,9 +226,11 @@ def run(grade: int, use_critic: bool = True) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--grade", type=int, required=True)
-    parser.add_argument("--no-critic", action="store_true", help="Sadece math_verifier (bedava)")
+    parser.add_argument("--no-critic", action="store_true", help="Sadece math_verifier + heuristic (bedava)")
+    parser.add_argument("--reuse-rejects", action="store_true",
+                        help="Önceki questions_grade{N}_rejected.json redlerini taşı (critic emeğini koru, bedava)")
     args = parser.parse_args()
-    run(grade=args.grade, use_critic=not args.no_critic)
+    run(grade=args.grade, use_critic=not args.no_critic, reuse_rejects=args.reuse_rejects)
 
 
 if __name__ == "__main__":

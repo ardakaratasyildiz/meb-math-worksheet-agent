@@ -122,19 +122,40 @@ def _load_salt_islem_latex() -> list[dict]:
 
 
 def _load_lgs() -> list[dict]:
-    """LGS PDF'lerinden çıkarılan gerçek sınav sorularını yükler (grade=8 few-shot)."""
+    """LGS PDF'lerinden çıkarılan gerçek sınav sorularını yükler (grade=8 few-shot).
+
+    topic_id boşsa kazanım kodundan türetilir (retriever'ın topic fallback'i için) —
+    aksi halde 188 SVG'li LGS sorusu topic-hedefli çekilemiyordu.
+    """
     if not LGS_JSON_PATH.exists():
         logger.info("LGS JSON yok (atlanıyor): %s", LGS_JSON_PATH)
         return []
     with LGS_JSON_PATH.open("r", encoding="utf-8") as f:
         data = json.load(f)
     items = data.get("examples", [])
-    logger.info("LGS örnek: %s", len(items))
+    kod_to_topic = {
+        k["kod"]: tid
+        for tid, t in CURRICULUM.get(8, {}).items()
+        for k in t["kazanimlar"]
+    }
+    filled = 0
+    for it in items:
+        if not it.get("topic_id"):
+            tid = kod_to_topic.get(it.get("kazanim_kod") or "", "")
+            if tid:
+                it["topic_id"] = tid
+                filled += 1
+    logger.info("LGS örnek: %s (topic_id türetilen: %s)", len(items), filled)
     return items
 
 
-_QUESTIONS_GRADES = (5, 6, 7)
-_QTYPE_INGEST_MAP = {"acik_uclu": "sozel_problem", "siralanan": "siralama"}
+_QUESTIONS_GRADES = (5, 6, 7, 8)
+_QTYPE_INGEST_MAP = {
+    "acik_uclu": "sozel_problem",
+    "open_ended": "sozel_problem",
+    "multiple_choice": "coktan_secmeli",
+    "siralanan": "siralama",
+}
 
 
 def _load_questions() -> list[dict]:

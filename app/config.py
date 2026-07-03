@@ -6,6 +6,10 @@ class Settings(BaseSettings):
 
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
+    # Yeni nesil (kalite/premium) yolu için daha güçlü model. Kodlama-optimize →
+    # geometri SVG gibi yapısal çıktıda daha güvenilir; şekilli+bağlamsal soru için.
+    # A/B (2026-07): 3.5-flash şekilli oranı ~2x, Pro'dan hızlı (48s vs 63s).
+    gemini_model_yeni_nesil: str = "gemini-3.5-flash"
     gemini_fallback_models: str = "gemini-2.5-flash-lite,gemini-2.5-pro"
     gemini_embedding_model: str = "gemini-embedding-001"
     # Embedding boyutu: 3072 (varsayılan) yerine 768 → ChromaDB dosyaları GitHub
@@ -68,6 +72,24 @@ class Settings(BaseSettings):
 
     # CORS — frontend domain'leri (virgülle). Boşsa "*" (yalnızca dev için).
     cors_origins: str = ""
+
+    # Premium yetkilendirme (entitlement) — "yeni nesil" GİZLİ kalite kaldıracı.
+    # Gerçek billing/abonelik henüz yok; bu ayarlar app/services/entitlements.py
+    # üzerinden okunur ve ileride Clerk publicMetadata / billing'e bağlanır.
+    #   - premium_yeni_nesil: yeni nesil (harman) mod açık mı (özellik anahtarı)
+    #   - premium_all: herkesi premium say → herkes yeni nesil alır
+    #   - premium_tenant_ids: premium Clerk userId'leri (virgülle) allowlist
+    # Karar HER ZAMAN sunucuda verilir; client bir bayrak gönderemez.
+    # ŞİMDİLİK premium_all=True → ücretsiz dahil herkes yeni nesil (harman) alıyor.
+    # Abonelik/billing canlı olunca: premium_all=False yap + premium_tenant_ids doldur
+    # → o an ücretsiz=normal, premium=yeni nesil FARKI devreye girer.
+    premium_yeni_nesil: bool = True
+    premium_all: bool = True
+    premium_tenant_ids: str = ""
+
+    @property
+    def premium_tenant_id_set(self) -> set[str]:
+        return {t.strip() for t in self.premium_tenant_ids.split(",") if t.strip()}
 
     @property
     def api_key_list(self) -> list[str]:
