@@ -283,6 +283,27 @@ Gemini 3.x GA değil ama `-flash`/`-pro` erişilebilir; `gemini-3-flash` (previe
   3.5-flash. Billing ayrışınca ücretsiz=2.5-flash, premium=3.5-flash otomatik.
 - Uçtan uca doğrulandı: router yolu gemini-3.5-flash kullanıyor, geometri şekilli+bağlamsal (nişangah/havuz SVG).
 
+## 11. Faz E — Görselli soru havuzu: Claude vision + 7 paralel subagent (2026-07-03)
+
+Kullanıcı isteği: şekilli sorular sadece geometride değil TÜM konularda üretilebilsin. Çözüm:
+gerçek çıkmış/LGS örnek PDF'lerindeki görselli soruları **Claude'un kendi görme yetenegiyle** (sıfır Gemini)
+çıkarıp şekli elle geçerli inline SVG'ye çevirmek → few-shot havuzuna gerçek görsel örnekler.
+
+**Hat (tekrarlanabilir):** pymupdf PDF→PNG → Claude okur → görselli soru çıkarır + şekli SVG/`{{chart}}`/Markdown
+→ cevabı çözer → belirsiz figürü ATLAR (kalite barı) → `is_valid_svg` → `add_manual_questions.py`.
+
+**7 paralel subagent** (general-purpose, her biri sıfır Gemini): g8 lgsornek1/2/3, g6 geometri+karışık, g5 geometri+karışık.
+**Sonuç: 111 gerçek görselli soru** (hepsi şema+SVG doğrulandı, cevaplar elle çözüldü, belirsizler atlandı):
+- Grade 8: 25 (lgsornek1-3) — asal, üslü, karekök, cebir, olasılık, grafik, silindir, benzerlik.
+- Grade 6: 43 (açılar 29 + karışık 14) — doğru/dörtgen/üçgen açı, çarpanlar, bölünebilme, ondalık, cebir, veri.
+- Grade 5: 43 (geometri 18 + karışık 25) — üçgen/dörtgen/açı, yüzde modelleri, ondalık, kesir modeli, grafik.
+- question_type dağılımı: gorsel_geometri çoğunluk + grafik_okuma + tablo_sorusu + oruntu_sekil (tüm görsel tipler).
+
+**Grade-8 topic fix:** `_load_lgs` artık kazanımdan topic_id türetiyor (188 mevcut LGS SVG sorusu + 25 yeni
+topic-hedefli retrieval'da). `ingest_to_chroma._QUESTIONS_GRADES`'e 8 eklendi (questions_grade8 artık ingest ediliyor).
+
+**Doğrulama:** grade5=906 (43 yeni, 460 critic emeği korundu), grade6=194, grade8=25, grade7=140. Chroma --rebuild.
+
 ### Sıradaki (Faz D — opsiyonel)
 - [ ] Abonelik/billing entegrasyonu (Clerk publicMetadata → `entitlements.is_premium`), sonra `premium_all=False`.
 - [ ] K5: eval'e "yeni nesil skoru" (bağlam uzunluğu, adım sayısı, görsel oranı, çeldirici kalitesi).
