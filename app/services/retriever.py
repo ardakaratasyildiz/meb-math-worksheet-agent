@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 import random
 import re
-from functools import lru_cache
+import threading
 from typing import Any
 
 import chromadb
@@ -21,6 +21,14 @@ from rank_bm25 import BM25Okapi
 
 from app.config import settings
 from app.services.embedder import GeminiEmbedder
+
+# ChromaDB PersistentClient thread-safe DEĞİL: paralel zorluk bucket'ları (mixed/
+# progressive mod) aynı path'te eşzamanlı client oluşturunca/sorgu atınca chromadb
+# SharedSystemClient yarışa girer ("tenant default_tenant bağlanamadı",
+# "RustBindingsApi has no attribute bindings", "KeyError: <path>"). Tek bir RLock
+# ile hem singleton oluşturmayı hem de tüm koleksiyon erişimlerini serialize ederiz.
+# Sorgular ms mertebesinde; LLM çağrıları (asıl gecikme) paralel kalır.
+_CHROMA_LOCK = threading.RLock()
 
 _TOKEN_RE = re.compile(r"\w+", flags=re.UNICODE)
 
@@ -140,20 +148,24 @@ class ExampleRetriever:
     ) -> None:
         self.db_path = db_path or settings.chroma_db_path
         self.collection_name = collection_name or settings.chroma_collection
-        self.client = chromadb.PersistentClient(path=self.db_path)
-        try:
-            self.collection = self.client.get_collection(self.collection_name)
-        except Exception as exc:
-            raise RetrieverError(
-                f"ChromaDB koleksiyonu '{self.collection_name}' bulunamadı. "
-                "Önce `python scripts/ingest_to_chroma.py` çalıştırın."
-            ) from exc
+        # Client + koleksiyon oluşturmayı serialize et (eşzamanlı bucket'lar aynı
+        # path'te SharedSystemClient yarışına girmesin).
+        with _CHROMA_LOCK:
+            self.client = chromadb.PersistentClient(path=self.db_path)
+            try:
+                self.collection = self.client.get_collection(self.collection_name)
+            except Exception as exc:
+                raise RetrieverError(
+                    f"ChromaDB koleksiyonu '{self.collection_name}' bulunamadı. "
+                    "Önce `python scripts/ingest_to_chroma.py` çalıştırın."
+                ) from exc
         self.embedder = GeminiEmbedder()
         # BM25 indeksi — filter scope'una göre lazy & cached
         self._bm25_cache: dict[str, tuple[BM25Okapi, list[str], list[str], list[dict]]] = {}
 
     def count(self) -> int:
-        return self.collection.count()
+        with _CHROMA_LOCK:
+            return self.collection.count()
 
     def _bm25_for_filter(
         self,
@@ -168,7 +180,8 @@ class ExampleRetriever:
         if cached is not None:
             return cached
         try:
-            res = self.collection.get(where=where, include=["documents", "metadatas"])
+            with _CHROMA_LOCK:
+                res = self.collection.get(where=where, include=["documents", "metadatas"])
         except Exception as exc:
             logger.warning("BM25 corpus alınamadı (%s): %s", where, exc)
             return None
@@ -334,11 +347,12 @@ class ExampleRetriever:
                 break
             n_dense = max(k * oversample_factor * 2, 30)
             try:
-                res = self.collection.query(
-                    query_embeddings=[query_embedding],
-                    n_results=n_dense,
-                    where=where,
-                )
+                with _CHROMA_LOCK:
+                    res = self.collection.query(
+                        query_embeddings=[query_embedding],
+                        n_results=n_dense,
+                        where=where,
+                    )
             except Exception as exc:
                 logger.warning("Chroma query hata (%s): %s", where, exc)
                 continue
@@ -424,11 +438,27 @@ class ExampleRetriever:
         return _weighted_sample(candidate_pool, k, rng)
 
 
-@lru_cache(maxsize=1)
+_RETRIEVER_SINGLETON: "ExampleRetriever | None" = None
+_RETRIEVER_INIT_DONE = False
+
+
 def get_retriever() -> ExampleRetriever | None:
-    """Modül düzeyinde singleton. ChromaDB yoksa None döner (USE_RAG=False davranışı)."""
-    try:
-        return ExampleRetriever()
-    except RetrieverError as exc:
-        logger.warning("Retriever başlatılamadı: %s", exc)
-        return None
+    """Modül düzeyinde THREAD-SAFE singleton. ChromaDB yoksa None döner (USE_RAG=False).
+
+    lru_cache thread-safe değildi: paralel bucket'lar ilk çağrıda wrapped fonksiyonu
+    birden çok kez çalıştırıp birden çok ChromaDB client oluşturabiliyordu (tenant/
+    RustBindings/KeyError yarışı). Çift-kontrollü kilitle tek client garanti edilir.
+    """
+    global _RETRIEVER_SINGLETON, _RETRIEVER_INIT_DONE
+    if _RETRIEVER_INIT_DONE:
+        return _RETRIEVER_SINGLETON
+    with _CHROMA_LOCK:
+        if _RETRIEVER_INIT_DONE:
+            return _RETRIEVER_SINGLETON
+        try:
+            _RETRIEVER_SINGLETON = ExampleRetriever()
+        except RetrieverError as exc:
+            logger.warning("Retriever başlatılamadı: %s", exc)
+            _RETRIEVER_SINGLETON = None
+        _RETRIEVER_INIT_DONE = True
+    return _RETRIEVER_SINGLETON
