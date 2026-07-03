@@ -304,6 +304,27 @@ topic-hedefli retrieval'da). `ingest_to_chroma._QUESTIONS_GRADES`'e 8 eklendi (q
 
 **Doğrulama:** grade5=906 (43 yeni, 460 critic emeği korundu), grade6=194, grade8=25, grade7=140. Chroma --rebuild.
 
+## 12. Faz F — Kaynak-önceliği + görsel mantığını öğretme (2026-07-03)
+
+Sorun: 111 gerçek görsel soru havuza girdi ama (a) retrieval'da uzun SVG içeriği kısa kazanım
+sorgusuna karşı düşük sıralanıyordu (few-shot'a az giriyordu), (b) figür payı sadece birkaç konuda
+vardı → görselli soru çoğunlukla sadece geometride üretiliyordu, (c) model örnekleri kopyalama riskindeydi.
+
+**3 değişiklik (kod-only, re-ingest gerekmez):**
+1. **Kaynak-önceliği** (`retriever._source_priority` + `_weighted_sample`): gerçek kaynak (×1.6) ve
+   görselli soru (SVG/grafik/tablo ×1.8) few-shot örneklemede boost alır. Sonuç: M.6.3.4 (açı) few-shot'ta
+   görselli oran 0 → **ort. 4.6/6**. Model gerçek görselleri sürekli görüp mantığı öğrenir.
+2. **Görsel mantığı öğretme** (`templates.SYSTEM_PROMPT` rule 10): "şekli KOPYALAMA — görselin mantığını
+   çöz ve KENDİ sorununa uygun FARKLI TASARIMDA yeni bir görsel üret (farklı şekil/düzen/değer/bağlam);
+   sayı doğrusu örneğinden kesir modeli/grafik/tablo da tasarlayabilirsin; HER konuda görsel üret."
+3. **Figür payını tüm konulara yay** (`diversity.TOPIC_VISUAL_BIAS`): kesirler/dogal_sayilar/cebir/olcme/
+   olasilik'e gorsel_geometri + tablo payı eklendi (gorsel_geometri = "inline SVG figür" tipi, her konuda
+   uygun model çizmek için). yeni_nesil'de bu paylar ×1.5 boost.
+
+**Doğrulama (gerçek üretim, yeni_nesil, gemini-3.5-flash):**
+- g6 geometri 3/4 görselli — paralelkenar site krokisi, yamuk çatı katı, makas açısı (hepsi ÖZGÜN tasarım).
+- g5 kesirler 0→1/5, g8 sayılar 2/5 görselli — dikdörtgen masa/park SVG, pastacı tablosu. Artık geometri DIŞI konularda da görsel üretiliyor.
+
 ### Sıradaki (Faz D — opsiyonel)
 - [ ] Abonelik/billing entegrasyonu (Clerk publicMetadata → `entitlements.is_premium`), sonra `premium_all=False`.
 - [ ] K5: eval'e "yeni nesil skoru" (bağlam uzunluğu, adım sayısı, görsel oranı, çeldirici kalitesi).

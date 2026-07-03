@@ -67,6 +67,11 @@ DIFFICULTY_DISTRIBUTIONS: dict[Difficulty, list[tuple[QuestionType, float]]] = {
 
 # Topic'e özel görsel/yapısal tip ağırlıkları. Toplamları 0.7'yi geçemez —
 # sözel çekirdek dağılım her zaman korunur, üstüne bu tipler bindirilir.
+# Her öğrenme alanına GÖRSEL/figür payı verilir — şekilli sorular sadece geometri
+# değil TÜM konularda üretilsin (kesir/ondalık modeli, sayı doğrusu, tablo, grafik,
+# cebir modeli, ölçme şekli). gorsel_geometri = "inline SVG figür" tipidir; her
+# konuda uygun bir görsel model (kesir alan modeli, sayı doğrusu, dikdörtgen model
+# vb.) çizmek için kullanılır. yeni_nesil modda bu figür payları ×1.5 boost alır.
 TOPIC_VISUAL_BIAS: dict[str, dict[QuestionType, float]] = {
     "veri_isleme": {
         QuestionType.TABLO_SORUSU: 0.30,
@@ -74,21 +79,28 @@ TOPIC_VISUAL_BIAS: dict[str, dict[QuestionType, float]] = {
     },
     "olasilik": {
         QuestionType.TABLO_SORUSU: 0.20,
+        QuestionType.GORSEL_GEOMETRI: 0.12,
     },
     "geometri": {
         QuestionType.GORSEL_GEOMETRI: 0.35,
     },
     "cebir": {
         QuestionType.ORUNTU_SEKIL: 0.15,
+        QuestionType.GORSEL_GEOMETRI: 0.12,
         QuestionType.SALT_ISLEM: 0.10,
     },
     "dogal_sayilar": {
-        QuestionType.SALT_ISLEM: 0.15,
+        QuestionType.GORSEL_GEOMETRI: 0.12,
+        QuestionType.TABLO_SORUSU: 0.10,
+        QuestionType.SALT_ISLEM: 0.13,
     },
     "kesirler": {
-        QuestionType.SALT_ISLEM: 0.20,
+        QuestionType.GORSEL_GEOMETRI: 0.15,
+        QuestionType.TABLO_SORUSU: 0.07,
+        QuestionType.SALT_ISLEM: 0.18,
     },
     "olcme": {
+        QuestionType.GORSEL_GEOMETRI: 0.15,
         QuestionType.SALT_ISLEM: 0.10,
     },
 }
