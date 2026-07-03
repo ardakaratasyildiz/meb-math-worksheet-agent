@@ -25,6 +25,7 @@ from app.services.admin_audit import ADMIN_AUDIT
 from app.services.db_connection import connect as db_connect
 from app.services.history import GENERATION_HISTORY
 from app.services.llm_cache import GENERATION_CACHE
+from app.services.usage_ledger import USAGE_LEDGER
 
 router = APIRouter()
 
@@ -56,6 +57,21 @@ def get_admin_actor(
     elif request.client:
         ip = request.client.host
     return {"actor": x_admin_actor, "ip": ip}
+
+
+@router.get("/costs/summary", dependencies=[Depends(require_admin_key)])
+def costs_summary(days: int = 30, actor: dict = Depends(get_admin_actor)) -> dict[str, Any]:
+    """Gemini maliyet özeti — son `days` gün: toplam + tenant/model/gün kırılımı.
+
+    "Kim ne kadar Gemini harcadı" (ANONİM dahil). Kaynak: usage_ledger (her üretim
+    için gerçek maliyet = üretim + retry + top-up + critic + embedding).
+    """
+    import time as _t
+    ADMIN_AUDIT.record(action="costs_summary", clerk_user_id=actor["actor"], ip=actor["ip"])
+    since = (_t.time() - max(1, days) * 86400) if days and days > 0 else None
+    data = USAGE_LEDGER.summary(since_ts=since)
+    data["window_days"] = days
+    return data
 
 
 @router.get("/cache/stats", dependencies=[Depends(require_admin_key)])
