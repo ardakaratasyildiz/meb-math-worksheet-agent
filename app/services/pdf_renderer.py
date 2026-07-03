@@ -370,12 +370,16 @@ def _normalize_svg_fonts(svg: str) -> str:
     return re.sub(r"<(?:text|tspan)\b[^>]*>", _inject, svg)
 
 
-def _render_svg_block(svg_str: str, max_width_cm: float = 12.0) -> object | None:
+def _render_svg_block(
+    svg_str: str, max_width_cm: float = 12.0, max_height_cm: float = 15.0
+) -> object | None:
     """SVG string'i svglib ile reportlab Drawing'e çevirir.
 
     Bozuk/tehlikeli SVG None döner — caller fallback metin gösterir.
     max_width_cm: A4 yararlı genişliği ~17 cm; geometri şekilleri için 12 cm
-    görsel olarak daha okunabilir (santrale yatırılır).
+    görsel olarak daha okunabilir. max_height_cm: dar-ama-uzun bir SVG genişliğe
+    göre ölçeklenince aşırı yükselip soru bloğunu sayfa dışına (footer/sayfa no
+    üzerine) taşırabiliyordu → yükseklik de sınırlanır; en kısıtlayıcı ölçek uygulanır.
     """
     from app.services.svg_utils import is_valid_svg
     ok, _reason = is_valid_svg(svg_str)
@@ -389,12 +393,20 @@ def _render_svg_block(svg_str: str, max_width_cm: float = 12.0) -> object | None
         drawing = svg2rlg(BytesIO(svg_str.encode("utf-8")))
         if drawing is None:
             return None
-        # Scale: SVG intrinsic boyutu sayfa genişliğini aşıyorsa daralt
+        # Scale: hem genişlik hem YÜKSEKLİK tavanına göre; en küçük oran uygulanır
+        # (aspect korunur, uzun figür sayfayı taşırmaz).
         max_w = max_width_cm * cm
-        if drawing.width and drawing.width > max_w:
-            scale = max_w / drawing.width
-            drawing.width *= scale
-            drawing.height *= scale
+        max_h = max_height_cm * cm
+        w = drawing.width or 0.0
+        h = drawing.height or 0.0
+        scale = 1.0
+        if w > max_w:
+            scale = max_w / w
+        if h and h * scale > max_h:
+            scale = min(scale, max_h / h)
+        if scale < 1.0:
+            drawing.width = w * scale
+            drawing.height = h * scale
             drawing.scale(scale, scale)
         return drawing
     except Exception as exc:  # noqa: BLE001
@@ -747,7 +759,10 @@ def render_worksheet_pdf(
         leftMargin=2 * cm,
         rightMargin=2 * cm,
         topMargin=1.8 * cm,
-        bottomMargin=1.8 * cm,
+        # Alt bilgi (site + sayfa no ~1.0cm, QR 0.5-1.6cm) ile içerik çerçevesi
+        # arasında net tampon. 1.8cm'de sınırdaydı; sıkışık/uzun içerik footer'a
+        # binebiliyordu ("yazı sayfa sayının üzerine geliyor"). 2.3cm güvenli boşluk.
+        bottomMargin=2.3 * cm,
         title=worksheet.title,
         author="MEB Math Worksheet Agent",
     )
