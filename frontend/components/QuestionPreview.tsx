@@ -172,9 +172,14 @@ export function QuestionPreview() {
             </Button>
           ) : (
             // Anonim: değeri (sorular + cevap anahtarı) gördü; PDF üyelik kapısında.
-            // Clerk modal sayfadan çıkmadan açılır → üretilen kağıt korunur; üyelik
-            // bitince userId dolar, buton "PDF indir"e döner.
-            <SignUpButton mode="modal">
+            // Üyelik sonrası Clerk /generate'e döner (forceRedirectUrl) ve üretilen
+            // kağıt store'da persistlendiği için KAYBOLMAZ → userId dolar, buton
+            // "PDF indir"e döner. (Önceden redirect sayfayı yeniliyor, kağıt gidiyordu.)
+            <SignUpButton
+              mode="modal"
+              forceRedirectUrl="/generate"
+              signInForceRedirectUrl="/generate"
+            >
               <Button
                 className="gap-2"
                 onClick={() =>

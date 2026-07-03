@@ -101,6 +101,11 @@ const DIFFICULTY_MODE_HINT: Record<DifficultyMode, string> = {
   progressive: "Aynı 30/40/30 dağılımı; sıralama kolay → orta → zor.",
 };
 
+// "Görsel ve yapısal" grubu UI'dan KALDIRILDI: görselli sorular (geometri, tablo,
+// grafik, örüntü) artık sunucu tarafında konuya göre belirli bir oranda otomatik
+// üretiliyor (TOPIC_VISUAL_BIAS). Kullanıcıya görsel seçtirmek kafa karışıklığı
+// yaratıyordu. Kullanıcı yalnızca sözel ve format gruplarını yönetir; görsel her
+// zaman havuzda (flattenTypeGroups içinde visual:true zorlanır).
 const TYPE_GROUP_META: {
   key: TypeGroupKey;
   title: string;
@@ -110,11 +115,6 @@ const TYPE_GROUP_META: {
     key: "open_ended",
     title: "Açık uçlu sözel",
     hint: "İşlem, sözel problem, kavram, akıl yürütme, modelleme, günlük hayat",
-  },
-  {
-    key: "visual",
-    title: "Görsel ve yapısal",
-    hint: "Salt işlem, tablo, geometri, grafik, örüntü",
   },
   {
     key: "format",
@@ -128,8 +128,10 @@ const KAZANIM_AUTO = "__AUTO__";
 function flattenTypeGroups(
   groups: Record<TypeGroupKey, boolean>,
 ): QuestionType[] | null {
-  const enabledKeys = (Object.keys(groups) as TypeGroupKey[]).filter(
-    (k) => groups[k],
+  // Görsel grubu her zaman havuzda (sunucu oranı uygular); kullanıcı seçemez.
+  const effective: Record<TypeGroupKey, boolean> = { ...groups, visual: true };
+  const enabledKeys = (Object.keys(effective) as TypeGroupKey[]).filter(
+    (k) => effective[k],
   );
   if (enabledKeys.length === 3) return null;
   return enabledKeys.flatMap((k) => QUESTION_TYPE_GROUPS[k] as QuestionType[]);
@@ -229,7 +231,7 @@ export function GenerateForm({
   const advancedChangeCount = React.useMemo(() => {
     let n = 0;
     if (difficultyMode !== "single") n++;
-    if (!typeGroups.open_ended || !typeGroups.visual || !typeGroups.format) n++;
+    if (!typeGroups.open_ended || !typeGroups.format) n++;
     if (!includeAnswerKey) n++;
     if (!includeSolutions) n++;
     if (brandName.trim() || brandSubtitle.trim() || brandLogo) n++;
@@ -278,8 +280,9 @@ export function GenerateForm({
   }, [grade, topicId]);
 
   const isLoading = status === "loading";
-  const anyTypeGroupOn =
-    typeGroups.open_ended || typeGroups.visual || typeGroups.format;
+  // Görsel grubu artık kullanıcı seçimi değil (sunucu oranı); yalnızca sözel/format
+  // gruplarından en az biri açık olmalı.
+  const anyTypeGroupOn = typeGroups.open_ended || typeGroups.format;
 
   const logoInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -608,9 +611,9 @@ export function GenerateForm({
             <div className="space-y-2.5">
               <SectionTitle
                 title="Soru tipi grupları"
-                hint="Hangi tipler üretim havuzunda olsun? En az bir grup açık olmalı."
+                hint="Hangi tipler üretim havuzunda olsun? En az bir grup açık olmalı. (Görselli sorular konuya göre otomatik eklenir.)"
               />
-              <div className="grid gap-3 md:grid-cols-3">
+              <div className="grid gap-3 md:grid-cols-2">
                 {TYPE_GROUP_META.map((g) => (
                   <div
                     key={g.key}

@@ -119,6 +119,11 @@ export const useGenerateStore = create<GenerateStore>()(
         brandName: s.brandName,
         brandSubtitle: s.brandSubtitle,
         brandLogo: s.brandLogo,
+        // Üretilen kağıdı da persistle: anonim kullanıcı üretip PDF indirmek için
+        // üye olunca Clerk redirect'i sayfayı yeniliyordu → kağıt kayboluyor, üretim
+        // boşa gidiyordu. Sadece BAŞARILI sonucu sakla (loading/error yeniden yüklenmez).
+        status: s.status === "success" ? "success" : "idle",
+        result: s.status === "success" ? s.result : null,
       }),
     },
   ),
