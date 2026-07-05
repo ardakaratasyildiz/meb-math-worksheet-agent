@@ -35,6 +35,7 @@ def _cache_key(
     difficulty: str,
     question_count: int,
     allowed_types=None,
+    yeni_nesil: bool = False,
 ) -> str:
     # allowed_types (kullanıcının seçtiği soru tipi filtresi) anahtara dahil
     # edilir — aksi halde filtre seçen kullanıcıya filtresiz bir cached set
@@ -43,9 +44,14 @@ def _cache_key(
         types = "+".join(sorted(getattr(t, "value", str(t)) for t in allowed_types))
     else:
         types = "all"
+    # yeni_nesil (premium: farklı model + prompt + görsel-ağırlıklı dağılım)
+    # anahtara dahildir — premium ve normal setler farklı karakterde olduğundan
+    # ayrı havuzlarda tutulur; premium isteyen kullanıcıya normal set (veya tersi)
+    # dönmesin. Normal mod SONEK EKLEMEZ → eski cache kayıtları geçerli kalır.
+    suffix = "|premium" if yeni_nesil else ""
     return (
         f"g{grade}|{topic_id}|{kazanim_kod or '__AUTO__'}|{difficulty}"
-        f"|q{question_count}|t{types}"
+        f"|q{question_count}|t{types}{suffix}"
     )
 
 
@@ -93,6 +99,7 @@ class GenerationCache:
         question_count: int,
         exclude_questions: Iterable[str] = (),
         allowed_types=None,
+        yeni_nesil: bool = False,
     ) -> list[Question] | None:
         """Cached set döndürür ya da None.
 
@@ -101,12 +108,14 @@ class GenerationCache:
         kalan set yoksa miss.
 
         allowed_types: kullanıcının soru tipi filtresi — cache anahtarına dahildir.
+        yeni_nesil: premium mod — cache anahtarına dahildir (ayrı havuz).
         """
         from app.services.diversity import normalize_question
 
         excl = set(exclude_questions)
         key = _cache_key(
-            grade, topic_id, kazanim_kod, difficulty, question_count, allowed_types
+            grade, topic_id, kazanim_kod, difficulty, question_count,
+            allowed_types, yeni_nesil,
         )
         with self._lock:
             assert self._db is not None
@@ -155,12 +164,14 @@ class GenerationCache:
         question_count: int,
         questions: list[Question],
         allowed_types=None,
+        yeni_nesil: bool = False,
     ) -> None:
         """Yeni set ekler. Aynı key için max_per_key aşıldıysa en eski silinir."""
         if not questions:
             return
         key = _cache_key(
-            grade, topic_id, kazanim_kod, difficulty, question_count, allowed_types
+            grade, topic_id, kazanim_kod, difficulty, question_count,
+            allowed_types, yeni_nesil,
         )
         # Pydantic mode="json" → datetime/enum'ları string'e çevirir.
         payload = json.dumps(
