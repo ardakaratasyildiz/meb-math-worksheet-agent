@@ -40,6 +40,21 @@ from app.services.svg_utils import process_chart_directives
 logger = logging.getLogger(__name__)
 
 
+def model_for_grade(grade: int) -> str:
+    """Sınıfa göre üretim modeli seçer.
+
+    1-4. sınıf → hafif/ucuz model (gemini-2.5-flash): sorular basit, güçlü
+    modele gerek yok → maliyet düşer. 5-8. sınıf → güçlü Gemini 3 flash:
+    bağlamsal/şekilli kalite için. Model stringleri config'ten okunur
+    (gemini_model_grade_1_4 / gemini_model_grade_5_8).
+    """
+    return (
+        settings.gemini_model_grade_1_4
+        if grade <= 4
+        else settings.gemini_model_grade_5_8
+    )
+
+
 class GeneratedQuestion(BaseModel):
     """Gemini'den dönen ham üretim. solution_steps şimdilik str — Gemini
     response_schema union types ile her zaman güvenli değil; Question.solution_steps

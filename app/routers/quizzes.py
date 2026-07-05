@@ -30,7 +30,7 @@ from app.models.schemas import (
     SubmitAttemptRequest,
 )
 from app.security import limiter, rate_limit_string, require_api_key
-from app.services.agent import AgentError, GeminiAgent
+from app.services.agent import AgentError, GeminiAgent, model_for_grade
 from app.services.grading import grade_quiz
 from app.services.quiz_store import QUIZ_STORE
 from app.services.structured import derive_structured_fields, validate_structured
@@ -49,9 +49,12 @@ _SOLVABLE_TYPES = [
 ]
 
 
-@lru_cache(maxsize=1)
-def _agent() -> GeminiAgent:
-    return GeminiAgent()
+@lru_cache(maxsize=8)
+def _agent_for_model(model: str) -> GeminiAgent:
+    """Model başına tekil (cache'li) agent. Model sınıfa göre seçilir
+    (model_for_grade): 1-4 → flash 2.5, 5-8 → Gemini 3 flash. Paralel bucket
+    modunda izole GeminiAgent kullanılır (trace state yarışını önlemek için)."""
+    return GeminiAgent(model=model)
 
 
 def _resolve_solvable_types(
@@ -94,6 +97,9 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
             detail="Seçilen tipler çözülebilir değil; en az bir çözülebilir tip seçin.",
         )
 
+    # Model seçimi SINIFA göre: 1-4 → flash 2.5 (ucuz), 5-8 → Gemini 3 flash.
+    _model = model_for_grade(req.grade)
+
     def _gen(agent: GeminiAgent, diff: Difficulty, count: int) -> list[Question]:
         return agent.generate(
             grade=req.grade,
@@ -108,7 +114,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
     raw: list[Question] = []
     if req.difficulty_mode == "single":
         try:
-            raw = _gen(_agent(), req.difficulty, req.question_count)
+            raw = _gen(_agent_for_model(_model), req.difficulty, req.question_count)
         except AgentError as exc:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
     else:
@@ -120,7 +126,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
         def _gen_bucket(diff: Difficulty):
             # İzole agent → paylaşılan trace/durum yarışı olmaz.
             try:
-                return diff, _gen(GeminiAgent(), diff, buckets[diff]), None
+                return diff, _gen(GeminiAgent(model=_model), diff, buckets[diff]), None
             except Exception as exc:  # noqa: BLE001
                 logger.warning("Quiz bucket başarısız (diff=%s): %s", diff.value, exc)
                 return diff, [], str(exc)

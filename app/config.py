@@ -10,6 +10,12 @@ class Settings(BaseSettings):
     # geometri SVG gibi yapısal çıktıda daha güvenilir; şekilli+bağlamsal soru için.
     # A/B (2026-07): 3.5-flash şekilli oranı ~2x, Pro'dan hızlı (48s vs 63s).
     gemini_model_yeni_nesil: str = "gemini-3.5-flash"
+    # Sınıf-bazlı model seçimi: 1-4. sınıf soruları basit → hafif/ucuz flash 2.5
+    # yeterli; 5-8. sınıf bağlamsal/şekilli kalite için güçlü Gemini 3 flash.
+    # Seçim app.services.agent.model_for_grade() üzerinden uygulanır; yeni_nesil
+    # (premium) bayrağından bağımsızdır — o yalnız prompt+dağılımı etkiler.
+    gemini_model_grade_1_4: str = "gemini-2.5-flash"
+    gemini_model_grade_5_8: str = "gemini-3.5-flash"
     gemini_fallback_models: str = "gemini-2.5-flash-lite,gemini-2.5-pro"
     gemini_embedding_model: str = "gemini-embedding-001"
     # Embedding boyutu: 3072 (varsayılan) yerine 768 → ChromaDB dosyaları GitHub
