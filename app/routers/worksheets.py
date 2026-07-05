@@ -21,7 +21,7 @@ from app.models.schemas import (
     WorksheetMetadata,
 )
 from app.security import limiter, rate_limit_string, require_api_key
-from app.services.agent import AgentError, GeminiAgent
+from app.services.agent import AgentError, GeminiAgent, model_for_grade
 from app.services.pdf_renderer import render_worksheet_pdf
 from app.services.usage_ledger import USAGE_LEDGER
 from app.services.worksheet_history import WORKSHEET_HISTORY
@@ -30,15 +30,13 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@lru_cache(maxsize=1)
-def _agent() -> GeminiAgent:
-    return GeminiAgent()
-
-
-@lru_cache(maxsize=1)
-def _agent_yeni_nesil() -> GeminiAgent:
-    """Yeni nesil (kalite) yolu için daha güçlü modelle agent (gemini-3.5-flash)."""
-    return GeminiAgent(model=settings.gemini_model_yeni_nesil)
+@lru_cache(maxsize=8)
+def _agent_for_model(model: str) -> GeminiAgent:
+    """Model başına tekil (cache'li) agent. Model seçimi sınıfa göre yapılır
+    (model_for_grade); premium/yeni_nesil model değil prompt+dağılımı etkiler.
+    DİKKAT: paralel bucket modunda paylaşılan agent kullanılamaz (trace state
+    yarışı) — orada her bucket kendi izole GeminiAgent'ını oluşturur."""
+    return GeminiAgent(model=model)
 
 
 def _validate_request(req: GenerateWorksheetRequest) -> None:
@@ -129,8 +127,10 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
     # "Yeni nesil" gizli kalite kaldıracı: karar SUNUCUDA, premium yetkiye göre
     # verilir (client bir bayrak gönderemez). Ücretsiz → normal, premium → yeni nesil.
     _yeni_nesil = wants_yeni_nesil(req.tenant_id)
-    # Yeni nesil yolu daha güçlü modelle üretir (şekilli+bağlamsal kalite).
-    agent = _agent_yeni_nesil() if _yeni_nesil else _agent()
+    # Model seçimi SINIFA göre: 1-4 → flash 2.5 (ucuz), 5-8 → Gemini 3 flash.
+    # yeni_nesil (premium) yalnız prompt+dağılımı etkiler, modeli değil.
+    _model = model_for_grade(req.grade)
+    agent = _agent_for_model(_model)
 
     def _gen(diff: _Diff, count: int) -> list:
         return agent.generate(
@@ -170,7 +170,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         def _gen_bucket(diff: "_Diff"):
             """Tek bucket üretir. Paralel modda izole agent kullanır."""
             local_agent = (
-                GeminiAgent(model=settings.gemini_model_yeni_nesil if _yeni_nesil else None)
+                GeminiAgent(model=_model)
                 if settings.parallel_difficulty_buckets else agent
             )
             try:
@@ -506,7 +506,7 @@ def regenerate_question(
             status_code=400,
             detail=f"'{req.kazanim_kod}' kodu {req.grade}. sınıf müfredatında bulunamadı.",
         )
-    agent = _agent()
+    agent = _agent_for_model(model_for_grade(req.grade))
     try:
         questions = agent.generate(
             grade=req.grade,
