@@ -348,12 +348,12 @@ class GeminiAgent:
         )
 
         # --- Cache lookup (Sprint 6) ---------------------------------------
-        # Aynı (grade, topic, kazanım, zorluk, count) için önceden üretilmiş set
-        # varsa LLM çağrısını atla. Kullanıcının history'sinde bulunan sorulara
-        # sahip set'ler atlanır → tekrar dağıtım önlenir.
-        # Yeni nesil mod cache'i atlar: normal havuzla karışmasın (cache anahtarı
-        # yeni_nesil'i taşımıyor; farklı karakterdeki set'lerin çakışmasını önle).
-        if settings.enable_generation_cache and not yeni_nesil:
+        # Aynı (grade, topic, kazanım, zorluk, count, tip, yeni_nesil) için önceden
+        # üretilmiş set varsa LLM çağrısını atla. Kullanıcının history'sinde bulunan
+        # sorulara sahip set'ler atlanır → tekrar dağıtım önlenir.
+        # yeni_nesil (premium) setleri de cache'lenir; cache anahtarına dahil
+        # olduğundan normal setlerle ayrı havuzda tutulur (kaliteler karışmaz).
+        if settings.enable_generation_cache:
             history_seen_norm = GENERATION_HISTORY.seen_questions(history_key)
             cached = GENERATION_CACHE.get(
                 grade=grade,
@@ -363,6 +363,7 @@ class GeminiAgent:
                 question_count=question_count,
                 exclude_questions=history_seen_norm,
                 allowed_types=allowed_types,
+                yeni_nesil=yeni_nesil,
             )
             if cached is not None:
                 # Trace bilgilerini cache hit moduna ayarla.
@@ -827,7 +828,6 @@ class GeminiAgent:
         self._last_cache_hit = False
         if (
             settings.enable_generation_cache
-            and not yeni_nesil  # yeni nesil set'leri normal cache'e yazılmaz
             and len(questions) == question_count
         ):
             try:
@@ -839,6 +839,7 @@ class GeminiAgent:
                     question_count=question_count,
                     questions=questions,
                     allowed_types=allowed_types,
+                    yeni_nesil=yeni_nesil,
                 )
             except Exception as exc:
                 logger.warning("Cache yazımı başarısız (yutuldu): %s", exc)
