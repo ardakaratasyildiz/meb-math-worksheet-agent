@@ -130,6 +130,34 @@
     font-family: var(--font-fredoka), var(--font-manrope), system-ui, sans-serif;
     letter-spacing: -0.01em;
   }
+  /*
+   * Koyu mod — öğrenci alanı (.practice-theme) için sıcak koyu plum varyantı.
+   * Bu blok yokken dark toggle'da /practice ve /q sayfaları krem light palette
+   * takılı kalıyordu (dark mode kırık). .dark .app-theme ile aynı palet; oyunsu
+   * radius (1.25rem) korunur, arkaplan gradyanı koyu modda kapatılır.
+   */
+  .dark .practice-theme {
+    --background: 267 30% 12%; /* sıcak koyu plum */
+    --foreground: 28 60% 95%;
+    --card: 267 24% 17%;
+    --card-foreground: 28 60% 95%;
+    --popover: 267 24% 17%;
+    --popover-foreground: 28 60% 95%;
+    --primary: 258 80% 73%; /* koyu üstünde açık grape */
+    --primary-foreground: 267 40% 15%;
+    --secondary: 267 20% 22%;
+    --secondary-foreground: 28 60% 95%;
+    --muted: 267 18% 22%;
+    --muted-foreground: 268 15% 66%;
+    --accent: 267 28% 24%;
+    --accent-foreground: 258 75% 82%;
+    --destructive: 0 63% 38%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 267 20% 25%;
+    --input: 267 20% 25%;
+    --ring: 258 80% 73%;
+    background-image: none;
+  }
 
   /*
    * Public/marketing yüzeyi teması — güven-forward sıcak marka (landing, features,

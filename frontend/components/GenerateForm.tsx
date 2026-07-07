@@ -113,13 +113,18 @@ const TYPE_GROUP_META: {
 }[] = [
   {
     key: "open_ended",
-    title: "Açık uçlu sözel",
+    title: "Açık uçlu sorular",
     hint: "İşlem, sözel problem, kavram, akıl yürütme, modelleme, günlük hayat",
   },
   {
-    key: "format",
-    title: "Format çeşitliliği",
-    hint: "Çoktan seçmeli, boşluk doldurma, doğru/yanlış, eşleştirme, sıralama",
+    key: "multiple_choice",
+    title: "Çoktan seçmeli sorular",
+    hint: "Şıklı test soruları (A/B/C/D)",
+  },
+  {
+    key: "other_format",
+    title: "Diğer soru tipleri",
+    hint: "Boşluk doldurma, doğru/yanlış, eşleştirme, sıralama",
   },
 ];
 
@@ -133,7 +138,9 @@ function flattenTypeGroups(
   const enabledKeys = (Object.keys(effective) as TypeGroupKey[]).filter(
     (k) => effective[k],
   );
-  if (enabledKeys.length === 3) return null;
+  // Tüm gruplar açıksa (görsel dahil) kısıtlama yok → null (backend tüm tipleri kullanır).
+  if (enabledKeys.length === Object.keys(QUESTION_TYPE_GROUPS).length)
+    return null;
   return enabledKeys.flatMap((k) => QUESTION_TYPE_GROUPS[k] as QuestionType[]);
 }
 
@@ -231,7 +238,12 @@ export function GenerateForm({
   const advancedChangeCount = React.useMemo(() => {
     let n = 0;
     if (difficultyMode !== "single") n++;
-    if (!typeGroups.open_ended || !typeGroups.format) n++;
+    if (
+      !typeGroups.open_ended ||
+      !typeGroups.multiple_choice ||
+      !typeGroups.other_format
+    )
+      n++;
     if (!includeAnswerKey) n++;
     if (!includeSolutions) n++;
     if (brandName.trim() || brandSubtitle.trim() || brandLogo) n++;
@@ -280,9 +292,12 @@ export function GenerateForm({
   }, [grade, topicId]);
 
   const isLoading = status === "loading";
-  // Görsel grubu artık kullanıcı seçimi değil (sunucu oranı); yalnızca sözel/format
-  // gruplarından en az biri açık olmalı.
-  const anyTypeGroupOn = typeGroups.open_ended || typeGroups.format;
+  // Görsel grubu artık kullanıcı seçimi değil (sunucu oranı); kullanıcıya görünen
+  // gruplardan (açık uçlu / çoktan seçmeli / diğer) en az biri açık olmalı.
+  const anyTypeGroupOn =
+    typeGroups.open_ended ||
+    typeGroups.multiple_choice ||
+    typeGroups.other_format;
 
   const logoInputRef = React.useRef<HTMLInputElement>(null);
 

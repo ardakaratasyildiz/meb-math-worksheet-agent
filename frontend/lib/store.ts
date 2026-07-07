@@ -13,7 +13,11 @@ import type {
   Question,
 } from "./types";
 
-export type TypeGroupKey = "open_ended" | "visual" | "format";
+export type TypeGroupKey =
+  | "open_ended"
+  | "visual"
+  | "multiple_choice"
+  | "other_format";
 
 export interface FormState {
   grade: number;
@@ -57,8 +61,13 @@ const DEFAULT_FORM: FormState = {
   kazanimKod: null,
   difficulty: "orta",
   questionCount: 10,
-  // Varsayılan: 3 grup da AÇIK, tek zorluk, hem cevap anahtarı hem çözüm dahil.
-  typeGroups: { open_ended: true, visual: true, format: true },
+  // Varsayılan: tüm gruplar AÇIK, tek zorluk, hem cevap anahtarı hem çözüm dahil.
+  typeGroups: {
+    open_ended: true,
+    visual: true,
+    multiple_choice: true,
+    other_format: true,
+  },
   difficultyMode: "single",
   includeAnswerKey: true,
   includeSolutions: true,
@@ -106,6 +115,27 @@ export const useGenerateStore = create<GenerateStore>()(
     }),
     {
       name: "meb-generate-form",
+      // v1: "format" grubu "multiple_choice" + "other_format" olarak ikiye
+      // bölündü. Eski persist edilmiş state'te tek "format" boolean'ı var →
+      // her iki yeni gruba da aynı değeri taşı (aksi halde yeni switch'ler
+      // undefined kalır ve "hepsi açık" tespiti bozulur).
+      version: 1,
+      migrate: (persisted, version) => {
+        const s = (persisted ?? {}) as Partial<FormState> & {
+          typeGroups?: Record<string, boolean>;
+        };
+        if (version < 1 && s.typeGroups && "format" in s.typeGroups) {
+          const legacyFormat = s.typeGroups.format;
+          s.typeGroups = {
+            open_ended: s.typeGroups.open_ended ?? true,
+            visual: s.typeGroups.visual ?? true,
+            multiple_choice: legacyFormat ?? true,
+            other_format: legacyFormat ?? true,
+          };
+        }
+        // Kısmi veri döner; zustand merge default değerlerle birleştirir.
+        return s as unknown as GenerateStore;
+      },
       partialize: (s) => ({
         grade: s.grade,
         topicId: s.topicId,
