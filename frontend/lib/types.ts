@@ -23,8 +23,11 @@ export type QuestionType =
 
 export type DifficultyMode = "single" | "mixed" | "progressive";
 
-// Soru tipi grupları — UI'da 3 switch olarak gösterilir. Backend bu listeyi
-// `question_types` alanı olarak alır; her grup kapatıldıkça listeden çıkar.
+// Soru tipi grupları — kullanıcıya UI'da 3 switch olarak gösterilir (açık uçlu,
+// çoktan seçmeli, diğer soru tipleri). "visual" grubu kullanıcıya gösterilmez;
+// sunucu konuya göre otomatik ekler (bkz. GenerateForm flattenTypeGroups).
+// Backend bu listeyi `question_types` alanı olarak alır; her grup kapatıldıkça
+// listeden çıkar.
 export const QUESTION_TYPE_GROUPS = {
   open_ended: [
     "islem",
@@ -41,8 +44,10 @@ export const QUESTION_TYPE_GROUPS = {
     "grafik_okuma",
     "oruntu_sekil",
   ] satisfies QuestionType[],
-  format: [
-    "coktan_secmeli",
+  // Çoktan seçmeli, kullanıcı isteği üzerine ayrı bir grup (tek başına açılıp
+  // kapatılabilsin). Kalan format tipleri "other_format" altında toplanır.
+  multiple_choice: ["coktan_secmeli"] satisfies QuestionType[],
+  other_format: [
     "bosluk_doldurma",
     "dogru_yanlis",
     "eslestirme",

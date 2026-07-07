@@ -23,14 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/JsonLd";
 import { SectionHeader } from "@/components/PageHeader";
-import { CURRICULUM_PAGES } from "@/lib/curriculum";
-import { KAZANIM_PAGES } from "@/lib/kazanimlar";
 import sampleData from "@/lib/sample-questions.json";
-
-// Gerçek müfredat kapsamı (statik snapshot'tan dinamik sayılır — uydurma değil).
-const KAZANIM_COUNT = KAZANIM_PAGES.length;
-const WORKAREA_COUNT = CURRICULUM_PAGES.length; // sınıf × konu
-const TOPIC_COUNT = new Set(CURRICULUM_PAGES.map((p) => p.topicId)).size;
 
 export default function LandingPage() {
   return (
@@ -38,7 +31,6 @@ export default function LandingPage() {
       <JsonLd id="org-schema" data={organizationSchema()} />
       <JsonLd id="website-schema" data={websiteSchema()} />
       <Hero />
-      <SocialProof />
       <Showroom />
       <SolveAndGrow />
       <ClassroomCta />
@@ -143,14 +135,6 @@ function Hero() {
                 Ücretsiz dene <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild size="lg" variant="secondary" className="gap-2 px-7">
-              <Link href="/practice">
-                Çözerek çalış <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="px-7">
-              <Link href="#ornekler">Örnek soruları gör</Link>
-            </Button>
           </div>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
             <TrustBullet>Aylık 100 soru ücretsiz</TrustBullet>
@@ -217,33 +201,6 @@ function TrustBullet({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── SOCIAL PROOF — gerçek müfredat kapsamı (uydurma metrik DEĞİL) ────────────
-
-function SocialProof() {
-  const stats = [
-    { value: String(KAZANIM_COUNT), label: "MEB kazanımı" },
-    { value: "1–8", label: "sınıf + LGS kapsamı" },
-    { value: String(TOPIC_COUNT), label: "konu başlığı" },
-    { value: String(WORKAREA_COUNT), label: "sınıf × konu çalışma alanı" },
-  ];
-  return (
-    <section className="border-y bg-card/50">
-      <div className="container grid grid-cols-2 gap-6 py-10 sm:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="text-center">
-            <p className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              {s.value}
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-              {s.label}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 // ─── ÇÖZ & GELİŞ TANITIMI — öğrenme döngüsü ──────────────────────────────────
 
 const SOLVE_FEATURES = [
@@ -255,12 +212,12 @@ const SOLVE_FEATURES = [
   {
     icon: <BarChart3 className="h-5 w-5" />,
     title: "Anında puan + konu raporu",
-    body: "Kaç doğru kaç yanlış, konu bazında kırılım — kazanım eksiğini hemen gör.",
+    body: "Kaç doğru kaç yanlış — konu bazında kazanım eksiğini hemen gör.",
   },
   {
     icon: <Target className="h-5 w-5" />,
     title: "Eksiğine göre pratik",
-    body: "Zayıf kazanımına tek tıkla yeni test; öğrenme döngüsünü kapat.",
+    body: "Zayıf kazanımına yönelik tek tıkla yeni sorular oluştur ve kazanım eksiğini kapat.",
   },
   {
     icon: <Trophy className="h-5 w-5" />,
@@ -596,7 +553,7 @@ const USE_CASES = [
   {
     icon: <GraduationCap className="h-6 w-6" />,
     title: "Öğretmen kullanımı",
-    body: "Ders öncesi ilgili kazanım kodu seçilir; sistem 5–20 soruluk çalışma kağıdı ile cevap anahtarını hazırlar. Konu eksiği gözlendiğinde aynı kazanım için ek varyant üretilebilir.",
+    body: "Ders öncesi ilgili kazanım kodu seçilir; sistem 5–20 soruluk çalışma kağıdı ile cevap anahtarını hazırlar. Konu eksiği gözlendiğinde aynı kazanım için farklı yeni sorular üretilebilir.",
   },
   {
     icon: <Users className="h-6 w-6" />,
@@ -659,7 +616,7 @@ const FEATURES = [
   {
     icon: <Sparkles className="h-5 w-5" />,
     title: "Anlamsal benzerlik denetimi",
-    body: "Aynı parametrelerle tekrar üretimde önceki sorulara yakın varyantlar üretim havuzundan elenir.",
+    body: "Aynı parametrelerle tekrar üretimde önceki sorulara çok benzeyen sorular üretim havuzundan elenir.",
   },
   {
     icon: <Hash className="h-5 w-5" />,

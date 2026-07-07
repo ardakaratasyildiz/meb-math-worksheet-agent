@@ -71,7 +71,7 @@ const COMPARE = [
     quiz: true,
   },
   {
-    feature: "Aynı kazanım için farklı varyant üretimi",
+    feature: "Aynı kazanım için sürekli farklı yeni sorular",
     classic: false,
     quiz: true,
   },
