@@ -61,18 +61,46 @@ export function pingHealth(): void {
   }
 }
 
+/**
+ * FastAPI hata gövdesinden okunabilir mesaj çıkarır. `detail` string olabilir
+ * (bizim HTTPException'larımız) ama 422 doğrulama hatalarında DİZİ olur
+ * ([{loc, msg, type}]) → doğrudan string'e atanırsa "[object Object]" görünür.
+ * Bu helper diziyi/objeyi okunabilir metne indirir (örn. eski backend'e unit_id
+ * gidip topic_id eksik kalınca "topic_id: Field required").
+ */
+function parseErrorDetail(j: unknown, fallback: string): string {
+  if (!j || typeof j !== "object") return fallback;
+  const d = (j as { detail?: unknown }).detail;
+  if (typeof d === "string" && d) return d;
+  if (Array.isArray(d)) {
+    const parts = d.map((e) => {
+      const loc = Array.isArray((e as { loc?: unknown[] })?.loc)
+        ? (e as { loc: unknown[] }).loc
+            .filter((x) => x !== "body")
+            .join(".")
+        : "";
+      const msg = (e as { msg?: string })?.msg ?? "";
+      return loc ? `${loc}: ${msg}` : msg;
+    });
+    const joined = parts.filter(Boolean).join(" · ");
+    if (joined) return joined;
+  }
+  if (d && typeof d === "object") return JSON.stringify(d);
+  return fallback;
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...init,
     headers: { ...headers(), ...(init?.headers ?? {}) },
   });
   if (!res.ok) {
-    let detail = `${res.status} ${res.statusText}`;
+    const fallback = `${res.status} ${res.statusText}`;
+    let detail = fallback;
     try {
-      const j = await res.json();
-      if (j?.detail) detail = j.detail;
+      detail = parseErrorDetail(await res.json(), fallback);
     } catch {
-      // ignore
+      // ignore — gövde JSON değilse status metni kalır
     }
     throw new Error(detail);
   }
@@ -189,12 +217,12 @@ export async function generateWorksheetStream(
     body: JSON.stringify(body),
     signal,
   });
-  // Akış başlamadan önceki hatalar (429 rate limit, 401 auth, 5xx) burada düşer.
+  // Akış başlamadan önceki hatalar (429 rate limit, 401 auth, 422, 5xx) burada düşer.
   if (!res.ok || !res.body) {
-    let detail = `${res.status} ${res.statusText}`;
+    const fallback = `${res.status} ${res.statusText}`;
+    let detail = fallback;
     try {
-      const j = await res.json();
-      if (j?.detail) detail = j.detail;
+      detail = parseErrorDetail(await res.json(), fallback);
     } catch {
       // ignore — gövde JSON değilse status metni kalır
     }
