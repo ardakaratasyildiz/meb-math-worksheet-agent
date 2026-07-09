@@ -70,6 +70,14 @@ export interface TopicInfo {
   kazanim_count: number;
 }
 
+// MEB TYMM ünite (tema) — yeni seçim akışının dropdown öğesi.
+export interface UnitInfo {
+  unit_id: string;
+  name: string;
+  no: number;
+  kazanim_count: number;
+}
+
 export interface KazanimInfo {
   kod: string;
   metin: string;
@@ -143,7 +151,8 @@ export interface WorksheetMetadata {
 
 export interface GenerateWorksheetRequest {
   grade: number;
-  topic_id: string;
+  unit_id?: string | null; // yeni MEB ünite akışı — unit_id veya topic_id zorunlu
+  topic_id?: string | null;
   kazanim_kod?: string | null;
   difficulty: Difficulty;
   question_count: number;
@@ -164,7 +173,8 @@ export interface GenerateWorksheetResponse {
 
 export interface CreateQuizRequest {
   grade: number;
-  topic_id: string;
+  unit_id?: string | null; // yeni MEB ünite akışı — unit_id veya topic_id zorunlu
+  topic_id?: string | null;
   kazanim_kod?: string | null;
   difficulty: Difficulty;
   question_count: number;

@@ -421,12 +421,14 @@ function ResultsView({
   const guestOnShared = shared && !loggedIn;
 
   function onCreateWorksheet() {
-    // Çöz→PDF köprüsü: zayıf konuyu PDF üreticiye ön-doldur (Zustand deseni).
+    // Çöz→PDF köprüsü: zayıf kazanımı PDF üreticiye ön-doldur (Zustand deseni).
+    // findKazanimByKod MEB ünite kazanımlarında (MAT.*) topicId = unitId döner →
+    // doğru üniteyi seçer. Çözülemezse ünite/kazanım boş → form ilk üniteye düşer.
     const info = weakestKod ? findKazanimByKod(weakestKod) : null;
     setForm({
       grade: quiz.grade,
-      topicId: info?.topicId ?? quiz.topic_id,
-      kazanimKod: weakestKod ?? null,
+      unitId: info?.topicId ?? null,
+      kazanimKod: info ? (weakestKod ?? null) : null,
       difficulty: quiz.difficulty,
     });
     router.push("/generate");

@@ -13,6 +13,7 @@
 
 import curriculumPagesData from "./curriculum-pages.json";
 import { KAZANIM_PAGES } from "./kazanimlar";
+import { findUnitKazanimByKod } from "./units";
 import type {
   EducationLevel,
   GradeInfo,
@@ -90,24 +91,33 @@ export function findKazanimByKod(
   kod: string,
 ): { grade: number; topicId: string; topicName: string; metin: string } | undefined {
   const k = KAZANIM_PAGES.find((x) => x.kod === kod);
-  if (!k) return undefined;
-  return {
-    grade: k.grade,
-    topicId: k.topicId,
-    topicName: k.topicName,
-    metin: k.metin,
-  };
+  if (k) {
+    return {
+      grade: k.grade,
+      topicId: k.topicId,
+      topicName: k.topicName,
+      metin: k.metin,
+    };
+  }
+  // Yeni MEB ünite kazanımları (MAT.*) — ünite snapshot'ından çöz. topicId/Name
+  // yerine ünite kimliği/adı döner (rollup/ilerleme panosunda okunur metin gösterir).
+  const u = findUnitKazanimByKod(kod);
+  if (u) {
+    return { grade: u.grade, topicId: u.unitId, topicName: u.unitName, metin: u.metin };
+  }
+  return undefined;
 }
 
-// "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&topic=&kazanim=.
+// "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&unit=&kazanim=.
 // SolveForm bu parametreleri okuyup formu ön-doldurur. Üç çağrı yeri paylaşır
-// (ilerleme panosu, çöz-sonrası sonuç, hub önerisi).
+// (ilerleme panosu, çöz-sonrası sonuç, hub önerisi). MEB ünite kazanımlarında
+// (MAT.*) findKazanimByKod.topicId = unitId döner → doğru üniteye derin-linkler.
 export function practiceHref(kod: string): string {
   const info = findKazanimByKod(kod);
   if (!info) return "/practice/new";
   const p = new URLSearchParams({
     grade: String(info.grade),
-    topic: info.topicId,
+    unit: info.topicId,
     kazanim: kod,
   });
   return `/practice/new?${p.toString()}`;

@@ -20,18 +20,15 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 
 import { createQuiz } from "@/lib/api";
-import {
-  getGradesLocal,
-  getKazanimlarLocal,
-  getTopicsLocal,
-} from "@/lib/curriculum";
+import { getGradesLocal } from "@/lib/curriculum";
+import { getKazanimlarByUnitLocal, getUnitsLocal } from "@/lib/units";
 import { MATH_FACTS } from "@/lib/mathFacts";
 import type {
   Difficulty,
   DifficultyMode,
   GradeInfo,
   KazanimInfo,
-  TopicInfo,
+  UnitInfo,
 } from "@/lib/types";
 
 // Çözülebilir 4 tip — dar union (QuestionType'tan türetmiyoruz; o genişletirdi).
@@ -76,14 +73,14 @@ const ALL_TYPES_ON: Record<SolvableType, boolean> = {
 export function SolveForm() {
   const router = useRouter();
   const { userId } = useAuth();
-  // "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&topic=&kazanim=
+  // "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&unit=&kazanim=
   const searchParams = useSearchParams();
   const initialGrade = Number(searchParams.get("grade")) || 5;
-  const initialTopic = searchParams.get("topic") ?? "";
+  const initialUnit = searchParams.get("unit") ?? "";
   const initialKazanim = searchParams.get("kazanim");
 
   const [grade, setGrade] = React.useState(initialGrade);
-  const [topicId, setTopicId] = React.useState(initialTopic);
+  const [unitId, setUnitId] = React.useState(initialUnit);
   const [kazanimKod, setKazanimKod] = React.useState<string | null>(
     initialKazanim,
   );
@@ -105,22 +102,31 @@ export function SolveForm() {
     (enabledTypes.length !== SOLVABLE_TYPES.length ? 1 : 0);
 
   const [grades] = React.useState<GradeInfo[]>(getGradesLocal);
-  const [topics, setTopics] = React.useState<TopicInfo[]>(() =>
-    getTopicsLocal(initialGrade),
+  const [units, setUnits] = React.useState<UnitInfo[]>(() =>
+    getUnitsLocal(initialGrade),
   );
   const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>([]);
 
   React.useEffect(() => {
-    setTopics(getTopicsLocal(grade));
+    setUnits(getUnitsLocal(grade));
   }, [grade]);
 
+  // unitId boş/geçersizse sınıfın ilk ünitesini otomatik seç → dropdown boş kalmaz.
   React.useEffect(() => {
-    setKazanimlar(topicId ? getKazanimlarLocal(grade, topicId) : []);
-  }, [grade, topicId]);
+    if (units.length === 0) return;
+    if (!unitId || !units.some((u) => u.unit_id === unitId)) {
+      setUnitId(units[0].unit_id);
+      setKazanimKod(null);
+    }
+  }, [units, unitId]);
+
+  React.useEffect(() => {
+    setKazanimlar(unitId ? getKazanimlarByUnitLocal(grade, unitId) : []);
+  }, [grade, unitId]);
 
   async function onStart() {
-    if (!topicId) {
-      toast.error("Konu seçin", { description: "Quiz için bir konu seçmelisiniz." });
+    if (!unitId) {
+      toast.error("Ünite seçin", { description: "Quiz için bir ünite seçmelisiniz." });
       return;
     }
     if (!userId) {
@@ -144,7 +150,7 @@ export function SolveForm() {
           : enabledTypes.map((t) => t.value);
       const quiz = await createQuiz({
         grade,
-        topic_id: topicId,
+        unit_id: unitId,
         kazanim_kod: kazanimKod,
         difficulty,
         question_count: questionCount,
@@ -174,7 +180,7 @@ export function SolveForm() {
             value={String(grade)}
             onValueChange={(v) => {
               setGrade(Number(v));
-              setTopicId("");
+              setUnitId("");
               setKazanimKod(null);
             }}
           >
@@ -192,22 +198,22 @@ export function SolveForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="s-topic">Konu</Label>
+          <Label htmlFor="s-unit">Ünite</Label>
           <Select
-            value={topicId}
+            value={unitId}
             onValueChange={(v) => {
-              setTopicId(v);
+              setUnitId(v);
               setKazanimKod(null);
             }}
-            disabled={topics.length === 0}
+            disabled={units.length === 0}
           >
-            <SelectTrigger id="s-topic">
-              <SelectValue placeholder="Konu seçin" />
+            <SelectTrigger id="s-unit">
+              <SelectValue placeholder="Ünite seçin" />
             </SelectTrigger>
             <SelectContent>
-              {topics.map((t) => (
-                <SelectItem key={t.id} value={t.id}>
-                  {t.name}
+              {units.map((u) => (
+                <SelectItem key={u.unit_id} value={u.unit_id}>
+                  {u.no}. {u.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -391,7 +397,7 @@ export function SolveForm() {
         </p>
         <Button
           onClick={onStart}
-          disabled={submitting || !topicId || enabledTypes.length === 0}
+          disabled={submitting || !unitId || enabledTypes.length === 0}
           size="lg"
           className="gap-2 sm:min-w-[200px]"
         >

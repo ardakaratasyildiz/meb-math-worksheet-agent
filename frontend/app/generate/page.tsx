@@ -22,7 +22,9 @@ export default async function GeneratePage({
     Number.isInteger(gradeRaw) && gradeRaw >= 1 && gradeRaw <= 8
       ? gradeRaw
       : undefined;
-  const initialTopicId = typeof sp.topic === "string" ? sp.topic : undefined;
+  // Yeni akış: ?unit=<unit_id>. (Eski ?topic= artık kullanılmıyor — SEO sayfaları
+  // ayrı bir işte ünite-bazlı yenilenecek; o zamana dek grade+kazanım taşınır.)
+  const initialUnitId = typeof sp.unit === "string" ? sp.unit : undefined;
   const initialKazanim = typeof sp.kazanim === "string" ? sp.kazanim : undefined;
 
   return (
@@ -42,7 +44,7 @@ export default async function GeneratePage({
       <div className="rounded-xl border bg-card p-6 shadow-sm">
         <GenerateForm
           initialGrade={initialGrade}
-          initialTopicId={initialTopicId}
+          initialUnitId={initialUnitId}
           initialKazanim={initialKazanim}
         />
       </div>

@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from app.config import settings
 from app.data.curriculum import Kazanim, get_topic
+from app.data.units import get_unit, resolve_legacy_topic
 from app.models.enums import Difficulty, QuestionType
 from app.models.schemas import Question, SolutionStep, repair_latex_control_chars
 from app.prompts.templates import (
@@ -92,6 +93,29 @@ def _select_kazanimlar(
     )
 
 
+def _select_kazanimlar_by_unit(
+    grade: int, unit_id: str, kazanim_kod: str | None
+) -> list[Kazanim]:
+    """MEB TYMM ünite (tema) kazanımlarını seçer.
+
+    Dönen dict'ler `Kazanim` gibi kullanılır; ek `legacy_topic_id` anahtarı RAG/
+    ders-kitabı retrieval'ında kazanım-bazlı köprü için taşınır (few-shot fonksiyonları
+    `k.get("legacy_topic_id", topic_id)` ile okur). difficulty_hints yoktur → prompt
+    genel zorluk kalibrasyonuna düşer (bkz. templates._format_kazanim_block).
+    """
+    unit = get_unit(grade, unit_id)
+    if unit is None:
+        raise AgentError(f"{grade}. sınıfta '{unit_id}' ünitesi bulunmuyor.")
+    if kazanim_kod is None:
+        return list(unit["kazanimlar"])
+    for k in unit["kazanimlar"]:
+        if k["kod"] == kazanim_kod:
+            return [k]
+    raise AgentError(
+        f"'{kazanim_kod}' kodu {grade}. sınıf '{unit_id}' ünitesinde bulunamadı."
+    )
+
+
 def _collect_few_shot_static(
     grade: int,
     kazanimlar: list[Kazanim],
@@ -140,11 +164,15 @@ def _collect_few_shot_rag(
     per_kazanim = max(2, max_total // max(len(kazanimlar), 1))
     for k in kazanimlar:
         query = f"{k['metin']} {k.get('difficulty_hints', {}).get(target_difficulty, '')}"
+        # Köprü: ünite kazanımları MAT.* kodlu (KB'de yok) → kazanım-bazlı legacy_topic_id
+        # ile filtrele. Eski müfredat kazanımlarında bu anahtar yok → topic_id kullanılır.
+        # retriever fallback zinciri (grade, topic_id, difficulty) semantik sorguyla eşler.
+        eff_topic = k.get("legacy_topic_id", topic_id)
         retrieved = retriever.retrieve(
             query_text=query,
             grade=grade,
             kazanim_kod=k["kod"],
-            topic_id=topic_id,
+            topic_id=eff_topic,
             difficulty=target_difficulty,
             k=per_kazanim,
             rng=rng,
@@ -221,12 +249,13 @@ def _collect_textbook_context(
     seen_ids: set[str] = set()
     for k in kazanimlar:
         query = f"{k['metin']} {k.get('difficulty_hints', {}).get(target_difficulty, '')}"
+        eff_topic = k.get("legacy_topic_id", topic_id)  # köprü (bkz. _collect_few_shot_rag)
         try:
             chunks = retriever.retrieve_textbook(
                 query_text=query,
                 grade=grade,
                 kazanim_kod=k["kod"],
-                topic_id=topic_id,
+                topic_id=eff_topic,
                 k=per_kazanim,
                 rng=rng,
             )
@@ -314,7 +343,7 @@ class GeminiAgent:
     def generate(
         self,
         grade: int,
-        topic_id: str,
+        topic_id: str | None,
         kazanim_kod: str | None,
         difficulty: Difficulty,
         question_count: int,
@@ -325,6 +354,7 @@ class GeminiAgent:
         tenant_id: str | None = None,
         allowed_types: list[QuestionType] | None = None,
         yeni_nesil: bool = False,
+        unit_id: str | None = None,
     ) -> list[Question]:
         # Seed jitter: aynı parametrelerle yapılan art arda çağrılar farklı sonuç versin.
         if seed is None:
@@ -335,7 +365,24 @@ class GeminiAgent:
             jitter = rng.uniform(-TEMPERATURE_JITTER, TEMPERATURE_JITTER)
             temperature = _clamp_temp(base_temp + jitter)
 
-        kazanimlar = _select_kazanimlar(grade, topic_id, kazanim_kod)
+        # Seçim akışı: yeni MEB ünite (unit_id) veya eski konu (topic_id).
+        # Köprü: ünite yolunda RAG/tip-dağılımı için legacy topic türetilir; cache/history
+        # namespace'i selection_key (unit_id) ile ayrılır → farklı üniteler karışmaz.
+        if unit_id:
+            kazanimlar = _select_kazanimlar_by_unit(grade, unit_id, kazanim_kod)
+            unit = get_unit(grade, unit_id)
+            assert unit is not None  # _select_kazanimlar_by_unit doğruladı
+            display_name = unit["name"]
+            dist_topic = resolve_legacy_topic(grade, unit_id, kazanim_kod) or "dogal_sayilar"
+            selection_key = unit_id
+        else:
+            kazanimlar = _select_kazanimlar(grade, topic_id, kazanim_kod)
+            _topic = get_topic(grade, topic_id)
+            if _topic is None:
+                raise AgentError(f"{grade}. sınıfta '{topic_id}' konusu bulunmuyor.")
+            display_name = _topic["name"]
+            dist_topic = topic_id
+            selection_key = topic_id
         # Kullanıcı tip filtresi — None ise tüm tipler.
         allowed_set: set[QuestionType] | None = (
             set(allowed_types) if allowed_types else None
@@ -349,15 +396,16 @@ class GeminiAgent:
         _overshoot = settings.generation_overshoot_ratio or 1.0
         gen_target = _ceil(question_count * _overshoot) if _overshoot > 1.0 else question_count
         distribution = distribute_question_types(
-            gen_target, difficulty, topic_id=topic_id, allowed_types=allowed_set,
+            gen_target, difficulty, topic_id=dist_topic, allowed_types=allowed_set,
             yeni_nesil=yeni_nesil,
         )
 
         # History anahtarı — hem cache lookup hem üretim sonrası kayıt için.
+        # selection_key (unit_id veya topic_id) namespace'i ayırır.
         history_key: HistoryKey = (
             tenant_id or DEFAULT_TENANT,
             grade,
-            topic_id,
+            selection_key,
             kazanim_kod or "__AUTO__",
             difficulty.value,
         )
@@ -372,7 +420,7 @@ class GeminiAgent:
             history_seen_norm = GENERATION_HISTORY.seen_questions(history_key)
             cached = GENERATION_CACHE.get(
                 grade=grade,
-                topic_id=topic_id,
+                topic_id=selection_key,
                 kazanim_kod=kazanim_kod,
                 difficulty=difficulty.value,
                 question_count=question_count,
@@ -416,7 +464,7 @@ class GeminiAgent:
 
         few_shot, few_shot_source = _collect_few_shot(
             grade,
-            topic_id,
+            dist_topic,
             kazanimlar,
             distribution,
             target_difficulty=difficulty.value,
@@ -429,7 +477,7 @@ class GeminiAgent:
         if include_textbook:
             textbook_chunks = _collect_textbook_context(
                 grade=grade,
-                topic_id=topic_id,
+                topic_id=dist_topic,
                 kazanimlar=kazanimlar,
                 target_difficulty=difficulty.value,
                 max_total=3,
@@ -449,16 +497,13 @@ class GeminiAgent:
             "Few-shot kaynağı: %s (%s örnek) | textbook chunks: %s",
             few_shot_source, len(few_shot), len(textbook_chunks),
         )
-        topic = get_topic(grade, topic_id)
-        assert topic is not None
-
         # history_key yukarıda cache lookup için tanımlandı (cache devredeyken).
-        # Cache devre dışıysa burada üret.
+        # Cache devre dışıysa burada üret (selection_key = unit_id veya topic_id).
         if not settings.enable_generation_cache:
             history_key = (
                 tenant_id or DEFAULT_TENANT,
                 grade,
-                topic_id,
+                selection_key,
                 kazanim_kod or "__AUTO__",
                 difficulty.value,
             )
@@ -468,7 +513,7 @@ class GeminiAgent:
 
         user_prompt = build_user_prompt(
             grade=grade,
-            topic_name=topic["name"],
+            topic_name=display_name,
             kazanimlar=kazanimlar,
             difficulty=difficulty,
             question_count=gen_target,  # over-generation: ilk çağrı hedefi (sonda kırpılır)
@@ -823,7 +868,7 @@ class GeminiAgent:
         logger.info(
             "cost_meter | grade=%s topic=%s kazanim=%s diff=%s "
             "prompt_tokens=%d completion_tokens=%d cost_usd=%.6f model=%s",
-            grade, topic_id, kazanim_kod or "AUTO", difficulty.value,
+            grade, dist_topic, kazanim_kod or "AUTO", difficulty.value,
             total_prompt_tokens, total_completion_tokens, total_cost_usd,
             self._last_model_used,
         )
@@ -848,7 +893,7 @@ class GeminiAgent:
             try:
                 GENERATION_CACHE.put(
                     grade=grade,
-                    topic_id=topic_id,
+                    topic_id=selection_key,
                     kazanim_kod=kazanim_kod,
                     difficulty=difficulty.value,
                     question_count=question_count,

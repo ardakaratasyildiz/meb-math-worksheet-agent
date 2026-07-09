@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from app.models.enums import Difficulty, EducationLevel, QuestionType
 
@@ -84,9 +84,38 @@ class KazanimlarResponse(BaseModel):
     kazanimlar: list[KazanimInfo]
 
 
+class UnitInfo(BaseModel):
+    """MEB TYMM ünite (tema) — form dropdown öğesi."""
+    unit_id: str
+    name: str
+    no: int
+    kazanim_count: int
+
+
+class UnitsResponse(BaseModel):
+    grade: int
+    units: list[UnitInfo]
+
+
+class UnitKazanimlarResponse(BaseModel):
+    grade: int
+    unit_id: str
+    unit_name: str
+    kazanimlar: list[KazanimInfo]
+
+
 class GenerateWorksheetRequest(BaseModel):
     grade: int = Field(..., ge=1, le=8, description="Sınıf (1-8)")
-    topic_id: str = Field(..., description="Konu kimliği (curriculum.py)")
+    unit_id: str | None = Field(
+        None,
+        description="MEB TYMM ünite (tema) kimliği (units.py). Yeni seçim akışı bunu "
+        "gönderir. unit_id veya topic_id'den biri zorunludur.",
+    )
+    topic_id: str | None = Field(
+        None,
+        description="Eski konu kimliği (curriculum.py). Geriye-uyum: SEO deep-link'leri "
+        "hâlâ gönderir. unit_id verilirse gerekmez.",
+    )
     kazanim_kod: str | None = Field(
         None,
         description="Opsiyonel: belirli bir kazanım kodu. Boşsa konunun kazanımları arasından otomatik dağılım yapılır.",
@@ -166,8 +195,23 @@ class GenerateWorksheetRequest(BaseModel):
 
     @field_validator("topic_id")
     @classmethod
-    def _strip_topic(cls, v: str) -> str:
-        return v.strip().lower()
+    def _strip_topic(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        return v.strip().lower() or None
+
+    @field_validator("unit_id")
+    @classmethod
+    def _strip_unit(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        return v.strip() or None
+
+    @model_validator(mode="after")
+    def _require_unit_or_topic(self) -> "GenerateWorksheetRequest":
+        if not self.unit_id and not self.topic_id:
+            raise ValueError("unit_id veya topic_id'den biri zorunludur.")
+        return self
 
     @field_validator("tenant_id")
     @classmethod
@@ -472,9 +516,14 @@ class CreateQuizRequest(BaseModel):
     """
 
     grade: int = Field(..., ge=1, le=8)
-    topic_id: str = Field(..., description="Konu kimliği (curriculum.py)")
+    unit_id: str | None = Field(
+        None, description="MEB TYMM ünite (tema) kimliği. unit_id veya topic_id zorunlu."
+    )
+    topic_id: str | None = Field(
+        None, description="Eski konu kimliği (geriye-uyum). unit_id verilirse gerekmez."
+    )
     kazanim_kod: str | None = Field(
-        None, description="Opsiyonel: belirli kazanım. Boşsa konu geneli."
+        None, description="Opsiyonel: belirli kazanım. Boşsa ünite/konu geneli."
     )
     difficulty: Difficulty = Difficulty.ORTA
     question_count: int = Field(10, ge=1, le=20)
@@ -493,8 +542,23 @@ class CreateQuizRequest(BaseModel):
 
     @field_validator("topic_id")
     @classmethod
-    def _strip_topic(cls, v: str) -> str:
-        return v.strip().lower()
+    def _strip_topic(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        return v.strip().lower() or None
+
+    @field_validator("unit_id")
+    @classmethod
+    def _strip_unit(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        return v.strip() or None
+
+    @model_validator(mode="after")
+    def _require_unit_or_topic(self) -> "CreateQuizRequest":
+        if not self.unit_id and not self.topic_id:
+            raise ValueError("unit_id veya topic_id'den biri zorunludur.")
+        return self
 
     @field_validator("question_types")
     @classmethod

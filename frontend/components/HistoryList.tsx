@@ -102,10 +102,13 @@ export function HistoryList() {
   }
 
   function onRegenerate(item: HistoryItem) {
+    // Ünite akışı: yeni kayıtlarda unit_id dolu. Eski kayıtlar (yalnız topic_id)
+    // yeni taksonomiye eşlenemez → ünite/kazanım boş bırakılır, form ilk üniteyi
+    // otomatik seçer. Sınıf/zorluk/sayı her durumda taşınır.
     setForm({
       grade: item.request.grade,
-      topicId: item.request.topic_id,
-      kazanimKod: item.request.kazanim_kod,
+      unitId: item.request.unit_id ?? null,
+      kazanimKod: item.request.unit_id ? item.request.kazanim_kod : null,
       difficulty: item.request.difficulty as "kolay" | "orta" | "zor",
       questionCount: item.request.question_count,
     });

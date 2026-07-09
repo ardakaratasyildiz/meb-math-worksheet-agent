@@ -5,12 +5,16 @@ from app.data.curriculum import (
     get_topic,
     get_topics_for_grade,
 )
+from app.data.units import get_unit, get_units_for_grade
 from app.models.schemas import (
     GradesResponse,
     KazanimInfo,
     KazanimlarResponse,
     TopicInfo,
     TopicsResponse,
+    UnitInfo,
+    UnitKazanimlarResponse,
+    UnitsResponse,
 )
 
 router = APIRouter()
@@ -58,4 +62,49 @@ def list_kazanimlar(grade_id: int, topic_id: str) -> KazanimlarResponse:
         topic_id=topic["topic_id"],
         topic_name=topic["name"],
         kazanimlar=[KazanimInfo(**k) for k in topic["kazanimlar"]],
+    )
+
+
+# ── MEB TYMM ünite (tema) uçları — yeni seçim akışı ─────────────────────────
+
+
+@router.get("/grades/{grade_id}/units", response_model=UnitsResponse)
+def list_units(grade_id: int) -> UnitsResponse:
+    if grade_id < 1 or grade_id > 8:
+        raise HTTPException(status_code=400, detail="grade_id 1-8 arasında olmalı")
+    units = get_units_for_grade(grade_id)
+    return UnitsResponse(
+        grade=grade_id,
+        units=[
+            UnitInfo(
+                unit_id=u["unit_id"],
+                name=u["name"],
+                no=u["no"],
+                kazanim_count=len(u["kazanimlar"]),
+            )
+            for u in units
+        ],
+    )
+
+
+@router.get(
+    "/grades/{grade_id}/units/{unit_id}/kazanimlar",
+    response_model=UnitKazanimlarResponse,
+)
+def list_unit_kazanimlar(grade_id: int, unit_id: str) -> UnitKazanimlarResponse:
+    if grade_id < 1 or grade_id > 8:
+        raise HTTPException(status_code=400, detail="grade_id 1-8 arasında olmalı")
+    unit = get_unit(grade_id, unit_id)
+    if unit is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"{grade_id}. sınıfta '{unit_id}' ünitesi bulunmuyor",
+        )
+    return UnitKazanimlarResponse(
+        grade=grade_id,
+        unit_id=unit["unit_id"],
+        unit_name=unit["name"],
+        kazanimlar=[
+            KazanimInfo(kod=k["kod"], metin=k["metin"]) for k in unit["kazanimlar"]
+        ],
     )
