@@ -1,0 +1,1633 @@
+{
+  "1": [
+    {
+      "unit_id": "mat-1-tema-1-sayilar-ve-nicelikler-1",
+      "unite_id": 45,
+      "grade": 1,
+      "no": 1,
+      "name": "Sayılar ve Nicelikler (1)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.1.1.1",
+          "metin": "Rakamları ve 20'ye kadar olan sayıları, niceliklerin büyüklüklerini temsil etmek için kullanabilme. a) Niceliklerin büyüklüklerinin farklı temsillerini tanır. b) Karşılaştığı niceliklerin büyüklüklerini, farklı temsilleri bağlamında belirler. c) Karşılaştığı niceliklerin büyüklüklerini rakam ve sayılarla okur ve yazar.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.1.1.2",
+          "metin": "Ögeleri dağınık veya düzenli bir şekilde bulunan bir nesne grubunu sayarken parçalar arasında ilişkileri çözümleyebilme. a) Ögeleri dağınık veya düzenli bir şekilde bulunan bir nesne grubunun parçalarını belirler. b) Sayarken parçalar arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.1.1.3",
+          "metin": "Nesnelerin sıra sayısını gösterebilme.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.1.1.4",
+          "metin": "İki niceliğin büyüklüğünü 'çok', 'daha çok', 'az', 'daha az' veya 'eşit' terimleriyle karşılaştırabilme. a) İki niceliğin büyüklüğünü bu terimlerle ifade eder. b) İfade edilen büyüklüklere ilişkin benzerlikleri listeler. c) İfade edilen büyüklüklere ilişkin farklılıkları listeler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.1.1.5",
+          "metin": "100'e kadar ileriye ve 20'den geriye doğru ritmik sayabilme.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.1.1.6",
+          "metin": "Artan veya azalan sayı ve şekil örüntülerini çözümleyebilme. a) Sayı ve şekil örüntülerinin ardışık ögelerini belirler. b) Ardışık ögeleri arasındaki ilişkiyi belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.1.1.7",
+          "metin": "20'ye kadar olan nesnelerin sayısını tahmin edebilme. a) Verilen bir çokluktaki ilişkileri gözlem ve deneyimleri ile ilişkilendirir. b) Bir çokluğun büyüklüğünü stratejiye dayanarak tahmin eder. c) Tahmin edilen sonuç ile gerçek sonucu karşılaştırarak kendi tahminine yönelik yargıda bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-1-tema-2-sayilar-ve-nicelikler-2",
+      "unite_id": 86,
+      "grade": 1,
+      "no": 2,
+      "name": "Sayılar ve Nicelikler (2)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.1.1.8",
+          "metin": "Standart olmayan uygun ölçme araçları ile nesnelerin uzunluğunu ve tartacağı kütlenin ölçüm sonuçlarını tahmin edebilme. a) Ölçeceği uzunluğa ve kütleye uygun standart olmayan ölçme aracını belirler. b) Ölçeceği uzunluğun ve tartacağı kütlenin ölçüm sonuçlarını belirlenen standart olmayan ölçü birimi cinsinden tahmin eder. c) Tahmininin doğruluğuna ilişkin yargıda bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-1-tema-3-sayilar-ve-nicelikler-3",
+      "unite_id": 95,
+      "grade": 1,
+      "no": 3,
+      "name": "Sayılar ve Nicelikler (3)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.1.1.9",
+          "metin": "Paraları (1 TL, 5 TL, 10 TL, 20 TL, 50 TL, 100 TL ve 200 TL) tanıyabilme; paraların temsil ettiği büyüklükleri tanır.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-1-tema-4-islemlerden-cebirsel-dusunmeye",
+      "unite_id": 99,
+      "grade": 1,
+      "no": 4,
+      "name": "İşlemlerden Cebirsel Düşünmeye",
+      "legacy_topic_id": "cebir",
+      "kazanimlar": [
+        {
+          "kod": "MAT.1.2.1",
+          "metin": "Günlük yaşamın içerdiği toplama ve çıkarma işlemlerini çözümleyebilme. a) Günlük yaşam durumunun toplama ve çıkarma işlemlerinden hangisini gerektirdiğini fark eder. b) Günlük yaşam durumuna karşılık gelen toplama ve çıkarma işlemlerini birbiri ile ilişkilendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.1.2.2",
+          "metin": "Toplama ve çıkarma işlemlerinin sonuçlarını tahminde bulunarak ve zihinden işlem yaparak muhakeme edebilme. a) Toplama ve çıkarma işlemlerine ilişkin ögeleri belirler. b) Toplama ve çıkarma işlemlerine ilişkin ögeler arasındaki ilişkileri belirler. c) Toplama ve çıkarma işlemlerine yönelik tahmin ve zihinden işlem sonuçları arasında ilişki kurar. ç) Tahmin ve zihinden işlem sonuçlarının tutarlılığını ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.1.2.3",
+          "metin": "Eşit işaretinin anlamını toplama ve çıkarma işlemi bağlamında yorumlayabilme. a) Toplama ve çıkarma işlemlerinde eşit işaretinin kullanımını inceler. b) Eşit işaretinin anlamını kullanarak bir toplama ya da çıkarma işlemini dönüştürür. c) Dönüştürdüğü toplama ve çıkarma işlemlerini kendi cümleleriyle ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.1.2.4",
+          "metin": "Toplama ve çıkarma işlemlerinin ilişkisini yorumlayabilme. a) Toplama ve çıkarma işlemlerinin ilişkisini inceler. b) Toplama ve çıkarma işlemlerini tersine dönüştürür. c) Toplama ve çıkarma işlemlerinin ilişkisini yeniden ifade eder.",
+          "legacy_topic_id": "cebir"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-1-tema-5-nesnelerin-geometrisi-1",
+      "unite_id": 109,
+      "grade": 1,
+      "no": 5,
+      "name": "Nesnelerin Geometrisi (1)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.1.3.1",
+          "metin": "Hedefe ulaşmak için mesafeleri ve yönleri içeren yönergeleri çözümleyebilme. a) Yönergede yer alan mesafe ve yönleri içeren kavramları belirler. b) Yönergeleri kullanarak başlangıç noktası ve hedef arasında ilişki kurar.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.1.3.2",
+          "metin": "Nesnelerin eşliğini değerlendirebilme. a) Nesnelerin eşliği için bir ölçüt belirler. b) Ölçüte uygun bilgileri kullanarak ölçme yapar. c) Yapılan ölçmeye dayalı olarak elde ettiği sonuçları ölçüt ile karşılaştırır. ç) Karşılaştırmalarına ilişkin olarak yargıda bulunur.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-1-tema-6-nesnelerin-geometrisi-2",
+      "unite_id": 113,
+      "grade": 1,
+      "no": 6,
+      "name": "Nesnelerin Geometrisi (2)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.1.3.3",
+          "metin": "Günlük yaşamdaki nesneleri biçimsel özelliklerine göre ayırt edebilme.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.1.3.4",
+          "metin": "Günlük yaşamda karşılaşılan geometrik yapılardaki geometrik şekilleri çözümleyebilme. a) Geometrik yapılardaki şekilleri belirler. b) Şekiller arasında ilişki kurar.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.1.3.5",
+          "metin": "Biçimsel özelliklerine göre geometrik şekilleri sınıflandırabilme. a) Geometrik şekillerin biçimsel özelliklerini belirler. b) Geometrik şekilleri biçimsel özelliklerine göre ayırır. c) Geometrik şekilleri tasnif eder. ç) Geometrik şekilleri adlandırır.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-1-tema-7-veriye-dayali-arastirma",
+      "unite_id": 115,
+      "grade": 1,
+      "no": 7,
+      "name": "Veriye Dayalı Araştırma",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.1.4.1",
+          "metin": "Kategorik veriye dayalı temel veri grubu ile çalışabilme ve veriye dayalı karar verebilme. a) Kategorik veriye dayalı istatistiksel araştırma gerektiren günlük yaşam durumu belirler. b) Kategorik veriye dayalı betimleme gerektirebilecek araştırma soruları oluşturur. c) Kategorik verileri toplamak için plan yapar. ç) Kategorik verileri toplar. d) Toplanan verileri analiz etmek için görselleştirme araçlarından çetele, sıklık tablosu ve nesne grafiğini seçer. e) Seçtiği araçlarla verileri görselleştirerek analiz eder. f) Araştırma sonuçlarını yorumlar. g) Araştırma sonuçlarını araştırma sorularına göre değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    }
+  ],
+  "2": [
+    {
+      "unit_id": "mat-2-tema-1-sayilar-ve-nicelikler-1",
+      "unite_id": 116,
+      "grade": 2,
+      "no": 1,
+      "name": "Sayılar ve Nicelikler (1)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.2.1.1",
+          "metin": "Niceliklerin büyüklüklerini temsil etmede sayıların sembolik temsillerinden yararlanabilme. a) Niceliklerin büyüklüklerinin farklı temsillerini tanır. b) Niceliklerin büyüklüklerine uygun sayı temsillerini belirler. c) Niceliklerin büyüklüklerine karşılık gelen sayıları okur ve yazar.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.2",
+          "metin": "İki basamaklı sayıları çözümleyebilme. a) İki basamaklı sayıların basamak ve basamak değerini belirler. b) İki basamaklı sayıların basamak ve basamak değerleri arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.3",
+          "metin": "Sayıların sırasını belirleyebilme.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.4",
+          "metin": "İleriye ve geriye doğru ritmik sayabilme. a) Yüzlük tablo üzerinde ileriye ve geriye doğru ritmik saymaya ilişkin gözlem yapar. b) Belirtilen aralıklarda ritmik sayma yapabilir. c) İleriye ve geriye doğru ritmik sayarken bulduğu örüntüyü geneller.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.5",
+          "metin": "Sayı ve sayı temsiline dönüşen şekil örüntülerine dayalı çıkarım yapabilme. a) Örüntüde kullanılan sayılar arasındaki ilişkiye yönelik varsayımda bulunur. b) Belirlediği varsayıma göre örüntüleri örnekler üzerinde listeler. c) Gösterilen örüntünün varsayımı karşılayıp karşılamadığını sınar. ç) Örüntünün kuralını sözlü olarak ifade eder. d) Örüntü ile ilgili değerlendirmede bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.6",
+          "metin": "Bir çokluktaki ilişkilerden yararlanarak 50'ye kadar olan nesnelerin sayısını tahmin edebilme. a) Parça-bütün ve dağılım ilişkisini gözlem ile ilişkilendirir. b) Bir çokluğun büyüklüğünü stratejiye dayanarak tahmin eder. c) Tahmini ile gerçek sonucu karşılaştırarak tahmininin doğruluğuna yönelik yargıda bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-2-tema-2-sayilar-ve-nicelikler-2",
+      "unite_id": 125,
+      "grade": 2,
+      "no": 2,
+      "name": "Sayılar ve Nicelikler (2)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.2.1.7",
+          "metin": "Bütün, yarım ve çeyrek arasındaki ilişkiyi çözümleyebilme. a) Bir bütünün yarım ve çeyrek parçalarını belirler. b) Bütün, yarım ve çeyrek arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.8",
+          "metin": "Paraları değerlerine göre ilişkilendirerek çözümleyebilme. a) Paraları değerlerine göre inceleyerek madenî paraları belirler. b) Kuruş ve Türk lirası arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.9",
+          "metin": "Zaman ölçü birimlerini okuyabilme ve yazabilme.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.10",
+          "metin": "Standart uzunluk ve kütle ölçme araçlarının ve birimlerinin gerekliliğini yansıtabilme. a) Standart olmayan araçlarla ilgili deneyimlerinden yola çıkarak standart ölçme araçlarına olan ihtiyacı gözden geçirir. b) Deneyimlerine dayalı olarak standart ölçme araçlarının gerekliliğine ilişkin çıkarımda bulunur. c) Standart ölçme araçlarına ilişkin ulaştığı çıkarımlar doğrultusunda standart ölçü birimlerinin gerekliliğini değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.2.1.11",
+          "metin": "Standart uzunluk ve kütle ölçü birimleri cinsinden uzunlukları ve kütleleri tahmin edebilme. a) Standart ölçü birimlerine ilişkin deneyimini, tahmine konu olan uzunluk ve kütle ile ilişkilendirir. b) Nesnelerin uzunluğunu ve kütlesini standart ölçü birim cinsinden tahmin eder. c) Tahminini ölçüm sonuçlarıyla karşılaştırarak tahminine ilişkin yargıda bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-2-tema-3-islemlerden-cebirsel-dusunmeye",
+      "unite_id": 164,
+      "grade": 2,
+      "no": 3,
+      "name": "İşlemlerden Cebirsel Düşünmeye",
+      "legacy_topic_id": "cebir",
+      "kazanimlar": [
+        {
+          "kod": "MAT.2.2.1",
+          "metin": "Toplama ve çıkarma işlemleri gerektiren günlük yaşam problemlerini çözebilme. a) Problemi anlayarak verilen ve istenilenleri belirler. b) Verilen ve istenilenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler. c) Verilenleri uygun matematiksel temsillere dönüştürür. ç) Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar. d) Tahminde bulunarak işlemleri gerçekleştirmek için stratejiler geliştirir. e) Belirlenen strateji ya da stratejileri çözüm için uygular. f) Çözüm yollarını kontrol ederek çözüme ulaştırmayanı değiştirir. g) Stratejileri gözden geçirerek kısa yolları değerlendirir. ğ) Çözüme ulaştıran stratejinin hangi problemlere uygulanabileceğini geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.2.2.2",
+          "metin": "Toplama ve çıkarma işlemlerinin sonuçlarını tahminde bulunarak ve zihinden işlem yaparak muhakeme edebilme. a) Toplama ve çıkarma işlemlerine ilişkin ögeleri belirler. b) İşlemlere ilişkin ögeler arasındaki ilişkileri belirler. c) Tahmin ve zihinden işlem sonuçları arasında ilişki kurar. ç) Tahmin ve zihinden işlem sonuçlarının tutarlılığını ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.2.2.3",
+          "metin": "Toplama ve çıkarma işlemlerinin ilişkisini yorumlayabilme. a) İlişkiyi inceler. b) İşlemleri tersine dönüştürür. c) İlişkiyi yeniden ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.2.2.4",
+          "metin": "Çarpma ve bölme işlemlerini toplama ve çıkarma işlemlerine dayalı olarak çözümleyebilme. a) İlişkili olduğunu fark eder. b) İşlemleri ilişkilendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.2.2.5",
+          "metin": "Çarpma ve bölme işlemlerinin sonuçlarını muhakeme edebilme. a) Bileşenleri belirler. b) Bileşenler arasındaki ilişkileri belirler. c) Tahmin ve zihinden işlem sonuçlarını ifade eder. ç) Sonuçları açıklar.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.2.2.6",
+          "metin": "Dört işlem bağlamında eşitliğin farklı anlamlarını yorumlayabilme. a) Eşitliği farklı anlamlarına göre inceler. b) Aynı sonucu veren durumları farklı sayılarla ifade eder. c) Eşitliğin anlamlarını dört işlem bağlamında ifade eder.",
+          "legacy_topic_id": "cebir"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-2-tema-4-nesnelerin-geometrisi-1",
+      "unite_id": 165,
+      "grade": 2,
+      "no": 4,
+      "name": "Nesnelerin Geometrisi (1)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.2.3.1",
+          "metin": "Günlük yaşamda kullanılan nesneleri biçimsel özelliklerine göre geometrik cisim olarak sınıflandırabilme. a) Günlük yaşamda kullanılan nesnelerin biçimsel özelliklerini belirler. b) Farklı nesneleri biçimsel özelliklerine göre ayırır. c) Nesneleri geometrik cisim olarak tasnif eder. ç) Geometrik cisimleri adlandırır.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.2.3.2",
+          "metin": "Geometrik cisim modellerini kullanarak yapılar sentezleyebilme. a) Geometrik yapılardaki geometrik cisimleri belirler. b) Geometrik cisimler arasında ilişki kurar. c) Geometrik cisimleri birleştirerek özgün bir yapı oluşturur.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.2.3.3",
+          "metin": "Geometrik şekiller kullanarak modeller sentezleyebilme. a) Geometrik yapılardaki geometrik şekilleri belirler. b) Geometrik şekiller arasında ilişki kurar. c) Geometrik şekilleri birleştirerek özgün model oluşturur.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.2.3.4",
+          "metin": "Geometrik cisim ve şekillerin yön, konum veya büyüklükleri değiştiğinde biçimsel özelliklerinin değişmediğini yorumlayabilme. a) Geometrik cisim ve şekillerin mevcut yön, konum veya büyüklüklerini inceler. b) Yön, konum veya büyüklükleri dönüştürerek biçimsel özelliklerinden kopmadan gösterir. c) Bu değişikliklere rağmen aynı kaldığını ifade eder.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.2.3.5",
+          "metin": "Standart olmayan sıvı ölçme araçları ile sıvı miktarını tahmin edebilme. a) Standart olmayan araçlara ilişkin deneyimi tahmine konu olan sıvı miktarıyla ilişkilendirir. b) Belirlenen araçlara göre sıvının miktarını tahmin eder. c) Tahminini ölçüm sonuçlarıyla karşılaştırarak yargıda bulunur.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-2-tema-5-nesnelerin-geometrisi-2",
+      "unite_id": 166,
+      "grade": 2,
+      "no": 5,
+      "name": "Nesnelerin Geometrisi (2)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.2.3.6",
+          "metin": "Mesafe ve yönleri içerecek şekilde hedefe ulaşmak için uygun stratejilere karar verebilme. a) Hedefe ulaşmak için ölçüt belirler. b) Belirlediği ölçüte uygun bilgileri toplar. c) Topladığı bilgilerden ölçüte yönelik seçenekler oluşturur. ç) Oluşturduğu seçenekler üzerinde mantıksal denetleme yapar. d) Seçenekler arasından ölçüte uygun seçim yapar. e) Ölçüt değişikliği durumunu sürece yansıtır.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.2.3.7",
+          "metin": "Verilen şekiller arasından simetrik olanları ayırt edebilme.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-2-tema-6-veriye-dayali-arastirma",
+      "unite_id": 240,
+      "grade": 2,
+      "no": 6,
+      "name": "Veriye Dayalı Araştırma",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.2.4.1",
+          "metin": "Kategorik veriye dayalı en çok iki veri grubu ile çalışabilme ve veriye dayalı karar verebilme. a) Kategorik veriye dayalı istatistiksel araştırma gerektiren günlük yaşam durumu belirler. b) Kategorik veriye dayalı betimleme veya karşılaştırma gerektirebilecek araştırma soruları oluşturur. c) Kategorik verileri toplamak için plan yapar. ç) Kategorik verileri toplar. d) Toplanan verileri analiz etmek için görselleştirme araçlarından çetele tablosu, sıklık tablosu ve şekil grafiğini seçer. e) Seçtiği araçlarla verileri görselleştirerek analiz eder. f) Araştırma sonuçlarını yorumlar. g) Araştırma sonuçlarını araştırma sorularına göre değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    }
+  ],
+  "3": [
+    {
+      "unit_id": "mat-3-tema-1-sayilar-ve-nicelikler-1",
+      "unite_id": 249,
+      "grade": 3,
+      "no": 1,
+      "name": "Sayılar ve Nicelikler (1)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.3.1.1",
+          "metin": "Niceliklerin büyüklüklerine karşılık gelen 1000'e kadar olan sayıların temsillerinden yararlanabilme. a) Niceliklerin büyüklüklerinin temsillerini tanır. b) Niceliklerin büyüklüklerine uygun sayı temsillerini belirler. c) Niceliklerin büyüklüklerine karşılık gelen uygun sayıları okur ve yazar.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.2",
+          "metin": "1000'e kadar olan sayıları çözümleyebilme. a) Üç basamaklı sayıların basamaklarını belirler. b) Üç basamaklı sayıların basamak ve basamak değerleri arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.3",
+          "metin": "Sayıları sıralayabilme. a) 1000'e kadar olan sayıları öncelik/sonralık ilişkisine göre belirler. b) 1000'e kadar olan sayıları bulundukları onluklara ve yüzlüklere göre ayırır. c) 1000'e kadar olan sayıları en yakın onluklara ve yüzlüklere göre tasnif eder. ç) 1000'e kadar olan sayıları en yakın onluklara ve yüzlüklere göre ifade eder.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.4",
+          "metin": "Sayıları ileriye ve geriye doğru ritmik sayabilme. a) Modeller üzerinde ileriye ve geriye doğru ritmik saymaya ilişkin gözlem yapar. b) 60 içinde altışar, 70 içinde yedişer, 80 içinde sekizer, 90 içinde dokuzar; 1000 içinde onar ve yüzer ileriye ve geriye doğru ritmik sayarken örüntü bulur. c) İleriye ve geriye doğru ritmik sayarken bulduğu örüntüyü geneller.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.5",
+          "metin": "Sayıları tek-çift olarak sınıflandırabilme. a) Sayıları tek-çift ilişkisine göre belirler. b) Sayıları tek-çift olma durumlarına göre ayırt eder. c) Sayıları tek-çift olma durumlarına göre tasnif eder. ç) Sayıları tek-çift sayı olarak ifade eder.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.6",
+          "metin": "Tek ve çift sayıların toplamlarının tek ya da çift olduğunu belirleyebilme.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.7",
+          "metin": "Sayı ve sayı temsiline dönüşen şekil örüntülerine dayalı çıkarım yapabilme. a) Örüntüde kullanılan sayılar ve sayı temsiline dönüşen şekiller arasındaki ilişkiye yönelik varsayımda bulunur. b) Belirlediği varsayıma göre sayı ve sayı temsiline dönüşen şekil örüntülerini örnekler üzerinde listeler. c) Gösterilen örüntünün varsayımı karşılayıp karşılamadığını örneklerle sınar. ç) Karşılaştırılan sayı ve sayı temsiline dönüşen şekil örüntülerinin kuralını sözlü olarak ifade eder. d) Gösterilen örüntü ile ilgili değerlendirmede bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.8",
+          "metin": "Bir çokluktaki ilişkilerden yararlanarak 100'e kadar olan nesnelerin sayısını tahmin edebilme. a) Bir çokluktaki parça-bütün ve dağılım ilişkisini gözlem ve deneyimleri ile ilişkilendirir. b) Bir çokluğun büyüklüğünü stratejiye dayanarak tahmin eder. c) Tahmini ile gerçek sonucu karşılaştırarak tahmininin doğruluğuna yönelik bir yargıda bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-3-tema-2-sayilar-ve-nicelikler-2",
+      "unite_id": 254,
+      "grade": 3,
+      "no": 2,
+      "name": "Sayılar ve Nicelikler (2)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.3.1.9",
+          "metin": "Bütün, yarım ve çeyreğin kesirle gösterimi için modellerden yararlanabilme. a) Bütün, yarım ve çeyrek modellerinin temsillerini tanır. b) Bütün, yarım ve çeyrek modellerine uygun kesir temsillerini belirler. c) Belirlediği temsili bütün, yarım ve çeyrek modelleri için kullanır.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.3.1.10",
+          "metin": "Bir bütünü eş parçalar oluşturacak şekilde birim kesir olarak çözümleyebilme. a) Bir bütünü oluşturan eş parçaları belirler. b) Bütün ile eş parçaların her biri arasındaki ilişkiyi belirler.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.3.1.11",
+          "metin": "Bir kesrin payı ile paydası arasındaki ilişkiyi çözümleyebilme. a) Bir kesrin pay ve paydasına ait parçaları belirler. b) Bir kesrin pay ve paydasına ait parçalar arasındaki ilişkiyi belirler.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.3.1.12",
+          "metin": "Analog ve dijital saatlerde zamanı okuyabilme ve yazabilme.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.13",
+          "metin": "Zaman ölçü birimlerini çözümleyebilme. a) Zaman ölçü birimlerini (yıl, ay, hafta, gün, saat, dakika, saniye) belirler. b) Zaman ölçü birimleri arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.14",
+          "metin": "Olayların oluş sürelerini tahmin ederek yargıda bulunabilme. a) Olayların oluş sürelerini birbirleriyle ilişkilendirir. b) Olayların oluş sürelerine ilişkin deneyimlerinden faydalanarak çıkarım yapar. c) Olayların oluş sürelerine ilişkin yapılan çıkarımla gerçekte olan sürelerine ilişkin yargıda bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.15",
+          "metin": "Uzunluk ve kütle birimleri arasındaki ilişkileri kullanarak bu birimleri kendi içerisinde çözümleyebilme. a) Standart kütle ve uzunluk birimlerine ilişkin parçaları belirler. b) Santimetre, metre, kilometre ve gram, kilogram ve ton arasındaki ilişkileri kendi içerisinde belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.3.1.16",
+          "metin": "Madenî ve kâğıt paraları değerlerine göre ilişkilendirerek yorumlayabilme. a) Paraları değerlerine göre inceler. b) Madenî paraları ve kâğıt paraları değerlerine göre dönüştürür. c) Paranın değerini, anlamını değiştirmeyecek şekilde yeniden ifade eder.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-3-tema-3-islemlerden-cebirsel-dusunmeye",
+      "unite_id": 264,
+      "grade": 3,
+      "no": 3,
+      "name": "İşlemlerden Cebirsel Düşünmeye",
+      "legacy_topic_id": "cebir",
+      "kazanimlar": [
+        {
+          "kod": "MAT.3.2.1",
+          "metin": "Toplama ve çıkarma işlemlerinin sonuçlarını tahminde bulunarak ve zihinden işlem yaparak muhakeme edebilme. a) Toplama ve çıkarma işlemlerine ilişkin ögeleri belirler. b) Toplama ve çıkarma işlemlerine ilişkin ögeler arasındaki ilişkileri belirler. c) Toplama ve çıkarma işlemine yönelik tahminî ve zihinden işlem sonuçları arasında ilişki kurar. ç) Tahminî ve zihinden işlem sonuçlarının tutarlılığını ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.3.2.2",
+          "metin": "Toplama ve çıkarma işlemlerini çözümleyebilme. a) Toplama ve çıkarma işlemlerinin adımlarını belirler. b) Toplama ve çıkarmanın işlem süreçlerini birbiri ile ilişkilendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.3.2.3",
+          "metin": "Çarpma ve bölme işlemlerinin sonuçlarını muhakeme edebilme. a) Çarpma ve bölme işlemlerine ilişkin bileşenleri belirler. b) Çarpma ve bölme işlemlerine ilişkin bileşenler arasındaki ilişkileri belirler. c) Çarpma ve bölme işlemine yönelik tahminî ve zihinden işlem sonuçlarını ifade eder. ç) Tahminî ve zihinden işlem sonuçlarını kendi cümleleri ile açıklar.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.3.2.4",
+          "metin": "Çarpma ve bölme işlemlerini çözümleyebilme. a) Çarpma ve bölme işlemlerinin adımlarını belirler. b) Çarpma ve bölme işlemlerini birbiri ile ilişkilendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.3.2.5",
+          "metin": "Dört işlem gerektiren durumlar için, verilen yönergeleri takip ederek yorumlayabilme. a) Dört işleme ait bileşenleri inceler. b) İncelediği bileşenleri işlem diline dönüştürür. c) Oluşturduğu yapıyı temsillerle yeniden ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.3.2.6",
+          "metin": "Dört işlem gerektiren günlük yaşam problemlerini çözebilme. a) Problemi anlayarak verilenleri ve istenilenleri belirler. b) Problemde verilenlerin ve istenilenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler. c) Probleme ilişkin verilenleri belirleyerek uygun matematiksel temsillere dönüştürür. ç) Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar. d) Problemlerin sonucuna ilişkin tahminde bulunarak işlemleri gerçekleştirmek için stratejiler geliştirir. e) Belirlenen strateji ya da stratejileri çözüm için uygular. f) Çözüm yollarını kontrol ederek çözüme ulaştırıp ulaştırmayan stratejileri değiştirir. g) Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir. ğ) Çözüme ulaştıran stratejilerin hangi problemlere uygulanabileceğini geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.3.2.7",
+          "metin": "Dört işlem gerektiren problem durumlarını yapılandırabilme. a) Dört işlem gerektiren problem durumlarına yönelik hiyerarşik, nedensel ya da mantıksal ilişkiler ortaya koyar. b) Dört işlem yapmayı gerektiren deneyimleriyle elde ettiği ilişkilere dayalı bir problem oluşturur.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.3.2.8",
+          "metin": "Dört işlem bağlamında eşitliğin farklı anlamlarını yorumlayabilme. a) Dört işlemde eşitliğin kullanımını inceler. b) Aynı sonucu veren dört işlemi eşitliğin anlamını kullanarak farklı sayılarla ifade eder. c) Eşitliğin anlamlarını dört işlem bağlamında ifade eder.",
+          "legacy_topic_id": "cebir"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-3-tema-4-nesnelerin-geometrisi-1",
+      "unite_id": 275,
+      "grade": 3,
+      "no": 4,
+      "name": "Nesnelerin Geometrisi (1)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.3.3.1",
+          "metin": "Geometrik cisimlerin özelliklerini yorumlayabilme. a) Geometrik cisimlerin özelliklerini inceler. b) Geometrik cisimlerin köşe, yüz ve ayrıt özelliklerini ifade eder. c) Köşe, yüz ve ayrıt terimlerini kendi ifadeleri ile açıklar.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.3.3.2",
+          "metin": "Kenar sayılarına göre geometrik şekilleri sınıflandırabilme. a) Geometrik şekillerin kenarlarını belirler. b) Geometrik şekilleri kenar sayılarına göre ayırır. c) Geometrik şekilleri kenar sayılarına göre tasnif eder. ç) Geometrik şekilleri kenar sayılarına göre adlandırır.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.3.3.3",
+          "metin": "Matematiksel araç ve teknolojileri kullanarak çeşitli geometrik cisimleri ve şekilleri çizebilme. a) Geometrik cisim ve şekil çizmeyi gerektiren matematiksel araç ve teknolojileri tanır. b) Geometrik cisim ve şekil çizmek için gerekli araçları ve teknolojiyi belirler. c) Belirlenen araç ve teknolojiyi kullanır.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.3.3.4",
+          "metin": "Standart olmayan ve standart ölçme araçları ile şekillerin çevre uzunluğunu tahmin edebilme. a) Standart olmayan ve standart uzunluk ölçme araçlarına ilişkin deneyimini tahmine konu olan şeklin çevre uzunluğu ile ilişkilendirir. b) Belirlenen standart olmayan ve standart uzunluk ölçme aracına göre çevre uzunluğuna ilişkin tahminde bulunur. c) Tahminini ölçüm sonuçlarıyla karşılaştırarak tahminine ilişkin yargıda bulunur.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.3.3.5",
+          "metin": "Standart sıvı ölçü birimleri cinsinden sıvı miktarını tahmin edebilme. a) Standart sıvı ölçü birimlerine ilişkin deneyimini tahmine konu olan sıvı miktarı ile ilişkilendirir. b) Belirlenen standart sıvı ölçü birimi cinsinden sıvının miktarına ilişkin tahminde bulunur. c) Tahminini ölçüm sonuçlarıyla karşılaştırarak tahminine ilişkin yargıda bulunur.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-3-tema-5-nesnelerin-geometrisi-2",
+      "unite_id": 284,
+      "grade": 3,
+      "no": 5,
+      "name": "Nesnelerin Geometrisi (2)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.3.3.6",
+          "metin": "Birden fazla simetri doğrusu olan şekilleri çözümleyebilme. a) Kare, dikdörtgen ve dairenin birden fazla simetri doğrusu olduğunu belirler. b) Simetri doğrusuna göre oluşan parçaların birbirine eş olduğunu belirler.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.3.3.7",
+          "metin": "Bir parçası verilen simetrik şekli simetri doğrusuna göre yapılandırabilme. a) Bir parçası verilen simetrik şekli inceleyerek mantıksal ilişkiler ortaya koyar. b) Bir parçası verilen simetrik şekli yatay ve dikey simetri doğrusuna göre tamamlar.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.3.3.8",
+          "metin": "Yönerge ile yapılandırılan bir şekli tamamlayarak simetrisini oluşturmaya ilişkin kodlama stratejilerini kullanarak yargıda bulunabilme. a) Bir parçası verilen şekli tamamlayarak simetrisini oluşturmaya ilişkin yönergeleri yeniden ifade eder. b) Yönergeleri takip ederek simetri oluşturur. c) Bir şeklin simetrisini oluşturmaya ilişkin yargıda bulunur.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-3-tema-6-veriye-dayali-arastirma",
+      "unite_id": 288,
+      "grade": 3,
+      "no": 6,
+      "name": "Veriye Dayalı Araştırma",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.3.4.1",
+          "metin": "Kategorik ve sayma ile elde edilen nicel veriye dayalı tek veri grubu ile çalışabilme ve veriye dayalı karar verebilme. a) İstatistiksel araştırma gerektiren günlük yaşam durumunu belirler. b) Araştırma soruları oluşturur. c) Veri toplama planı yapar. ç) Veri toplar. d) Görselleştirme araçlarından (çetele, sıklık tablosu, nokta grafiği) seçer. e) Seçilen araçlarla veriyi analiz eder. f) Araştırma sonuçlarını yorumlar. g) Sonuçları araştırma sorularına göre değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    }
+  ],
+  "4": [
+    {
+      "unit_id": "mat-4-tema-1-sayilar-ve-nicelikler-1",
+      "unite_id": 294,
+      "grade": 4,
+      "no": 1,
+      "name": "Sayılar ve Nicelikler (1)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.4.1.1",
+          "metin": "Niceliklerin büyüklükleri için en fazla altı basamaklı olan sayıların temsillerinden yararlanabilme. a) Niceliklerin büyüklüklerinin temsillerini tanır. b) Niceliklerin büyüklüklerine uygun sayı temsillerini belirler. c) Niceliklerin büyüklüklerine karşılık gelen uygun sayıları okur ve yazar.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.4.1.2",
+          "metin": "En fazla altı basamaklı sayıları çözümleyebilme. a) En fazla altı basamaklı sayıların basamaklarını ve bölüklerini belirler. b) En fazla altı basamaklı sayıların basamak, bölük ile basamak ve sayı değerleri arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.4.1.3",
+          "metin": "Sayıları sıralayabilme. a) En fazla altı basamaklı sayıları öncelik/sonralık ilişkisine göre sembol kullanarak belirler. b) En fazla altı basamaklı sayıları onluklara, yüzlüklere ve binliklere göre basamaklarına ayırır. c) En fazla dört basamaklı sayıları en yakın onluğa, yüzlüğe ve binliğe göre yuvarlayarak tasnif eder. ç) Tasnif edilen sayı gruplarını birler ve binler bölüğü şeklinde ifade eder.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.4.1.4",
+          "metin": "İleriye ve geriye doğru ritmik saymayı yapılandırabilme. a) Sayıları ileriye ve geriye doğru ritmik sayarken hiyerarşik ilişkiler ortaya koyar. b) Ritmik saymaya ilişkin öz bilgisine dayanarak yüzer ve biner ileriye ve geriye doğru hedeflenen sayıya ulaşır.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.4.1.5",
+          "metin": "Artan azalan sayı örüntüleri ve şekil örüntülerindeki değişimi genelleyebilme. a) Verilen örüntünün adımı ve örüntüde kullanılan sayılar ya da şekiller arasındaki ilişkiye yönelik bilgi toplar. b) Verilen örüntüde kullanılan sayıların ya da şekillerin ortak olan özelliklerini belirler. c) Verilen örüntüde kullanılan sayıların ya da şekillerin ortak olmayan özelliklerini belirler. ç) Karşılaştırılan sayı ve şekil örüntülerindeki artma, azalma ve tekrar etme durumlarını sözlü olarak ifade eder.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-4-tema-2-sayilar-ve-nicelikler-2",
+      "unite_id": 299,
+      "grade": 4,
+      "no": 2,
+      "name": "Sayılar ve Nicelikler (2)",
+      "legacy_topic_id": "kesirler",
+      "kazanimlar": [
+        {
+          "kod": "MAT.4.1.6",
+          "metin": "Basit, bileşik ve tam sayılı kesirleri kullanmak için matematiksel temsillerden yararlanabilme. a) Basit, bileşik ve tam sayılı kesirlerin temsillerini tanır. b) Günlük yaşam durumuna uygun basit, bileşik ve tam sayılı kesir temsillerini belirler. c) Belirlediği basit, bileşik ve tam sayılı kesirlerin temsillerini kullanır.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.4.1.7",
+          "metin": "Denk kesirleri kullanmak için matematiksel temsillerden yararlanabilme. a) Denk kesirlerin temsillerini tanır. b) Denk kesirlere uygun temsilleri belirler. c) Belirlediği denk kesirlerin temsillerini kullanır.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.4.1.8",
+          "metin": "Birim kesirlerin büyüklük küçüklük ilişkilerini çözümleyebilme. a) Birim kesirleri büyüklük küçüklük bağlamında ifade eder. b) Birim kesirler arasındaki büyüklük küçüklük ilişkisini belirler.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.4.1.9",
+          "metin": "Paydaları eşit olan kesirlerin büyüklük küçüklük ilişkilerini çözümleyebilme. a) Paydaları eşit kesirleri büyüklük küçüklük bağlamında ifade eder. b) Paydaları eşit kesirler arasındaki büyüklük küçüklük ilişkisini belirler.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.4.1.10",
+          "metin": "Bir çokluğun basit kesir kadarını ve bir basit kesir kadarı verilen çokluğun tamamını çözümleyebilme. a) Bir çokluğu oluşturan eş parçaları ve eş parçaları verilen bir çokluğu kesire uygun olacak şekilde belirler. b) Çokluk ile eş parçalar ve eş parçalar ile çokluk arasındaki ilişkiyi belirler.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.4.1.11",
+          "metin": "Paydaları eşit kesirlerle toplama ve çıkarma işlemini yapılandırabilme. a) Paydaları eşit kesirlerle toplama ve çıkarma işleminde mantıksal ilişkileri ortaya koyar. b) Paydaları eşit kesirlerle toplama ve çıkarma işleminde kendi öz bilgisi ile elde ettiği ilişkilere dayalı bir bütün oluşturur.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.4.1.12",
+          "metin": "Paydaları eşit kesirlerle toplama ve çıkarma işlemi gerektiren günlük yaşam problemlerini çözebilme. a) Problemin çözümü için uygun stratejiyi oluşturur. b) Problemi çözmek için uygun stratejiyi kullanır. c) Problemin çözümünü kontrol eder.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.4.1.13",
+          "metin": "Uzunluk ve kütle birimlerinin kendi içerisindeki dönüşümlerini yorumlayabilme. a) Uzunluk ve kütle birimlerinin kendi içindeki ilişkileri inceler. b) Uzunluk ve kütle birimlerini kendi içinde birbirine dönüştürür. c) Uzunluk ve kütle birimlerini kendi içinde farklı birim cinsinden yeniden ifade eder.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-4-tema-3-islemlerden-cebirsel-dusunmeye",
+      "unite_id": 300,
+      "grade": 4,
+      "no": 3,
+      "name": "İşlemlerden Cebirsel Düşünmeye",
+      "legacy_topic_id": "cebir",
+      "kazanimlar": [
+        {
+          "kod": "MAT.4.2.1",
+          "metin": "Toplama ve çıkarma işlemlerini zihinden yaparak çözümleyebilme. a) Zihinden işlemlerde sayıların uygun biçimde parçalarını belirler. b) Sayıların parçalarına ait özellikleri ilişkilendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.4.2.2",
+          "metin": "En çok dört basamaklı sayılarla toplama ve çıkarma işlemlerini yapılandırabilme. a) Algoritmasına yönelik hiyerarşik, nedensel ya da mantıksal ilişkiler ortaya koyar. b) Kendi öz bilgisi ile elde ettiği ilişkilere dayalı bütün oluşturur.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.4.2.3",
+          "metin": "Çarpma ve bölme işlemlerinin sonucunu tahmin edebilme. a) Sonuçları deneyimleri ile ilişkilendirir. b) Sonuçlara ilişkin çıkarım yapar. c) Sonuçlara ilişkin yargıda bulunur.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.4.2.4",
+          "metin": "Zihinden çözümlenen çarpma ve bölme işlemleri ile kısa yollarını yapılandırabilme. a) Algoritmasına yönelik ilişkiler ortaya koyar. b) Öz bilgisi ile elde ettiği ilişkilere dayalı bütün oluşturur.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.4.2.5",
+          "metin": "Çarpma ve bölme işlemlerini çözümleyebilme. a) İşlemleri fark eder. b) İşlemleri birbiri ile ilişkilendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.4.2.6",
+          "metin": "Dört işlem içeren yönergeler oluşturarak süreci yorumlayabilme. a) Dört işlem içeren durumları inceler. b) İncelediği durumları yönergelere dönüştürür. c) Oluşturduğu yönergeyi yeniden ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.4.2.7",
+          "metin": "Dört işlem gerektiren problemleri çözebilme. a) Problemi anlayarak verilenleri ve istenilenleri belirler. b) Verilen ve istenenler arasındaki ilişkileri belirler. c) Verilenleri uygun matematiksel temsillere dönüştürür. ç) Problemi kendi ifadeleri ile açıklar. d) Tahminde bulunarak çözüm stratejileri geliştirir. e) Stratejileri çözüm için uygular. f) Çözüm yollarını kontrol ederek uygun olmayan stratejiyi değiştirir. g) Stratejileri gözden geçirerek kısa yolları değerlendirir. ğ) Çözüme ulaştıran stratejilerin hangi problemlere uygulanabileceğini geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.4.2.8",
+          "metin": "Dört işlem gerektiren problem durumlarını yapılandırabilme. a) Problem durumlarına yönelik ilişkiler ortaya koyar. b) Problemleri öz bilgisi ile elde ettiği ilişkilere dayalı olarak oluşturur.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.4.2.9",
+          "metin": "Dört işlem bağlamında eşitliğin farklı anlamlarını yorumlayabilme. a) Eşitlik kavramını inceler. b) Günlük yaşam durumlarını dört işleme dönüştürür. c) Günlük yaşam durumunu eşitlik kavramı bağlamında ifade eder.",
+          "legacy_topic_id": "cebir"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-4-tema-4-nesnelerin-geometrisi-1",
+      "unite_id": 301,
+      "grade": 4,
+      "no": 4,
+      "name": "Nesnelerin Geometrisi (1)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.4.3.1",
+          "metin": "Geometrik cisimlerin açınımlarını yapılandırabilme. a) Geometrik cisimlerin açınımlarını inceleyerek yüzler arasında mantıksal ilişkiler ortaya koyar. b) Ortaya koyduğu ilişkilerden yola çıkarak geometrik cismi oluşturur.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.4.3.2",
+          "metin": "Geometrik şekilleri köşe ve kenarlarına göre yorumlayabilme. a) Üçgen, kare ve dikdörtgenin köşe ve kenarlarını belirler. b) Üçgen, kare ve dikdörtgenin köşe ve kenarları arasında ilişki kurar. c) Kenarlarına göre üçgen çeşitlerini ve kare ile dikdörtgen ilişkisini ifade eder.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.4.3.3",
+          "metin": "Geometrik şekillerin çevre uzunluğunu ölçmede matematiksel araç ve teknolojiden yararlanabilme. a) Geometrik şekillerin çevre uzunluğunu ölçmede kullanılabilecek matematiksel araç ve teknolojiyi tanır. b) Üçgen, kare ve dikdörtgenin çevre uzunluğunu ölçmede uygun araçları belirler. c) Üçgen, kare ve dikdörtgenin çevre uzunluğunu ölçmek için ilgili matematiksel araç ve teknolojiyi kullanır.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.4.3.4",
+          "metin": "Standart olmayan ölçü birimleri cinsinden şekillerin alanlarını tahmin edebilme. a) Standart olmayan ölçü birimlerine ilişkin deneyimini, tahmine konu olan şeklin alanıyla ilişkilendirir. b) Belirlenen standart olmayan ölçü birimini kullanarak şeklin alanına ilişkin tahminde bulunur. c) Tahminini ölçüm sonuçlarıyla karşılaştırarak tahminine ilişkin yargıda bulunur.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-4-tema-5-nesnelerin-geometrisi-2",
+      "unite_id": 302,
+      "grade": 4,
+      "no": 5,
+      "name": "Nesnelerin Geometrisi (2)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.4.3.5",
+          "metin": "Günlük yaşamdan örneklerle açıyı bir dönme miktarı olarak yorumlayabilme. a) Günlük hayattan örneklerle açıyı belirler. b) Açıları bağlamından koparmadan günlük yaşam durumlarına dönüştürür. c) Açıyı bir dönme miktarı olarak yeniden ifade eder.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.4.3.6",
+          "metin": "Açı ölçümüne ilişkin standart ölçme araçlarının gerekliliğini değerlendirebilme. a) Açı ölçümü için bir ölçüt belirler. b) Ölçüte uygun olarak standart olmayan ölçü birimlerini kullanarak ölçme yapar. c) Standart olmayan ölçü birimlerine dayalı sonuçları ölçüt ile karşılaştırır. ç) Karşılaştırmalara ilişkin olarak standart ölçme araçlarının gerekliliğine ilişkin yargıda bulunur.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.4.3.7",
+          "metin": "Dik açıyı referans alarak açıları dar ve geniş olarak sınıflandırabilme. a) Dik açının özelliklerini belirler. b) Dik açıyı referans alarak açı çeşitlerini dar ve geniş açı olarak ayırır. c) Dar ve geniş açının özelliklerini tasnif eder. ç) Dar ve geniş açıyı adlandırır.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-4-tema-6-nesnelerin-geometrisi-3",
+      "unite_id": 303,
+      "grade": 4,
+      "no": 6,
+      "name": "Nesnelerin Geometrisi (3)",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.4.3.8",
+          "metin": "Geometrik nesneler ve şekiller üzerinden doğruya göre simetriyi yorumlayabilme. a) Geometrik şekiller ve modeller üzerinden aynaya göre simetrinin özelliklerini inceler. b) Aynaya göre simetri ile doğruya göre simetri arasındaki ilişkiyi fark eder. c) Aynaya göre simetriyi, anlamını değiştirmeden kendi ifadeleriyle doğruya göre simetri olarak yeniden ifade eder.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.4.3.9",
+          "metin": "Bir şeklin doğruya göre simetrisini yapılandırabilme. a) Simetri doğrusunun özelliklerini inceleyerek doğruya göre simetriye ilişkin mantıksal ilişkiler ortaya koyar. b) Ortaya koyulan ilişkilerden yola çıkarak şeklin doğruya göre simetrisini oluşturur.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.4.3.10",
+          "metin": "Geometrik şekillere dayalı bir yapı oluşturabilmek için kodlama stratejilerini yapılandırabilme. a) Geometrik şekil ve yapı bilgisi arasında mantıksal ilişkiler ortaya koyar. b) Ortaya koyulan ilişkilerden yola çıkarak kodlama stratejisi oluşturur.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-4-tema-7-olaylarin-olasiligi-ve-veriye-dayali-arastirma",
+      "unite_id": 304,
+      "grade": 4,
+      "no": 7,
+      "name": "Olayların Olasılığı ve Veriye Dayalı Araştırma",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.4.4.1",
+          "metin": "Günlük yaşamdan herhangi bir olayın olma olasılığını 'imkânsız, olabilir, kesin' olarak belirleyebilme.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.4.4.2",
+          "metin": "Kategorik veriye ve sayma ile elde edilen nicel veriye dayalı en çok iki veri grubu ile çalışabilme ve veriye dayalı karar verebilme. a) Kategorik ve nicel veriye dayalı istatistiksel araştırma gerektiren günlük yaşam problemi belirler. b) Araştırma soruları oluşturur. c) Veri toplama planı hazırlar. ç) Kategorik ve nicel veri toplar. d) Görselleştirme araçlarını seçer (çetele, sıklık tablosu, nesne/şekil/nokta grafiği). e) Seçilen araçlarla veriyi görselleştirir ve analiz eder. f) Araştırma sonuçlarını yorumlar. g) Sonuçları araştırma sorularına göre değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    }
+  ],
+  "5": [
+    {
+      "unit_id": "mat-5-tema-1-sayilar-ve-nicelikler-1",
+      "unite_id": 447,
+      "grade": 5,
+      "no": 1,
+      "name": "Sayılar ve Nicelikler (1)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.5.1.1",
+          "metin": "Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme. a) Günlük hayattaki farklı bağlamlardan yola çıkarak altıdan çok basamaklı sayılar hakkında bilgi toplar. b) Sayıların bölükleri ile okunuşları arasındaki ortak özellikleri belirler. c) Sayıların bölükleri ile okunuşları arasındaki örüntüler üzerinden basamak sayısı altıdan çok olan sayıların okunuş ve yazılışları hakkında önermelerde bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.5.1.2",
+          "metin": "Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme. a) Problemin içerdiği sayı ve işlem bileşenlerini belirler. b) Problemde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler. c) Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür. ç) Problemi matematiksel temsiller kullanarak kendi ifadeleri ile açıklar. d) Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir. e) Belirlenen strateji veya stratejileri çözüm için uygular. f) Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir. g) Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir. ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-5-tema-2-sayilar-ve-nicelikler-2",
+      "unite_id": 449,
+      "grade": 5,
+      "no": 2,
+      "name": "Sayılar ve Nicelikler (2)",
+      "legacy_topic_id": "kesirler",
+      "kazanimlar": [
+        {
+          "kod": "MAT.5.1.3",
+          "metin": "Gerçek yaşam durumlarına karşılık gelen kesirleri farklı biçimlerde temsil edebilme. a) Kesirlerin farklı gösterimlerinin (bileşik, tam sayılı, ondalık, yüzde) gerçek yaşam durumu içerisindeki kullanımını anlar. b) Gerçek yaşam durumlarında karşılaşılan kesirlerin farklı gösterimlerini ilişkilendirmek için farklı modelleri seçer. c) Seçilen modelleri kullanır. ç) Kullanılan modelleri kesirlerin farklı gösterimleri ile yorumlar. d) Benzer durumlarda kullanılabilecek farklı modelleri kullanışlılık açısından karşılaştırır. e) Karşılaştırdığı modellerin kullanışlılığına ilişkin karar verir.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.5.1.4",
+          "metin": "Farklı gösterimlerle ifade edilen kesirlerin karşılaştırılmasına yönelik çıkarım yapabilme. a) Farklı gösterimlerle ifade edilen kesirlerin karşılaştırılmasına yönelik varsayımda bulunur. b) Varsayımındaki ilişkileri inceleyerek kesirlerin karşılaştırılmasına yönelik genellemeleri belirler. c) Elde ettiği genellemelerin varsayımını karşılayıp karşılamadığını temsiller üzerinde gösterir. ç) Varsayımı ile ilgili ulaştığı sonuca yönelik matematiksel önermeleri sözel veya sembolik temsil ile sunar. d) Sunduğu önermelerin tahmin etme becerisine katkısını gerekçelerle açıklar.",
+          "legacy_topic_id": "kesirler"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-5-tema-3-islemlerle-cebirsel-dusunme",
+      "unite_id": 450,
+      "grade": 5,
+      "no": 3,
+      "name": "İşlemlerle Cebirsel Düşünme",
+      "legacy_topic_id": "cebir",
+      "kazanimlar": [
+        {
+          "kod": "MAT.5.2.1",
+          "metin": "Eşitliğin korunumuna ve işlem özelliklerine yönelik çıkarım yapabilme. a) Eşitliğin korunumuna, doğal sayılarla toplama ve çarpma işlemlerinin değişme, birleşme; çarpmanın toplama ve çıkarma işlemleri üzerine dağılma özelliklerine yönelik varsayımlarda bulunur. b) İncelediği örnekler üzerinden varsayımına yönelik genellemeleri belirler. c) Genellemelerin varsayımını karşılayıp karşılamadığını çeşitli örneklerle sınar. ç) Sonuca yönelik doğrulayabileceği matematiksel önermeyi sözel ve sembolik temsil ile sunar. d) Sunduğu önermenin katkısına yönelik gerekçe sunar.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.5.2.2",
+          "metin": "Karşılaştığı günlük hayat ya da matematiksel durumlarda işlem önceliğini yorumlayabilme. a) Doğal sayılarla dört işlem içeren problemlerde işlem önceliğini inceler. b) İşlem önceliğini uygular. c) İşlem önceliğini açıklar.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.5.2.3",
+          "metin": "Sayı ve şekil örüntülerinin kuralına ilişkin muhakeme yapabilme. a) Örüntülerdeki ilişkilere yönelik varsayımda bulunur. b) Örüntünün kuralına ilişkin genellemeleri belirler. c) Genellediği ilişkilerin varsayımını karşılayıp karşılamadığını sınar. ç) Sonuca yönelik önermeyi sözel ve sembolik temsiller kullanarak sunar. d) Sunduğu önermenin kullanışlılığına yönelik gerekçeler sunar. e) Önermenin geçerliliğini destekleyen kapsayıcı örnekler verir. f) Doğrulamanın benzer önermelere uygulanıp uygulanamayacağını değerlendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.5.2.4",
+          "metin": "Temel aritmetik işlem içeren durumlardaki algoritmaları yorumlayabilme. a) Algoritmik yapıyı inceler. b) Algoritmik yapıyı tablo temsiline veya aritmetik işlemlere dönüştürür. c) Algoritmik yapının içerdiği matematiksel ilişkileri sözlü olarak ifade eder.",
+          "legacy_topic_id": "cebir"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-5-tema-4-geometrik-sekiller",
+      "unite_id": 448,
+      "grade": 5,
+      "no": 4,
+      "name": "Geometrik Şekiller",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.5.3.1",
+          "metin": "Temel geometrik çizimler için matematiksel araç ve teknolojiden yararlanabilme. Nokta, doğru, doğru parçası, ışın, açı, çember ve dikme çiziminde gerekli araç ve teknolojileri tanır; uygun araçları belirler ve kullanır.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.5.3.2",
+          "metin": "Temel geometrik çizimlere dayalı deneyimlerini yansıtabilme. Çizimlere dair deneyimlerini gözden geçirir; özelliklere yönelik çıkarım yapar ve çıkarımını farklı örnekler üzerinden değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.5.3.3",
+          "metin": "Açıları ölçmek için matematiksel araç ve teknolojiden yararlanabilme. Açı ölçmek için gerekli araç ve teknolojiyi tanır; uygun olanını belirler ve kullanır.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.5.3.4",
+          "metin": "Düzlemde iki veya üç doğrunun birbirine göre durumuna bağlı olarak oluşabilecek açılara dair çıkarım yapabilme. Varsayımlarda bulunur; doğruların oluşturduğu açıları belirleyip listeler; açıları varsayımlarla karşılaştırır; açılara dair önerme sunar ve sunduğu önermelerin katkısını değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.5.3.5",
+          "metin": "Çokgenleri düzlemde ardışık kesişen doğruların oluşturduğu kapalı şekiller olarak yorumlayabilme. En az üç doğrunun ardışık kesişimiyle oluşan durumları inceler; çeşitli çokgenler oluşturur; çokgenlerin düzlemde doğruların ardışık kesişimleriyle meydana geldiğini ifade eder.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.5.3.6",
+          "metin": "Çokgenlerin özellikleri ile ilgili deneyimlerini yansıtabilme. Çokgen özellikleri ile ilgili deneyimlerini gözden geçirir; kenar ve açı özelliklerine dair çıkarım yapar; çıkarımını farklı örnekler üzerinden değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.5.3.7",
+          "metin": "Düzlemde iki noktada kesişen çember çiftinin merkezleri ve kesişim noktalarından biri ile inşa edilen üçgenlerin kenar özelliklerine yönelik muhakeme yapabilme. Kesişen çember çiftlerinin kenar özelliklerine dair varsayımda bulunur; örneklerden çeşitli üçgenleri belirler; özellikleri varsayımlarla karşılaştırır; önerme şeklinde ifade eder; sunduğu önermelerin katkısını değerlendirir; çemberin özelliklerini kullanarak önermeleri doğrulamaya yönelik matematiksel gerekçeler sunar; özelliklerinin benzer inşa süreçlerindeki rolünü değerlendirir.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-5-tema-5-geometrik-nicelikler",
+      "unite_id": 451,
+      "grade": 5,
+      "no": 5,
+      "name": "Geometrik Nicelikler",
+      "legacy_topic_id": "olcme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.5.4.1",
+          "metin": "Kenar uzunlukları doğal sayı olan bir dikdörtgenin çevre uzunluğu verildiğinde kenar uzunluklarını yorumlayabilme. a) Kenar uzunlukları doğal sayı olan bir dikdörtgenin çevre uzunluğu verildiğinde olası kenar uzunluklarını inceler. b) Verilen çevre uzunluğuna sahip ve kenar uzunlukları doğal sayı olan dikdörtgen oluşturur. c) Kenar uzunlukları doğal sayı olan farklı dikdörtgenlerin aynı çevre uzunluğuna sahip olabileceğini açıklar.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.5.4.2",
+          "metin": "Birim karelerden yola çıkarak dikdörtgenin alanını değerlendirebilme. a) Dikdörtgenin alanını ölçmede, seçtiği birim kareleri ölçüt olarak belirler. b) Dikdörtgenin alanını seçilen birim karelerle ölçer. c) Birim kare sayısının dikdörtgenin iki ardışık kenar uzunluğu ile ilişkisini inceler. ç) Dikdörtgenin alan bağıntısına (iki ardışık kenarın uzunlukları çarpımı) ilişkin yargıda bulunur.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.5.4.3",
+          "metin": "Kenar uzunlukları doğal sayı olan bir dikdörtgenin alanının ölçüsü verildiğinde çevre uzunluğunu, çevre uzunluğu verildiğinde alanını yorumlayabilme. a) Alanının ölçüsü verilen bir dikdörtgenin çevre uzunluğunu, çevre uzunluğu verilen bir dikdörtgenin alanını inceler. b) Aynı alana sahip farklı dikdörtgenlerin çevre uzunluklarını ve aynı çevre uzunluğuna sahip farklı dikdörtgenlerin alanlarını belirler. c) Aynı çevre uzunluğuna sahip dikdörtgenlerin farklı alanlara ve aynı alana sahip dikdörtgenlerin farklı çevre uzunluklarına sahip olabileceğini ifade eder.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.5.4.4",
+          "metin": "Dikdörtgenin çevre uzunluğu ve alanı ile ilgili problemleri çözebilme. a) Dikdörtgenin çevre uzunluğu ve alanı ile ilgili problemlerde ilgili matematiksel bileşenleri belirler. b) Matematiksel bileşenler arasındaki ilişkileri belirler. c) Problem bağlamındaki temsilleri farklı temsillere dönüştürür. ç) Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar. d) Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir. e) Belirlediği stratejileri çözüm için uygular. f) Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir. g) Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir. ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "olcme"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-5-tema-6-istatistiksel-arastirma-sureci",
+      "unite_id": 452,
+      "grade": 5,
+      "no": 6,
+      "name": "İstatistiksel Araştırma Süreci",
+      "legacy_topic_id": "veri_isleme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.5.5.1",
+          "metin": "Kategorik veri ile çalışabilme ve veriye dayalı karar verebilme. a) Kategorik veriye dayanan istatistiksel araştırma gerektiren durumları fark eder. b) Kategorik veriye dayanan betimleme veya karşılaştırma gerektirebilecek araştırma soruları oluşturur. c) Kategorik veriye ulaşmak için plan yapar. ç) Kategorik veriye ve araştırma sorusuna uygun anket soruları hazırlar. d) Anketi kullanarak veri toplar veya hazır veriye ulaşır. e) Veri görselleştirme aracını (sıklık tablosu, sütun grafiği, daire grafiği, nokta grafiği gibi) seçme gerekçelerini belirtir. f) Toplanan veriyi uygun görselleştirme aracı ile analiz eder. g) Araştırma sonuçlarını elde eder. ğ) Araştırmada ulaştığı sonuçlara yönelik gerekçeler sunar. h) Araştırma sonuçlarının araştırma sorusuna ne düzeyde cevap verdiğini değerlendirir. ı) Araştırma süreci adımlarını değerlendirerek araştırma sürecine uygun olmayan adımları yeniden planlar.",
+          "legacy_topic_id": "veri_isleme"
+        },
+        {
+          "kod": "MAT.5.5.2",
+          "metin": "Başkaları tarafından oluşturulan kategorik veriye dayalı istatistiksel sonuç veya yorumları tartışabilme. a) Başkaları tarafından oluşturulan kategorik veriye dayalı istatistiksel sonuç veya yorumlara yönelik istatistiksel temellendirme yapar. b) Başkaları tarafından oluşturulan kategorik veriye dayalı istatistiksel sonuç veya yorumlara yönelik hataları ya da yanlılıkları tespit eder. c) Başkaları tarafından oluşturulan kategorik veriye dayalı sonuç veya yorumları çürütür ya da kabul eder.",
+          "legacy_topic_id": "veri_isleme"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-5-tema-7-veriden-olasiliga",
+      "unite_id": 455,
+      "grade": 5,
+      "no": 7,
+      "name": "Veriden Olasılığa",
+      "legacy_topic_id": "veri_isleme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.5.6.1",
+          "metin": "Herhangi bir olayın olasılığının 0 (imkânsız) ile 1 (kesin) arasında (0 ve 1 dâhil) olduğunu (olasılık spektrumu) yorumlayabilme. a) Olayları ve olası durumları inceler. b) Bir olayın olasılığına dair tahminlerini farklı sayı temsillerine dönüştürür. c) Kendi ifadeleriyle tahminde bulunduğu bir olayın olasılığının 0 ile 1 arasında (0 ve 1 dâhil) olduğunu ifade eder.",
+          "legacy_topic_id": "veri_isleme"
+        },
+        {
+          "kod": "MAT.5.6.2",
+          "metin": "Olayları az ya da çok olasılıklı şeklinde yapılandırabilme. a) Olayların olasılıklarına ilişkin nedensel veya mantıksal ilişkiler ortaya koyar. b) Kendi öz bilgisi ile elde ettiği ilişkilere dayanarak olayların olasılıklarını az veya çok olasılıklı şeklinde ortaya koyar.",
+          "legacy_topic_id": "veri_isleme"
+        }
+      ]
+    }
+  ],
+  "6": [
+    {
+      "unit_id": "mat-6-tema-1-sayilar-ve-nicelikler-1",
+      "unite_id": 456,
+      "grade": 6,
+      "no": 1,
+      "name": "Sayılar ve Nicelikler (1)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.6.1.1",
+          "metin": "Karşılaştığı problem durumlarında bir doğal sayının çarpan ve katlarına yönelik muhakeme yapabilme. a) Varsayımlarda bulunur. b) Genellemeler belirler. c) Modeller ile gösterir. ç) Matematiksel önermeyi sunar. d) Gerekçeleri sunar. e) Kapsayıcı örnekler verir. f) Benzer önermelere uygulanabilirliğini değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.6.1.2",
+          "metin": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilme kriterlerine ilişkin çıkarım yapabilme. a) Varsayımlarda bulunur. b) Genellemeler belirler. c) Örnekler ile sınar. ç) Kriterler hakkında önerme sunar. d) Farklı durumlardaki kullanışlılığını değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.6.1.3",
+          "metin": "Bir doğal sayının asal olma durumunu ve asal çarpanlarını çözümleyebilme. a) Asal olup olmadığını ve asal çarpanlarını belirler. b) Özellikleri ve ilişkileri belirler.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.6.1.4",
+          "metin": "Günlük hayat problemleri ya da matematiksel durumlar üzerinden ortak kat ve ortak böleni yorumlayabilme. a) Ortak katları ve bölenlerini inceler. b) Matematiksel temsillerle ifade eder. c) Kendi ifadeleriyle açıklar.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-6-tema-2-sayilar-ve-nicelikler-2",
+      "unite_id": 457,
+      "grade": 6,
+      "no": 2,
+      "name": "Sayılar ve Nicelikler (2)",
+      "legacy_topic_id": "kesirler",
+      "kazanimlar": [
+        {
+          "kod": "MAT.6.1.5",
+          "metin": "Gerçek yaşam durumlarında ondalık gösterimlerin basamak değerlerini kesirlerden yararlanarak yorumlayabilme. a) Ondalık gösterimlerin basamak değerlerini inceler. b) Ondalık gösterimlerin basamak değerlerini paydası 10, 100 ve 1000 olan kesirlerin toplamlarını kullanarak yeniden ifade eder. c) Ondalık gösterimlerin basamak değerlerini kendi cümleleriyle açıklar.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.6.1.6",
+          "metin": "Kesir ve bölme işlemi arasındaki ilişkiye yönelik tümevarımsal akıl yürütebilme. a) Kağıt-kalemle ve hesap makinesinde bölme işlemi gerçekleştirerek kesirlerin ondalık gösterimlerine ilişkin gözlem yapar. b) Kesirlerin sonlu ve devirli ondalık gösterimlerine ait örüntüleri belirler. c) Örüntülerde keşfedilen ilişkileri geneller.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.6.1.7",
+          "metin": "Karşılaştığı günlük hayat ya da matematiksel durumlarda standart uzunluk ölçme birimlerini değerlendirebilme. a) Standart ölçme birimlerini kullanarak ölçme yapar. b) Ölçme sonuçlarını belirlediği ölçme birimleri ile karşılaştırır. c) Karşılaştırmalarına ilişkin yargıda bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.6.1.8",
+          "metin": "Gerçek yaşam durumlarında karşılaşılan kesir, ondalık ve yüzde gösterimleri ile ilgili dört işlem gerektiren problemleri çözebilme. a) Sayı ve işlem bileşenlerini belirler. b) Verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler. c) Problem bağlamına uygun temsilleri (şekil, tablo, diyagram gibi) kullanır. ç) Kullanılan temsil üzerinden problemi kendi ifadeleri ile açıklar. d) Problemlerin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir. e) Stratejileri işe koşarak problemleri çözer. f) Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir. g) Kullandığı stratejileri gözden geçirerek kısa yolları değerlendirir. ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller. h) Genellemenin geçerliliğini değerlendirir.",
+          "legacy_topic_id": "kesirler"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-6-tema-3-islemlerle-cebirsel-dusunme-ve-degisimler",
+      "unite_id": 458,
+      "grade": 6,
+      "no": 3,
+      "name": "İşlemlerle Cebirsel Düşünme ve Değişimler",
+      "legacy_topic_id": "cebir",
+      "kazanimlar": [
+        {
+          "kod": "MAT.6.2.1",
+          "metin": "Gerçek yaşam durumlarında bilinen niceliklerden bilinmeyen niceliklere ilişkin muhakeme yapabilme. a) Gerçek yaşam durumlarında nicelikleri belirler. b) Nicelikler arasındaki ilişkileri tablo temsili kullanarak belirler. c) Nicelikler arasındaki ilişkileri cebirsel olarak ifade eder. ç) Cebirsel ifadenin anlamını kendi cümleleri ile açıklar. d) Yorumladığı cebirsel ifadelere karşılık gelen durumlara yönelik varsayımda bulunur. e) Verilen cebirsel ifadelere yönelik varsayımda bulunduğu durumları inceleyerek değişkenlerin ve cebirsel ifadelerin anlamlarına yönelik genellemeleri belirler. f) Elde ettiği genellemelerin varsayımını karşılayıp karşılamadığını farklı sözel ve cebirsel ifadeler ile sınar. g) Doğrulayabileceği sözel ve cebirsel ifadeleri farklı değişken ve değerlerle sözel ve cebirsel olarak yeniden ifade eder. ğ) Cebirsel ifadelerin matematiğin farklı alanlarında ve gerçek yaşam durumlarında kullanımına yönelik katkısını ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.6.2.2",
+          "metin": "Sayı ve şekil örüntülerini yorumlayabilme. a) Sayı ve şekil örüntülerindeki ilişkileri inceler. b) İncelediği ilişkileri tablo, grafik ve sözel temsiller aracılığıyla ifade eder. c) Farklı temsillerle gösterilen ilişkilerden yola çıkarak örüntülerdeki yapıları cebirsel olarak ifade eder.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.6.2.3",
+          "metin": "Cebirsel ifadeler içeren durumlardaki algoritmaları yorumlayabilme. a) Cebirsel ifadeler içeren durumlardaki algoritmik yapıyı inceler. b) İncelediği durumlardaki algoritmik yapıyı tablo temsiline veya cebirsel ifadelere dönüştürür. c) Dönüştürdüğü algoritmik yapının içerdiği matematiksel ilişkileri sözel olarak ifade eder.",
+          "legacy_topic_id": "cebir"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-6-tema-4-geometrik-sekiller",
+      "unite_id": 459,
+      "grade": 6,
+      "no": 4,
+      "name": "Geometrik Şekiller",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.6.3.1",
+          "metin": "Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları sınıflandırabilme. a) Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları belirler. b) Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları ayrıştırır. c) Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları tasnif eder. ç) Bu tasnife göre açıları adlandırır.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.6.3.2",
+          "metin": "Matematiksel araç ve teknolojiden yararlanarak iki paralel doğrunun iki kesenle oluşturduğu şekillerin özelliklerine dair çıkarım yapabilme. a) Düzlemde iki paralel doğrunun iki kesenle oluşturduğu şekillerin özelliklerine dair varsayımda bulunur. b) Oluşan şekilleri çeşitli özelliklerine göre listeler. c) Oluşan şekilleri kenar ve açı özelliklerini dikkate alarak varsayımları ile karşılaştırır. ç) Oluşan şekillerin iç açılarının ölçüleri toplamına ve yamuk, paralelkenar, eşkenar dörtgen, dikdörtgen, karenin ortak özelliklerine dair önermeler sunar. d) Sunduğu önermelerin dörtgenlerin sınıflandırılmasına yönelik katkısını değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.6.3.3",
+          "metin": "Matematiksel araç ve teknolojiden yararlanarak birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenlere yönelik çıkarım yapabilme. a) Birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenlere yönelik varsayımlarda bulunur. b) Birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenleri oluşturur ve listeler. c) Oluşturulan dörtgenleri varsayımları ile karşılaştırır. ç) Özelliklerine bağlı olarak birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenlere yönelik önermeler sunar. d) Sunduğu önermelerin dörtgenlerin farklı yollardan tanımlanmasına yönelik katkısını değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.6.3.4",
+          "metin": "Üçgen, yamuk, paralelkenar, eşkenar dörtgen, dikdörtgen ve karenin açıları ile ilgili problemleri çözebilme. a) Problemlerde matematiksel bileşenleri belirler. b) Matematiksel bileşenler arasındaki ilişkiyi belirler. c) Problem bağlamındaki temsilleri farklı temsillere dönüştürür. ç) Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar. d) Problemin çözümü için stratejiler geliştirir. e) Belirlenen stratejileri çözüm için uygular. f) Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir. g) Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir. ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-6-tema-5-geometrik-nicelikler",
+      "unite_id": 460,
+      "grade": 6,
+      "no": 5,
+      "name": "Geometrik Nicelikler",
+      "legacy_topic_id": "olcme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.6.4.1",
+          "metin": "Uzunluk ve alan ölçme birimleri arasındaki ilişkilerle ilgili analojik akıl yürütebilme. a) Uzunluk ve alan ölçme birimleri arasındaki ilişkileri gözlemler. b) Uzunluk ve alan ölçme birimleri arasındaki ilişkiyi tespit eder. c) Uzunluk ve alan ölçme birimleri arasında kurulan ilişkiden hareketle alan ölçme birimleri arasındaki ilişkiye dair çıkarım yapar.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.6.4.2",
+          "metin": "Dikdörtgenin alan bağıntısına yönelik deneyimlerini paralelkenar ve üçgenin alan bağıntılarına yansıtabilme. a) Dikdörtgenin alan bağıntısını gözden geçirir. b) Dikdörtgenin alan bağıntısından yola çıkarak paralelkenar ve üçgenin alan bağıntıları hakkında çıkarım yapar. c) Çıkarımını farklı örnekler üzerinden değerlendirir.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.6.4.3",
+          "metin": "Geometrik şekillerin alanları ile modellenen gerçek yaşam durumlarına yönelik problem çözebilme. a) Matematiksel bileşenleri belirler. b) Matematiksel bileşenler arasındaki ilişkiyi belirler. c) Problem bağlamındaki verileri uygun temsillere dönüştürür. ç) Sorunu kendi ifadeleriyle açıklar. d) Tahminde bulunur ve stratejiler geliştirir. e) Stratejileri uygulamayla çözer. f) Çözüm yollarını kontrol eder ve gerekirse stratejisini değiştirir. g) Alternatif yolları değerlendirir. ğ) Bulduğu çözüm yöntemini genelleştirir. h) Genellemenin geçerliliğini matematiksel örneklerle doğrular.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.6.4.4",
+          "metin": "Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiye yönelik çıkarım yapabilme. a) Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiye yönelik varsayımlarda bulunur. b) Çemberlerin uzunlukları ile çap uzunlukları arasındaki ilişkileri listeler. c) Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiyi varsayımlarıyla karşılaştırır. ç) Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiye yönelik önermeler sunar. d) Elde ettiği ilişkiye yönelik değerlendirmeler yapar.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.6.4.5",
+          "metin": "Çap veya yarıçap uzunluğu verilen bir çemberin uzunluğu ile ilgili problemleri çözebilme. a) İlgili matematiksel bileşenleri belirler. b) Matematiksel bileşenler arasındaki ilişkiyi belirler. c) Problem bağlamındaki verileri uygun temsillere dönüştürür. ç) Sorunu kendi ifadeleriyle açıklar. d) Tahminde bulunur ve stratejiler geliştirir. e) Stratejileri uygulamayla çözer. f) Çözüm yollarını kontrol eder, gerekirse stratejisini değiştirir ve alternatif yolları değerlendirir. g) Stratejisini genelleştirerek diğer problemlere uyarlar. ğ) Genellemenin geçerliliğini matematiksel örneklerle doğrular.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.6.4.6",
+          "metin": "Çemberde merkez açının ölçüsü ile gördüğü yayın uzunluğu arasındaki ilişkiye dair tümevarımsal akıl yürütebilme. a) Farklı ölçülere sahip merkez açıların gördükleri yay uzunluklarına ilişkin gözlem yapar. b) Merkez açıların ölçüleri ile gördükleri yayların uzunlukları arasındaki ilişkiye dair örüntü bulur. c) Merkez açının ölçüsü ile gördüğü yayın uzunluğu arasındaki ilişkiye dair genelleme yapar.",
+          "legacy_topic_id": "olcme"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-6-tema-6-istatistiksel-arastirma-sureci",
+      "unite_id": 461,
+      "grade": 6,
+      "no": 6,
+      "name": "İstatistiksel Araştırma Süreci",
+      "legacy_topic_id": "veri_isleme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.6.5.1",
+          "metin": "Kategorik veya nicel (kesikli) veri ile çalışabilme ve veriye dayalı karar verebilme. a) Kategorik veya nicel veriye dayanan istatistiksel araştırma gerektiren durumları fark eder. b) Betimleme veya karşılaştırma gerektirebilecek araştırma soruları oluşturur. c) Veriye ulaşmak için plan yapar. ç) Veri toplama amacına uygun anket soruları hazırlar. d) Anketi kullanarak veri toplar veya hazır veriye ulaşır. e) Görselleştirme ve özetleme araçları seçiminin gerekçelerini belirtir. f) Toplanan veriyi uygun araçlarla analiz eder. g) Araştırma sonuçlarını elde eder. ğ) Ulaştığı sonuçlara gerekçeler sunar. h) Sonuçların araştırma sorusuna cevap verme düzeyini değerlendirir. ı) Süreci değerlendirerek uygun olmayan adımları yeniden planlar.",
+          "legacy_topic_id": "veri_isleme"
+        },
+        {
+          "kod": "MAT.6.5.2",
+          "metin": "Başkaları tarafından oluşturulan kategorik veya nicel veriye dayalı istatistiksel sonuç veya yorumları tartışabilme. a) İstatistiksel sonuç veya yorumlara istatistiksel temellendirme yapar. b) Sonuç veya yorumlardaki hataları ya da yanlılıkları tespit eder. c) İstatistiksel sonuç veya yorumları çürütür ya da kabul eder.",
+          "legacy_topic_id": "veri_isleme"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-6-tema-7-veriden-olasiliga",
+      "unite_id": 462,
+      "grade": 6,
+      "no": 7,
+      "name": "Veriden Olasılığa",
+      "legacy_topic_id": "olasilik",
+      "kazanimlar": [
+        {
+          "kod": "MAT.6.6.1",
+          "metin": "Bir olayın olasılığını gözleme dayalı tahmin edebilme. a) Bir olayın olasılığı ile deneylerden elde ettiği veriyi ilişkilendirir. b) Deneye ait tekrar sayısı ile deneyin çıktılarının göreli sıklıklarının ilişkisine yönelik çıkarım yapar. c) Çıkarımlardan hareketle olasılık değerini hesaplama için göreli sıklığın kullanımına yönelik yargıda bulunur.",
+          "legacy_topic_id": "olasilik"
+        }
+      ]
+    }
+  ],
+  "7": [
+    {
+      "unit_id": "mat-7-tema-1-sayilar-ve-nicelikler-1",
+      "unite_id": 463,
+      "grade": 7,
+      "no": 1,
+      "name": "Sayılar ve Nicelikler (1)",
+      "legacy_topic_id": "kesirler",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.1.1",
+          "metin": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme. a) Tam sayıları inceler. b) Tam sayıları rasyonel sayılara genişletir ve mutlak değerle sayı doğrusunda açıklar. c) Sayı doğrusu üzerinde her rasyonel sayının bir noktaya karşılık geldiğini açıklar.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.7.1.2",
+          "metin": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme. a) Bölme işlemini kullanarak her rasyonel sayının ondalık gösterimi olduğunu inceler. b) Rasyonel sayıların devirli ondalık gösterimi hakkında çıkarım yapar. c) Her rasyonel sayının devirli ya da devirsiz ondalık açılımları olduğunu değerlendirir.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.7.1.3",
+          "metin": "Rasyonel sayıların sıralama ve karşılaştırma ilişkilerini yorumlayabilme. a) Paydası 1 olan rasyonel sayılardan başlayarak sayı doğrusunda incelemeler yapar. b) Sıralama ve karşılaştırma ilişkilerini sembolik olarak ifade eder. c) İlişkileri sayı doğrusu üzerinde kendi ifadeleriyle açıklar.",
+          "legacy_topic_id": "kesirler"
+        },
+        {
+          "kod": "MAT.7.1.4",
+          "metin": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme. a) Problem çözümünde sayı ve işlem bileşenlerini belirler. b) İstenenler ile seçilen işlemler arasındaki ilişkileri belirler. c) Problemi uygun temsillere dönüştürür. ç) Temsil üzerinden problemin açıklamasını yapar. d) Çözüm stratejileri oluşturur. e) Stratejileri işe koşarak çözer. f) Çözümü kontrol eder. g) Farklı çözüm stratejilerini inceler. ğ) Genellemeler yapar. h) Genellemelerin geçerliliğini değerlendirir.",
+          "legacy_topic_id": "kesirler"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-7-tema-2-sayilar-ve-nicelikler-2",
+      "unite_id": 464,
+      "grade": 7,
+      "no": 2,
+      "name": "Sayılar ve Nicelikler (2)",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.1.5",
+          "metin": "Gerçek yaşam durumları üzerinden oran ilişkileri hakkında muhakeme yapabilme. a) İki niceliğin karşılaştırılmasında toplamsal (mutlak) ve çarpımsal (bağıl) ilişkileri ayırt eder. b) Oranın iki niceliğin çarpımsal ilişkiler kurularak karşılaştırılması olduğunu belirler. c) İçerdiği oranı birimli ve birimsiz oran olarak ifade eder. ç) Birimli ve birimsiz oranı kendi ifadeleriyle açıklar. d) Denk orana ve birim orana ilişkin varsayımlarda bulunur. e) Örneklere ait ilişkileri inceleyerek denk oran ve birim orana ilişkin genellemeleri belirler. f) Elde ettiği genellemelerin varsayımını karşılayıp karşılamadığını çeşitli temsiller ile sınar. g) Ulaştığı sonuca yönelik doğrulayabileceği matematiksel bir önermeyi sunar. ğ) Sunduğu önermenin katkısına yönelik gerekçeler sunar.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.7.1.6",
+          "metin": "Gerçek yaşam durumları üzerinden orantılı durumları yorumlayabilme. a) İki durumun orantılı olup olmadığını inceler. b) Orantılı olan iki durumun ilişkisini temsiller ile ifade eder. c) Orantı kavramını kendi ifadeleriyle yeniden açıklar.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.7.1.7",
+          "metin": "Gerçek yaşam durumları üzerinden doğru orantılı durumlara ilişkin problemleri çözebilme. a) Nicelikleri belirler. b) Doğru orantılı durumlar arasındaki ilişkileri belirler. c) Bu ilişkileri tablo ve grafik temsillerine dönüştürür. ç) Dönüştürdüğü temsillerin problem bağlamındaki anlamını ifade eder. d) Farklı temsillere dayalı olarak problemin çözümü için stratejiler oluşturur. e) Belirlediği stratejileri kullanır. f) Elde ettiği çözümü farklı stratejileri kullanarak doğrular. g) Problemin olası farklı çözüm stratejilerini inceler. ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-7-tema-3-islemlerle-cebirsel-dusunme-ve-degisimler",
+      "unite_id": 465,
+      "grade": 7,
+      "no": 3,
+      "name": "İşlemlerle Cebirsel Düşünme ve Değişimler",
+      "legacy_topic_id": "cebir",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.2.1",
+          "metin": "Gerçek yaşam durumları ya da matematiksel durumlar üzerinden cebirsel ifadelerle toplama, çıkarma ve bir rasyonel sayıyla çarpma işlemlerini yorumlayabilme. a) Gerçek yaşam durumlarına ya da matematiksel durumlara karşılık gelen cebirsel ifadelerle işlemleri inceler. b) Toplama ve çarpma işlemlerinin özelliklerini, cebirsel ifadelerde işlem yaparken kullanır. c) Bu işlemler ve sonuçları arasındaki denkliği açıklar.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.7.2.2",
+          "metin": "Birinci dereceden bir bilinmeyenli denklem ve birinci dereceden bir bilinmeyenli eşitsizlik içeren gerçek yaşam problemlerini çözebilme. a) Verilen gerçek yaşam problemlerindeki nicelikleri belirler. b) Nicelikler arasındaki eşitlik ve eşitsizlik ilişkilerini belirler. c) Belirlenen nicelikleri cebirsel olarak ifade eder. ç) Belirlenen nicelikleri ve ilişkileri denklem veya eşitsizlik olarak ifade eder. d) Denklem ve eşitsizliklerin çözümünde bir strateji oluşturur. e) Belirlediği stratejiyi çözüm için uygular. f) Çözümün doğruluğunu uygun örnek ve temsiller ile kontrol ederek çözüme ulaştırmayan stratejiyi değiştirir. g) Problemin çözümü için olası farklı çözüm stratejilerini inceler. ğ) Çözüme ulaştıran stratejilerin uyarlanabileceği uygun genelleme ve sınıflamalar yapar. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.7.2.3",
+          "metin": "Sayılar ve özelliklerini içeren ispatlara ilişkin matematiksel muhakeme yapabilme. a) Sayılar ve özellikleriyle ilgili ilişkilere yönelik örneklere ve örüntülere dayalı varsayımlarda bulunur. b) Varsayımına yönelik sayı örüntülerini listeler. c) Elde ettiği örüntülerin, varsayımını karşılayıp karşılamadığını sınar. ç) Ulaştığı sonuca yönelik doğrulayabileceği matematiksel bir önermeyi sözel veya cebirsel olarak ifade eder. d) Sunduğu önermenin katkısına yönelik gerekçeler sunar. e) Sayılar ve özelliklerine ilişkin durumlarda cebirsel ispat yöntemlerini seçerek işe koşar. f) Önermeyi gözden geçirerek yeni durumlara uyarlar.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.7.2.4",
+          "metin": "Temel aritmetik ve cebirsel ifadelerle işlem içeren durumlardaki süreci algoritma ifade yöntemlerini kullanarak yapılandırabilme. a) Aritmetik ve cebirsel ifadelerle işlem içeren durumlardaki adımları ve ilişkileri açıklar. b) Algoritma ifade yöntemlerini kullanarak incelediği adımlar ve ilişkilerden uyumlu bir bütün oluşturur.",
+          "legacy_topic_id": "cebir"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-7-tema-4-donusum",
+      "unite_id": 466,
+      "grade": 7,
+      "no": 4,
+      "name": "Dönüşüm",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.3.1",
+          "metin": "Şekillerin yansıma dönüşümü altındaki görüntülerinin oluşturulmasına dair çıkarım yapabilme. a) Şekillerin yansıma dönüşümleri altındaki görüntülerini oluşturmaya dair varsayımlarda bulunur. b) Şekillerin yansıma dönüşümü altındaki görüntülerini oluşturur. c) Varsayımlarını doğrulamaya yönelik karşılaştırmalar yapar. ç) Bir şekil ile yansıma dönüşümü altındaki görüntüsü arasındaki ilişkilere dair önermeler sunar. d) Önermenin verilen iki eş şeklin bir doğruya göre simetrik olup olmadığını belirlemeye ve simetrik bir şeklin simetri doğrusunu oluşturmaya yönelik katkısını değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.7.3.2",
+          "metin": "Yansıma dönüşümündeki deneyimlerini orta dikme ve açıortay inşasına yansıtabilme. a) Yansıma dönüşümünde simetri doğrusunun özelliklerini gözden geçirir. b) Simetri doğrusunun özelliklerinden hareketle bir doğru parçasına ait orta dikmenin ve bir açıya ait açıortayın inşasına dair çıkarım yapar. c) Çıkarımını farklı örnekler üzerinden değerlendirir.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-7-tema-5-geometrik-nicelikler-1",
+      "unite_id": 467,
+      "grade": 7,
+      "no": 5,
+      "name": "Geometrik Nicelikler (1)",
+      "legacy_topic_id": "olcme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.4.1",
+          "metin": "Eş küplerle oluşturulan yapılar ile görünümleri arasındaki ilişkiyi çözümleyebilme. a) Eş küplerle oluşturulan yapıların farklı yönlerden görünümlerini çizer ve görünümleri verilen yapıları eş küplerle oluşturur. b) Oluşturduğu yapı ile görünümleri arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.7.4.2",
+          "metin": "Dikdörtgenler prizmasının yüzey alanını yorumlayabilme. a) Dikdörtgenler prizmasının farklı yüzey açınımlarını inceler. b) Dikdörtgenler prizmasının yüzey açınımı ile yüzey alanı arasındaki ilişkileri ifade eder. c) Dikdörtgenler prizmalarının yüzey açınımlarından yararlanarak yüzey alanlarını hesaplar.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.7.4.3",
+          "metin": "Dikdörtgenler prizmasının hacmini eş nesneler aracılığıyla yorumlayabilme. a) Dikdörtgenler prizmalarının hacimlerini karşılaştırarak inceler. b) Eş nesneler ile doldurulmuş dikdörtgenler prizmasını oluşturur. c) Dikdörtgenler prizmasını oluşturan eş nesnelerin sayısını prizmanın hacmi olarak ifade eder.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.7.4.4",
+          "metin": "Dikdörtgenler prizmasının hacim bağıntısını değerlendirebilme. a) Dikdörtgenler prizmasının hacmini belirlemede ölçüt olarak birimküpleri belirler. b) Dikdörtgenler prizmasının hacmini belirlemek için prizmaların içine yerleştirilen birimküpleri sayar. c) Toplam birimküp sayısı ile dikdörtgenler prizmasının ayrıt uzunluklarını karşılaştırır. ç) Birimküpleri farklı stratejilerle sayarak dikdörtgenler prizmasının hacmini taban alanı ile yüksekliğin çarpımı olarak ifade eder.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.7.4.5",
+          "metin": "Hacim ölçme birimleri arasındaki ilişkileri değerlendirebilme. a) Bir cismin hacmini ölçmede metreküpü ve litreyi ölçüt olarak belirler. b) Metreküp ve litreyi kullanarak ölçme yapar. c) Hacim ölçme sonuçlarını desimetreküp, santimetreküp ve milimetreküp; sıvı ölçme sonuçlarını desilitre, santilitre ve mililitre ile ilişkilendirerek karşılaştırır. ç) Karşılaştırmalarına ilişkin yargıda bulunur.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.7.4.6",
+          "metin": "Günlük hayat durumlarında dikdörtgenler prizmaları ile modellenen cisimlerin yüzey alanı ve hacmine yönelik problem çözebilme. a) İlgili matematiksel bileşenleri (şekil, cisim, uzunluk, alan, yükseklik gibi) belirler. b) Matematiksel bileşenler arasındaki ilişkileri belirler. c) Problem bağlamındaki temsilleri farklı temsillere dönüştürür. ç) Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar. d) Problemin sonucuna ilişkin tahminde bulunarak işlemleri gerçekleştirmek için stratejiler geliştirir. e) Belirlediği stratejileri çözüm için uygular. f) Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir. g) Kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir. ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "olcme"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-7-tema-6-geometrik-nicelikler-2",
+      "unite_id": 468,
+      "grade": 7,
+      "no": 6,
+      "name": "Geometrik Nicelikler (2)",
+      "legacy_topic_id": "olcme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.4.7",
+          "metin": "Dikdörtgenin, paralelkenarın alanına ve çemberin uzunluğuna ilişkin deneyimlerini dairenin alan bağıntısına yansıtabilme. a) Dikdörtgenin, paralelkenarın alanı ve çemberin uzunluğuna yönelik deneyimlerini gözden geçirir. b) Dikdörtgenin alan bağıntısı ve çemberin uzunluğundan yola çıkarak dairenin alan bağıntısına yönelik çıkarım yapar. c) Çıkarımını farklı örnekler üzerinden değerlendirir.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.7.4.8",
+          "metin": "Çemberde merkez açı ve gördüğü yay uzunluğu arasındaki ilişkiden yola çıkarak daire ve daire diliminin alanları arasındaki ilişkiye yönelik analojik akıl yürütebilme. a) Çemberde merkez açı ve gördüğü yay uzunluğu ile daire ve daire diliminin alanı arasındaki ilişkileri gözlemler. b) Çemberde merkez açı ve gördüğü yay uzunluğu ile daire ve daire diliminin alanı arasındaki ilişkiyi tespit eder. c) Çemberde merkez açı ve gördüğü yay uzunluğuyla daire ve daire diliminin alanı arasında kurulan ilişkiden hareketle daire diliminin alanına dair çıkarım yapar.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.7.4.9",
+          "metin": "Eşkenar dörtgen ve yamuğun alan bağıntılarına dair çıkarım yapabilme. a) Dikdörtgen, paralelkenar ve üçgenin alan bağıntısına dair ön bilgisiyle eşkenar dörtgenin ve yamuğun alan hesabına yönelik varsayımda bulunur. b) Eşkenar dörtgeni ve yamuğu parçalayarak veya tamamlayarak oluşturduğu geometrik şekillerin alanlarını belirler. c) Oluşturulan geometrik şekillerin alanlarını varsayımlarıyla karşılaştırır. ç) Eşkenar dörtgenin ve yamuğun alan bağıntılarına dair önermeler sunar. d) Çeşitli geometrik şekillerin alanlarının hesaplanmasında eşkenar dörtgenin ve yamuğun alan bağıntılarının katkılarını değerlendirir.",
+          "legacy_topic_id": "olcme"
+        },
+        {
+          "kod": "MAT.7.4.10",
+          "metin": "Günlük hayat durumlarında daire, daire dilimi, eşkenar dörtgen ve yamuğun alanına ilişkin problem çözebilme. a) İlgili matematiksel bileşenleri (şekil, uzunluk, alan, açı, köşegen, yarıçap, yükseklik gibi) belirler. b) Matematiksel bileşenler arasındaki ilişkileri belirler. c) Problem bağlamındaki temsilleri farklı temsillere dönüştürür. ç) Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar. d) Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir. e) Belirlenen stratejileri çözüm için uygular. f) Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir. g) Kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir. ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "olcme"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-7-tema-7-geometrik-sekiller",
+      "unite_id": 469,
+      "grade": 7,
+      "no": 7,
+      "name": "Geometrik Şekiller",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.5.1",
+          "metin": "Matematiksel araç ve teknolojiden yararlanarak üçgende kenarortayı, açıortayı ve yüksekliği çözümleyebilme. a) Üçgende kenarortayı, açıortayı ve yüksekliği belirler. b) Üçgende kenarortay, açıortay ve yükseklik arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.7.5.2",
+          "metin": "Orta dikme inşasına yönelik deneyimlerini üçgende kenarortay inşasına yansıtabilme. a) Orta dikme inşasına yönelik deneyimlerini gözden geçirir. b) Üçgende kenarortay inşasına yönelik çıkarım yapar. c) Çıkarımını farklı örnekler üzerinden değerlendirir.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-7-tema-8-istatistiksel-arastirma-sureci",
+      "unite_id": 470,
+      "grade": 7,
+      "no": 8,
+      "name": "İstatistiksel Araştırma Süreci",
+      "legacy_topic_id": "veri_isleme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.6.1",
+          "metin": "Kategorik veya nicel (sürekli) veri ile çalışabilme ve veriye dayalı karar verebilme. a) Kategorik veya nicel (sürekli) veriye dayanan istatistiksel araştırma gerektiren durumları fark eder. b) Betimleme veya karşılaştırma gerektirebilecek araştırma soruları oluşturur. c) Veriye ulaşmak için plan yapar. ç) Araştırma sorusuna uygun anket soruları hazırlar. d) Anketi kullanarak veri toplar veya hazır veriye ulaşır. e) Veri görselleştirme ve özetleme araçlarını seçme gerekçelerini belirtir. f) Toplanan veriyi uygun araçlarla analiz eder. g) Araştırma sonuçlarını elde eder. ğ) Ulaştığı sonuçlara yönelik gerekçeler sunar. h) Sonuçların araştırma sorusuna ne düzeyde cevap verdiğini değerlendirir. ı) Araştırma süreci adımlarını değerlendirerek uygun olmayan adımları yeniden planlar.",
+          "legacy_topic_id": "veri_isleme"
+        },
+        {
+          "kod": "MAT.7.6.2",
+          "metin": "Başkaları tarafından oluşturulan kategorik veya nicel (sürekli) veriye dayalı istatistiksel sonuç veya yorumları tartışabilme. a) İstatistiksel temellendirme yapar. b) Hataları ya da yanlılıkları tespit eder. c) Sonuç veya yorumları çürütür ya da kabul eder.",
+          "legacy_topic_id": "veri_isleme"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-7-tema-9-veriden-olasiliga",
+      "unite_id": 471,
+      "grade": 7,
+      "no": 9,
+      "name": "Veriden Olasılığa",
+      "legacy_topic_id": "olasilik",
+      "kazanimlar": [
+        {
+          "kod": "MAT.7.7.1",
+          "metin": "Bir olayın ve tümleyeninin olasılığına ilişkin tümevarımsal akıl yürütebilme. a) Bir olayın olasılığını hesaplamaya ilişkin olası tüm çıktıları gözlemler. b) Bir olayın ve tümleyeninin olasılığını hesaplamak için matematiksel ilişkiyi bulur. c) Bir olayın ve tümleyeninin olasılığının ilişkisine yönelik genelleme yapar.",
+          "legacy_topic_id": "olasilik"
+        },
+        {
+          "kod": "MAT.7.7.2",
+          "metin": "Aynı deneye ait olayların eşit olasılıklı olma durumlarını değerlendirebilme. a) Eşit olasılıklı olan ve eşit olasılıklı olmayan olaylara ilişkin ölçüt belirler. b) Olayların eşit olasılıklı olma veya olmama olasılığına ilişkin hesaplama yapar. c) Hesaplama sonuçlarını belirlediği ölçütlerle karşılaştırır. ç) Karşılaştırmalarına ilişkin yargıda bulunur.",
+          "legacy_topic_id": "olasilik"
+        },
+        {
+          "kod": "MAT.7.7.3",
+          "metin": "Olayları ayrık olma ve ayrık olmama durumlarına göre sınıflandırabilme. a) Olayların ayrık olma ve ayrık olmama durumlarını olaylara ait çıktıların ortak olup olmamasını ölçüt alarak belirler. b) Olayları ayrık olma ve ayrık olmama durumuna göre ayrıştırır. c) Ayrık olan ve ayrık olmayan olayları tasnif eder. ç) Olayları ayrık olma veya olmama durumuna göre etiketler.",
+          "legacy_topic_id": "olasilik"
+        }
+      ]
+    }
+  ],
+  "8": [
+    {
+      "unit_id": "mat-8-tema-1-sayilar-ve-nicelikler",
+      "unite_id": 472,
+      "grade": 8,
+      "no": 1,
+      "name": "Sayılar ve Nicelikler",
+      "legacy_topic_id": "dogal_sayilar",
+      "kazanimlar": [
+        {
+          "kod": "MAT.8.1.1",
+          "metin": "Farklı bağlamlardaki üslü ifadelere, özelliklerine ve üslü ifadelerle yapılan işlemlere ilişkin çıkarım yapabilme. a) Karşılaştığı bağlamlardaki üslü ifadeler, özellikleri ve işlemlere yönelik varsayımlarda bulunur. b) Üslü ifadeleri, özelliklerini ve işlemleri inceleyerek genellemeleri belirler. c) Ulaştığı genellemelerin varsayımını karşılayıp karşılamadığını örnekler ve çeşitli temsillerle sınar. ç) Önermeleri sözel ve cebirsel olarak ifade eder. d) Sunduğu önermelerin matematiksel süreçlere katkısını sözel olarak açıklar.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.8.1.2",
+          "metin": "Karşılaştığı problem durumlarında kareköklü ifadeler ile ilgili muhakeme yapabilme. a) Bir karenin alanı ile kenar uzunluğu arasındaki ilişkiyi belirler. b) Karenin alanından hareketle tam kare pozitif tam sayılar ile kareköklerini ilişkilendirir. c) Tam kare olmayan pozitif bir sayının karekökünün hangi iki doğal sayı arasında olduğunu ve yaklaşık değerini matematiksel temsillerle ifade eder. ç) Bir sayının karekökünü kendi ifadeleri ile açıklar.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.8.1.3",
+          "metin": "Sayıların rasyonel ya da irrasyonelliğini değerlendirebilme. a) Ondalık gösterimlerini ölçüt olarak belirler. b) Ondalık gösterimlerini bölme işlemi ya da hesap makinesi kullanarak elde eder. c) Elde ettiği ondalık gösterimi ölçütü ile karşılaştırır. ç) Karşılaştırmalarından hareketle bir sayının rasyonel olup olmadığına yönelik yargıda bulunur.",
+          "legacy_topic_id": "dogal_sayilar"
+        },
+        {
+          "kod": "MAT.8.1.4",
+          "metin": "Gerçek sayıları ve aralıklarını sayı doğrusunda yorumlayabilme. a) Doğal sayılardan başlamak üzere tüm gerçek sayıları ve arası ilişkileri inceler. b) Gerçek sayıları sayı doğrusuna yerleştirir. c) Gerçek sayı aralıkları arasındaki ilişkiyi açıklar.",
+          "legacy_topic_id": "dogal_sayilar"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-8-tema-2-cebirsel-dusunme-ve-degisimler",
+      "unite_id": 473,
+      "grade": 8,
+      "no": 2,
+      "name": "Cebirsel Düşünme ve Değişimler",
+      "legacy_topic_id": "cebir",
+      "kazanimlar": [
+        {
+          "kod": "MAT.8.2.1",
+          "metin": "Gerçek yaşam durumları üzerinden dik koordinat sistemini çözümleyebilme. a) Dik koordinat sisteminin bileşenlerini (düzlem, eksenler, sayı ikilileri gibi) belirler. b) Dik koordinat sisteminde bileşenler arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.8.2.2",
+          "metin": "Gerçek yaşam durumlarındaki doğrusal ilişkileri doğrusal fonksiyonlarla temsil edebilme. a) Doğrusal fonksiyonların cebirsel, tablo ve grafik temsillerini tanır. b) Gerçek yaşam durumlarındaki doğrusal ilişkileri incelemek için uygun temsili belirler. c) Temsili modellemek veya problemi çözmek için gerektiğinde temsiller arası geçiş yaparak kullanır. ç) Temsilin problem durumuna uygunluğunu değerlendirir. d) Farklı temsilleri ekonomiklik ve kullanışlılık açısından karşılaştırır. e) Temsillerin ekonomikliğine ilişkin karar verir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.8.2.3",
+          "metin": "Dik koordinat sisteminde iki doğrusal fonksiyonun birbirine göre durumuna ilişkin çıkarım yapabilme. a) Varsayım oluşturur. b) Farklı doğrusal fonksiyonların durumlarını inceleyerek genellemeler yapar. c) Genellemeleri ile varsayımlarını karşılaştırır. ç) İlişkilere yönelik önermeler sunar. d) Verilen doğruların konumlarını değerlendirir.",
+          "legacy_topic_id": "cebir"
+        },
+        {
+          "kod": "MAT.8.2.4",
+          "metin": "Doğrusal fonksiyonlara ilişkin problemlerin çözümlerini algoritma ifade yöntemlerini kullanarak yapılandırabilme. a) Çözümlerdeki adımları ve ilişkileri açıklar. b) Algoritma ifade yöntemlerini kullanarak uyumlu bir bütün oluşturur.",
+          "legacy_topic_id": "cebir"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-8-tema-3-geometrik-sekiller",
+      "unite_id": 474,
+      "grade": 8,
+      "no": 3,
+      "name": "Geometrik Şekiller",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.8.3.1",
+          "metin": "Matematiksel araç ve teknoloji yardımıyla üçgenin kenarları ve açıları arasındaki ilişkiyi yorumlayabilme. Üçgenin kenar ve açı özelliklerini inceler; kenar uzunluklarının büyüklüğüne göre açıları, açı ölçülerine göre kenarları sıralar; kenar uzunlukları ve açı ölçüleri arasındaki ilişkiyi ifade eder.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.3.2",
+          "metin": "Matematiksel araç ve teknoloji yardımıyla üçgenin kenar uzunlukları arasındaki ilişkiye yönelik çıkarım yapabilme. Üçgen oluşturabilen doğru parçalarının uzunluklarına dair varsayımda bulunur; varsayımlara uygun üçgenler oluşturur ve listeler; kenar uzunlukları ile varsayımlarını karşılaştırır; üçgen eşitsizliğine dair önerme sunar ve gerekçelendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.3.3",
+          "metin": "Bir üçgene eş üçgen oluşturmak için bilinmesi yeterli olan elemanlara dair çıkarım yapabilme. Eş üçgen oluşturmaya dair varsayımda bulunur; matematik araç/teknoloji ile varsayımlara uygun eş üçgenler oluşturur; oluşturulan üçgenleri varsayımlarla karşılaştırır; eşlik şartlarına dair önerme sunar ve değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.3.4",
+          "metin": "Bir üçgene benzer üçgen oluşturmak için bilinmesi yeterli olan elemanlara dair çıkarım yapabilme. Benzer üçgen oluşturmaya dair varsayımda bulunur; benzer üçgenler oluşturur ve ölçeklendirir; benzerlik oranını belirleyerek çokgenlerin benzerliğini ifade eder; benzerlik koşullarına dair önerme sunar ve değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.3.5",
+          "metin": "Kenar uzunlukları a²+b²=c² eşitliğini sağlayan üçgenleri oluşturarak Pisagor bağıntısını yorumlayabilme. a²+b²=c² eşitliğini sağlayan rasyonel sayıları inceler; dik üçgen oluşturarak hipotenüs ile dik kenarlar arasındaki ilişkiyi belirler; Pisagor bağıntısını açı-kenar ilişkisi ve üçgen eşitsizliği ile ilişkilendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.3.6",
+          "metin": "Üçgende açı-kenar ilişkisi, üçgen eşitsizliği ve Pisagor bağıntısını içeren problemleri çözebilme. Problem bağlamında matematiksel bileşenleri (açılar, kenarlar, şekil) belirler; matematiksel bileşenler arasındaki ilişkileri tespit eder; temsilleri dönüştürerek problemi açıklar; çözüme yönelik stratejiler geliştirir, uygular ve kontrol eder; çözümü değerlendirerek alternatif yaklaşımları karşılaştırır; stratejileri diğer problemlere genelleyerek geçerliliğini test eder.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-8-tema-4-geometrik-nicelikler",
+      "unite_id": 475,
+      "grade": 8,
+      "no": 4,
+      "name": "Geometrik Nicelikler",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.8.4.1",
+          "metin": "Dik prizmalar, dikdörtgen dik piramit, dik dairesel silindir ve dik dairesel koninin yüzey açınımlarını çözümleyebilme. a) Dik prizmalar, dikdörtgen dik piramit, dik dairesel silindir ve dik dairesel koninin yüzey açınımlarında yer alan şekilleri belirler. b) Dik prizmalar, dikdörtgen dik piramit, dik dairesel silindir ve dik dairesel koninin yüzey açınımlarında yer alan şekiller arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.4.2",
+          "metin": "Dik dairesel silindirin yüzey açınımına ilişkin deneyimlerini dik dairesel silindirin yüzey alanına yansıtabilme. a) Dik dairesel silindirin yüzey açınımına ilişkin deneyimlerini gözden geçirir. b) Dik dairesel silindirin yüzey alanına yönelik çıkarım yapar. c) Çıkarımını farklı örnekler üzerinden değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.4.3",
+          "metin": "Dairenin alan bağıntısının oluşturulma sürecinden hareketle dik dairesel silindirin hacim bağıntısına yönelik analojik akıl yürütebilme. a) Dairenin alan bağıntısının oluşturulma sürecini ve daire ile dik dairesel silindir arasındaki ilişkiyi gözden geçirir. b) Dairenin alan bağıntısının oluşturulma süreci ile dik dairesel silindirin hacim bağıntısının oluşturulma süreci arasındaki ilişkileri belirler. c) İlişkilerden hareketle dik dairesel silindirin hacmine yönelik çıkarım yapar.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-8-tema-5-donusum",
+      "unite_id": 476,
+      "grade": 8,
+      "no": 5,
+      "name": "Dönüşüm",
+      "legacy_topic_id": "geometri",
+      "kazanimlar": [
+        {
+          "kod": "MAT.8.5.1",
+          "metin": "Matematiksel araç ve teknoloji yardımıyla öteleme dönüşümünü çözümleyebilme. a) Matematiksel araç ve teknoloji yardımıyla düzlemde geometrik şekillerin öteleme dönüşümü altındaki görüntülerinin kenar ve açı özelliklerini belirler. b) Geometrik şekiller ile öteleme dönüşümü altındaki görüntüleri arasındaki ilişkileri belirler.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.5.2",
+          "metin": "Dik koordinat sisteminde geometrik şekillere ait noktaların apsis ve ordinatlarının öteleme dönüşümündeki değişimlerine ve eksenlere göre yansıma dönüşümündeki değişimlerine ilişkin çıkarım yapabilme. a) Geometrik şekillere ait noktaların apsis ve ordinatlarının öteleme dönüşümündeki ve eksenlere göre yansıma dönüşümündeki değişimlerine dair varsayımlarda bulunur. b) Geometrik şekillerin öteleme dönüşümü altındaki görüntülerini ve koordinat eksenlerine göre yansıma dönüşümü altındaki görüntülerini oluşturur. c) Oluşturduğu görüntülere ait noktaların apsis ve ordinatlarını varsayımları ile karşılaştırır. ç) Noktaların apsis ve ordinatlarının öteleme dönüşümündeki ve koordinat eksenlerine göre yansıma dönüşümündeki değişimlerine dair önermeler sunar. d) Sundukları önermelerin dik koordinat sisteminde konumları verilen iki geometrik şekil arasında öteleme veya eksenlere göre yansıma dönüşümüne dayalı ilişkilerin bulunup bulunmadığını incelemeye sağladığı katkıyı değerlendirir.",
+          "legacy_topic_id": "geometri"
+        },
+        {
+          "kod": "MAT.8.5.3",
+          "metin": "Öteleme ve yansıma dönüşümlerini içeren problemleri çözebilme. a) İlgili matematiksel bileşenleri (eşlik, uzaklık, diklik, paralellik, koordinatlar gibi) belirler. b) Matematiksel bileşenler arasındaki ilişkileri belirler. c) Problem bağlamındaki temsilleri farklı temsillere dönüştürür. ç) Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar. d) Problemlerin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir. e) Belirlenen stratejileri çözüm için uygular. f) Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir. g) Kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir. ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller. h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.",
+          "legacy_topic_id": "geometri"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-8-tema-6-istatistiksel-arastirma-sureci",
+      "unite_id": 477,
+      "grade": 8,
+      "no": 6,
+      "name": "İstatistiksel Araştırma Süreci",
+      "legacy_topic_id": "veri_isleme",
+      "kazanimlar": [
+        {
+          "kod": "MAT.8.6.1",
+          "metin": "Kategorik veya nicel veri ile çalışabilme ve veriye dayalı karar verebilme. a) Kategorik/nicel veriye dayanan istatistiksel araştırma durumlarını fark eder. b) Betimleme/karşılaştırma gerektiren araştırma soruları oluşturur. c) Veriye ulaşma için plan yapar. ç) Araştırma sorusuna uygun anket soruları hazırlar. d) Anketi kullanarak veri toplar veya hazır veriye ulaşır. e) Veri görselleştirme ve özetleme araçlarını seçme gerekçelerini belirtir. f) Toplanan veriyi uygun araçlarla analiz eder. g) Araştırma sonuçlarını elde eder. ğ) Sonuçlara yönelik gerekçeler sunar. h) Sonuçların araştırma sorusuna cevap verme düzeyini değerlendirir. ı) Araştırma sürecini değerlendirerek uygun olmayan adımları yeniden planlar.",
+          "legacy_topic_id": "veri_isleme"
+        },
+        {
+          "kod": "MAT.8.6.2",
+          "metin": "Başkaları tarafından oluşturulan veriye dayalı istatistiksel sonuçları tartışabilme. a) İstatistiksel temellendirme yapar. b) Hataları ya da yanlılıkları tespit eder. c) Sonuçları çürütür ya da kabul eder.",
+          "legacy_topic_id": "veri_isleme"
+        }
+      ]
+    },
+    {
+      "unit_id": "mat-8-tema-7-veriden-olasiliga",
+      "unite_id": 478,
+      "grade": 8,
+      "no": 7,
+      "name": "Veriden Olasılığa",
+      "legacy_topic_id": "olasilik",
+      "kazanimlar": [
+        {
+          "kod": "MAT.8.7.1",
+          "metin": "Gerçek yaşamda karşılaşabileceği bir olayın olasılığına ilişkin farklı olasılık yaklaşımlarından (öznel, deneysel, teorik) uygun olanı belirleyerek karar verebilme. a) Bir olayın olasılığına ilişkin karar vermeye yönelik amacı belirler. b) Karara ilişkin bilgi toplar. c) Karara ilişkin olasılık yaklaşımlarına yönelik önermeler oluşturur. ç) Karara ilişkin oluşturduğu önermeleri sorgular. d) Ulaştığı sonuca göre olasılık yaklaşımlarına ilişkin seçim yapar. e) Olasılık yaklaşımına ilişkin seçimini verdiği karara yansıtır.",
+          "legacy_topic_id": "olasilik"
+        }
+      ]
+    }
+  ]
+}

@@ -32,6 +32,7 @@ import type {
   ShareSummary,
   SubmittedAnswer,
   TopicInfo,
+  UnitInfo,
   Worksheet,
 } from "./types";
 
@@ -98,6 +99,25 @@ export async function listKazanimlar(
 ): Promise<KazanimInfo[]> {
   const r = await request<{ kazanimlar: KazanimInfo[] }>(
     `/api/curriculum/grades/${grade}/topics/${topicId}/kazanimlar`,
+  );
+  return r.kazanimlar;
+}
+
+// ---- MEB TYMM ünite (tema) akışı ----------------------------------------
+
+export async function listUnits(grade: number): Promise<UnitInfo[]> {
+  const r = await request<{ units: UnitInfo[] }>(
+    `/api/curriculum/grades/${grade}/units`,
+  );
+  return r.units;
+}
+
+export async function listKazanimlarByUnit(
+  grade: number,
+  unitId: string,
+): Promise<KazanimInfo[]> {
+  const r = await request<{ kazanimlar: KazanimInfo[] }>(
+    `/api/curriculum/grades/${grade}/units/${unitId}/kazanimlar`,
   );
   return r.kazanimlar;
 }

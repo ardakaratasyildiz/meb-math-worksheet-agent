@@ -23,15 +23,12 @@ import {
   StreamIncompleteError,
   generateWorksheetStream,
   listGrades,
-  listKazanimlar,
-  listTopics,
+  listKazanimlarByUnit,
+  listUnits,
   listWorksheetHistory,
 } from "@/lib/api";
-import {
-  getGradesLocal,
-  getKazanimlarLocal,
-  getTopicsLocal,
-} from "@/lib/curriculum";
+import { getGradesLocal } from "@/lib/curriculum";
+import { getKazanimlarByUnitLocal, getUnitsLocal } from "@/lib/units";
 import { track } from "@/lib/analytics";
 import { addHistory, type HistoryItem } from "@/lib/history";
 import { useGenerateStore, type FormState, type TypeGroupKey } from "@/lib/store";
@@ -43,7 +40,7 @@ import {
   type GradeInfo,
   type KazanimInfo,
   type QuestionType,
-  type TopicInfo,
+  type UnitInfo,
 } from "@/lib/types";
 
 // Akış kesildiğinde (mobil/uygulama-içi tarayıcı timeout'u) backend üretimi
@@ -54,7 +51,7 @@ async function recoverFromHistory(
   tenantId: string,
   req: {
     grade: number;
-    topic_id: string;
+    unit_id: string | null;
     difficulty: Difficulty;
     question_count: number;
   },
@@ -72,7 +69,7 @@ async function recoverFromHistory(
       const r = it.request;
       return (
         r?.grade === req.grade &&
-        r?.topic_id === req.topic_id &&
+        r?.unit_id === req.unit_id &&
         r?.difficulty === req.difficulty &&
         r?.question_count === req.question_count &&
         now - new Date(it.saved_at).getTime() < 180000 // son ~3 dk
@@ -166,16 +163,16 @@ function SectionTitle({
 
 export function GenerateForm({
   initialGrade,
-  initialTopicId,
+  initialUnitId,
   initialKazanim,
 }: {
   initialGrade?: number;
-  initialTopicId?: string;
+  initialUnitId?: string;
   initialKazanim?: string;
 } = {}) {
   const {
     grade,
-    topicId,
+    unitId,
     kazanimKod,
     difficulty,
     questionCount,
@@ -206,13 +203,13 @@ export function GenerateForm({
     hydratedRef.current = true;
     const patch: Partial<FormState> = {};
     if (initialGrade) patch.grade = initialGrade;
-    if (initialTopicId) patch.topicId = initialTopicId;
+    if (initialUnitId) patch.unitId = initialUnitId;
     if (initialKazanim) patch.kazanimKod = initialKazanim;
     const fromDeeplink = Object.keys(patch).length > 0;
     if (fromDeeplink) setForm(patch);
     track("generate_page_view", {
       grade: patch.grade ?? grade,
-      topic_id: patch.topicId ?? topicId,
+      unit_id: patch.unitId ?? unitId,
       deeplink: fromDeeplink,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,11 +220,11 @@ export function GenerateForm({
   // "30-40 sn boş kalıyor" sorununun kök sebebi). Backend yine arka planda
   // yoklanıp olası drift'i düzeltir (aşağıdaki effect'ler).
   const [grades, setGrades] = React.useState<GradeInfo[]>(getGradesLocal);
-  const [topics, setTopics] = React.useState<TopicInfo[]>(() =>
-    getTopicsLocal(grade),
+  const [units, setUnits] = React.useState<UnitInfo[]>(() =>
+    getUnitsLocal(grade),
   );
   const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>(() =>
-    topicId ? getKazanimlarLocal(grade, topicId) : [],
+    unitId ? getKazanimlarByUnitLocal(grade, unitId) : [],
   );
   // Progressive disclosure: gelişmiş ayarlar varsayılan kapalı. İlk kullanıcı
   // 5 alanlı (sınıf/konu/kazanım/zorluk/sayı) sade ekranla karşılaşır;
@@ -270,26 +267,35 @@ export function GenerateForm({
   }, []);
 
   React.useEffect(() => {
-    setTopics(getTopicsLocal(grade));
-    listTopics(grade)
-      .then((t) => {
-        if (t.length) setTopics(t);
+    setUnits(getUnitsLocal(grade));
+    listUnits(grade)
+      .then((u) => {
+        if (u.length) setUnits(u);
       })
       .catch(() => {});
   }, [grade]);
 
+  // unitId boş/geçersizse (ilk açılış, sınıf değişimi, eski persist) sınıfın ilk
+  // ünitesini otomatik seç → dropdown asla boş kalmaz, üretim hep geçerli çalışır.
   React.useEffect(() => {
-    if (!topicId) {
+    if (units.length === 0) return;
+    if (!unitId || !units.some((u) => u.unit_id === unitId)) {
+      setForm({ unitId: units[0].unit_id, kazanimKod: null });
+    }
+  }, [units, unitId, setForm]);
+
+  React.useEffect(() => {
+    if (!unitId) {
       setKazanimlar([]);
       return;
     }
-    setKazanimlar(getKazanimlarLocal(grade, topicId));
-    listKazanimlar(grade, topicId)
+    setKazanimlar(getKazanimlarByUnitLocal(grade, unitId));
+    listKazanimlarByUnit(grade, unitId)
       .then((k) => {
         if (k.length) setKazanimlar(k);
       })
       .catch(() => {});
-  }, [grade, topicId]);
+  }, [grade, unitId]);
 
   const isLoading = status === "loading";
   // Görsel grubu artık kullanıcı seçimi değil (sunucu oranı); kullanıcıya görünen
@@ -341,7 +347,7 @@ export function GenerateForm({
     // Funnel: aktivasyon adımının başlangıcı.
     track("worksheet_generate_start", {
       grade,
-      topic_id: topicId,
+      unit_id: unitId,
       difficulty,
       difficulty_mode: difficultyMode,
       question_count: questionCount,
@@ -356,7 +362,7 @@ export function GenerateForm({
       const res = await generateWorksheetStream(
         {
           grade,
-          topic_id: topicId,
+          unit_id: unitId,
           kazanim_kod: kazanimKod || null,
           difficulty,
           question_count: questionCount,
@@ -373,7 +379,7 @@ export function GenerateForm({
       // Aktivasyon başarısı + CACHE HIT ORANI ölçümü (kapasite/maliyet kritik).
       track("worksheet_generate_success", {
         grade,
-        topic_id: topicId,
+        unit_id: unitId,
         difficulty_mode: difficultyMode,
         question_count: res.worksheet.questions.length,
         cache_hit: !!trace?.cache_hit,
@@ -384,7 +390,7 @@ export function GenerateForm({
       addHistory(
         {
           grade,
-          topic_id: topicId,
+          unit_id: unitId,
           kazanim_kod: kazanimKod,
           difficulty,
           question_count: questionCount,
@@ -404,19 +410,19 @@ export function GenerateForm({
       if (e instanceof StreamIncompleteError && userId) {
         const recovered = await recoverFromHistory(userId, {
           grade,
-          topic_id: topicId,
+          unit_id: unitId,
           difficulty,
           question_count: questionCount,
         });
         if (recovered) {
           setSuccess(recovered);
           addHistory(
-            { grade, topic_id: topicId, kazanim_kod: kazanimKod, difficulty, question_count: questionCount },
+            { grade, unit_id: unitId, kazanim_kod: kazanimKod, difficulty, question_count: questionCount },
             recovered,
           );
           track("worksheet_generate_recovered", {
             grade,
-            topic_id: topicId,
+            unit_id: unitId,
             duration_ms: Math.round(performance.now() - t0),
           });
           toast.success("Üretim tamamlandı", {
@@ -428,7 +434,7 @@ export function GenerateForm({
       const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
       track("worksheet_generate_error", {
         grade,
-        topic_id: topicId,
+        unit_id: unitId,
         message: msg.slice(0, 120),
         duration_ms: Math.round(performance.now() - t0),
       });
@@ -451,7 +457,7 @@ export function GenerateForm({
           <Select
             value={String(grade)}
             onValueChange={(v) =>
-              setForm({ grade: Number(v), topicId: "", kazanimKod: null })
+              setForm({ grade: Number(v), unitId: null, kazanimKod: null })
             }
           >
             <SelectTrigger id="grade">
@@ -468,21 +474,21 @@ export function GenerateForm({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="topic">Konu</Label>
+          <Label htmlFor="unit">Ünite</Label>
           <Select
-            value={topicId}
-            onValueChange={(v) => setForm({ topicId: v, kazanimKod: null })}
-            disabled={topics.length === 0}
+            value={unitId ?? ""}
+            onValueChange={(v) => setForm({ unitId: v, kazanimKod: null })}
+            disabled={units.length === 0}
           >
-            <SelectTrigger id="topic">
-              <SelectValue placeholder="Konu seçin" />
+            <SelectTrigger id="unit">
+              <SelectValue placeholder="Ünite seçin" />
             </SelectTrigger>
             <SelectContent>
-              {topics.map((t) => (
-                <SelectItem key={t.id} value={t.id}>
-                  {t.name}{" "}
+              {units.map((u) => (
+                <SelectItem key={u.unit_id} value={u.unit_id}>
+                  {u.no}. {u.name}{" "}
                   <span className="text-xs text-muted-foreground">
-                    · {t.kazanim_count} kazanım
+                    · {u.kazanim_count} kazanım
                   </span>
                 </SelectItem>
               ))}
@@ -809,7 +815,7 @@ export function GenerateForm({
         </p>
         <Button
           onClick={onGenerate}
-          disabled={isLoading || !topicId || !anyTypeGroupOn}
+          disabled={isLoading || !unitId || !anyTypeGroupOn}
           size="lg"
           className="gap-2 sm:min-w-[220px]"
         >

@@ -13,7 +13,8 @@ export interface HistoryItem {
   saved_at: string; // ISO
   request: {
     grade: number;
-    topic_id: string;
+    unit_id?: string | null; // MEB ünite akışı (yeni). Eski kayıtlarda topic_id dolu.
+    topic_id?: string | null;
     kazanim_kod: string | null;
     difficulty: string;
     question_count: number;

@@ -74,11 +74,22 @@ Kuralların:
 12. Çıktıyı MUTLAKA istenen JSON formatında üret; ek metin/açıklama EKLEME. `question` alanı Markdown içerebilir — newline (\\n), tablo, kod bloğu (```...```) serbesttir."""
 
 
+# MEB TYMM ünite kazanımları kazanım-bazlı difficulty_hints taşımaz (yalnız kod+metin).
+# Hint yoksa modelin zorluk kalibrasyonu tamamen kaybolmasın diye genel bir talimat
+# uygulanır. Kazanım-özel hint (eski müfredat) varsa o tercih edilir.
+_GENERIC_DIFFICULTY_HINT: dict[str, str] = {
+    "kolay": "Tek adımlı, doğrudan işlem/tanıma; sade sayılar, kısa ifade.",
+    "orta": "İki adımlı veya kısa bağlamlı problem; işlemi seçmeyi gerektirir.",
+    "zor": "Çok adımlı muhakeme, ters/eksik bilgi veya birden çok kavramı birleştirme.",
+}
+
+
 def _format_kazanim_block(kazanimlar: list[Kazanim], difficulty: Difficulty) -> str:
     level = difficulty.value
+    generic = _GENERIC_DIFFICULTY_HINT.get(level, "")
     if len(kazanimlar) == 1:
         k = kazanimlar[0]
-        hint = k.get("difficulty_hints", {}).get(level, "")
+        hint = k.get("difficulty_hints", {}).get(level, "") or generic
         lines = [
             f"Hedef Kazanım Kodu: {k['kod']}",
             f"Hedef Kazanım Metni: {k['metin']}",
@@ -87,11 +98,14 @@ def _format_kazanim_block(kazanimlar: list[Kazanim], difficulty: Difficulty) -> 
             lines.append(f"Zorluk Kalibrasyonu ({level}): {hint}")
         return "\n".join(lines)
     lines = ["Hedef Kazanımlar (soruları bu kazanımlar arasında dengeli dağıt):"]
+    any_specific = any(k.get("difficulty_hints", {}).get(level) for k in kazanimlar)
     for k in kazanimlar:
         hint = k.get("difficulty_hints", {}).get(level, "")
         lines.append(f"  - {k['kod']}: {k['metin']}")
         if hint:
             lines.append(f"      Zorluk Kalibrasyonu ({level}): {hint}")
+    if not any_specific and generic:
+        lines.append(f"  Genel zorluk kalibrasyonu ({level}): {generic}")
     return "\n".join(lines)
 
 

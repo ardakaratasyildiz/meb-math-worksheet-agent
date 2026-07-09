@@ -21,7 +21,7 @@ export type TypeGroupKey =
 
 export interface FormState {
   grade: number;
-  topicId: string;
+  unitId: string | null; // MEB TYMM ünite (tema); null = henüz seçilmedi (ilk üniteye düşer)
   kazanimKod: string | null; // null = tüm kazanımlar (auto)
   difficulty: Difficulty;
   questionCount: number;
@@ -57,7 +57,7 @@ interface GenerateStore extends FormState {
 
 const DEFAULT_FORM: FormState = {
   grade: 5,
-  topicId: "cebir",
+  unitId: null, // form ilk render'da sınıfın ilk ünitesini otomatik seçer
   kazanimKod: null,
   difficulty: "orta",
   questionCount: 10,
@@ -119,10 +119,11 @@ export const useGenerateStore = create<GenerateStore>()(
       // bölündü. Eski persist edilmiş state'te tek "format" boolean'ı var →
       // her iki yeni gruba da aynı değeri taşı (aksi halde yeni switch'ler
       // undefined kalır ve "hepsi açık" tespiti bozulur).
-      version: 1,
+      version: 2,
       migrate: (persisted, version) => {
         const s = (persisted ?? {}) as Partial<FormState> & {
           typeGroups?: Record<string, boolean>;
+          topicId?: string; // v1 alanı — v2'de kaldırıldı (konu → ünite geçişi)
         };
         if (version < 1 && s.typeGroups && "format" in s.typeGroups) {
           const legacyFormat = s.typeGroups.format;
@@ -133,12 +134,20 @@ export const useGenerateStore = create<GenerateStore>()(
             other_format: legacyFormat ?? true,
           };
         }
+        if (version < 2) {
+          // Konu → ünite geçişi: eski persistlenen topicId/kazanimKod artık geçersiz
+          // (kazanım kodları M.* → MAT.*). Temiz başlangıç: ünite/kazanım sıfırlanır,
+          // form ilk üniteyi otomatik seçer. Sınıf/zorluk/tercihler korunur.
+          delete s.topicId;
+          s.unitId = null;
+          s.kazanimKod = null;
+        }
         // Kısmi veri döner; zustand merge default değerlerle birleştirir.
         return s as unknown as GenerateStore;
       },
       partialize: (s) => ({
         grade: s.grade,
-        topicId: s.topicId,
+        unitId: s.unitId,
         kazanimKod: s.kazanimKod,
         difficulty: s.difficulty,
         questionCount: s.questionCount,

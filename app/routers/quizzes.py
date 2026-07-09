@@ -19,6 +19,7 @@ from functools import lru_cache
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.data.curriculum import get_topic
+from app.data.units import get_unit, resolve_legacy_topic
 from app.models.enums import Difficulty, QuestionType
 from app.models.schemas import (
     AttemptResult,
@@ -83,13 +84,24 @@ def _split_buckets(total: int) -> dict[Difficulty, int]:
 
 def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
     """Çözülebilir mod üretim: seçili tipler + zorluk modu; derive+validate'den
-    geçenler kalır. Dönüş: (geçerli sorular [1..n numaralı], konu adı)."""
-    topic = get_topic(req.grade, req.topic_id)
-    if topic is None:
-        raise HTTPException(
-            status_code=404,
-            detail=f"{req.grade}. sınıfta '{req.topic_id}' konusu bulunmuyor.",
-        )
+    geçenler kalır. Dönüş: (geçerli sorular [1..n numaralı], görünen ad)."""
+    # Yeni seçim akışı: MEB ünite (tema). Şema unit_id XOR topic_id garantiler.
+    if req.unit_id:
+        unit = get_unit(req.grade, req.unit_id)
+        if unit is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"{req.grade}. sınıfta '{req.unit_id}' ünitesi bulunmuyor.",
+            )
+        display_name = unit["name"]
+    else:
+        topic = get_topic(req.grade, req.topic_id)
+        if topic is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"{req.grade}. sınıfta '{req.topic_id}' konusu bulunmuyor.",
+            )
+        display_name = topic["name"]
     allowed = _resolve_solvable_types(req.question_types)
     if not allowed:
         raise HTTPException(
@@ -109,6 +121,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
             question_count=count,
             tenant_id=req.tenant_id,
             allowed_types=allowed,
+            unit_id=req.unit_id,
         )
 
     raw: list[Question] = []
@@ -154,7 +167,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
             )
     # Numaraları sıkı tut (eleme sonrası boşluk kalmasın).
     valid = [q.model_copy(update={"number": i + 1}) for i, q in enumerate(valid)]
-    return valid, topic["name"]
+    return valid, display_name
 
 
 def _to_public(
@@ -214,11 +227,15 @@ def create_quiz(
             detail="Çözülebilir soru üretilemedi; lütfen tekrar deneyin.",
         )
     title = f"{req.grade}. Sınıf - {topic_name} Quiz"
+    # topic_id kaydı: ünite akışında legacy topic'e köprüle (downstream string bekler).
+    store_topic_id = req.topic_id or resolve_legacy_topic(
+        req.grade, req.unit_id, req.kazanim_kod
+    ) or "dogal_sayilar"
     record = QUIZ_STORE.create(
         owner_tenant_id=req.tenant_id,
         title=title,
         grade=req.grade,
-        topic_id=req.topic_id,
+        topic_id=store_topic_id,
         difficulty=req.difficulty.value,
         questions=[q.model_dump() for q in questions],
     )
@@ -230,7 +247,7 @@ def create_quiz(
         quiz_id=record["id"],
         title=title,
         grade=req.grade,
-        topic_id=req.topic_id,
+        topic_id=store_topic_id,
         difficulty=req.difficulty,
         created_at=record["created_at"],
         questions=questions,

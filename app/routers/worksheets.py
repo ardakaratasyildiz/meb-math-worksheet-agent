@@ -10,6 +10,7 @@ from fastapi.responses import Response, StreamingResponse
 
 from app.config import settings
 from app.data.curriculum import get_topic
+from app.data.units import find_unit_by_kazanim, get_unit
 from app.models.enums import TopicId
 from app.models.schemas import (
     AnswerKeyEntry,
@@ -40,6 +41,26 @@ def _agent_for_model(model: str) -> GeminiAgent:
 
 
 def _validate_request(req: GenerateWorksheetRequest) -> None:
+    # Yeni seçim akışı: MEB ünite (tema). Şema unit_id XOR topic_id garantiler.
+    if req.unit_id:
+        unit = get_unit(req.grade, req.unit_id)
+        if unit is None:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{req.grade}. sınıfta '{req.unit_id}' ünitesi müfredatta yok.",
+            )
+        if req.kazanim_kod is not None and not any(
+            k["kod"] == req.kazanim_kod for k in unit["kazanimlar"]
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"'{req.kazanim_kod}' kodu {req.grade}. sınıf '{req.unit_id}' "
+                    "ünitesinde bulunamadı."
+                ),
+            )
+        return
+    # Eski akış (geriye-uyum): topic_id.
     valid_topic_ids = {t.value for t in TopicId}
     if req.topic_id not in valid_topic_ids:
         raise HTTPException(
@@ -121,8 +142,15 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
     from app.models.enums import Difficulty as _Diff
     from app.services.entitlements import wants_yeni_nesil
     _validate_request(req)
-    topic = get_topic(req.grade, req.topic_id)
-    assert topic is not None
+    # Görünen ad: ünite akışında tema adı, eski akışta konu adı (başlık/geçmiş/defter).
+    if req.unit_id:
+        _unit = get_unit(req.grade, req.unit_id)
+        assert _unit is not None
+        display_name = _unit["name"]
+    else:
+        topic = get_topic(req.grade, req.topic_id)
+        assert topic is not None
+        display_name = topic["name"]
 
     # "Yeni nesil" gizli kalite kaldıracı: karar SUNUCUDA, premium yetkiye göre
     # verilir (client bir bayrak gönderemez). Ücretsiz → normal, premium → yeni nesil.
@@ -142,6 +170,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             tenant_id=req.tenant_id,
             allowed_types=req.question_types,
             yeni_nesil=_yeni_nesil,
+            unit_id=req.unit_id,
         )
 
     if req.difficulty_mode == "single":
@@ -183,6 +212,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
                     tenant_id=req.tenant_id,
                     allowed_types=req.question_types,
                     yeni_nesil=_yeni_nesil,
+                    unit_id=req.unit_id,
                 )
                 return diff, qs, local_agent.build_last_trace(), None
             except Exception as exc:  # noqa: BLE001
@@ -243,11 +273,11 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             detail="Üretim sonucu boş geldi; lütfen tekrar deneyin.",
         )
 
-    title = f"{req.grade}. Sınıf - {topic['name']} Çalışma Kağıdı"
+    title = f"{req.grade}. Sınıf - {display_name} Çalışma Kağıdı"
     worksheet = Worksheet(
         title=title,
         grade=req.grade,
-        topic=topic["name"],
+        topic=display_name,
         difficulty=worksheet_difficulty,
         question_count=len(questions),
         questions=questions,
@@ -272,7 +302,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             completion_tokens=trace_for_meta.completion_tokens,
             cost_usd=trace_for_meta.estimated_cost_usd,
             grade=req.grade,
-            topic=topic["name"],
+            topic=display_name,
             question_count=worksheet.question_count,
             cache_hit=bool(getattr(trace_for_meta, "cache_hit", False)),
         )
@@ -287,6 +317,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
                     tenant_id=req.tenant_id,
                     request={
                         "grade": req.grade,
+                        "unit_id": req.unit_id,
                         "topic_id": req.topic_id,
                         "kazanim_kod": req.kazanim_kod,
                         "difficulty": worksheet_difficulty.value,
@@ -500,12 +531,18 @@ def regenerate_question(
     değiştirebilir. LLM çağrısı yapar → rate limit + auth uygulanır. Yeni soru
     tenant geçmişine göre dedup'lanır (mevcut sorulardan farklı gelir).
     """
+    # Önce eski müfredat (M.*); bulunamazsa yeni MEB ünitesi (MAT.*) → unit yolu.
     topic_id = _resolve_topic_id(req.grade, req.kazanim_kod)
+    unit_id: str | None = None
     if topic_id is None:
-        raise HTTPException(
-            status_code=400,
-            detail=f"'{req.kazanim_kod}' kodu {req.grade}. sınıf müfredatında bulunamadı.",
-        )
+        found = find_unit_by_kazanim(req.kazanim_kod)
+        if found is None:
+            raise HTTPException(
+                status_code=400,
+                detail=f"'{req.kazanim_kod}' kodu {req.grade}. sınıf müfredatında bulunamadı.",
+            )
+        _, unit = found
+        unit_id = unit["unit_id"]
     agent = _agent_for_model(model_for_grade(req.grade))
     try:
         questions = agent.generate(
@@ -516,6 +553,7 @@ def regenerate_question(
             question_count=1,
             tenant_id=req.tenant_id,
             allowed_types=[req.question_type],
+            unit_id=unit_id,
         )
     except AgentError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
@@ -553,6 +591,7 @@ async def _stream_worksheet_events(
     # Hand-off başlangıç event'i — frontend "bağlantı kuruldu" olarak gösterir
     yield sse("meta", {
         "grade": req.grade,
+        "unit_id": req.unit_id,
         "topic_id": req.topic_id,
         "kazanim_kod": req.kazanim_kod,
         "difficulty": req.difficulty.value if hasattr(req.difficulty, "value") else req.difficulty,
