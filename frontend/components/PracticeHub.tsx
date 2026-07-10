@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { AssignmentAlert } from "@/components/AssignmentAlert";
 import { EmailOptInCard } from "@/components/EmailOptInCard";
 import { PracticeTodayCard } from "@/components/PracticeTodayCard";
+import { hasMultipleSubjects } from "@/lib/subjects";
 
 type Role = "student" | "teacher";
 
@@ -88,7 +89,11 @@ export function PracticeHub({ roleParam }: { roleParam: Role | null }) {
           {isStudent ? "Çöz & Geliş 👋" : "Sınıfım 🎓"}
         </p>
         <h1 className="mt-1 font-display text-3xl font-bold tracking-tight">
-          {isStudent ? "Bugün de matematiğe devam!" : "Sınıfını yönet"}
+          {isStudent
+            ? hasMultipleSubjects()
+              ? "Bugün de çalışmaya devam!"
+              : "Bugün de matematiğe devam!"
+            : "Sınıfını yönet"}
         </h1>
         <p className="mt-2 max-w-md text-muted-foreground">
           {isStudent

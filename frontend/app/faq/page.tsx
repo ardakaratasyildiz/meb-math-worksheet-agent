@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, faqPageSchema } from "@/components/JsonLd";
 import { PageHeader } from "@/components/PageHeader";
+import { hasMultipleSubjects } from "@/lib/subjects";
 
 export const metadata = {
   title: "Sıkça Sorulanlar · Soru Atölyesi",
@@ -14,7 +15,8 @@ export const metadata = {
 type FaqItem = { q: string; a: string };
 type FaqCategory = { title: string; items: FaqItem[] };
 
-const FAQ_CATEGORIES: FaqCategory[] = [
+function getFaqCategories(multi: boolean): FaqCategory[] {
+  return [
   {
     title: "Üretim süreci",
     items: [
@@ -57,12 +59,16 @@ const FAQ_CATEGORIES: FaqCategory[] = [
     title: "Kapsam ve yol haritası",
     items: [
       {
-        q: "Hangi sınıflar destekleniyor?",
-        a: "1.→8. sınıf MEB matematik müfredatının tamamı desteklenmektedir. 8. sınıf, LGS hazırlık kapsamını da içerir — gerçek çıkmış LGS soruları örnek havuzunda kullanılır.",
+        q: multi ? "Hangi dersler ve sınıflar destekleniyor?" : "Hangi sınıflar destekleniyor?",
+        a: multi
+          ? "1.→8. sınıf için Matematik, Fen Bilimleri, Türkçe, Sosyal Bilgiler ve İngilizce derslerinin MEB müfredatı desteklenmektedir (her dersin sınıf aralığı farklıdır). 8. sınıf, LGS hazırlık kapsamını da içerir."
+          : "1.→8. sınıf MEB matematik müfredatının tamamı desteklenmektedir. 8. sınıf, LGS hazırlık kapsamını da içerir — gerçek çıkmış LGS soruları örnek havuzunda kullanılır.",
       },
       {
         q: "Diğer dersler eklenecek mi?",
-        a: "Şu anda yalnızca matematik üretilmektedir. Diğer derslerin (Türkçe, Fen Bilimleri vb.) eklenmesi yol haritasındadır; takvim henüz kesinleşmemiştir.",
+        a: multi
+          ? "Matematik, Fen Bilimleri, Türkçe, Sosyal Bilgiler ve İngilizce dersleri desteklenmektedir. Her dersin kapsamı MEB müfredatına göre kademeli olarak genişletilmektedir."
+          : "Şu anda yalnızca matematik üretilmektedir. Diğer derslerin (Türkçe, Fen Bilimleri vb.) eklenmesi yol haritasındadır; takvim henüz kesinleşmemiştir.",
       },
     ],
   },
@@ -83,9 +89,11 @@ const FAQ_CATEGORIES: FaqCategory[] = [
       },
     ],
   },
-];
+  ];
+}
 
 export default function FaqPage() {
+  const FAQ_CATEGORIES = getFaqCategories(hasMultipleSubjects());
   // Tüm kategorilerden tek düz liste — schema.org FAQPage tek mainEntity dizisi ister.
   const allFaqs = FAQ_CATEGORIES.flatMap((c) => c.items);
   return (

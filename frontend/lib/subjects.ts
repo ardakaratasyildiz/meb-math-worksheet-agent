@@ -56,6 +56,82 @@ export function subjectMinGrade(value: Subject): number {
   return META_BY_VALUE[value]?.minGrade ?? 1;
 }
 
+export function subjectMaxGrade(value: Subject): number {
+  return META_BY_VALUE[value]?.maxGrade ?? 8;
+}
+
 export function subjectLabel(value: Subject): string {
   return META_BY_VALUE[value]?.label ?? value;
+}
+
+// ── Ders görsel dili (ortak) ────────────────────────────────────────────────
+// Her ders bir renk + emoji ile kodlanır; bu kodlama TÜM uygulamada aynı kalır
+// (ana sayfa vitrini, quiz akışı, ilerleme rozetleri). Tailwind sınıfları LİTERAL
+// yazılır — JIT tarayıcı statik string görmeli, dinamik `text-${x}` çalışmaz.
+export interface SubjectStyle {
+  emoji: string;
+  /** Sınıf aralığı etiketi — vitrin/rozet için (örn. "1–8. sınıf · LGS"). */
+  grades: string;
+  /** Kısa vitrin açıklaması. */
+  blurb: string;
+  text: string; // metin + ikon rengi
+  bg: string; // yumuşak arka plan (ikon kutusu / seçili sekme)
+  border: string; // kenarlık (seçili / hover)
+  dot: string; // aksan noktası (sekme göstergesi)
+}
+
+const SUBJECT_STYLE: Record<Subject, SubjectStyle> = {
+  matematik: {
+    emoji: "➗",
+    grades: "1–8. sınıf · LGS",
+    blurb: "Sayılar, cebir, geometri ve veri — MEB kazanımlarına hizalı.",
+    text: "text-blue-600 dark:text-blue-400",
+    bg: "bg-blue-50 dark:bg-blue-950/40",
+    border: "border-blue-500/40",
+    dot: "bg-blue-500",
+  },
+  fen: {
+    emoji: "🔬",
+    grades: "3–8. sınıf",
+    blurb: "Canlılar, madde, kuvvet ve Dünya — görselli yeni nesil sorular.",
+    text: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-emerald-50 dark:bg-emerald-950/40",
+    border: "border-emerald-500/40",
+    dot: "bg-emerald-500",
+  },
+  turkce: {
+    emoji: "📖",
+    grades: "1–8. sınıf",
+    blurb: "Okuma, dil bilgisi, yazım-noktalama ve özgün metinler.",
+    text: "text-rose-600 dark:text-rose-400",
+    bg: "bg-rose-50 dark:bg-rose-950/40",
+    border: "border-rose-500/40",
+    dot: "bg-rose-500",
+  },
+  sosyal: {
+    emoji: "🌍",
+    grades: "1–8. sınıf · İnkılap",
+    blurb: "Tarih, coğrafya, vatandaşlık ve T.C. İnkılap Tarihi.",
+    text: "text-amber-600 dark:text-amber-400",
+    bg: "bg-amber-50 dark:bg-amber-950/40",
+    border: "border-amber-500/40",
+    dot: "bg-amber-500",
+  },
+  ingilizce: {
+    emoji: "🔤",
+    grades: "2–8. sınıf",
+    blurb: "Kelime, dil bilgisi ve CEFR düzeyine uygun özgün İngilizce.",
+    text: "text-violet-600 dark:text-violet-400",
+    bg: "bg-violet-50 dark:bg-violet-950/40",
+    border: "border-violet-500/40",
+    dot: "bg-violet-500",
+  },
+};
+
+export function subjectStyle(value: Subject): SubjectStyle {
+  return SUBJECT_STYLE[value] ?? SUBJECT_STYLE.matematik;
+}
+
+export function subjectEmoji(value: Subject): string {
+  return subjectStyle(value).emoji;
 }

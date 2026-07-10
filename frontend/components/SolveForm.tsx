@@ -19,15 +19,23 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 
-import { createQuiz } from "@/lib/api";
+import { createQuiz, listKazanimlarByUnit, listUnits } from "@/lib/api";
 import { getGradesLocal } from "@/lib/curriculum";
 import { getKazanimlarByUnitLocal, getUnitsLocal } from "@/lib/units";
-import { MATH_FACTS } from "@/lib/mathFacts";
+import { factsForSubject } from "@/lib/subjectFacts";
+import {
+  availableSubjects,
+  hasMultipleSubjects,
+  subjectMaxGrade,
+  subjectMinGrade,
+  subjectStyle,
+} from "@/lib/subjects";
 import type {
   Difficulty,
   DifficultyMode,
   GradeInfo,
   KazanimInfo,
+  Subject,
   UnitInfo,
 } from "@/lib/types";
 
@@ -73,13 +81,30 @@ const ALL_TYPES_ON: Record<SolvableType, boolean> = {
 export function SolveForm() {
   const router = useRouter();
   const { userId } = useAuth();
-  // "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&unit=&kazanim=
+  // "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&unit=&kazanim=&subject=
   const searchParams = useSearchParams();
   const initialGrade = Number(searchParams.get("grade")) || 5;
   const initialUnit = searchParams.get("unit") ?? "";
   const initialKazanim = searchParams.get("kazanim");
 
-  const [grade, setGrade] = React.useState(initialGrade);
+  // Ders seçimi — yalnız flag'i açık dersler. Deep-link ?subject= yalnız açık
+  // dersi kabul eder; değilse matematik'e düşer.
+  const multiSubject = hasMultipleSubjects();
+  const subjects = availableSubjects();
+  const spSubject = (searchParams.get("subject") ?? "").toLowerCase();
+  const initialSubject: Subject = subjects.some((s) => s.value === spSubject)
+    ? (spSubject as Subject)
+    : "matematik";
+
+  const [subject, setSubject] = React.useState<Subject>(initialSubject);
+  const isMath = subject === "matematik";
+
+  const [grade, setGrade] = React.useState(() =>
+    Math.min(
+      Math.max(initialGrade, subjectMinGrade(initialSubject)),
+      subjectMaxGrade(initialSubject),
+    ),
+  );
   const [unitId, setUnitId] = React.useState(initialUnit);
   const [kazanimKod, setKazanimKod] = React.useState<string | null>(
     initialKazanim,
@@ -101,15 +126,44 @@ export function SolveForm() {
     (difficultyMode !== "single" ? 1 : 0) +
     (enabledTypes.length !== SOLVABLE_TYPES.length ? 1 : 0);
 
-  const [grades] = React.useState<GradeInfo[]>(getGradesLocal);
+  // Sınıflar dersin sınıf aralığına göre (lokal, anında — cold-start yok).
+  const grades = React.useMemo<GradeInfo[]>(() => {
+    const min = subjectMinGrade(subject);
+    const max = subjectMaxGrade(subject);
+    return getGradesLocal().filter((g) => g.id >= min && g.id <= max);
+  }, [subject]);
+
   const [units, setUnits] = React.useState<UnitInfo[]>(() =>
-    getUnitsLocal(initialGrade),
+    initialSubject === "matematik" ? getUnitsLocal(initialGrade) : [],
   );
   const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>([]);
+  const [loadingUnits, setLoadingUnits] = React.useState(false);
+  const [loadingKazanim, setLoadingKazanim] = React.useState(false);
 
+  // Ünite yükleme: matematik lokal snapshot'tan (anında), diğer dersler API'den
+  // (lokal snapshot yok). API yolu cold-start'a takılabilir → yükleniyor durumu.
   React.useEffect(() => {
-    setUnits(getUnitsLocal(grade));
-  }, [grade]);
+    if (isMath) {
+      setUnits(getUnitsLocal(grade));
+      setLoadingUnits(false);
+      return;
+    }
+    let cancelled = false;
+    setLoadingUnits(true);
+    listUnits(grade, subject)
+      .then((u) => {
+        if (!cancelled) setUnits(u);
+      })
+      .catch(() => {
+        if (!cancelled) setUnits([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingUnits(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [grade, subject, isMath]);
 
   // unitId boş/geçersizse sınıfın ilk ünitesini otomatik seç → dropdown boş kalmaz.
   React.useEffect(() => {
@@ -121,8 +175,42 @@ export function SolveForm() {
   }, [units, unitId]);
 
   React.useEffect(() => {
-    setKazanimlar(unitId ? getKazanimlarByUnitLocal(grade, unitId) : []);
-  }, [grade, unitId]);
+    if (!unitId) {
+      setKazanimlar([]);
+      return;
+    }
+    if (isMath) {
+      setKazanimlar(getKazanimlarByUnitLocal(grade, unitId));
+      setLoadingKazanim(false);
+      return;
+    }
+    let cancelled = false;
+    setLoadingKazanim(true);
+    listKazanimlarByUnit(grade, unitId, subject)
+      .then((k) => {
+        if (!cancelled) setKazanimlar(k);
+      })
+      .catch(() => {
+        if (!cancelled) setKazanimlar([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingKazanim(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [grade, unitId, subject, isMath]);
+
+  // Ders değişince sınıfı aralığa kıstır, ünite/kazanımı sıfırla.
+  function onSubjectChange(v: Subject) {
+    if (v === subject) return;
+    setSubject(v);
+    const min = subjectMinGrade(v);
+    const max = subjectMaxGrade(v);
+    setGrade((g) => Math.min(Math.max(g, min), max));
+    setUnitId("");
+    setKazanimKod(null);
+  }
 
   async function onStart() {
     if (!unitId) {
@@ -157,6 +245,8 @@ export function SolveForm() {
         tenant_id: userId,
         question_types,
         difficulty_mode: difficultyMode,
+        // Matematik'te parametre eklenmez (geriye uyum); diğer derslerde gönderilir.
+        ...(isMath ? {} : { subject }),
       });
       router.push(`/practice/quiz/${quiz.id}`);
     } catch (e: unknown) {
@@ -168,11 +258,41 @@ export function SolveForm() {
 
   // Üretim sürerken (~30 sn) "Bunu biliyor muydun?" bekleme ekranı göster.
   if (submitting) {
-    return <QuizGeneratingState questionCount={questionCount} />;
+    return <QuizGeneratingState questionCount={questionCount} subject={subject} />;
   }
 
   return (
     <div className="space-y-6">
+      {/* Ders seçici — yalnız matematik dışı ders açıkken görünür. Renk kodlaması
+          ana sayfa vitriniyle ortak (lib/subjects → subjectStyle). */}
+      {multiSubject ? (
+        <div className="space-y-1.5">
+          <Label>Ders</Label>
+          <div className="flex flex-wrap gap-2">
+            {subjects.map((s) => {
+              const st = subjectStyle(s.value);
+              const on = s.value === subject;
+              return (
+                <button
+                  key={s.value}
+                  type="button"
+                  onClick={() => onSubjectChange(s.value)}
+                  aria-pressed={on}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold transition-colors ${
+                    on
+                      ? `${st.bg} ${st.text} ${st.border}`
+                      : "border-border bg-background text-muted-foreground hover:bg-accent/40"
+                  }`}
+                >
+                  <span aria-hidden>{st.emoji}</span>
+                  {s.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-1.5">
           <Label htmlFor="s-grade">Sınıf</Label>
@@ -205,10 +325,12 @@ export function SolveForm() {
               setUnitId(v);
               setKazanimKod(null);
             }}
-            disabled={units.length === 0}
+            disabled={units.length === 0 || loadingUnits}
           >
             <SelectTrigger id="s-unit">
-              <SelectValue placeholder="Ünite seçin" />
+              <SelectValue
+                placeholder={loadingUnits ? "Yükleniyor…" : "Ünite seçin"}
+              />
             </SelectTrigger>
             <SelectContent>
               {units.map((u) => (
@@ -227,10 +349,12 @@ export function SolveForm() {
             onValueChange={(v) =>
               setKazanimKod(v === KAZANIM_AUTO ? null : v)
             }
-            disabled={kazanimlar.length === 0}
+            disabled={kazanimlar.length === 0 || loadingKazanim}
           >
             <SelectTrigger id="s-kazanim">
-              <SelectValue placeholder="Kazanım seçin" />
+              <SelectValue
+                placeholder={loadingKazanim ? "Yükleniyor…" : "Kazanım seçin"}
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={KAZANIM_AUTO}>Tümü (otomatik)</SelectItem>
@@ -421,28 +545,37 @@ export function SolveForm() {
 // ─── Quiz üretiliyor — "Bunu biliyor muydun?" bekleme ekranı ─────────────────
 // /generate (PDF) akışındaki GeneratingState'in quiz karşılığı. Streaming yok;
 // zaman-tabanlı faz/ilerleme + dönen matematik bilgisi (ortak @/lib/mathFacts).
-function QuizGeneratingState({ questionCount }: { questionCount: number }) {
+function QuizGeneratingState({
+  questionCount,
+  subject,
+}: {
+  questionCount: number;
+  subject: Subject;
+}) {
+  const facts = React.useMemo(() => factsForSubject(subject), [subject]);
   const [factIndex, setFactIndex] = React.useState(() =>
-    Math.floor(Math.random() * MATH_FACTS.length),
+    Math.floor(Math.random() * facts.length),
   );
   const [elapsed, setElapsed] = React.useState(0);
 
   React.useEffect(() => {
     const factTimer = setInterval(() => {
-      setFactIndex((i) => (i + 1) % MATH_FACTS.length);
+      setFactIndex((i) => (i + 1) % facts.length);
     }, 11000);
     const tickTimer = setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => {
       clearInterval(factTimer);
       clearInterval(tickTimer);
     };
-  }, []);
+  }, [facts]);
 
   const phase =
     elapsed < 8
       ? "Sorular üretiliyor"
       : elapsed < 18
-        ? "Aritmetik denetimi yapılıyor"
+        ? subject === "matematik"
+          ? "Aritmetik denetimi yapılıyor"
+          : "İçerik denetimi yapılıyor"
         : elapsed < 28
           ? "Kazanım uyumu denetleniyor"
           : "Quiz hazırlanıyor";
@@ -483,7 +616,7 @@ function QuizGeneratingState({ questionCount }: { questionCount: number }) {
             key={factIndex}
             className="animate-fade-in text-sm leading-relaxed text-foreground"
           >
-            {MATH_FACTS[factIndex]}
+            {facts[factIndex]}
           </p>
         </div>
       </div>

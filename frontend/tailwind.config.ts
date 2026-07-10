@@ -7,6 +7,9 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
+    // Ders renk sınıfları (subjectStyle) lib/subjects.ts'te LİTERAL string olarak
+    // yaşar; JIT bu dosyayı taramazsa renkler purge edilir → lib de içerikte.
+    "./lib/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {

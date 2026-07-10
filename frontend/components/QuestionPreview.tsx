@@ -19,9 +19,9 @@ import { ShareButton } from "@/components/ShareButton";
 import { track } from "@/lib/analytics";
 import { downloadBlob, regenerateQuestion, renderPdf } from "@/lib/api";
 import { buildPdfFilename } from "@/lib/filename";
-import { MATH_FACTS } from "@/lib/mathFacts";
+import { factsForSubject } from "@/lib/subjectFacts";
 import { useGenerateStore } from "@/lib/store";
-import type { Question } from "@/lib/types";
+import type { Question, Subject } from "@/lib/types";
 import { QuestionCard } from "./QuestionCard";
 
 export function QuestionPreview() {
@@ -29,6 +29,7 @@ export function QuestionPreview() {
     status,
     result,
     error,
+    subject,
     questionCount,
     streamedCount,
     includeAnswerKey,
@@ -77,6 +78,7 @@ export function QuestionPreview() {
         <GeneratingState
           questionCount={questionCount}
           streamedCount={streamedCount}
+          subject={subject}
         />
       </div>
     );
@@ -232,18 +234,21 @@ export function QuestionPreview() {
 function GeneratingState({
   questionCount,
   streamedCount,
+  subject,
 }: {
   questionCount: number;
   streamedCount: number;
+  subject: Subject;
 }) {
+  const facts = React.useMemo(() => factsForSubject(subject), [subject]);
   const [factIndex, setFactIndex] = React.useState(() =>
-    Math.floor(Math.random() * MATH_FACTS.length),
+    Math.floor(Math.random() * facts.length),
   );
   const [elapsed, setElapsed] = React.useState(0);
 
   React.useEffect(() => {
     const factTimer = setInterval(() => {
-      setFactIndex((i) => (i + 1) % MATH_FACTS.length);
+      setFactIndex((i) => (i + 1) % facts.length);
     }, 11000);
     const tickTimer = setInterval(() => {
       setElapsed((e) => e + 1);
@@ -252,7 +257,7 @@ function GeneratingState({
       clearInterval(factTimer);
       clearInterval(tickTimer);
     };
-  }, []);
+  }, [facts]);
 
   // Backend soruları üretim BİTTİKTEN sonra teker teker akıtır; ilk soru
   // event'i geldiğinde ağır iş tamam demektir → gerçek sayaca geç.
@@ -263,7 +268,9 @@ function GeneratingState({
     : elapsed < 8
       ? "Sorular üretiliyor"
       : elapsed < 18
-        ? "Aritmetik denetimi yapılıyor"
+        ? subject === "matematik"
+          ? "Aritmetik denetimi yapılıyor"
+          : "İçerik denetimi yapılıyor"
         : elapsed < 28
           ? "Kazanım uyumu denetleniyor"
           : "Çalışma kağıdı hazırlanıyor";
@@ -311,7 +318,7 @@ function GeneratingState({
               key={factIndex}
               className="animate-fade-in text-sm leading-relaxed text-foreground"
             >
-              {MATH_FACTS[factIndex]}
+              {facts[factIndex]}
             </p>
           </div>
         </div>

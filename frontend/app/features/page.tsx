@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { PageHeader, SectionHeader } from "@/components/PageHeader";
+import { hasMultipleSubjects } from "@/lib/subjects";
 
 export const metadata = {
   title: "Özellikler · Soru Atölyesi",
@@ -21,16 +22,21 @@ export const metadata = {
     "Soru Atölyesi'nin sistem özellikleri: kazanım kodu bazlı üretim, iki aşamalı denetim, anlamsal benzerlik denetimi, A4 PDF çıktı.",
 };
 
-const FEATURES = [
+function getFeatures(multi: boolean) {
+  return [
   {
     icon: <BookOpen className="h-5 w-5" />,
     title: "Kazanım kodu bazlı üretim",
-    body: "Üretim talebi sınıf, konu ve kazanım kodu seçilerek yapılır. PDF'teki her sorunun yanında ilgili MEB kazanım kodu (örn. M.5.2.1.1) yer alır. 1.→8. sınıf MEB matematik müfredatı (8. sınıf LGS hazırlık dahil) kapsamındadır.",
+    body: multi
+      ? "Üretim talebi ders, sınıf, konu ve kazanım kodu seçilerek yapılır. PDF'teki her sorunun yanında ilgili MEB kazanım kodu (örn. M.5.2.1, F.6.1.2) yer alır. 1.→8. sınıf MEB müfredatı — Matematik, Fen, Türkçe, Sosyal ve İngilizce (8. sınıf LGS hazırlık dahil) — kapsamındadır."
+      : "Üretim talebi sınıf, konu ve kazanım kodu seçilerek yapılır. PDF'teki her sorunun yanında ilgili MEB kazanım kodu (örn. M.5.2.1.1) yer alır. 1.→8. sınıf MEB matematik müfredatı (8. sınıf LGS hazırlık dahil) kapsamındadır.",
   },
   {
     icon: <ShieldCheck className="h-5 w-5" />,
     title: "Üretim sonrası iki aşamalı denetim",
-    body: "Üretilen her soru iki katmanlı denetimden geçer: önce sembolik hesap motoru (SymPy) ile aritmetik denetim, ardından ikinci bir model tarafından kazanım uyumu ve zorluk uyumu denetimi. Bu denetimleri geçemeyen sorular yeniden üretilir.",
+    body: multi
+      ? "Üretilen her soru iki katmanlı denetimden geçer: önce içerik doğruluğu (matematikte sembolik hesap motoru SymPy ile aritmetik denetim), ardından ikinci bir model tarafından kazanım uyumu ve zorluk uyumu denetimi. Bu denetimleri geçemeyen sorular yeniden üretilir."
+      : "Üretilen her soru iki katmanlı denetimden geçer: önce sembolik hesap motoru (SymPy) ile aritmetik denetim, ardından ikinci bir model tarafından kazanım uyumu ve zorluk uyumu denetimi. Bu denetimleri geçemeyen sorular yeniden üretilir.",
   },
   {
     icon: <Sparkles className="h-5 w-5" />,
@@ -52,7 +58,8 @@ const FEATURES = [
     title: "İzlenebilir kazanım kodları",
     body: "Her soru çıktısında ilgili MEB kazanım kodu açıkça görünür. Bu sayede öğrencinin eksik kaldığı kazanımlar belge üzerinden takip edilebilir, sınıf bazında raporlanabilir.",
   },
-];
+  ];
+}
 
 const COMPARE = [
   {
@@ -93,12 +100,18 @@ const COMPARE = [
 ];
 
 export default function FeaturesPage() {
+  const multi = hasMultipleSubjects();
+  const FEATURES = getFeatures(multi);
   return (
     <>
       <PageHeader
         eyebrow="Özellikler"
         title="Sistem özellikleri"
-        body="Soru Atölyesi, MEB matematik müfredatı kapsamında kazanım kodu bazlı çalışma kağıdı üreten bir sistemdir. Aşağıda üretim akışını ve çıktıyı belirleyen temel özellikler yer almaktadır."
+        body={
+          multi
+            ? "Soru Atölyesi, MEB müfredatı kapsamında (Matematik, Fen, Türkçe, Sosyal ve İngilizce) kazanım kodu bazlı çalışma kağıdı üreten bir sistemdir. Aşağıda üretim akışını ve çıktıyı belirleyen temel özellikler yer almaktadır."
+            : "Soru Atölyesi, MEB matematik müfredatı kapsamında kazanım kodu bazlı çalışma kağıdı üreten bir sistemdir. Aşağıda üretim akışını ve çıktıyı belirleyen temel özellikler yer almaktadır."
+        }
       />
 
       <section className="py-20">
