@@ -18,6 +18,7 @@ from app.models.schemas import (
     ProgressResponse,
     ProgressSummary,
 )
+from app.services.subject_resolve import resolve_kazanim
 
 # Zayıf kazanım eşiği: doğru oranı < 0.6 VE en az 3 cevap (anlamlı veri).
 # Az veride "zayıf" demek erken/yanıltıcı → min_total kapısı.
@@ -85,13 +86,18 @@ def build_progress(
         total_answered += tot
         total_correct += cor
         ratio = (cor / tot) if tot else 0.0
+        kod = m.get("kazanim_kod", "")
+        subject_id, topic_name, grade = resolve_kazanim(kod)
         items.append(
             KazanimProgress(
-                kazanim_kod=m.get("kazanim_kod", ""),
+                kazanim_kod=kod,
                 correct=cor,
                 total=tot,
                 ratio=ratio,
                 last_seen_at=m.get("last_seen_at", ""),
+                subject=subject_id.value,
+                topic_name=topic_name,
+                grade=grade,
             )
         )
 

@@ -455,6 +455,11 @@ export interface KazanimProgress {
   total: number;
   ratio: number;
   last_seen_at: string;
+  // Ders ekseni — backend kazanim_kod'dan çözer (subject_resolve). Eski yanıtlarda
+  // olmayabilir → opsiyonel; okuyan taraf matematik'e düşer.
+  subject?: Subject;
+  topic_name?: string;
+  grade?: number | null;
 }
 
 export interface ProgressSummary {

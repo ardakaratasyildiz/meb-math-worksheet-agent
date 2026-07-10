@@ -78,6 +78,7 @@ export interface SubjectStyle {
   bg: string; // yumuşak arka plan (ikon kutusu / seçili sekme)
   border: string; // kenarlık (seçili / hover)
   dot: string; // aksan noktası (sekme göstergesi)
+  hex: string; // ham renk — inline stil (conic-gradient halka, grafik) için
 }
 
 const SUBJECT_STYLE: Record<Subject, SubjectStyle> = {
@@ -89,6 +90,7 @@ const SUBJECT_STYLE: Record<Subject, SubjectStyle> = {
     bg: "bg-blue-50 dark:bg-blue-950/40",
     border: "border-blue-500/40",
     dot: "bg-blue-500",
+    hex: "#2563eb",
   },
   fen: {
     emoji: "🔬",
@@ -98,6 +100,7 @@ const SUBJECT_STYLE: Record<Subject, SubjectStyle> = {
     bg: "bg-emerald-50 dark:bg-emerald-950/40",
     border: "border-emerald-500/40",
     dot: "bg-emerald-500",
+    hex: "#059669",
   },
   turkce: {
     emoji: "📖",
@@ -107,6 +110,7 @@ const SUBJECT_STYLE: Record<Subject, SubjectStyle> = {
     bg: "bg-rose-50 dark:bg-rose-950/40",
     border: "border-rose-500/40",
     dot: "bg-rose-500",
+    hex: "#e11d48",
   },
   sosyal: {
     emoji: "🌍",
@@ -116,6 +120,7 @@ const SUBJECT_STYLE: Record<Subject, SubjectStyle> = {
     bg: "bg-amber-50 dark:bg-amber-950/40",
     border: "border-amber-500/40",
     dot: "bg-amber-500",
+    hex: "#d97706",
   },
   ingilizce: {
     emoji: "🔤",
@@ -125,6 +130,7 @@ const SUBJECT_STYLE: Record<Subject, SubjectStyle> = {
     bg: "bg-violet-50 dark:bg-violet-950/40",
     border: "border-violet-500/40",
     dot: "bg-violet-500",
+    hex: "#7c3aed",
   },
 };
 

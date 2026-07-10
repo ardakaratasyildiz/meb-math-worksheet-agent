@@ -467,6 +467,11 @@ class KazanimProgress(BaseModel):
     total: int
     ratio: float  # correct / total (0.0–1.0)
     last_seen_at: str
+    # Ders ekseni — kazanim_kod'dan çözülür (subject_resolve). Varsayılanlar geriye
+    # uyumlu: subject alanı olmayan eski istemci/testlerde matematik gibi davranır.
+    subject: str = "matematik"
+    topic_name: str = ""  # okunur konu/ünite adı (kod yerine kullanıcıya gösterilir)
+    grade: int | None = None
 
 
 class ProgressSummary(BaseModel):
