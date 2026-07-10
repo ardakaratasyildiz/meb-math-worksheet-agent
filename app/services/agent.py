@@ -1,6 +1,7 @@
 """Gemini tabanlı soru üretim servisi."""
 import logging
 import random
+import re
 import time
 
 from google import genai
@@ -1023,13 +1024,20 @@ class GeminiAgent:
                 continue
             # Çoktan seçmeli ZORUNLU: A) B) C) D) şıkları soru metnine gömülü olmalı;
             # aksi halde soru CEVAPLANAMAZ → ele (top-up doldurur). Tüm dersleri korur.
-            if raw.question_type == QuestionType.COKTAN_SECMELI and not all(
-                f"{opt})" in q_text for opt in ("A", "B", "C", "D")
-            ):
-                logger.info(
-                    "Şıksız çoktan seçmeli soru atıldı: %s", raw.question[:70]
-                )
-                continue
+            if raw.question_type == QuestionType.COKTAN_SECMELI:
+                if not all(f"{opt})" in q_text for opt in ("A", "B", "C", "D")):
+                    logger.info(
+                        "Şıksız çoktan seçmeli soru atıldı: %s", raw.question[:70]
+                    )
+                    continue
+                # MEB ortaokul = TAM 4 şık (A-D). 5. şık (E) üretilirse ele — 5 şık
+                # yanlış (özellikle İngilizce'de model bazen E ekliyordu).
+                if re.search(r"(?<![A-Za-z0-9])[Ee]\s*[\)\.]", q_text):
+                    logger.info(
+                        "5 şıklı (E) çoktan seçmeli atıldı — 4 şık zorunlu: %s",
+                        raw.question[:70],
+                    )
+                    continue
             kod = raw.kazanim_kod if raw.kazanim_kod in valid_kazanim_codes else fallback_kazanim
             dedup.add(raw.question)
             steps = raw.solution_steps

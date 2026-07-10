@@ -16,11 +16,19 @@ export const OPTION_LETTERS = ["A", "B", "C", "D", "E"];
 // MCQ soru metni şıkları gömülü içerebilir ("... A) 4 B) 5"). Tekrar göstermemek
 // için, en az 2 şık işareti varsa metni ilk işaretten keser.
 export function stripInlineOptions(text: string): string {
-  const marker = /\s+[A-E]\s*[\)\.]\s+/g;
-  const matches = text.match(marker);
-  if (!matches || matches.length < 2) return text;
-  const idx = text.search(/\s+[A-E]\s*[\)\.]\s+/);
-  return idx > 0 ? text.slice(0, idx).trim() : text;
+  // Şık işaretçileri A)/A. (A-D). Backend "A)".."D)" garantiler → yakalayıcı
+  // bununla tutarlı: kelime-içi harfi (art, e-mail) saymaz ama işaretçi öncesi/
+  // sonrası boşluk ZORUNLU değil ("A)go", "…okul.A)" gibi durumları da yakalar).
+  // (?<! lookbehind yerine boundary grubu — eski tarayıcı güvenliği.)
+  const re = /(^|[^A-Za-z0-9])([A-D])[)\.]/g;
+  const marks: number[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    marks.push(m.index + m[1].length); // şık harfinin konumu
+    if (m.index === re.lastIndex) re.lastIndex++;
+  }
+  if (marks.length < 2) return text; // tek işaretçi cümle-içi olabilir → dokunma
+  return marks[0] > 0 ? text.slice(0, marks[0]).trim() : text;
 }
 
 export function SolutionView({ steps }: { steps: string | SolutionStep[] }) {
