@@ -57,6 +57,17 @@ services:
       - key: ENABLE_MATH_VERIFIER
         value: "true"
 
+      # Çok-ders kalite kapıları — 2026-07-10 go-live: hepsi açık. Kapatmak için
+      # ilgili değeri "false" yap (frontend NEXT_PUBLIC_ENABLED_SUBJECTS ile eşle).
+      - key: FEN_ENABLED
+        value: "true"
+      - key: TURKCE_ENABLED
+        value: "true"
+      - key: SOSYAL_ENABLED
+        value: "true"
+      - key: INGILIZCE_ENABLED
+        value: "true"
+
       # Sentry
       - key: SENTRY_DSN
         sync: false
