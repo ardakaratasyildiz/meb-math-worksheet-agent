@@ -31,8 +31,19 @@
   Mondros (30 Ekim 1918), Amasya Genelgesi (22 Haziran 1919, gerçek maddeler),
   Tekalif-i Milliye (Kütahya-Eskişehir sonrası), Karadeniz Tahıl Girişimi (2022);
   kaynak_metin gerçek belge üretiyor. flag-gated.
-- KALAN (opsiyonel): gerçek few-shot, görsel/harita realia, parite, go-live.
-- SIRADA: **Türkçe** (son ders — en zor: pasaj + nesnellik).
+- ✅ **Türkçe TAMAM (2026-07-10, PRAGMATİK MODEL A):** üniteler = temalar (çıkarıldı;
+  ilkokul adlı, ortaokul "N. Tema"), kazanımlar = sınıf düzeyi çekirdek yetkinlikler
+  (okuma-anlama/sözcük/cümle/yazım/noktalama/metin — kısmen elle) + DYS dil bilgisi
+  (çıkarıldı). prompt (özgün pasaj + NESNELLİK + dil kuralı doğruluğu) + critic + plugin.
+  **Gerçek üretim: 8/8 doğru** — özgün tutarlı pasajlar, nesnel cevaplar, doğru dil
+  kuralları (belgisiz sıfat, edilgen çatı, mecaz, amaç-sonuç, deyim). flag-gated.
+
+## SONUÇ: 3 SÖZEL DERS + FEN TAMAM
+Matematik + Fen + **İngilizce + Sosyal + Türkçe** = **5 ders**, hepsi plugin-driven
+motorda, flag-gated (canlıda kapalı). Her biri gerçek HTTP üretimiyle doğrulandı,
+matematik regresyonsuz (62/62). Yeni ders eklemek = paket (uniform arayüz) + registry.
+KALAN (her ders, opsiyonel/sonraki): gerçek few-shot, görsel realia, parite
+karşılaştırması, frontend'de görünürlük (flag), kademeli go-live.
 
 ## 0. Ne HAZIR, ne YENİ
 
