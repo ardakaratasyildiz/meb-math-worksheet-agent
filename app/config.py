@@ -94,15 +94,14 @@ class Settings(BaseSettings):
     premium_tenant_ids: str = ""
 
     # Ders (subject) ekseni — çok-ders geçişi (docs/FEN_BILIMLERI_PLAN.md).
-    # fen_enabled: Fen Bilimleri üretimi/rotaları için KALİTE KAPISI feature-flag'i.
-    # Kapalı (False) iken subject=fen istekleri reddedilir; Fen içeriği matematik
-    # paritesine gelene kadar (Faz 6) canlıda açılmaz. Frontend tarafı ayrı bir
-    # NEXT_PUBLIC_FEN_ENABLED bayrağıyla gizlenir.
-    fen_enabled: bool = False
-    # Sözel dersler — her biri kendi kalite kapısı feature-flag'i (fen deseni).
-    turkce_enabled: bool = False
-    sosyal_enabled: bool = False
-    ingilizce_enabled: bool = False
+    # KALİTE KAPISI feature-flag'leri. Kalite paritesi doğrulandıktan sonra
+    # (2026-07-10 go-live) hepsi VARSAYILAN AÇIK: env ile (FEN_ENABLED=false vb.)
+    # istenirse tekrar kapatılabilir. Frontend tarafı NEXT_PUBLIC_ENABLED_SUBJECTS
+    # ile eşlenir (ikisi birlikte açık olmalı, yoksa üretim 403).
+    fen_enabled: bool = True
+    turkce_enabled: bool = True
+    sosyal_enabled: bool = True
+    ingilizce_enabled: bool = True
 
     @property
     def premium_tenant_id_set(self) -> set[str]:
