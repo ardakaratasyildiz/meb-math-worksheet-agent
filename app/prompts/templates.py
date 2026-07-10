@@ -253,7 +253,10 @@ def build_user_prompt(
     few_shot_source: str = "static",
     textbook_chunks: list[dict] | None = None,
     yeni_nesil: bool = False,
+    yeni_nesil_block: str | None = None,
 ) -> str:
+    # Ders-özel yeni nesil bloğu (default: matematik). Fen kendi bloğunu geçer.
+    _block = yeni_nesil_block or _YENI_NESIL_BLOCK
     parts = [
         f"Sınıf: {grade}. sınıf",
         f"Konu: {topic_name}",
@@ -261,7 +264,7 @@ def build_user_prompt(
         f"Zorluk: {difficulty.value}",
         f"Üretilecek Soru Sayısı: {question_count}",
         "",
-        _YENI_NESIL_BLOCK if yeni_nesil else None,
+        _block if yeni_nesil else None,
         "" if yeni_nesil else None,
         _format_distribution(distribution),
         _format_few_shot(few_shot_examples, difficulty, source=few_shot_source),

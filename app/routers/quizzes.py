@@ -18,6 +18,7 @@ from functools import lru_cache
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
+from app.config import settings
 from app.data.curriculum import get_topic
 from app.data.units import get_unit, resolve_legacy_topic
 from app.models.enums import Difficulty, QuestionType
@@ -85,8 +86,26 @@ def _split_buckets(total: int) -> dict[Difficulty, int]:
 def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
     """Çözülebilir mod üretim: seçili tipler + zorluk modu; derive+validate'den
     geçenler kalır. Dönüş: (geçerli sorular [1..n numaralı], görünen ad)."""
+    from app.models.enums import SubjectId
+    # ── Fen (subject=fen) — feature flag + fen ünitesi ────────────────────────
+    if req.subject == SubjectId.FEN:
+        if not settings.fen_enabled:
+            raise HTTPException(
+                status_code=403,
+                detail="Fen Bilimleri üretimi henüz yayında değil (kalite kapısı).",
+            )
+        from app.subjects.fen import get_unit as fen_get_unit
+        if not req.unit_id:
+            raise HTTPException(status_code=400, detail="Fen ünite bazlıdır: unit_id zorunlu.")
+        _fu = fen_get_unit(req.grade, req.unit_id)
+        if _fu is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"{req.grade}. sınıf Fen'de '{req.unit_id}' ünitesi bulunmuyor.",
+            )
+        display_name = _fu["name"]
     # Yeni seçim akışı: MEB ünite (tema). Şema unit_id XOR topic_id garantiler.
-    if req.unit_id:
+    elif req.unit_id:
         unit = get_unit(req.grade, req.unit_id)
         if unit is None:
             raise HTTPException(
@@ -122,6 +141,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
             tenant_id=req.tenant_id,
             allowed_types=allowed,
             unit_id=req.unit_id,
+            subject=req.subject,
         )
 
     raw: list[Question] = []

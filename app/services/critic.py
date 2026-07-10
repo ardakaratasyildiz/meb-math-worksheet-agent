@@ -64,6 +64,7 @@ class GeminiCritic:
         self,
         api_key: str | None = None,
         model: str | None = None,
+        system_prompt: str | None = None,
     ) -> None:
         key = api_key or settings.gemini_api_key
         if not key:
@@ -71,6 +72,9 @@ class GeminiCritic:
         self.client = genai.Client(api_key=key)
         # Critic için flash-lite yeterli; hız önemli, yaratıcılık değil.
         self.model = model or settings.critic_model
+        # Ders-özel doğrulayıcı prompt'u (default: matematik). Fen gibi dersler
+        # bilimsel-doğruluk odaklı kendi prompt'unu geçer (app/subjects/<ders>/critic.py).
+        self.system_prompt = system_prompt or CRITIC_SYSTEM_PROMPT
         # Son evaluate() çağrısının Gemini token kullanımı — maliyet ölçümü için
         # agent bunu toplam maliyete ekler (critic ayrı bir Gemini çağrısıdır).
         from app.services.llm_providers import TokenUsage
@@ -105,7 +109,7 @@ class GeminiCritic:
         )
 
         config = types.GenerateContentConfig(
-            system_instruction=CRITIC_SYSTEM_PROMPT,
+            system_instruction=self.system_prompt,
             temperature=0.1,  # deterministic, akıl yürütme değil denetim
             response_mime_type="application/json",
             response_schema=CriticBatch,

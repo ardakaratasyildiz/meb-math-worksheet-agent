@@ -1,6 +1,15 @@
 from enum import Enum
 
 
+class SubjectId(str, Enum):
+    """Ders (subject) ekseni. Varsayılan matematik; sistem tek-ders iken davranış
+    değişmez. Fen içeriği kalite kapısını (docs/FEN_BILIMLERI_PLAN.md Faz 6) geçene
+    kadar feature-flag arkasında (bkz. Settings.fen_enabled)."""
+
+    MATEMATIK = "matematik"
+    FEN = "fen"
+
+
 class Difficulty(str, Enum):
     KOLAY = "kolay"
     ORTA = "orta"
