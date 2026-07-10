@@ -1021,6 +1021,15 @@ class GeminiAgent:
                     raw.question_type.value, raw.question[:70],
                 )
                 continue
+            # Çoktan seçmeli ZORUNLU: A) B) C) D) şıkları soru metnine gömülü olmalı;
+            # aksi halde soru CEVAPLANAMAZ → ele (top-up doldurur). Tüm dersleri korur.
+            if raw.question_type == QuestionType.COKTAN_SECMELI and not all(
+                f"{opt})" in q_text for opt in ("A", "B", "C", "D")
+            ):
+                logger.info(
+                    "Şıksız çoktan seçmeli soru atıldı: %s", raw.question[:70]
+                )
+                continue
             kod = raw.kazanim_kod if raw.kazanim_kod in valid_kazanim_codes else fallback_kazanim
             dedup.add(raw.question)
             steps = raw.solution_steps

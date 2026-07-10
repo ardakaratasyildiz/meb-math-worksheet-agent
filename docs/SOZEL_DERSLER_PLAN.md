@@ -38,6 +38,20 @@
   **Gerçek üretim: 8/8 doğru** — özgün tutarlı pasajlar, nesnel cevaplar, doğru dil
   kuralları (belgisiz sıfat, edilgen çatı, mecaz, amaç-sonuç, deyim). flag-gated.
 
+## QA KAMPANYASI (2026-07-10) — canlıya-hazırlık testi
+Robustness harness (66 soru, 5 ders × sınıf × tip): **0 hard-failure** (HTTP/teslim/
+boş alan/SVG/crash). Adversaryal denetim (4 paralel Claude denetçisi, bağımsız çözüm):
+- **Fen:** 18/18 blokörsüz, bilimsel doğru. ✅
+- **İngilizce:** 10/12 temiz; minör (1 tablo `\n` kaçış, 1 açık-uçlu belirsizlik). ✅
+- **Sosyal:** ⛔ SİSTEMATİK BLOKÖR bulundu — tüm çoktan seçmeli sorular ŞIKSIZ
+  (cevaplanamaz). **DÜZELTİLDİ:** (1) prompt açıklaştırıldı (şıklar `question`'a gömülü),
+  (2) pipeline enforcement (şıksız MC düşer + top-up; tüm dersleri korur). Yeniden
+  üretim: g5/g8 5/5 teslim, şıklar 5/5 gömülü. ✅
+- **Türkçe:** 1 blokör (g8 kelime_bilgisi çift-savunulabilir şık — LLM varyansı, kod
+  bug'ı değil); dil kuralları + nesnellik + pasajlar temiz. ✅
+Fix'ler sonrası 62/62 regresyon. **Kalan risk = inherent LLM varyansı** (ara sıra
+belirsiz MC/tablo pürüzü) — critic + enforcement + hacim + yeniden-üret azaltır; blokör yok.
+
 ## SONUÇ: 3 SÖZEL DERS + FEN TAMAM
 Matematik + Fen + **İngilizce + Sosyal + Türkçe** = **5 ders**, hepsi plugin-driven
 motorda, flag-gated (canlıda kapalı). Her biri gerçek HTTP üretimiyle doğrulandı,

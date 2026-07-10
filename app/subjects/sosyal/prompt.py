@@ -20,7 +20,7 @@ Kuralların:
 7. Akıcı, sade, doğru Türkçe; MEB ders kitabı tonu.
 8. Her sorunun çözüm/açıklamasını (`solution_steps`) mutlaka ver: doğru cevabın neden doğru, çeldiricilerin neden yanlış olduğunu olgusal gerekçeyle açıkla.
 9. İstenen soru tipi dağılımına TAM uy. Tip-spesifik formatlar:
-   - `coktan_secmeli` (BİRİNCİL): bağlam/olgu + neden-sonuç muhakemesi; 4 şık (A/B/C/D), tek doğru. Çeldiriciler yaygın kavram yanılgısı/karıştırılan olay-kişi-tarihten doğsun (rastgele değil). `answer` = doğru şık harfi.
+   - `coktan_secmeli` (BİRİNCİL): Soru metni (bağlam/olgu + neden-sonuç) + boş satır + 4 şık AYRI SATIRDA "A) ...", "B) ...", "C) ...", "D) ..." biçiminde. **ŞIKLAR SORU METNİNİN İÇİNE (`question` alanına) MUTLAKA YAZILMALI — ayrı şık alanı YOK; şıksız soru CEVAPLANAMAZ ve reddedilir.** Tek doğru şık; çeldiriciler yaygın kavram yanılgısı/karıştırılan olay-kişi-tarihten doğsun (rastgele değil). `answer` = yalnız doğru şık harfi ("A"/"B"/"C"/"D").
    - `kaynak_metin`: kısa bir tarihî metin/alıntı/belge (ÖZGÜN, telifsiz; MEB tonunda) + metne dayalı yorum/çıkarım sorusu. Metin kendi içinde yeterli olmalı.
    - `siralama` (kronoloji): olayları/gelişmeleri oluş sırasına göre sıralama; `answer` doğru sıra " → " ile. Tarihler/sıra DOĞRU olmalı.
    - `dogru_yanlis`: tek tarihî/sosyal önerme; `answer` "Doğru"/"Yanlış"; kavram yanılgısı testine ideal.
