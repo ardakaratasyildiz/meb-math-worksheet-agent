@@ -147,6 +147,52 @@ function MarkdownQuestion({ text }: { text: string }) {
   );
 }
 
+// Çoktan seçmeli şıklar matematik-dışı derslerde `question` metnine GÖMÜLÜ gelir
+// ("... soru? A) x B) y C) z D) w"). Markdown tek satır sonunu boşluğa çevirdiği
+// için şıklar soruyla aynı satıra akıyordu. Kök metni şıklardan ayırıp her şıkkı
+// kendi satırında göstermek için böleriz. İşaretleyici: " A) " / " A. " (A–E).
+// (stripInlineOptions ile aynı desen; orada stem'e indirger, burada şıkları da tutar.)
+function splitInlineOptions(
+  text: string,
+): { stem: string; options: string[] } | null {
+  const re = /\s+[A-E]\s*[)\.]\s+/g;
+  const idxs: number[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    idxs.push(m.index + m[0].search(/[A-E]/)); // baştaki boşluğu atla → harf konumu
+  }
+  if (idxs.length < 2) return null; // en az iki şık → çoktan seçmeli say
+  const stem = text.slice(0, idxs[0]).trim();
+  if (!stem) return null;
+  const options: string[] = [];
+  for (let i = 0; i < idxs.length; i++) {
+    const to = i + 1 < idxs.length ? idxs[i + 1] : text.length;
+    options.push(text.slice(idxs[i], to).trim());
+  }
+  return { stem, options };
+}
+
+// Soru gövdesi — gömülü A) B) C) D) şıkları varsa ayrı satırlara böler; yoksa
+// metni olduğu gibi render eder. Tip'e göre DEĞİL, tespite göre (self-gating:
+// en az iki "X)" işaretçisi yoksa null döner) → çoktan seçmeli + okuma_pasaji,
+// kelime_bilgisi, dil_bilgisi, yazim_noktalama gibi tüm şıklı sözel tipleri kapsar.
+function QuestionBody({ q }: { q: Question }) {
+  const split = splitInlineOptions(q.question);
+  if (split) {
+    return (
+      <div className="space-y-1">
+        <MarkdownQuestion text={split.stem} />
+        <div className="space-y-0.5 pl-1">
+          {split.options.map((opt, i) => (
+            <MarkdownQuestion key={i} text={opt} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return <MarkdownQuestion text={q.question} />;
+}
+
 function isStepList(v: string | SolutionStep[]): v is SolutionStep[] {
   return Array.isArray(v);
 }
@@ -195,7 +241,7 @@ export function QuestionCard({
         ) : null}
       </div>
 
-      <MarkdownQuestion text={q.question} />
+      <QuestionBody q={q} />
 
       <Separator className="my-3" />
 
