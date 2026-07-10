@@ -155,11 +155,14 @@ function MarkdownQuestion({ text }: { text: string }) {
 function splitInlineOptions(
   text: string,
 ): { stem: string; options: string[] } | null {
-  const re = /\s+[A-E]\s*[)\.]\s+/g;
+  // Şık işaretçileri A)/A. (A-D). stripInlineOptions ile aynı sağlam desen:
+  // kelime-içi harfi saymaz, işaretçi çevresinde boşluk zorunlu değil.
+  const re = /(^|[^A-Za-z0-9])([A-D])[)\.]/g;
   const idxs: number[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
-    idxs.push(m.index + m[0].search(/[A-E]/)); // baştaki boşluğu atla → harf konumu
+    idxs.push(m.index + m[1].length); // şık harfinin konumu
+    if (m.index === re.lastIndex) re.lastIndex++;
   }
   if (idxs.length < 2) return null; // en az iki şık → çoktan seçmeli say
   const stem = text.slice(0, idxs[0]).trim();

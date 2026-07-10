@@ -101,16 +101,41 @@ def test_mcq_derive_and_validate() -> None:
     ok_b2, _ = validate_structured(bad2)
     check(not ok_b2, "tek şıklı MCQ reddedildi")
 
-    # LLM zaten doldurmuşsa derive üzerine yazmaz
+    # Şıklar metne gömülüyse METİN otoriter (LLM'in options/correct_index'i güvenilmez;
+    # sıra kayması / harf uyumsuzluğu yanlış puanlamaya yol açıyordu). Gösterilen sıra
+    # = metindeki sıra; index answer harfinden.
     pre = _q(
         QuestionType.COKTAN_SECMELI,
         question="A) 4 B) 5",
         answer="A",
         options=["dört", "beş"],
-        correct_index=0,
+        correct_index=1,
     )
     dpre = derive_structured_fields(pre)
-    check(dpre.options == ["dört", "beş"], "mevcut options korunur (LLM önceliği)")
+    check(dpre.options == ["4", "5"], f"metin şıkları otoriter: {dpre.options}")
+    check(dpre.correct_index == 0, f"cevap A → index 0 (LLM'in 1'i değil): {dpre.correct_index}")
+
+    # Bug B: cevap TAM şık metniyle ("B) goes") gelse de harf→index doğru.
+    q3 = _q(
+        QuestionType.COKTAN_SECMELI,
+        question="She ___ to school. A) go B) goes C) going D) is go",
+        answer="B) goes",
+    )
+    d3 = derive_structured_fields(q3)
+    check(d3.options == ["go", "goes", "going", "is go"], f"4 şık: {d3.options}")
+    check(d3.correct_index == 1, f"'B) goes' → index 1: {d3.correct_index}")
+
+    # Bug A: 5. şık (E) parser'da yutulur → tam 4 şık (A-D).
+    q4 = _q(
+        QuestionType.COKTAN_SECMELI,
+        question="Which? A) run B) runs C) running D) ran E) runned",
+        answer="B",
+    )
+    d4 = derive_structured_fields(q4)
+    check(
+        len(d4.options) == 4 and d4.options[3] == "ran",
+        f"E) yutuldu, 4 şık: {d4.options}",
+    )
 
 
 # ── Doğru/Yanlış ─────────────────────────────────────────────────────────────

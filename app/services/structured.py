@@ -35,14 +35,33 @@ SOLVABLE_TYPES: set[QuestionType] = {
 # Metindeki boşluk yer tutucuları: 2+ alt çizgi, "…"/"...", boş parantez/köşeli.
 _BLANK_RE = re.compile(r"_{2,}|…+|\.{3,}|\(\s*\)|\[\s*\]")
 
-# Şık işaretleyici: satır/metin içinde "A)" "A." "A-" "a)" biçimleri.
+# Şık işaretleyici: metin içinde "A)" "A." "a)" biçimleri. MEB ortaokul TÜM
+# derslerde 4 şık (A-D) → A-E DEĞİL A-D (5. şık üretilirse Bug: yanlış say/render).
+# `(?<![A-Za-z0-9])`: kelime-içi harfi (ör. "e-mail", "art") şık sanmamak için.
 _MCQ_OPTION_RE = re.compile(
-    r"([A-Ea-e])\s*[\)\.\-]\s*(.+?)(?=(?:[A-Ea-e]\s*[\)\.\-]\s)|$)",
+    # Şık HARFİ A-D (4 şık); sınır lookahead'i A-E → olası kaçak "E)" şıkkı D'nin
+    # metnine karışmaz (E) içeriği yutulur, ayrı şık olmaz). 4-şık'ı agent zorlar.
+    r"(?<![A-Za-z0-9])([A-Da-d])\s*[\)\.]\s*(.+?)"
+    r"(?=(?:(?<![A-Za-z0-9])[A-Ea-e]\s*[\)\.])|$)",
     flags=re.DOTALL,
 )
-# Cevap tek harfse (şık harfi) yakala: "A", "B)", "Cevap: D".
-_MCQ_ANSWER_LETTER_RE = re.compile(r"(?:cevap\s*[:\-]?\s*)?\b([A-Ea-e])\b\s*[\)\.]?\s*$",
-                                   flags=re.IGNORECASE)
+# Beşinci şık (E) tespiti — üretimde 4-şık zorunluluğunu denetlemek için (agent).
+_MCQ_FIFTH_OPTION_RE = re.compile(r"(?<![A-Za-z0-9])[Ee]\s*[\)\.]")
+
+
+def _answer_letter(answer: str) -> str | None:
+    """Cevaptan şık harfini (A-D) sağlamca çıkar: 'B', 'B)', 'B) art', 'B.',
+    'Cevap: C', ya da sonda '... doğru cevap D'. Bulamazsa None."""
+    a = (answer or "").strip()
+    if not a:
+        return None
+    # Baştan: "B", "B)", "B) art", "B.", "Cevap: C"
+    m = re.match(r"(?:cevap\s*[:\-]?\s*)?([A-Da-d])\s*(?:[\)\.\-:]|$|\s)", a, re.IGNORECASE)
+    if m:
+        return m.group(1).upper()
+    # Sondan: "... cevap B"
+    m = re.search(r"\b([A-Da-d])\b\s*[\)\.]?\s*$", a, re.IGNORECASE)
+    return m.group(1).upper() if m else None
 
 _TRUE_TOKENS = {"doğru", "dogru", "d", "true", "evet", "✓", "t"}
 _FALSE_TOKENS = {"yanlış", "yanlis", "y", "false", "hayır", "hayir", "✗", "x", "f"}
@@ -58,27 +77,32 @@ def count_blanks(text: str) -> int:
 # ── Fallback parser'lar ──────────────────────────────────────────────────────
 
 def _parse_mcq(question: str, answer: str) -> tuple[list[str] | None, int | None]:
-    """Çoktan seçmeli metninden şıkları + doğru indeksi çıkarmaya çalışır."""
+    """Çoktan seçmeli metninden şıkları (A-D sırasında) + doğru indeksi çıkarır.
+
+    Şıklar `question` metnine gömülü ("A) .. B) .. C) .. D) ..") ve GÖSTERİLEN
+    sıra budur → doğru indeks bu sıraya göre hesaplanır (grading index-tabanlı).
+    """
     pairs = _MCQ_OPTION_RE.findall(question or "")
     if len(pairs) < 2:
         return None, None
-    # Harf sırasına göre diz (A,B,C,D…), metni temizle.
+    # Harf sırasına göre diz (A,B,C,D), metni temizle.
     pairs_sorted = sorted(pairs, key=lambda p: p[0].upper())
     letters = [p[0].upper() for p in pairs_sorted]
     options = [re.sub(r"\s+", " ", p[1]).strip().rstrip(",;") for p in pairs_sorted]
 
     idx: int | None = None
-    ans = (answer or "").strip()
-    m = _MCQ_ANSWER_LETTER_RE.search(ans)
-    if m:
-        letter = m.group(1).upper()
-        if letter in letters:
-            idx = letters.index(letter)
+    # 1) Cevaptan şık harfi ("B", "B)", "B) art" → B) → indeks.
+    letter = _answer_letter(answer)
+    if letter and letter in letters:
+        idx = letters.index(letter)
+    # 2) Harf yoksa/uymuyorsa: cevap metni bir şıkla (harf öneki soyulmuş) eşleşiyor mu?
     if idx is None:
-        # Cevap metni bir şıkla birebir eşleşiyor mu?
-        ans_norm = re.sub(r"\s+", " ", ans).strip().lower()
+        ans_norm = re.sub(r"\s+", " ", (answer or "")).strip().lower()
+        # Cevabın başındaki şık önekini de soy ("b) art" → "art") ve karşılaştır.
+        ans_stripped = re.sub(r"^\s*[A-Da-d]\s*[\)\.\-:]\s*", "", ans_norm)
         for i, opt in enumerate(options):
-            if opt.lower() == ans_norm:
+            ol = opt.lower()
+            if ol == ans_norm or ol == ans_stripped:
                 idx = i
                 break
     return options, idx
@@ -129,12 +153,17 @@ def derive_structured_fields(q: Question) -> Question:
     t = q.question_type
     updates: dict[str, object] = {}
 
-    if t == QuestionType.COKTAN_SECMELI and (q.options is None or q.correct_index is None):
+    if t == QuestionType.COKTAN_SECMELI:
+        # Şıklar metne gömülü ve kullanıcıya GÖSTERİLEN sıra bu → metinden çıkarılan
+        # şıklar + indeks OTORİTER (LLM'in options/correct_index'i güvenilmez: sıra
+        # kayması / şık-harfi uyumsuzluğu Bug B'ye yol açıyordu). Metinden çıkarılamazsa
+        # (nadir) LLM alanlarına düş.
         options, idx = _parse_mcq(q.question, q.answer)
-        if q.options is None and options is not None:
+        if options is not None:
             updates["options"] = options
-        if q.correct_index is None and idx is not None:
-            updates["correct_index"] = idx
+            updates["correct_index"] = idx  # idx None ise validate_structured düşürür
+        elif q.options is None and q.correct_index is None:
+            pass  # ne metinden ne LLM'den şık var → validate karar verir
     elif t == QuestionType.DOGRU_YANLIS and q.correct_bool is None:
         b = _parse_bool(q.answer)
         if b is not None:
