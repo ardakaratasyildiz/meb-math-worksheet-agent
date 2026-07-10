@@ -3,8 +3,10 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 import { SolveForm } from "@/components/SolveForm";
+import { hasMultipleSubjects } from "@/lib/subjects";
 
 export default function CozYeniPage() {
+  const multi = hasMultipleSubjects();
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -17,8 +19,8 @@ export default function CozYeniPage() {
         </Link>
         <h1 className="text-2xl font-semibold tracking-tight">Yeni quiz</h1>
         <p className="text-sm text-muted-foreground">
-          Sınıf ve konu seç, çözülebilir bir quiz üret. Üretim bitince doğrudan
-          çözmeye başlarsın.
+          {multi ? "Ders, sınıf ve konu seç" : "Sınıf ve konu seç"}, çözülebilir
+          bir quiz üret. Üretim bitince doğrudan çözmeye başlarsın.
         </p>
       </div>
 

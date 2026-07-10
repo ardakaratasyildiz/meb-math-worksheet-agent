@@ -149,8 +149,18 @@ export interface WorksheetMetadata {
   trace: GenerationTrace | null;
 }
 
+// Ders (subject) ekseni — varsayılan matematik. Yeni dersler kalite kapısını
+// (NEXT_PUBLIC_ENABLED_SUBJECTS listesi, bkz. lib/subjects.ts) geçene kadar UI'da gizli.
+export type Subject =
+  | "matematik"
+  | "fen"
+  | "turkce"
+  | "sosyal"
+  | "ingilizce";
+
 export interface GenerateWorksheetRequest {
   grade: number;
+  subject?: Subject; // varsayılan matematik (backend default); fen flag arkasında
   unit_id?: string | null; // yeni MEB ünite akışı — unit_id veya topic_id zorunlu
   topic_id?: string | null;
   kazanim_kod?: string | null;
@@ -173,6 +183,7 @@ export interface GenerateWorksheetResponse {
 
 export interface CreateQuizRequest {
   grade: number;
+  subject?: Subject; // varsayılan matematik
   unit_id?: string | null; // yeni MEB ünite akışı — unit_id veya topic_id zorunlu
   topic_id?: string | null;
   kazanim_kod?: string | null;
@@ -444,6 +455,11 @@ export interface KazanimProgress {
   total: number;
   ratio: number;
   last_seen_at: string;
+  // Ders ekseni — backend kazanim_kod'dan çözer (subject_resolve). Eski yanıtlarda
+  // olmayabilir → opsiyonel; okuyan taraf matematik'e düşer.
+  subject?: Subject;
+  topic_name?: string;
+  grade?: number | null;
 }
 
 export interface ProgressSummary {

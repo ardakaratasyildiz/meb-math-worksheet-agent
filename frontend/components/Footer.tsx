@@ -2,7 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Check } from "lucide-react";
 
+import { hasMultipleSubjects } from "@/lib/subjects";
+
 export function Footer() {
+  const multi = hasMultipleSubjects();
   return (
     <footer className="border-t border-white/10 bg-[#241a36] text-zinc-100">
       <div className="container py-12">
@@ -16,8 +19,9 @@ export function Footer() {
               className="h-9 w-auto rounded-md [filter:hue-rotate(32deg)_saturate(1.3)]"
             />
             <p className="mt-4 max-w-xs text-sm opacity-70">
-              MEB matematik müfredatı kapsamında otomatik çalışma kağıdı üretim
-              sistemi. 1.→8. sınıf (LGS hazırlık dahil) kazanım kodu bazlı üretim.
+              {multi
+                ? "MEB müfredatı kapsamında otomatik çalışma kağıdı üretim sistemi — Matematik, Fen, Türkçe, Sosyal ve İngilizce. 1.→8. sınıf (LGS hazırlık dahil) kazanım kodu bazlı üretim."
+                : "MEB matematik müfredatı kapsamında otomatik çalışma kağıdı üretim sistemi. 1.→8. sınıf (LGS hazırlık dahil) kazanım kodu bazlı üretim."}
             </p>
           </div>
           <FooterColumn

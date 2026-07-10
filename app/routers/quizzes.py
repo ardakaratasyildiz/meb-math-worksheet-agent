@@ -85,8 +85,29 @@ def _split_buckets(total: int) -> dict[Difficulty, int]:
 def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
     """Çözülebilir mod üretim: seçili tipler + zorluk modu; derive+validate'den
     geçenler kalır. Dönüş: (geçerli sorular [1..n numaralı], görünen ad)."""
+    from app.models.enums import SubjectId
+    from app.subjects import get_content_module, subject_enabled
+    # ── Non-math ders (fen/ingilizce/…) — feature flag + ünite ────────────────
+    if req.subject != SubjectId.MATEMATIK:
+        if not subject_enabled(req.subject):
+            raise HTTPException(
+                status_code=403,
+                detail=f"'{req.subject.value}' dersi henüz yayında değil (kalite kapısı).",
+            )
+        content = get_content_module(req.subject)
+        if content is None:
+            raise HTTPException(status_code=400, detail=f"Desteklenmeyen ders: {req.subject.value}")
+        if not req.unit_id:
+            raise HTTPException(status_code=400, detail=f"'{req.subject.value}' ünite bazlıdır: unit_id zorunlu.")
+        _u = content.get_unit(req.grade, req.unit_id)
+        if _u is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"{req.grade}. sınıf '{req.subject.value}'de '{req.unit_id}' ünitesi bulunmuyor.",
+            )
+        display_name = _u["name"]
     # Yeni seçim akışı: MEB ünite (tema). Şema unit_id XOR topic_id garantiler.
-    if req.unit_id:
+    elif req.unit_id:
         unit = get_unit(req.grade, req.unit_id)
         if unit is None:
             raise HTTPException(
@@ -122,6 +143,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
             tenant_id=req.tenant_id,
             allowed_types=allowed,
             unit_id=req.unit_id,
+            subject=req.subject,
         )
 
     raw: list[Question] = []

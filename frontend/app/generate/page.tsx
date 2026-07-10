@@ -1,5 +1,7 @@
 import { GenerateForm } from "@/components/GenerateForm";
 import { QuestionPreview } from "@/components/QuestionPreview";
+import { isSubjectEnabled } from "@/lib/subjects";
+import type { Subject } from "@/lib/types";
 
 export const metadata = {
   title: "Çalışma Kağıdı Üretimi · Soru Atölyesi",
@@ -26,6 +28,13 @@ export default async function GeneratePage({
   // ayrı bir işte ünite-bazlı yenilenecek; o zamana dek grade+kazanım taşınır.)
   const initialUnitId = typeof sp.unit === "string" ? sp.unit : undefined;
   const initialKazanim = typeof sp.kazanim === "string" ? sp.kazanim : undefined;
+  // Ders deep-link: /generate?subject=<slug>. Yalnız FLAG'İ AÇIK matematik-dışı ders
+  // kabul edilir; kapalı/geçersiz → undefined (form matematik'e düşer, GenerateForm guard'ı).
+  const spSubject = typeof sp.subject === "string" ? sp.subject.toLowerCase() : "";
+  const initialSubject: Subject | undefined =
+    spSubject && spSubject !== "matematik" && isSubjectEnabled(spSubject as Subject)
+      ? (spSubject as Subject)
+      : undefined;
 
   return (
     <div className="container space-y-6 py-8">
@@ -46,6 +55,7 @@ export default async function GeneratePage({
           initialGrade={initialGrade}
           initialUnitId={initialUnitId}
           initialKazanim={initialKazanim}
+          initialSubject={initialSubject}
         />
       </div>
 

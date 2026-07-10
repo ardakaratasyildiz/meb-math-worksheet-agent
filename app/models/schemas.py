@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from app.models.enums import Difficulty, EducationLevel, QuestionType
+from app.models.enums import Difficulty, EducationLevel, QuestionType, SubjectId
 
 
 DifficultyMode = Literal["single", "mixed", "progressive"]
@@ -106,6 +106,12 @@ class UnitKazanimlarResponse(BaseModel):
 
 class GenerateWorksheetRequest(BaseModel):
     grade: int = Field(..., ge=1, le=8, description="Sınıf (1-8)")
+    subject: SubjectId = Field(
+        SubjectId.MATEMATIK,
+        description="Ders. Varsayılan matematik (geriye dönük uyum: eski istemciler "
+        "bu alanı göndermez → matematik). Fen kalite kapısını geçene kadar "
+        "fen üretimi feature-flag'e tabidir (Settings.fen_enabled).",
+    )
     unit_id: str | None = Field(
         None,
         description="MEB TYMM ünite (tema) kimliği (units.py). Yeni seçim akışı bunu "
@@ -229,6 +235,10 @@ class RegenerateQuestionRequest(BaseModel):
     Yeni soru aynı kazanım + aynı tip + worksheet zorluğunda üretilir.
     """
     grade: int = Field(..., ge=1, le=12)
+    subject: SubjectId = Field(
+        SubjectId.MATEMATIK,
+        description="Ders. Varsayılan matematik (geriye dönük uyum).",
+    )
     kazanim_kod: str = Field(..., min_length=1)
     difficulty: Difficulty = Difficulty.ORTA
     question_type: QuestionType
@@ -457,6 +467,11 @@ class KazanimProgress(BaseModel):
     total: int
     ratio: float  # correct / total (0.0–1.0)
     last_seen_at: str
+    # Ders ekseni — kazanim_kod'dan çözülür (subject_resolve). Varsayılanlar geriye
+    # uyumlu: subject alanı olmayan eski istemci/testlerde matematik gibi davranır.
+    subject: str = "matematik"
+    topic_name: str = ""  # okunur konu/ünite adı (kod yerine kullanıcıya gösterilir)
+    grade: int | None = None
 
 
 class ProgressSummary(BaseModel):
@@ -516,6 +531,10 @@ class CreateQuizRequest(BaseModel):
     """
 
     grade: int = Field(..., ge=1, le=8)
+    subject: SubjectId = Field(
+        SubjectId.MATEMATIK,
+        description="Ders. Varsayılan matematik (geriye dönük uyum).",
+    )
     unit_id: str | None = Field(
         None, description="MEB TYMM ünite (tema) kimliği. unit_id veya topic_id zorunlu."
     )

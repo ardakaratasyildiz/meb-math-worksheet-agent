@@ -23,15 +23,20 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/JsonLd";
 import { SectionHeader } from "@/components/PageHeader";
+import { SubjectShowroom } from "@/components/SubjectShowroom";
+import { hasMultipleSubjects } from "@/lib/subjects";
 import sampleData from "@/lib/sample-questions.json";
 
 export default function LandingPage() {
+  // Çok-ders açıksa (flag) ders-bazlı sekmeli vitrin; değilse mevcut math-only
+  // Showroom. Flag kapalıyken (bugünkü canlı) ana sayfa birebir eskisi gibi kalır.
+  const multi = hasMultipleSubjects();
   return (
     <>
       <JsonLd id="org-schema" data={organizationSchema()} />
       <JsonLd id="website-schema" data={websiteSchema()} />
       <Hero />
-      <Showroom />
+      {multi ? <SubjectShowroom /> : <Showroom />}
       <SolveAndGrow />
       <ClassroomCta />
       <SystemSummary />
@@ -86,6 +91,7 @@ function ClassroomCta() {
 // ─── HERO ────────────────────────────────────────────────────────────────────
 
 function Hero() {
+  const multi = hasMultipleSubjects();
   return (
     <section className="relative overflow-hidden">
       <div
@@ -115,10 +121,12 @@ function Hero() {
             className="border-primary/30 bg-accent text-accent-foreground"
           >
             <Sparkles className="mr-1.5 h-3 w-3" />
-            1.→8. sınıf · LGS hazırlık · MEB matematik müfredatı
+            {multi
+              ? "1.→8. sınıf · LGS hazırlık · MEB müfredatı"
+              : "1.→8. sınıf · LGS hazırlık · MEB matematik müfredatı"}
           </Badge>
           <h1 className="mt-6 max-w-2xl text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            Matematik çalışma kağıtlarını{" "}
+            {multi ? "Çalışma kağıtlarını" : "Matematik çalışma kağıtlarını"}{" "}
             <span className="bg-gradient-to-r from-primary to-coral bg-clip-text text-transparent">
               saniyeler içinde
             </span>{" "}
@@ -409,6 +417,7 @@ function Showroom() {
 // ─── SYSTEM SUMMARY ──────────────────────────────────────────────────────────
 
 function SystemSummary() {
+  const multi = hasMultipleSubjects();
   return (
     <section className="py-20">
       <div className="container max-w-4xl">
@@ -420,13 +429,15 @@ function SystemSummary() {
             Öğretmenler ve veliler için MEB uyumlu çalışma kağıdı hazırlayıcı
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            1.→8. sınıf MEB matematik müfredatına (8. sınıfta LGS hazırlık dahil)
+            {multi
+              ? "1.→8. sınıf MEB müfredatına (Matematik, Fen Bilimleri, Türkçe, Sosyal Bilgiler ve İngilizce; 8. sınıfta LGS hazırlık dahil) "
+              : "1.→8. sınıf MEB matematik müfredatına (8. sınıfta LGS hazırlık dahil) "}
             uygun çalışma kağıtlarını dakikalar değil saniyeler içinde hazırlar. Üretilen her soru sana
             gösterilmeden önce <strong>iki kez kontrol edilir</strong>: önce
-            matematiği doğru mu, sonra seçtiğin konuya/kazanıma uyuyor mu. Yanlış
-            veya konu dışı sorular otomatik elenir — yani elindeki PDF&apos;e
-            güvenebilirsin. Çıktı baskıya hazır: sorular, cevap anahtarı ve adım
-            adım çözüm.
+            {multi ? " içeriği doğru mu" : " matematiği doğru mu"}, sonra seçtiğin
+            konuya/kazanıma uyuyor mu. Yanlış veya konu dışı sorular otomatik
+            elenir — yani elindeki PDF&apos;e güvenebilirsin. Çıktı baskıya hazır:
+            sorular, cevap anahtarı ve adım adım çözüm.
           </p>
         </div>
       </div>
@@ -597,16 +608,21 @@ function UseCases() {
 
 // ─── FEATURES ────────────────────────────────────────────────────────────────
 
-const FEATURES = [
+function getFeatures(multi: boolean) {
+  return [
   {
     icon: <BookOpen className="h-5 w-5" />,
     title: "Kazanım kodu bazlı üretim",
-    body: "1.→8. sınıf MEB matematik kazanımları (8. sınıf LGS hazırlık dahil); her sorunun yanında ilgili kazanım kodu görünür.",
+    body: multi
+      ? "1.→8. sınıf MEB kazanımları — Matematik, Fen, Türkçe, Sosyal ve İngilizce (8. sınıf LGS hazırlık dahil); her sorunun yanında ilgili kazanım kodu görünür."
+      : "1.→8. sınıf MEB matematik kazanımları (8. sınıf LGS hazırlık dahil); her sorunun yanında ilgili kazanım kodu görünür.",
   },
   {
     icon: <ShieldCheck className="h-5 w-5" />,
     title: "İki aşamalı denetim",
-    body: "Sembolik aritmetik denetim ve kazanım uyumu denetimi. Denetim geçmeyen sorular yeniden üretilir.",
+    body: multi
+      ? "İçerik doğruluğu denetimi (matematikte sembolik aritmetik) ve kazanım uyumu denetimi. Denetim geçmeyen sorular yeniden üretilir."
+      : "Sembolik aritmetik denetim ve kazanım uyumu denetimi. Denetim geçmeyen sorular yeniden üretilir.",
   },
   {
     icon: <FileCheck className="h-5 w-5" />,
@@ -621,16 +637,21 @@ const FEATURES = [
   {
     icon: <Hash className="h-5 w-5" />,
     title: "İzlenebilir kazanım kodları",
-    body: "Her çıktıda M.X.Y.Z formatında kazanım kodu açıkça görünür — sınıf bazlı takip yapılabilir.",
+    body: multi
+      ? "Her çıktıda MEB kazanım kodu (örn. M.8.2.1, F.6.1.2) açıkça görünür — sınıf ve ders bazlı takip yapılabilir."
+      : "Her çıktıda M.X.Y.Z formatında kazanım kodu açıkça görünür — sınıf bazlı takip yapılabilir.",
   },
   {
     icon: <Zap className="h-5 w-5" />,
     title: "Önbellek destekli yeniden indirme",
     body: "Aynı parametrelerle yapılan tekrar talepler önbellekten döner ve aylık kotadan düşmez.",
   },
-];
+  ];
+}
 
 function Features() {
+  const multi = hasMultipleSubjects();
+  const FEATURES = getFeatures(multi);
   return (
     <section id="features" className="bg-card py-20">
       <div className="container">
@@ -715,10 +736,13 @@ function PricingTeaser() {
 
 // ─── FAQ ─────────────────────────────────────────────────────────────────────
 
-const FAQS = [
+function getFaqs(multi: boolean) {
+  return [
   {
-    q: "Hangi sınıflar destekleniyor?",
-    a: "1.→8. sınıf MEB matematik müfredatının tamamı desteklenmektedir. 8. sınıf, LGS hazırlık kapsamını da içerir — gerçek çıkmış LGS soruları örnek havuzunda kullanılır.",
+    q: multi ? "Hangi dersler ve sınıflar destekleniyor?" : "Hangi sınıflar destekleniyor?",
+    a: multi
+      ? "1.→8. sınıf için Matematik, Fen Bilimleri, Türkçe, Sosyal Bilgiler ve İngilizce derslerinin MEB müfredatı desteklenmektedir (her dersin sınıf aralığı farklıdır). 8. sınıf, LGS hazırlık kapsamını da içerir."
+      : "1.→8. sınıf MEB matematik müfredatının tamamı desteklenmektedir. 8. sınıf, LGS hazırlık kapsamını da içerir — gerçek çıkmış LGS soruları örnek havuzunda kullanılır.",
   },
   {
     q: "Sistem MEB kazanımına nasıl uyuyor?",
@@ -728,9 +752,11 @@ const FAQS = [
     q: "Aynı parametrelerle tekrar üretim aynı soruları mı getiriyor?",
     a: "Hayır. Anlamsal benzerlik denetimi devreye girer; önceki sorulara cosine benzerliği yüksek olanlar üretim havuzundan elenir.",
   },
-];
+  ];
+}
 
 function Faq() {
+  const FAQS = getFaqs(hasMultipleSubjects());
   return (
     <section id="faq" className="bg-card py-20">
       <div className="container max-w-3xl">

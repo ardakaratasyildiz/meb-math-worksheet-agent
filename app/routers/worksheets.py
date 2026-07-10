@@ -41,6 +41,39 @@ def _agent_for_model(model: str) -> GeminiAgent:
 
 
 def _validate_request(req: GenerateWorksheetRequest) -> None:
+    from app.models.enums import SubjectId
+    from app.subjects import get_content_module, subject_enabled
+    # ── Non-math ders (fen/ingilizce/…) — feature flag + ünite bazlı müfredat ──
+    if req.subject != SubjectId.MATEMATIK:
+        if not subject_enabled(req.subject):
+            raise HTTPException(
+                status_code=403,
+                detail=f"'{req.subject.value}' dersi henüz yayında değil (kalite kapısı).",
+            )
+        content = get_content_module(req.subject)
+        if content is None:
+            raise HTTPException(
+                status_code=400, detail=f"Desteklenmeyen ders: {req.subject.value}"
+            )
+        if not req.unit_id:
+            raise HTTPException(
+                status_code=400,
+                detail=f"'{req.subject.value}' üretimi ünite bazlıdır: unit_id zorunlu.",
+            )
+        unit = content.get_unit(req.grade, req.unit_id)
+        if unit is None:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{req.grade}. sınıf '{req.subject.value}'de '{req.unit_id}' ünitesi bulunmuyor.",
+            )
+        if req.kazanim_kod is not None and not any(
+            k["kod"] == req.kazanim_kod for k in unit["kazanimlar"]
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail=f"'{req.kazanim_kod}' kodu '{req.unit_id}' ünitesinde bulunamadı.",
+            )
+        return
     # Yeni seçim akışı: MEB ünite (tema). Şema unit_id XOR topic_id garantiler.
     if req.unit_id:
         unit = get_unit(req.grade, req.unit_id)
@@ -141,9 +174,15 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
     """
     from app.models.enums import Difficulty as _Diff
     from app.services.entitlements import wants_yeni_nesil
+    from app.models.enums import SubjectId
+    from app.subjects import get_content_module
     _validate_request(req)
-    # Görünen ad: ünite akışında tema adı, eski akışta konu adı (başlık/geçmiş/defter).
-    if req.unit_id:
+    # Görünen ad: ders/akışa göre tema/konu adı (başlık/geçmiş/defter).
+    if req.subject != SubjectId.MATEMATIK:
+        _u = get_content_module(req.subject).get_unit(req.grade, req.unit_id)
+        assert _u is not None  # _validate_request doğruladı
+        display_name = _u["name"]
+    elif req.unit_id:
         _unit = get_unit(req.grade, req.unit_id)
         assert _unit is not None
         display_name = _unit["name"]
@@ -171,6 +210,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             allowed_types=req.question_types,
             yeni_nesil=_yeni_nesil,
             unit_id=req.unit_id,
+            subject=req.subject,
         )
 
     if req.difficulty_mode == "single":
@@ -213,6 +253,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
                     allowed_types=req.question_types,
                     yeni_nesil=_yeni_nesil,
                     unit_id=req.unit_id,
+                    subject=req.subject,
                 )
                 return diff, qs, local_agent.build_last_trace(), None
             except Exception as exc:  # noqa: BLE001
@@ -531,18 +572,40 @@ def regenerate_question(
     değiştirebilir. LLM çağrısı yapar → rate limit + auth uygulanır. Yeni soru
     tenant geçmişine göre dedup'lanır (mevcut sorulardan farklı gelir).
     """
-    # Önce eski müfredat (M.*); bulunamazsa yeni MEB ünitesi (MAT.*) → unit yolu.
-    topic_id = _resolve_topic_id(req.grade, req.kazanim_kod)
+    from app.models.enums import SubjectId
+    from app.subjects import get_content_module, subject_enabled
+    topic_id: str | None = None
     unit_id: str | None = None
-    if topic_id is None:
-        found = find_unit_by_kazanim(req.kazanim_kod)
+    if req.subject != SubjectId.MATEMATIK:
+        if not subject_enabled(req.subject):
+            raise HTTPException(
+                status_code=403,
+                detail=f"'{req.subject.value}' dersi henüz yayında değil (kalite kapısı).",
+            )
+        content = get_content_module(req.subject)
+        if content is None:
+            raise HTTPException(
+                status_code=400, detail=f"Desteklenmeyen ders: {req.subject.value}"
+            )
+        found = content.find_unit_by_kazanim(req.kazanim_kod)
         if found is None:
             raise HTTPException(
                 status_code=400,
-                detail=f"'{req.kazanim_kod}' kodu {req.grade}. sınıf müfredatında bulunamadı.",
+                detail=f"'{req.kazanim_kod}' kodu '{req.subject.value}' müfredatında bulunamadı.",
             )
-        _, unit = found
-        unit_id = unit["unit_id"]
+        unit_id = found[1]["unit_id"]
+    else:
+        # Önce eski müfredat (M.*); bulunamazsa yeni MEB ünitesi (MAT.*) → unit yolu.
+        topic_id = _resolve_topic_id(req.grade, req.kazanim_kod)
+        if topic_id is None:
+            found = find_unit_by_kazanim(req.kazanim_kod)
+            if found is None:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"'{req.kazanim_kod}' kodu {req.grade}. sınıf müfredatında bulunamadı.",
+                )
+            _, unit = found
+            unit_id = unit["unit_id"]
     agent = _agent_for_model(model_for_grade(req.grade))
     try:
         questions = agent.generate(
@@ -554,6 +617,7 @@ def regenerate_question(
             tenant_id=req.tenant_id,
             allowed_types=[req.question_type],
             unit_id=unit_id,
+            subject=req.subject,
         )
     except AgentError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc

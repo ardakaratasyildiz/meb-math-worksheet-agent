@@ -109,8 +109,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 // ---- Curriculum ---------------------------------------------------------
 
-export async function listGrades(): Promise<GradeInfo[]> {
-  const r = await request<{ grades: GradeInfo[] }>("/api/curriculum/grades");
+// Ders (subject) query'si — matematik varsayılanda parametre eklenmez (geriye uyum).
+function subjectQuery(subject?: string): string {
+  return subject && subject !== "matematik" ? `?subject=${subject}` : "";
+}
+
+export async function listGrades(subject?: string): Promise<GradeInfo[]> {
+  const r = await request<{ grades: GradeInfo[] }>(
+    `/api/curriculum/grades${subjectQuery(subject)}`,
+  );
   return r.grades;
 }
 
@@ -133,9 +140,12 @@ export async function listKazanimlar(
 
 // ---- MEB TYMM ünite (tema) akışı ----------------------------------------
 
-export async function listUnits(grade: number): Promise<UnitInfo[]> {
+export async function listUnits(
+  grade: number,
+  subject?: string,
+): Promise<UnitInfo[]> {
   const r = await request<{ units: UnitInfo[] }>(
-    `/api/curriculum/grades/${grade}/units`,
+    `/api/curriculum/grades/${grade}/units${subjectQuery(subject)}`,
   );
   return r.units;
 }
@@ -143,9 +153,10 @@ export async function listUnits(grade: number): Promise<UnitInfo[]> {
 export async function listKazanimlarByUnit(
   grade: number,
   unitId: string,
+  subject?: string,
 ): Promise<KazanimInfo[]> {
   const r = await request<{ kazanimlar: KazanimInfo[] }>(
-    `/api/curriculum/grades/${grade}/units/${unitId}/kazanimlar`,
+    `/api/curriculum/grades/${grade}/units/${unitId}/kazanimlar${subjectQuery(subject)}`,
   );
   return r.kazanimlar;
 }

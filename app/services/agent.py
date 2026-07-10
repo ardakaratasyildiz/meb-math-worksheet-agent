@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from app.config import settings
 from app.data.curriculum import Kazanim, get_topic
 from app.data.units import get_unit, resolve_legacy_topic
-from app.models.enums import Difficulty, QuestionType
+from app.models.enums import Difficulty, QuestionType, SubjectId
 from app.models.schemas import Question, SolutionStep, repair_latex_control_chars
 from app.prompts.templates import (
     SYSTEM_PROMPT,
@@ -37,6 +37,7 @@ from app.services.math_verifier import verify_batch as verify_math_batch
 from app.services.history import DEFAULT_TENANT, GENERATION_HISTORY, HistoryKey
 from app.services.retriever import ExampleRetriever, get_retriever
 from app.services.svg_utils import process_chart_directives
+from app.subjects import get_content_module
 
 logger = logging.getLogger(__name__)
 
@@ -317,7 +318,8 @@ class GeminiAgent:
             except ProviderError as exc:
                 logger.warning("Anthropic fallback başlatılamadı: %s", exc)
         self._embedder: GeminiEmbedder | None = None
-        self._critic: GeminiCritic | None = None
+        # Critic subject başına cache'lenir (her dersin kendi doğrulayıcı prompt'u var).
+        self._critics: dict[SubjectId, GeminiCritic] = {}
 
     def _get_embedder(self) -> GeminiEmbedder | None:
         """Lazy init. Embedding API erişilemezse None döner — semantic dedup atlanır."""
@@ -330,12 +332,22 @@ class GeminiAgent:
             logger.warning("Embedder başlatılamadı, semantic dedup devre dışı: %s", exc)
             return None
 
-    def _get_critic(self) -> GeminiCritic | None:
-        if self._critic is not None:
-            return self._critic
+    def _get_critic(
+        self, subject: SubjectId = SubjectId.MATEMATIK
+    ) -> GeminiCritic | None:
+        cached = self._critics.get(subject)
+        if cached is not None:
+            return cached
+        # Ders-özel critic prompt'u; non-math dersler kendi CRITIC_SYSTEM_PROMPT'unu kullanır.
+        sys_prompt: str | None = None
+        if subject != SubjectId.MATEMATIK:
+            content = get_content_module(subject)
+            if content is not None:
+                sys_prompt = content.CRITIC_SYSTEM_PROMPT
         try:
-            self._critic = GeminiCritic()
-            return self._critic
+            critic = GeminiCritic(system_prompt=sys_prompt)
+            self._critics[subject] = critic
+            return critic
         except CriticError as exc:
             logger.warning("Critic başlatılamadı, doğrulama devre dışı: %s", exc)
             return None
@@ -355,6 +367,7 @@ class GeminiAgent:
         allowed_types: list[QuestionType] | None = None,
         yeni_nesil: bool = False,
         unit_id: str | None = None,
+        subject: SubjectId = SubjectId.MATEMATIK,
     ) -> list[Question]:
         # Seed jitter: aynı parametrelerle yapılan art arda çağrılar farklı sonuç versin.
         if seed is None:
@@ -365,10 +378,31 @@ class GeminiAgent:
             jitter = rng.uniform(-TEMPERATURE_JITTER, TEMPERATURE_JITTER)
             temperature = _clamp_temp(base_temp + jitter)
 
-        # Seçim akışı: yeni MEB ünite (unit_id) veya eski konu (topic_id).
+        # ── Ders (subject) çözümü — plugin-driven ──────────────────────────────
+        # Matematik (default) yolu birebir korunur. Non-math dersler (fen, ingilizce,
+        # …) içerik modülünü (get_content_module) getirir: system_prompt / yeni_nesil
+        # bloğu / critic / few-shot / curriculum / DEFAULT_TYPES. RAG + textbook +
+        # math_verifier YALNIZ matematikte (Chroma'da yok, SymPy math'e özel).
+        is_math = subject == SubjectId.MATEMATIK
+        content = None if is_math else get_content_module(subject)
+        if not is_math and content is None:
+            raise AgentError(f"Bilinmeyen/desteklenmeyen ders: {subject}")
+        SUBJ_SYSTEM_PROMPT = SYSTEM_PROMPT if is_math else content.SYSTEM_PROMPT
+        SUBJ_YN_BLOCK = None if is_math else content.YENI_NESIL_BLOCK
+
+        # Seçim akışı: non-math (ünite) / yeni MEB ünite (unit_id) / eski konu (topic_id).
         # Köprü: ünite yolunda RAG/tip-dağılımı için legacy topic türetilir; cache/history
-        # namespace'i selection_key (unit_id) ile ayrılır → farklı üniteler karışmaz.
-        if unit_id:
+        # namespace'i selection_key ile ayrılır → farklı üniteler/dersler karışmaz.
+        if not is_math:
+            try:
+                kazanimlar, display_name = content.select_kazanimlar(
+                    grade, unit_id, kazanim_kod
+                )
+            except ValueError as exc:
+                raise AgentError(str(exc)) from exc
+            dist_topic = None  # non-math'te topic-bazlı görsel dağıtım yok
+            selection_key = f"{subject.value}:{unit_id}"
+        elif unit_id:
             kazanimlar = _select_kazanimlar_by_unit(grade, unit_id, kazanim_kod)
             unit = get_unit(grade, unit_id)
             assert unit is not None  # _select_kazanimlar_by_unit doğruladı
@@ -387,6 +421,10 @@ class GeminiAgent:
         allowed_set: set[QuestionType] | None = (
             set(allowed_types) if allowed_types else None
         )
+        # Non-math: kullanıcı tip seçmediyse dersin varsayılan tipleri (math'e özgü
+        # islem/salt_islem hariç). DEFAULT_TYPES ders içerik modülünden gelir.
+        if not is_math and allowed_set is None:
+            allowed_set = set(content.DEFAULT_TYPES)
         # Over-generation (latency): ilk batch'i hedeften fazla iste ki math/critic
         # elemeleri seri top-up turu açmadan absorbe edilsin. Eleme oranı ~%41
         # üretimde >0; overshoot bunları tek çağrıda karşılar. question_count
@@ -462,19 +500,26 @@ class GeminiAgent:
                 logger.info("Üretim cache hit — LLM çağrısı atlandı (%d soru).", len(cached))
                 return cached
 
-        few_shot, few_shot_source = _collect_few_shot(
-            grade,
-            dist_topic,
-            kazanimlar,
-            distribution,
-            target_difficulty=difficulty.value,
-            max_total=6,
-            rng=rng,
-        )
+        if not is_math:
+            # Non-math: RAG yok (Chroma'da ders dökümanı yok) → gerçek MEB/LGS few-shot.
+            few_shot = content.collect_few_shot(
+                grade, kazanimlar, difficulty.value, 6, rng
+            )
+            few_shot_source = "static"
+        else:
+            few_shot, few_shot_source = _collect_few_shot(
+                grade,
+                dist_topic,
+                kazanimlar,
+                distribution,
+                target_difficulty=difficulty.value,
+                max_total=6,
+                rng=rng,
+            )
         self._last_few_shot_source = few_shot_source
         self._last_few_shot_count = len(few_shot)
         textbook_chunks: list[dict] = []
-        if include_textbook:
+        if include_textbook and is_math:
             textbook_chunks = _collect_textbook_context(
                 grade=grade,
                 topic_id=dist_topic,
@@ -523,6 +568,7 @@ class GeminiAgent:
             few_shot_source=few_shot_source,
             textbook_chunks=textbook_chunks,
             yeni_nesil=yeni_nesil,
+            yeni_nesil_block=SUBJ_YN_BLOCK,
         )
 
         dedup = BatchDeduplicator()
@@ -552,7 +598,7 @@ class GeminiAgent:
         # İlk üretim — provider chain (Gemini → Anthropic) ile.
         try:
             result = call_with_chain(
-                system=SYSTEM_PROMPT,
+                system=SUBJ_SYSTEM_PROMPT,
                 prompt=user_prompt,
                 schema=GeneratedBatch,
                 temperature=temperature,
@@ -619,7 +665,7 @@ class GeminiAgent:
             )
             try:
                 result2 = call_with_chain(
-                    system=SYSTEM_PROMPT,
+                    system=SUBJ_SYSTEM_PROMPT,
                     prompt=retry_prompt,
                     schema=GeneratedBatch,
                     temperature=retry_temperature,
@@ -661,8 +707,10 @@ class GeminiAgent:
 
         # Deterministic math verifier: SymPy ile aritmetik doğrulama.
         # Critic'ten ÖNCE çalışır — ucuz, hızlı, yanılma payı yok.
+        # Non-math'te SymPy math_verifier ATLANIR (aritmetik doğrulama math'e özel;
+        # sözel/fen soruları verifiable değil → no-op olurdu, netlik için atlanır).
         math_rejected = 0
-        if settings.enable_math_verifier and questions:
+        if settings.enable_math_verifier and questions and is_math:
             verdicts = verify_math_batch(questions)
             drop_indices: set[int] = set()
             for v in verdicts:
@@ -758,7 +806,7 @@ class GeminiAgent:
             )
             try:
                 result_pf = call_with_chain(
-                    system=SYSTEM_PROMPT,
+                    system=SUBJ_SYSTEM_PROMPT,
                     prompt=retry_prompt,
                     schema=GeneratedBatch,
                     temperature=retry_temperature,
@@ -789,8 +837,8 @@ class GeminiAgent:
                 post_filter_rounds += 1
                 continue
 
-            # Yeni gelenleri math verifier'dan geçir.
-            if settings.enable_math_verifier:
+            # Yeni gelenleri math verifier'dan geçir (yalnız matematik).
+            if settings.enable_math_verifier and is_math:
                 verdicts_v = verify_math_batch(new_questions)
                 drop_v = {
                     v.question_index for v in verdicts_v
@@ -804,7 +852,7 @@ class GeminiAgent:
 
             # Critic'ten geçir.
             if settings.enable_critic and new_questions:
-                critic = self._get_critic()
+                critic = self._get_critic(subject)
                 if critic is not None:
                     verdicts_c = critic.evaluate(new_questions, kazanimlar, difficulty) or []
                     _cu2 = getattr(critic, "_last_usage", None)
@@ -971,6 +1019,15 @@ class GeminiAgent:
                 logger.info(
                     "Şekilsiz görsel-tip sorusu atıldı (%s): %s",
                     raw.question_type.value, raw.question[:70],
+                )
+                continue
+            # Çoktan seçmeli ZORUNLU: A) B) C) D) şıkları soru metnine gömülü olmalı;
+            # aksi halde soru CEVAPLANAMAZ → ele (top-up doldurur). Tüm dersleri korur.
+            if raw.question_type == QuestionType.COKTAN_SECMELI and not all(
+                f"{opt})" in q_text for opt in ("A", "B", "C", "D")
+            ):
+                logger.info(
+                    "Şıksız çoktan seçmeli soru atıldı: %s", raw.question[:70]
                 )
                 continue
             kod = raw.kazanim_kod if raw.kazanim_kod in valid_kazanim_codes else fallback_kazanim
