@@ -149,8 +149,13 @@ export interface WorksheetMetadata {
   trace: GenerationTrace | null;
 }
 
+// Ders (subject) ekseni — varsayılan matematik. Fen kalite kapısını (feature flag
+// NEXT_PUBLIC_FEN_ENABLED) geçene kadar UI'da gizli.
+export type Subject = "matematik" | "fen";
+
 export interface GenerateWorksheetRequest {
   grade: number;
+  subject?: Subject; // varsayılan matematik (backend default); fen flag arkasında
   unit_id?: string | null; // yeni MEB ünite akışı — unit_id veya topic_id zorunlu
   topic_id?: string | null;
   kazanim_kod?: string | null;
@@ -173,6 +178,7 @@ export interface GenerateWorksheetResponse {
 
 export interface CreateQuizRequest {
   grade: number;
+  subject?: Subject; // varsayılan matematik
   unit_id?: string | null; // yeni MEB ünite akışı — unit_id veya topic_id zorunlu
   topic_id?: string | null;
   kazanim_kod?: string | null;

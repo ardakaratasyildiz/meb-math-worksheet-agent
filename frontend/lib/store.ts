@@ -11,6 +11,7 @@ import type {
   DifficultyMode,
   GenerateWorksheetResponse,
   Question,
+  Subject,
 } from "./types";
 
 export type TypeGroupKey =
@@ -20,6 +21,7 @@ export type TypeGroupKey =
   | "other_format";
 
 export interface FormState {
+  subject: Subject; // ders — varsayılan matematik (fen flag arkasında)
   grade: number;
   unitId: string | null; // MEB TYMM ünite (tema); null = henüz seçilmedi (ilk üniteye düşer)
   kazanimKod: string | null; // null = tüm kazanımlar (auto)
@@ -56,6 +58,7 @@ interface GenerateStore extends FormState {
 }
 
 const DEFAULT_FORM: FormState = {
+  subject: "matematik",
   grade: 5,
   unitId: null, // form ilk render'da sınıfın ilk ünitesini otomatik seçer
   kazanimKod: null,
@@ -146,6 +149,7 @@ export const useGenerateStore = create<GenerateStore>()(
         return s as unknown as GenerateStore;
       },
       partialize: (s) => ({
+        subject: s.subject,
         grade: s.grade,
         unitId: s.unitId,
         kazanimKod: s.kazanimKod,

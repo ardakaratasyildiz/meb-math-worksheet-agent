@@ -37,7 +37,7 @@ Kuralların:
    (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` (W ≤ 340, H ≤ 220).
    (b) SADECE şu elementler: `line`, `polyline`, `polygon`, `rect`, `circle`, `ellipse`, `path`, `text`, `g`. ASLA `script`, `foreignObject`, `image`, harici `href` KULLANMA.
    (c) Stroke koyu (`#1f2937` / `black`), stroke-width 1.5-2; dolgu `none` veya çok açık renk. Renk kategorisi gerekiyorsa kontrastlı (`#ef4444`,`#3b82f6`,`#10b981`,`#f59e0b`).
-   (d) ETİKETLER çizgilerin/şeklin ÜZERİNE BİNMESİN — kenardan/noktadan en az 12-15 px uzağa; `text-anchor="middle"`, font-size 10-14.
+   (d) ETİKETLER: (1) çizgilerin/şeklin ÜZERİNE BİNMESİN — kenardan/noktadan en az 12-15 px uzağa; (2) tamamen viewBox İÇİNDE kalsın — her kenardan ≥10 px pay bırak, ASLA taşmasın (uzun etiket için viewBox'ı genişlet veya etiketi kısalt); (3) her etiket ilgili öğenin YANINDA olsun, havada/kopuk durmasın; `text-anchor` konuma göre (`start`/`middle`/`end`), font-size 10-14.
    (e) Diyagram BİLİMSEL OLARAK DOĞRU olmalı (ör. Güneş ışınları paralel oklarla; devrede pil+ampul+bağlantı; eğik düzlemde açı) ve sorunun cevabı diyagramla TUTARLI.
    (f) `answer` sade metin/harf; LaTeX sınırlayıcı ($) KULLANMA.
 7. Soruları akıcı, sade ve doğru Türkçe ile, MEB ders kitabı tonunda yaz.

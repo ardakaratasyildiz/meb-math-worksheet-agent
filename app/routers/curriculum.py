@@ -1,12 +1,16 @@
 from fastapi import APIRouter, HTTPException
 
+from app.config import settings
 from app.data.curriculum import (
+    GRADE_LEVELS,
     get_grades,
     get_topic,
     get_topics_for_grade,
 )
 from app.data.units import get_unit, get_units_for_grade
+from app.models.enums import SubjectId
 from app.models.schemas import (
+    GradeInfo,
     GradesResponse,
     KazanimInfo,
     KazanimlarResponse,
@@ -20,8 +24,24 @@ from app.models.schemas import (
 router = APIRouter()
 
 
+def _require_fen_enabled() -> None:
+    """Fen curriculum'u yalnız flag açıkken servis edilir (üretimle tutarlı kapı)."""
+    if not settings.fen_enabled:
+        raise HTTPException(
+            status_code=403,
+            detail="Fen Bilimleri henüz yayında değil (kalite kapısı).",
+        )
+
+
 @router.get("/grades", response_model=GradesResponse)
-def list_grades() -> GradesResponse:
+def list_grades(subject: SubjectId = SubjectId.MATEMATIK) -> GradesResponse:
+    if subject == SubjectId.FEN:
+        _require_fen_enabled()
+        from app.subjects.fen import FEN_CURRICULUM
+        return GradesResponse(grades=[
+            GradeInfo(id=g, name=f"{g}. Sınıf", level=GRADE_LEVELS[g])
+            for g in sorted(FEN_CURRICULUM)
+        ])
     return GradesResponse(grades=get_grades())
 
 
@@ -69,10 +89,17 @@ def list_kazanimlar(grade_id: int, topic_id: str) -> KazanimlarResponse:
 
 
 @router.get("/grades/{grade_id}/units", response_model=UnitsResponse)
-def list_units(grade_id: int) -> UnitsResponse:
+def list_units(
+    grade_id: int, subject: SubjectId = SubjectId.MATEMATIK
+) -> UnitsResponse:
     if grade_id < 1 or grade_id > 8:
         raise HTTPException(status_code=400, detail="grade_id 1-8 arasında olmalı")
-    units = get_units_for_grade(grade_id)
+    if subject == SubjectId.FEN:
+        _require_fen_enabled()
+        from app.subjects.fen import get_units_for_grade as fen_units
+        units = fen_units(grade_id)
+    else:
+        units = get_units_for_grade(grade_id)
     return UnitsResponse(
         grade=grade_id,
         units=[
@@ -91,10 +118,17 @@ def list_units(grade_id: int) -> UnitsResponse:
     "/grades/{grade_id}/units/{unit_id}/kazanimlar",
     response_model=UnitKazanimlarResponse,
 )
-def list_unit_kazanimlar(grade_id: int, unit_id: str) -> UnitKazanimlarResponse:
+def list_unit_kazanimlar(
+    grade_id: int, unit_id: str, subject: SubjectId = SubjectId.MATEMATIK
+) -> UnitKazanimlarResponse:
     if grade_id < 1 or grade_id > 8:
         raise HTTPException(status_code=400, detail="grade_id 1-8 arasında olmalı")
-    unit = get_unit(grade_id, unit_id)
+    if subject == SubjectId.FEN:
+        _require_fen_enabled()
+        from app.subjects.fen import get_unit as fen_get_unit
+        unit = fen_get_unit(grade_id, unit_id)
+    else:
+        unit = get_unit(grade_id, unit_id)
     if unit is None:
         raise HTTPException(
             status_code=404,

@@ -26,6 +26,12 @@ export default async function GeneratePage({
   // ayrı bir işte ünite-bazlı yenilenecek; o zamana dek grade+kazanım taşınır.)
   const initialUnitId = typeof sp.unit === "string" ? sp.unit : undefined;
   const initialKazanim = typeof sp.kazanim === "string" ? sp.kazanim : undefined;
+  // Ders: yalnız "fen" anlamlı (matematik varsayılan). Flag kapalıysa form yine
+  // matematik'e düşer (GenerateForm guard'ı). SEO deep-link'i /generate?subject=fen&grade=8
+  const initialSubject =
+    sp.subject === "fen" && process.env.NEXT_PUBLIC_FEN_ENABLED === "true"
+      ? "fen"
+      : undefined;
 
   return (
     <div className="container space-y-6 py-8">
@@ -46,6 +52,7 @@ export default async function GeneratePage({
           initialGrade={initialGrade}
           initialUnitId={initialUnitId}
           initialKazanim={initialKazanim}
+          initialSubject={initialSubject}
         />
       </div>
 

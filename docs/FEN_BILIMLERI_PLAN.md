@@ -208,12 +208,23 @@ karşılaştırıldı (rapor: scratchpad/fen_quality_report.md). **Bulgular:**
 - **KARAR: metin (önceki tur) + görsel (bu tur) → fen MATEMATİK PARİTESİNDE.**
   Kalite kapısı esasen karşılandı.
 
-**Kalan (go-live öncesi öncelik):**
-1. Görselli few-shot korpusunu ölçekle + prompt etiket-marj kuralını güçlendir
-   (tek kalan kozmetik: etiket yerleşimi).
-2. Frontend ders seçici + `/x-sinif-fen` rotaları (Faz 5, flag arkasında).
-3. `fen_enabled=True` kademeli go-live (Faz 7): önce flag, birkaç gün sonra SEO.
-4. (Ops) critic eşiğini sıkılaştır / bağımsız panel — parite izlemeyi keskinleştir.
+### Faz 5 — Frontend (flag arkasında) BAŞLADI (2026-07-10)
+- ✅ Prompt etiket-marj kuralı güçlendirildi (viewBox içi + kopuk etiket yasağı).
+- ✅ Backend curriculum endpoint'lerine `subject` param (grades/units/kazanımlar);
+  fen → fen curriculum, `fen_enabled=False` iken 403. Math değişmez. Test edildi.
+- ✅ Frontend `NEXT_PUBLIC_FEN_ENABLED` flag'i (+ .env.example): flag açıkken
+  /generate'te **ders seçici** (Matematik/Fen); kapalıyken gizli (yalnız matematik).
+- ✅ types (Subject + request alanı), store (subject alanı), api (subject query),
+  generate/page (`?subject=fen` parse), GenerateForm (seçici + subject-aware
+  fetch/reset/payload). Fen dropdown verisi backend'den (flag-gated).
+- ⚠️ Frontend yerelde derlenemez (node yok) → frontend-ci (lint+typecheck) +
+  Vercel preview ile doğrulanacak ([[frontend-build-ci]], [[verify-preview-before-merge]]).
+
+**Kalan (go-live öncesi):**
+1. Frontend'i CI + Vercel preview'da doğrula; SSR/render sorunlarını gider.
+2. `/x-sinif-fen` SEO rotaları (flag-gated, sitemap DIŞI) — ayrı iş.
+3. Görselli few-shot korpusunu ölçekle (kalite tutarlılığı ↑).
+4. `fen_enabled=True` kademeli go-live (Faz 7): önce flag, birkaç gün sonra SEO.
 
 ### Faz 2 — Çıkarım (matematik hattını yeniden kullan)
 - **Track A (ders kitabı/kavram):** `extract_textbook.py --subject fen` →

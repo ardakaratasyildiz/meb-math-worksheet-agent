@@ -40,8 +40,18 @@ import {
   type GradeInfo,
   type KazanimInfo,
   type QuestionType,
+  type Subject,
   type UnitInfo,
 } from "@/lib/types";
+
+// Fen Bilimleri kalite kapısı — flag açık değilse ders seçici gizli, sistem
+// yalnız matematik (mevcut davranış). NEXT_PUBLIC_* build-time inline edilir.
+const FEN_ENABLED = process.env.NEXT_PUBLIC_FEN_ENABLED === "true";
+
+const SUBJECTS: { value: Subject; label: string }[] = [
+  { value: "matematik", label: "Matematik" },
+  { value: "fen", label: "Fen Bilimleri" },
+];
 
 // Akış kesildiğinde (mobil/uygulama-içi tarayıcı timeout'u) backend üretimi
 // thread'de bitirip geçmişe kaydetmiş olabilir. Kısa süre geçmişi yoklayıp aynı
@@ -165,12 +175,15 @@ export function GenerateForm({
   initialGrade,
   initialUnitId,
   initialKazanim,
+  initialSubject,
 }: {
   initialGrade?: number;
   initialUnitId?: string;
   initialKazanim?: string;
+  initialSubject?: Subject;
 } = {}) {
   const {
+    subject,
     grade,
     unitId,
     kazanimKod,
@@ -205,11 +218,21 @@ export function GenerateForm({
     if (initialGrade) patch.grade = initialGrade;
     if (initialUnitId) patch.unitId = initialUnitId;
     if (initialKazanim) patch.kazanimKod = initialKazanim;
+    // Ders: deep-link fen (flag açıksa) uygula; flag kapalıyken persist edilmiş
+    // fen'i matematik'e düşür (güvenlik). Fen sınıf aralığı 3-8 → geçersiz sınıfı düzelt.
+    if (initialSubject === "fen" && FEN_ENABLED) patch.subject = "fen";
+    if (!FEN_ENABLED && (patch.subject === "fen" || subject === "fen")) {
+      patch.subject = "matematik";
+    }
+    const effSubject = patch.subject ?? subject;
+    const effGrade = patch.grade ?? grade;
+    if (effSubject === "fen" && effGrade < 3) patch.grade = 5;
     const fromDeeplink = Object.keys(patch).length > 0;
     if (fromDeeplink) setForm(patch);
     track("generate_page_view", {
       grade: patch.grade ?? grade,
       unit_id: patch.unitId ?? unitId,
+      subject: patch.subject ?? subject,
       deeplink: fromDeeplink,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -219,12 +242,18 @@ export function GenerateForm({
   // render'da hazır gelir, Render backend'inin cold-start'ını beklemez (eski
   // "30-40 sn boş kalıyor" sorununun kök sebebi). Backend yine arka planda
   // yoklanıp olası drift'i düzeltir (aşağıdaki effect'ler).
-  const [grades, setGrades] = React.useState<GradeInfo[]>(getGradesLocal);
+  // Lokal snapshot yalnız matematik için var (JSON'lar math). Fen'de seçenekler
+  // backend'den gelir (flag arkasında; cold-start'ta kısa boş kalabilir — kabul).
+  const [grades, setGrades] = React.useState<GradeInfo[]>(() =>
+    subject === "matematik" ? getGradesLocal() : [],
+  );
   const [units, setUnits] = React.useState<UnitInfo[]>(() =>
-    getUnitsLocal(grade),
+    subject === "matematik" ? getUnitsLocal(grade) : [],
   );
   const [kazanimlar, setKazanimlar] = React.useState<KazanimInfo[]>(() =>
-    unitId ? getKazanimlarByUnitLocal(grade, unitId) : [],
+    subject === "matematik" && unitId
+      ? getKazanimlarByUnitLocal(grade, unitId)
+      : [],
   );
   // Progressive disclosure: gelişmiş ayarlar varsayılan kapalı. İlk kullanıcı
   // 5 alanlı (sınıf/konu/kazanım/zorluk/sayı) sade ekranla karşılaşır;
@@ -259,21 +288,22 @@ export function GenerateForm({
   // dönerse (ör. cold-start sırasında) lokal snapshot korunur — seçenekler asla
   // boşalmaz. Yalnız dolu bir yanıt geldiğinde üzerine yazılır.
   React.useEffect(() => {
-    listGrades()
+    setGrades(subject === "matematik" ? getGradesLocal() : []);
+    listGrades(subject)
       .then((g) => {
         if (g.length) setGrades(g);
       })
       .catch(() => {});
-  }, []);
+  }, [subject]);
 
   React.useEffect(() => {
-    setUnits(getUnitsLocal(grade));
-    listUnits(grade)
+    setUnits(subject === "matematik" ? getUnitsLocal(grade) : []);
+    listUnits(grade, subject)
       .then((u) => {
         if (u.length) setUnits(u);
       })
       .catch(() => {});
-  }, [grade]);
+  }, [grade, subject]);
 
   // unitId boş/geçersizse (ilk açılış, sınıf değişimi, eski persist) sınıfın ilk
   // ünitesini otomatik seç → dropdown asla boş kalmaz, üretim hep geçerli çalışır.
@@ -289,13 +319,15 @@ export function GenerateForm({
       setKazanimlar([]);
       return;
     }
-    setKazanimlar(getKazanimlarByUnitLocal(grade, unitId));
-    listKazanimlarByUnit(grade, unitId)
+    setKazanimlar(
+      subject === "matematik" ? getKazanimlarByUnitLocal(grade, unitId) : [],
+    );
+    listKazanimlarByUnit(grade, unitId, subject)
       .then((k) => {
         if (k.length) setKazanimlar(k);
       })
       .catch(() => {});
-  }, [grade, unitId]);
+  }, [grade, unitId, subject]);
 
   const isLoading = status === "loading";
   // Görsel grubu artık kullanıcı seçimi değil (sunucu oranı); kullanıcıya görünen
@@ -332,6 +364,18 @@ export function GenerateForm({
     reader.readAsDataURL(file);
   }
 
+  // Ders değişiminde sınıf/ünite/kazanım sıfırlanır. Fen 3-8 → matematik'ten
+  // fen'e geçerken sınıf 3'ün altındaysa geçerli bir varsayılana (5) çek.
+  function onSubjectChange(next: Subject) {
+    const nextGrade = next === "fen" && grade < 3 ? 5 : grade;
+    setForm({
+      subject: next,
+      grade: nextGrade,
+      unitId: null,
+      kazanimKod: null,
+    });
+  }
+
   async function onGenerate() {
     if (!anyTypeGroupOn) {
       toast.error("Soru tipi seçimi", {
@@ -362,6 +406,7 @@ export function GenerateForm({
       const res = await generateWorksheetStream(
         {
           grade,
+          subject,
           unit_id: unitId,
           kazanim_kod: kazanimKod || null,
           difficulty,
@@ -450,6 +495,28 @@ export function GenerateForm({
 
   return (
     <div className="space-y-6">
+      {/* ── Ders seçici (yalnız Fen flag'i açıkken görünür) ─────────────── */}
+      {FEN_ENABLED ? (
+        <div className="space-y-1.5">
+          <Label htmlFor="subject">Ders</Label>
+          <Select
+            value={subject}
+            onValueChange={(v) => onSubjectChange(v as Subject)}
+          >
+            <SelectTrigger id="subject" className="md:max-w-xs">
+              <SelectValue placeholder="Ders seçin" />
+            </SelectTrigger>
+            <SelectContent>
+              {SUBJECTS.map((s) => (
+                <SelectItem key={s.value} value={s.value}>
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      ) : null}
+
       {/* ── Row 1: Sınıf / Konu / Kazanım ──────────────────────────────── */}
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-1.5">
