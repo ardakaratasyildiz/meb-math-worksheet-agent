@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
 
-from app.config import settings
 from app.data.curriculum import (
     GRADE_LEVELS,
     get_grades,
@@ -20,27 +19,28 @@ from app.models.schemas import (
     UnitKazanimlarResponse,
     UnitsResponse,
 )
+from app.subjects import get_content_module, get_subject, subject_enabled
 
 router = APIRouter()
 
 
-def _require_fen_enabled() -> None:
-    """Fen curriculum'u yalnız flag açıkken servis edilir (üretimle tutarlı kapı)."""
-    if not settings.fen_enabled:
+def _require_enabled(subject: SubjectId) -> None:
+    """Non-math curriculum'u yalnız feature-flag açıkken servis edilir (üretimle tutarlı)."""
+    if not subject_enabled(subject):
         raise HTTPException(
             status_code=403,
-            detail="Fen Bilimleri henüz yayında değil (kalite kapısı).",
+            detail=f"'{subject.value}' dersi henüz yayında değil (kalite kapısı).",
         )
 
 
 @router.get("/grades", response_model=GradesResponse)
 def list_grades(subject: SubjectId = SubjectId.MATEMATIK) -> GradesResponse:
-    if subject == SubjectId.FEN:
-        _require_fen_enabled()
-        from app.subjects.fen import FEN_CURRICULUM
+    if subject != SubjectId.MATEMATIK:
+        _require_enabled(subject)
+        plugin = get_subject(subject)
         return GradesResponse(grades=[
             GradeInfo(id=g, name=f"{g}. Sınıf", level=GRADE_LEVELS[g])
-            for g in sorted(FEN_CURRICULUM)
+            for g in plugin.grades
         ])
     return GradesResponse(grades=get_grades())
 
@@ -94,10 +94,9 @@ def list_units(
 ) -> UnitsResponse:
     if grade_id < 1 or grade_id > 8:
         raise HTTPException(status_code=400, detail="grade_id 1-8 arasında olmalı")
-    if subject == SubjectId.FEN:
-        _require_fen_enabled()
-        from app.subjects.fen import get_units_for_grade as fen_units
-        units = fen_units(grade_id)
+    if subject != SubjectId.MATEMATIK:
+        _require_enabled(subject)
+        units = get_content_module(subject).get_units_for_grade(grade_id)
     else:
         units = get_units_for_grade(grade_id)
     return UnitsResponse(
@@ -123,10 +122,9 @@ def list_unit_kazanimlar(
 ) -> UnitKazanimlarResponse:
     if grade_id < 1 or grade_id > 8:
         raise HTTPException(status_code=400, detail="grade_id 1-8 arasında olmalı")
-    if subject == SubjectId.FEN:
-        _require_fen_enabled()
-        from app.subjects.fen import get_unit as fen_get_unit
-        unit = fen_get_unit(grade_id, unit_id)
+    if subject != SubjectId.MATEMATIK:
+        _require_enabled(subject)
+        unit = get_content_module(subject).get_unit(grade_id, unit_id)
     else:
         unit = get_unit(grade_id, unit_id)
     if unit is None:

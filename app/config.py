@@ -99,6 +99,10 @@ class Settings(BaseSettings):
     # paritesine gelene kadar (Faz 6) canlıda açılmaz. Frontend tarafı ayrı bir
     # NEXT_PUBLIC_FEN_ENABLED bayrağıyla gizlenir.
     fen_enabled: bool = False
+    # Sözel dersler — her biri kendi kalite kapısı feature-flag'i (fen deseni).
+    turkce_enabled: bool = False
+    sosyal_enabled: bool = False
+    ingilizce_enabled: bool = False
 
     @property
     def premium_tenant_id_set(self) -> set[str]:

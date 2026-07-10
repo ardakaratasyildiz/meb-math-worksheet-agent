@@ -37,6 +37,7 @@ from app.services.math_verifier import verify_batch as verify_math_batch
 from app.services.history import DEFAULT_TENANT, GENERATION_HISTORY, HistoryKey
 from app.services.retriever import ExampleRetriever, get_retriever
 from app.services.svg_utils import process_chart_directives
+from app.subjects import get_content_module
 
 logger = logging.getLogger(__name__)
 
@@ -114,75 +115,6 @@ def _select_kazanimlar_by_unit(
     raise AgentError(
         f"'{kazanim_kod}' kodu {grade}. sınıf '{unit_id}' ünitesinde bulunamadı."
     )
-
-
-# ── Fen (subject=fen) çözümü — ünite bazlı, RAG'siz statik few-shot ──────────
-# Fen dersi kendi curriculum/prompt/few-shot modüllerini getirir (app/subjects/fen).
-# Matematik yolu tamamen ayrı ve değişmez. Fen için varsayılan soru tipleri (kullanıcı
-# tip seçmediyse): metin-tabanlı, otomatik-cevaplanabilir tipler (math'e özgü islem/
-# salt_islem hariç). GRAFIK/GÖRSEL tipler görsel korpus olgunlaşınca eklenir.
-_FEN_DEFAULT_TYPES: list[QuestionType] = [
-    QuestionType.COKTAN_SECMELI,
-    QuestionType.DOGRU_YANLIS,
-    QuestionType.BOSLUK_DOLDURMA,
-    QuestionType.ESLESTIRME,
-    QuestionType.TABLO_SORUSU,
-    QuestionType.GRAFIK_OKUMA,      # deney/gözlem verisi → {{chart}} (sistem çizer, sağlam)
-    QuestionType.GORSEL_GEOMETRI,   # basit bilimsel diyagram → inline SVG (enforce: <svg> yoksa elenir)
-]
-
-
-def _select_kazanimlar_fen(
-    grade: int, unit_id: str | None, kazanim_kod: str | None
-) -> tuple[list[dict], str]:
-    """Fen ünite kazanımlarını seçer. Dönüş: (kazanimlar, display_name).
-
-    Fen yalnız ünite bazlıdır (unit_id zorunlu). Kazanım dict'leri difficulty_hints
-    taşır (app/subjects/fen/curriculum.py) → prompt kalibrasyonu çalışır.
-    """
-    from app.subjects.fen import get_unit, get_units_for_grade
-    if not unit_id:
-        raise AgentError("Fen üretimi ünite bazlıdır: unit_id zorunlu.")
-    unit = get_unit(grade, unit_id)
-    if unit is None:
-        raise AgentError(f"{grade}. sınıf Fen'de '{unit_id}' ünitesi bulunmuyor.")
-    if kazanim_kod is None:
-        return list(unit["kazanimlar"]), unit["name"]
-    for k in unit["kazanimlar"]:
-        if k["kod"] == kazanim_kod:
-            return [k], unit["name"]
-    raise AgentError(
-        f"'{kazanim_kod}' kodu {grade}. sınıf Fen '{unit_id}' ünitesinde bulunamadı."
-    )
-
-
-def _collect_few_shot_fen(
-    grade: int,
-    kazanimlar: list[dict],
-    target_difficulty: str,
-    max_total: int,
-    rng: random.Random,
-) -> list[dict]:
-    """Fen statik few-shot havuzu (gerçek MEB LGS soruları). RAG YOK (Chroma'da fen yok).
-
-    Kazanım koduna göre FEN_EXAMPLES'tan toplar; hedef zorluğu öne alır.
-    """
-    from app.subjects.fen import FEN_EXAMPLES
-    by_kod = FEN_EXAMPLES.get(grade, {})
-    pool: list[dict] = []
-    for k in kazanimlar:
-        pool.extend(by_kod.get(k["kod"], []))
-    # Hedef zorluk önce, sonra rastgele; tekrarları kod+soru ile ele.
-    seen: set[str] = set()
-    uniq: list[dict] = []
-    for ex in pool:
-        key = ex.get("question", "")[:80]
-        if key in seen:
-            continue
-        seen.add(key)
-        uniq.append(ex)
-    uniq.sort(key=lambda e: (0 if e.get("difficulty") == target_difficulty else 1, rng.random()))
-    return uniq[:max_total]
 
 
 def _collect_few_shot_static(
@@ -406,11 +338,12 @@ class GeminiAgent:
         cached = self._critics.get(subject)
         if cached is not None:
             return cached
-        # Ders-özel critic prompt'u; fen bilimsel-doğruluk odaklı kendi prompt'unu kullanır.
+        # Ders-özel critic prompt'u; non-math dersler kendi CRITIC_SYSTEM_PROMPT'unu kullanır.
         sys_prompt: str | None = None
-        if subject == SubjectId.FEN:
-            from app.subjects.fen import CRITIC_SYSTEM_PROMPT as FEN_CRITIC
-            sys_prompt = FEN_CRITIC
+        if subject != SubjectId.MATEMATIK:
+            content = get_content_module(subject)
+            if content is not None:
+                sys_prompt = content.CRITIC_SYSTEM_PROMPT
         try:
             critic = GeminiCritic(system_prompt=sys_prompt)
             self._critics[subject] = critic
@@ -445,27 +378,30 @@ class GeminiAgent:
             jitter = rng.uniform(-TEMPERATURE_JITTER, TEMPERATURE_JITTER)
             temperature = _clamp_temp(base_temp + jitter)
 
-        # ── Ders (subject) çözümü ──────────────────────────────────────────────
-        # Matematik (default) yolu birebir korunur. Fen kendi system_prompt /
-        # yeni_nesil bloğu / critic / few-shot / curriculum'unu getirir; RAG +
-        # textbook + math_verifier fen'de atlanır (Chroma'da fen yok, SymPy math'e özel).
-        is_fen = subject == SubjectId.FEN
-        if is_fen:
-            from app.subjects.fen import (
-                SYSTEM_PROMPT as SUBJ_SYSTEM_PROMPT,
-                YENI_NESIL_BLOCK as SUBJ_YN_BLOCK,
-            )
-        else:
-            SUBJ_SYSTEM_PROMPT = SYSTEM_PROMPT
-            SUBJ_YN_BLOCK = None  # build_user_prompt matematik bloğuna düşer
+        # ── Ders (subject) çözümü — plugin-driven ──────────────────────────────
+        # Matematik (default) yolu birebir korunur. Non-math dersler (fen, ingilizce,
+        # …) içerik modülünü (get_content_module) getirir: system_prompt / yeni_nesil
+        # bloğu / critic / few-shot / curriculum / DEFAULT_TYPES. RAG + textbook +
+        # math_verifier YALNIZ matematikte (Chroma'da yok, SymPy math'e özel).
+        is_math = subject == SubjectId.MATEMATIK
+        content = None if is_math else get_content_module(subject)
+        if not is_math and content is None:
+            raise AgentError(f"Bilinmeyen/desteklenmeyen ders: {subject}")
+        SUBJ_SYSTEM_PROMPT = SYSTEM_PROMPT if is_math else content.SYSTEM_PROMPT
+        SUBJ_YN_BLOCK = None if is_math else content.YENI_NESIL_BLOCK
 
-        # Seçim akışı: fen (ünite) / yeni MEB ünite (unit_id) / eski konu (topic_id).
+        # Seçim akışı: non-math (ünite) / yeni MEB ünite (unit_id) / eski konu (topic_id).
         # Köprü: ünite yolunda RAG/tip-dağılımı için legacy topic türetilir; cache/history
         # namespace'i selection_key ile ayrılır → farklı üniteler/dersler karışmaz.
-        if is_fen:
-            kazanimlar, display_name = _select_kazanimlar_fen(grade, unit_id, kazanim_kod)
-            dist_topic = None  # fen'de topic-bazlı görsel dağıtım yok
-            selection_key = f"fen:{unit_id}"
+        if not is_math:
+            try:
+                kazanimlar, display_name = content.select_kazanimlar(
+                    grade, unit_id, kazanim_kod
+                )
+            except ValueError as exc:
+                raise AgentError(str(exc)) from exc
+            dist_topic = None  # non-math'te topic-bazlı görsel dağıtım yok
+            selection_key = f"{subject.value}:{unit_id}"
         elif unit_id:
             kazanimlar = _select_kazanimlar_by_unit(grade, unit_id, kazanim_kod)
             unit = get_unit(grade, unit_id)
@@ -485,10 +421,10 @@ class GeminiAgent:
         allowed_set: set[QuestionType] | None = (
             set(allowed_types) if allowed_types else None
         )
-        # Fen: kullanıcı tip seçmediyse fen-uygun varsayılan tipler (math'e özgü
-        # islem/salt_islem/gorsel_geometri hariç). Görsel korpus olgunlaşınca genişler.
-        if is_fen and allowed_set is None:
-            allowed_set = set(_FEN_DEFAULT_TYPES)
+        # Non-math: kullanıcı tip seçmediyse dersin varsayılan tipleri (math'e özgü
+        # islem/salt_islem hariç). DEFAULT_TYPES ders içerik modülünden gelir.
+        if not is_math and allowed_set is None:
+            allowed_set = set(content.DEFAULT_TYPES)
         # Over-generation (latency): ilk batch'i hedeften fazla iste ki math/critic
         # elemeleri seri top-up turu açmadan absorbe edilsin. Eleme oranı ~%41
         # üretimde >0; overshoot bunları tek çağrıda karşılar. question_count
@@ -564,10 +500,10 @@ class GeminiAgent:
                 logger.info("Üretim cache hit — LLM çağrısı atlandı (%d soru).", len(cached))
                 return cached
 
-        if is_fen:
-            # Fen: RAG yok (Chroma'da fen dökümanı yok) → gerçek MEB LGS few-shot havuzu.
-            few_shot = _collect_few_shot_fen(
-                grade, kazanimlar, difficulty.value, max_total=6, rng=rng
+        if not is_math:
+            # Non-math: RAG yok (Chroma'da ders dökümanı yok) → gerçek MEB/LGS few-shot.
+            few_shot = content.collect_few_shot(
+                grade, kazanimlar, difficulty.value, 6, rng
             )
             few_shot_source = "static"
         else:
@@ -583,7 +519,7 @@ class GeminiAgent:
         self._last_few_shot_source = few_shot_source
         self._last_few_shot_count = len(few_shot)
         textbook_chunks: list[dict] = []
-        if include_textbook and not is_fen:
+        if include_textbook and is_math:
             textbook_chunks = _collect_textbook_context(
                 grade=grade,
                 topic_id=dist_topic,
@@ -771,10 +707,10 @@ class GeminiAgent:
 
         # Deterministic math verifier: SymPy ile aritmetik doğrulama.
         # Critic'ten ÖNCE çalışır — ucuz, hızlı, yanılma payı yok.
-        # Fen'de SymPy math_verifier ATLANIR (aritmetik doğrulama math'e özel;
-        # fen soruları verifiable değil → no-op olurdu, yine de netlik için atlanır).
+        # Non-math'te SymPy math_verifier ATLANIR (aritmetik doğrulama math'e özel;
+        # sözel/fen soruları verifiable değil → no-op olurdu, netlik için atlanır).
         math_rejected = 0
-        if settings.enable_math_verifier and questions and not is_fen:
+        if settings.enable_math_verifier and questions and is_math:
             verdicts = verify_math_batch(questions)
             drop_indices: set[int] = set()
             for v in verdicts:
@@ -901,8 +837,8 @@ class GeminiAgent:
                 post_filter_rounds += 1
                 continue
 
-            # Yeni gelenleri math verifier'dan geçir (fen'de atlanır).
-            if settings.enable_math_verifier and not is_fen:
+            # Yeni gelenleri math verifier'dan geçir (yalnız matematik).
+            if settings.enable_math_verifier and is_math:
                 verdicts_v = verify_math_batch(new_questions)
                 drop_v = {
                     v.question_index for v in verdicts_v

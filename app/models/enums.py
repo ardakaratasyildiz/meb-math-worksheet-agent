@@ -8,6 +8,9 @@ class SubjectId(str, Enum):
 
     MATEMATIK = "matematik"
     FEN = "fen"
+    TURKCE = "turkce"
+    SOSYAL = "sosyal"
+    INGILIZCE = "ingilizce"
 
 
 class Difficulty(str, Enum):
@@ -34,7 +37,16 @@ class QuestionType(str, Enum):
     BOSLUK_DOLDURMA = "bosluk_doldurma" # Soru içinde "_____" ile bir/birkaç boşluk
     DOGRU_YANLIS = "dogru_yanlis"       # Tek önerme, cevap "Doğru" veya "Yanlış"
     ESLESTIRME = "eslestirme"           # Sol kolon ↔ sağ kolon, GFM tablo + cevap çiftleri
-    SIRALAMA = "siralama"               # Verilen öğeleri belirli kritere göre sırala
+    SIRALAMA = "siralama"               # Verilen öğeleri belirli kritere göre sırala (kronoloji dahil)
+    # Sözel dersler (Türkçe / Sosyal / İngilizce) — ders-nötr adlandırıldı, paylaşılır.
+    OKUMA_PASAJI = "okuma_pasaji"       # Özgün pasaj/metin + pasaja dayalı soru (LGS paragraf)
+    DIYALOG_TAMAMLAMA = "diyalog_tamamlama"  # Konuşma balonları/diyalogda eksik repliği tamamlama
+    KELIME_BILGISI = "kelime_bilgisi"   # Sözcük/kelime anlamı, eş/zıt anlam (vocab)
+    HARITA_YORUMLAMA = "harita_yorumlama"    # Harita/kroki/zaman şeridi üzerinden yorum (Sosyal)
+    KAYNAK_METIN = "kaynak_metin"       # Tarihî belge/metin/alıntı + yorum (Sosyal/İnkılap)
+    DIL_BILGISI = "dil_bilgisi"         # Dil bilgisi kuralı (Türkçe: sözcük türü, ek vb.)
+    YAZIM_NOKTALAMA = "yazim_noktalama" # Yazım kuralı / noktalama işareti (Türkçe)
+    GORSEL_YORUMLAMA = "gorsel_yorumlama"    # Görsel/afiş/realia yorumlama (İngilizce/Sosyal)
 
 
 class EducationLevel(str, Enum):

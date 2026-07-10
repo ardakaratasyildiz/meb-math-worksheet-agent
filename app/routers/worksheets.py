@@ -42,33 +42,36 @@ def _agent_for_model(model: str) -> GeminiAgent:
 
 def _validate_request(req: GenerateWorksheetRequest) -> None:
     from app.models.enums import SubjectId
-    # ── Fen (subject=fen) — feature flag + fen müfredatı (ünite bazlı) ─────────
-    if req.subject == SubjectId.FEN:
-        if not settings.fen_enabled:
+    from app.subjects import get_content_module, subject_enabled
+    # ── Non-math ders (fen/ingilizce/…) — feature flag + ünite bazlı müfredat ──
+    if req.subject != SubjectId.MATEMATIK:
+        if not subject_enabled(req.subject):
             raise HTTPException(
                 status_code=403,
-                detail="Fen Bilimleri üretimi henüz yayında değil (kalite kapısı).",
+                detail=f"'{req.subject.value}' dersi henüz yayında değil (kalite kapısı).",
             )
-        from app.subjects.fen import get_unit as fen_get_unit
+        content = get_content_module(req.subject)
+        if content is None:
+            raise HTTPException(
+                status_code=400, detail=f"Desteklenmeyen ders: {req.subject.value}"
+            )
         if not req.unit_id:
             raise HTTPException(
-                status_code=400, detail="Fen üretimi ünite bazlıdır: unit_id zorunlu."
+                status_code=400,
+                detail=f"'{req.subject.value}' üretimi ünite bazlıdır: unit_id zorunlu.",
             )
-        unit = fen_get_unit(req.grade, req.unit_id)
+        unit = content.get_unit(req.grade, req.unit_id)
         if unit is None:
             raise HTTPException(
                 status_code=400,
-                detail=f"{req.grade}. sınıf Fen'de '{req.unit_id}' ünitesi bulunmuyor.",
+                detail=f"{req.grade}. sınıf '{req.subject.value}'de '{req.unit_id}' ünitesi bulunmuyor.",
             )
         if req.kazanim_kod is not None and not any(
             k["kod"] == req.kazanim_kod for k in unit["kazanimlar"]
         ):
             raise HTTPException(
                 status_code=400,
-                detail=(
-                    f"'{req.kazanim_kod}' kodu {req.grade}. sınıf Fen '{req.unit_id}' "
-                    "ünitesinde bulunamadı."
-                ),
+                detail=f"'{req.kazanim_kod}' kodu '{req.unit_id}' ünitesinde bulunamadı.",
             )
         return
     # Yeni seçim akışı: MEB ünite (tema). Şema unit_id XOR topic_id garantiler.
@@ -172,13 +175,13 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
     from app.models.enums import Difficulty as _Diff
     from app.services.entitlements import wants_yeni_nesil
     from app.models.enums import SubjectId
+    from app.subjects import get_content_module
     _validate_request(req)
     # Görünen ad: ders/akışa göre tema/konu adı (başlık/geçmiş/defter).
-    if req.subject == SubjectId.FEN:
-        from app.subjects.fen import get_unit as fen_get_unit
-        _fu = fen_get_unit(req.grade, req.unit_id)
-        assert _fu is not None  # _validate_request doğruladı
-        display_name = _fu["name"]
+    if req.subject != SubjectId.MATEMATIK:
+        _u = get_content_module(req.subject).get_unit(req.grade, req.unit_id)
+        assert _u is not None  # _validate_request doğruladı
+        display_name = _u["name"]
     elif req.unit_id:
         _unit = get_unit(req.grade, req.unit_id)
         assert _unit is not None
@@ -570,20 +573,25 @@ def regenerate_question(
     tenant geçmişine göre dedup'lanır (mevcut sorulardan farklı gelir).
     """
     from app.models.enums import SubjectId
+    from app.subjects import get_content_module, subject_enabled
     topic_id: str | None = None
     unit_id: str | None = None
-    if req.subject == SubjectId.FEN:
-        if not settings.fen_enabled:
+    if req.subject != SubjectId.MATEMATIK:
+        if not subject_enabled(req.subject):
             raise HTTPException(
                 status_code=403,
-                detail="Fen Bilimleri üretimi henüz yayında değil (kalite kapısı).",
+                detail=f"'{req.subject.value}' dersi henüz yayında değil (kalite kapısı).",
             )
-        from app.subjects.fen import find_unit_by_kazanim as fen_find_unit
-        found = fen_find_unit(req.kazanim_kod)
+        content = get_content_module(req.subject)
+        if content is None:
+            raise HTTPException(
+                status_code=400, detail=f"Desteklenmeyen ders: {req.subject.value}"
+            )
+        found = content.find_unit_by_kazanim(req.kazanim_kod)
         if found is None:
             raise HTTPException(
                 status_code=400,
-                detail=f"'{req.kazanim_kod}' kodu Fen müfredatında bulunamadı.",
+                detail=f"'{req.kazanim_kod}' kodu '{req.subject.value}' müfredatında bulunamadı.",
             )
         unit_id = found[1]["unit_id"]
     else:
