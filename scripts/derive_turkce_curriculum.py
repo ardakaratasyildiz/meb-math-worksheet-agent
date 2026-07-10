@@ -88,8 +88,49 @@ def _clean(t: str) -> str:
     return re.sub(r"\s+", " ", t).strip(" .:\n\t")
 
 
+# Ortaokul (5-8) tema adları — programın "TEMA ADI" tablolarından çıkarıldı
+# (ortaokul PDF hücreleri ayrı satırlara böldüğü için ilkokuldaki tek-satır
+# regex'i yakalayamıyor; bu yüzden CURATED sabit). Ham (BÜYÜK HARF) tutulur,
+# tr_title ilkokulla aynı başlık biçimine getirir. Kaynak: turkce_ogretim_
+# programi_2024_TYMM_ortaokul_5-8.pdf, "TEMA ADI" tabloları + tema başlıkları.
+_ORTA_THEMES: dict[int, list[str]] = {
+    5: [
+        "OYUN DÜNYASI",
+        "ATATÜRK’Ü TANIMAK",
+        "DUYGULARIMI TANIYORUM",
+        "GELENEKLERİMİZ",
+        "İLETİŞİM VE SOSYAL İLİŞKİLER",
+        "SAĞLIKLI YAŞIYORUM",
+    ],
+    6: [
+        "DİLİMİZİN ZENGİNLİĞİ",
+        "BAĞIMSIZLIK YOLU",
+        "FARKLI DÜNYALAR",
+        "İLETİŞİM VE SOSYAL İLİŞKİLER",
+        "BİLİM VE TEKNOLOJİ",
+        "LİDER RUHLAR",
+    ],
+    7: [
+        "HAYAT BOYU GELİŞİM",
+        "BİR HİLAL UĞRUNA",
+        "İLETİŞİM VE SOSYAL İLİŞKİLER",
+        "TÜRK SANATI",
+        "OKUMA KÜLTÜRÜ",
+        "HAK VE SORUMLULUKLAR",
+    ],
+    8: [
+        "İLETİŞİM VE SOSYAL İLİŞKİLER",
+        "VATAN SEVGİSİ",
+        "DOĞA VE İNSAN",
+        "TÜRK HİKÂYE GELENEĞİ VE DESTANLARI",
+        "SANAT VE ESTETİK",
+        "AKADEMİK DÜŞÜNME DÜNYASI",
+    ],
+}
+
+
 def extract_themes() -> dict[int, list[tuple[int, str]]]:
-    """grade -> [(no, ad)] temalar. İlkokul adlı; ortaokul adsızsa 'N. Tema'."""
+    """grade -> [(no, ad)] temalar. İlkokul (1-4) PDF'ten; ortaokul (5-8) curated."""
     themes: dict[int, dict[int, str]] = defaultdict(dict)
     hdr = re.compile(r"(\d{1,2})\.\s*TEMA\s*:?\s*([^\n]{0,50})")
     ghdr = re.compile(r"\b([1-8])\.\s*SINIF\b")
@@ -106,6 +147,9 @@ def extract_themes() -> dict[int, list[tuple[int, str]]]:
                 name = _clean(hm.group(2))
                 if no not in themes[cur]:
                     themes[cur][no] = tr_title(name) if len(name) >= 3 else f"{no}. Tema"
+    # Ortaokul tema adlarını curated (gerçek) adlarla ez — regex ortaokulu yakalayamıyor.
+    for g, names in _ORTA_THEMES.items():
+        themes[g] = {i + 1: tr_title(n) for i, n in enumerate(names)}
     return {g: [(no, themes[g][no]) for no in sorted(themes[g])] for g in sorted(themes)}
 
 
