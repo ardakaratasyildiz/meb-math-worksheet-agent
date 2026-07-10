@@ -23,9 +23,16 @@
   MVP boş. **Gerçek üretim doğrulandı:** grade 5 (A1) + grade 8 (A2), 6/6 soru
   dilbilgisel doğru + seviye-uygun + tek cevap; **özgün okuma pasajı üretimi çalışıyor**;
   Markdown tablo + NOT kalıbı. flag-gated (canlıda kapalı).
-- KALAN İngilizce (opsiyonel/sonraki): gerçek few-shot (EBA+Sozel_LGS), görsel realia,
-  parite karşılaştırması, kademeli go-live.
-- SIRADA: **Sosyal** → **Türkçe** (altyapı hazır, hızlı gelecek).
+- ✅ **Sosyal Bilgiler TAMAM (2026-07-10):** `derive_sosyal_curriculum.py` → 3 program
+  birleşik (Hayat Bilgisi 1-3 + Sosyal Bilgiler 4-7 + İnkılap 8), **46 ünite, 151
+  kazanım** (HB/SB/İTA kodları; adlar+metinler temiz). prompt (tarihsel/coğrafi olgu
+  doğruluğu + anakronizm yasağı) + critic (olgu doğruluğu) + plugin. difficulty_hints
+  generic, few-shot MVP boş. **Gerçek üretim: 9/9 tarihsel/olgusal doğru** —
+  Mondros (30 Ekim 1918), Amasya Genelgesi (22 Haziran 1919, gerçek maddeler),
+  Tekalif-i Milliye (Kütahya-Eskişehir sonrası), Karadeniz Tahıl Girişimi (2022);
+  kaynak_metin gerçek belge üretiyor. flag-gated.
+- KALAN (opsiyonel): gerçek few-shot, görsel/harita realia, parite, go-live.
+- SIRADA: **Türkçe** (son ders — en zor: pasaj + nesnellik).
 
 ## 0. Ne HAZIR, ne YENİ
 

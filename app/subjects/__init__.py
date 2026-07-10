@@ -24,15 +24,18 @@ from app.config import settings
 from app.models.enums import SubjectId
 from app.subjects import fen as _fen_mod
 from app.subjects import ingilizce as _ing_mod
+from app.subjects import sosyal as _sos_mod
 from app.subjects.base import SubjectPlugin
 from app.subjects.fen import FEN
 from app.subjects.ingilizce import INGILIZCE
 from app.subjects.matematik import MATEMATIK
+from app.subjects.sosyal import SOSYAL
 
 SUBJECTS: dict[SubjectId, SubjectPlugin] = {
     SubjectId.MATEMATIK: MATEMATIK,
     SubjectId.FEN: FEN,
     SubjectId.INGILIZCE: INGILIZCE,
+    SubjectId.SOSYAL: SOSYAL,
 }
 
 # Ders → Settings feature-flag alan adı (matematik her zaman açık, flag yok).
@@ -49,6 +52,7 @@ SUBJECT_FLAGS: dict[SubjectId, str] = {
 _CONTENT: dict[SubjectId, ModuleType] = {
     SubjectId.FEN: _fen_mod,
     SubjectId.INGILIZCE: _ing_mod,
+    SubjectId.SOSYAL: _sos_mod,
 }
 
 
