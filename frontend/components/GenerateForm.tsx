@@ -43,15 +43,12 @@ import {
   type Subject,
   type UnitInfo,
 } from "@/lib/types";
-
-// Fen Bilimleri kalite kapısı — flag açık değilse ders seçici gizli, sistem
-// yalnız matematik (mevcut davranış). NEXT_PUBLIC_* build-time inline edilir.
-const FEN_ENABLED = process.env.NEXT_PUBLIC_FEN_ENABLED === "true";
-
-const SUBJECTS: { value: Subject; label: string }[] = [
-  { value: "matematik", label: "Matematik" },
-  { value: "fen", label: "Fen Bilimleri" },
-];
+import {
+  availableSubjects,
+  hasMultipleSubjects,
+  isSubjectEnabled,
+  subjectMinGrade,
+} from "@/lib/subjects";
 
 // Akış kesildiğinde (mobil/uygulama-içi tarayıcı timeout'u) backend üretimi
 // thread'de bitirip geçmişe kaydetmiş olabilir. Kısa süre geçmişi yoklayıp aynı
@@ -220,13 +217,13 @@ export function GenerateForm({
     if (initialKazanim) patch.kazanimKod = initialKazanim;
     // Ders: deep-link fen (flag açıksa) uygula; flag kapalıyken persist edilmiş
     // fen'i matematik'e düşür (güvenlik). Fen sınıf aralığı 3-8 → geçersiz sınıfı düzelt.
-    if (initialSubject === "fen" && FEN_ENABLED) patch.subject = "fen";
-    if (!FEN_ENABLED && (patch.subject === "fen" || subject === "fen")) {
-      patch.subject = "matematik";
-    }
+    // Deep-link ders (flag açıksa uygula); flag kapalı/geçersiz persist → matematik.
+    if (initialSubject && isSubjectEnabled(initialSubject)) patch.subject = initialSubject;
+    if (!patch.subject && !isSubjectEnabled(subject)) patch.subject = "matematik";
+    // Ders sınıf aralığı → geçersiz sınıfı geçerli varsayılana (5, tümünde geçerli) çek.
     const effSubject = patch.subject ?? subject;
     const effGrade = patch.grade ?? grade;
-    if (effSubject === "fen" && effGrade < 3) patch.grade = 5;
+    if (effGrade < subjectMinGrade(effSubject)) patch.grade = 5;
     const fromDeeplink = Object.keys(patch).length > 0;
     if (fromDeeplink) setForm(patch);
     track("generate_page_view", {
@@ -367,7 +364,7 @@ export function GenerateForm({
   // Ders değişiminde sınıf/ünite/kazanım sıfırlanır. Fen 3-8 → matematik'ten
   // fen'e geçerken sınıf 3'ün altındaysa geçerli bir varsayılana (5) çek.
   function onSubjectChange(next: Subject) {
-    const nextGrade = next === "fen" && grade < 3 ? 5 : grade;
+    const nextGrade = grade < subjectMinGrade(next) ? 5 : grade;
     setForm({
       subject: next,
       grade: nextGrade,
@@ -495,8 +492,8 @@ export function GenerateForm({
 
   return (
     <div className="space-y-6">
-      {/* ── Ders seçici (yalnız Fen flag'i açıkken görünür) ─────────────── */}
-      {FEN_ENABLED ? (
+      {/* ── Ders seçici (yalnız birden çok ders açıksa görünür) ─────────── */}
+      {hasMultipleSubjects() ? (
         <div className="space-y-1.5">
           <Label htmlFor="subject">Ders</Label>
           <Select
@@ -507,7 +504,7 @@ export function GenerateForm({
               <SelectValue placeholder="Ders seçin" />
             </SelectTrigger>
             <SelectContent>
-              {SUBJECTS.map((s) => (
+              {availableSubjects().map((s) => (
                 <SelectItem key={s.value} value={s.value}>
                   {s.label}
                 </SelectItem>

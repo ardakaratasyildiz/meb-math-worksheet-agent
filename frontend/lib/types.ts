@@ -149,9 +149,14 @@ export interface WorksheetMetadata {
   trace: GenerationTrace | null;
 }
 
-// Ders (subject) ekseni — varsayılan matematik. Fen kalite kapısını (feature flag
-// NEXT_PUBLIC_FEN_ENABLED) geçene kadar UI'da gizli.
-export type Subject = "matematik" | "fen";
+// Ders (subject) ekseni — varsayılan matematik. Yeni dersler kalite kapısını
+// (NEXT_PUBLIC_ENABLED_SUBJECTS listesi, bkz. lib/subjects.ts) geçene kadar UI'da gizli.
+export type Subject =
+  | "matematik"
+  | "fen"
+  | "turkce"
+  | "sosyal"
+  | "ingilizce";
 
 export interface GenerateWorksheetRequest {
   grade: number;
