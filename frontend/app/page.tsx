@@ -216,7 +216,7 @@ const SOLVE_FEATURES = [
   {
     icon: <PencilLine className="h-5 w-5" />,
     title: "Site içinde çöz",
-    body: "Üretilen quizi site içinde çöz: çoktan seçmeli, doğru/yanlış, boşluk doldurma ve işlem.",
+    body: "Üretilen quizi site içinde çöz: çoktan seçmeli, doğru/yanlış, boşluk doldurma ve açık uçlu.",
   },
   {
     icon: <BarChart3 className="h-5 w-5" />,

@@ -76,6 +76,13 @@ export function formatSubmittedAnswer(
     if (submitted.bool_answer == null) return "Boş bırakıldı";
     return submitted.bool_answer ? "Doğru" : "Yanlış";
   }
+  if (questionType === "sozel_problem") {
+    // Açık uçlu — öz-değerlendirme (bool_answer = "doğru bildim").
+    if (submitted.bool_answer == null) return "Değerlendirilmedi";
+    return submitted.bool_answer
+      ? "Öz-değerlendirme: doğru bildim"
+      : "Öz-değerlendirme: yanlış / eksik";
+  }
   const texts = (submitted.texts ?? []).map((t) => t.trim()).filter(Boolean);
   return texts.length ? texts.join(", ") : "Boş bırakıldı";
 }

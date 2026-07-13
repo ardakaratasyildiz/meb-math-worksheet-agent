@@ -616,6 +616,9 @@ class QuizQuestionPublic(BaseModel):
     kazanim_kod: str
     options: list[str] | None = None
     blank_count: int | None = None
+    # Açık uçlu (sozel_problem) öz-değerlendirmede öğrenciye gösterilecek doğru cevap.
+    # Yalnız açık uçluda dolar; diğer tiplerde None (kopya önleme korunur).
+    reveal_answer: str | None = None
 
 
 class QuizPublic(BaseModel):

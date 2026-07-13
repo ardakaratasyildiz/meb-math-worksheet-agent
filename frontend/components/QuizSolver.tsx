@@ -80,6 +80,8 @@ export function QuizSolver({
   const [loading, setLoading] = React.useState(true);
   const [loadError, setLoadError] = React.useState<string | null>(null);
   const [answers, setAnswers] = React.useState<Record<number, AnswerState>>({});
+  // Açık uçlu (öz-değerlendirme): cevabı gösterilen soruların numaraları.
+  const [revealed, setRevealed] = React.useState<Set<number>>(new Set());
   const [guestName, setGuestName] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
   const [result, setResult] = React.useState<AttemptResult | null>(null);
@@ -334,7 +336,7 @@ export function QuizSolver({
                 </div>
               ) : null}
 
-              {/* Salt işlem (sayısal) */}
+              {/* Salt işlem (sayısal) — eski quizler için korunur */}
               {q.question_type === "salt_islem" ? (
                 <div className="pl-8 sm:max-w-xs">
                   <Input
@@ -344,6 +346,52 @@ export function QuizSolver({
                       setAnswer(q.number, { texts: [e.target.value] })
                     }
                   />
+                </div>
+              ) : null}
+
+              {/* Açık uçlu — öz-değerlendirme: kâğıda çöz → cevabı gör → kendini işaretle */}
+              {q.question_type === "sozel_problem" ? (
+                <div className="space-y-2 pl-8">
+                  <p className="text-xs text-muted-foreground">
+                    Soruyu kâğıda çöz; sonra cevabı görüp kendini değerlendir.
+                  </p>
+                  {!revealed.has(q.number) ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setRevealed((s) => new Set(s).add(q.number))
+                      }
+                    >
+                      Cevabı gör
+                    </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="rounded-md border bg-accent/30 p-3 text-sm">
+                        <span className="font-medium">Doğru cevap: </span>
+                        <MarkdownQuestion text={q.reveal_answer || "—"} />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={a.boolAnswer === true ? "default" : "outline"}
+                          onClick={() => setAnswer(q.number, { boolAnswer: true })}
+                        >
+                          ✓ Doğru bildim
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={a.boolAnswer === false ? "default" : "outline"}
+                          onClick={() => setAnswer(q.number, { boolAnswer: false })}
+                        >
+                          ✕ Yanlış / eksik
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : null}
             </Card>
