@@ -8,7 +8,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Soru Atölyesi — MEB matematik çalışma kağıdı üretici";
+export const alt = "Soru Atölyesi — MEB çalışma kağıdı üretici";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -66,7 +66,7 @@ export default async function OGImage() {
         >
           MEB kazanım kodu bazlı
           <br />
-          matematik çalışma kağıdı üretici
+          çalışma kağıdı üretici
         </div>
         <div
           style={{

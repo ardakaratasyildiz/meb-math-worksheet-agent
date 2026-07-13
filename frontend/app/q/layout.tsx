@@ -3,7 +3,7 @@ import * as React from "react";
 export const metadata = {
   title: "Quiz Çöz · Soru Atölyesi",
   description:
-    "Sana paylaşılan matematik quiz'ini site içinde test gibi çöz, anında kaç doğru kaç yanlış yaptığını gör.",
+    "Sana paylaşılan quiz'i site içinde çöz, anında kaç doğru kaç yanlış yaptığını gör.",
 };
 
 // Paylaşılan quiz çözme yüzeyi — PUBLIC (login GEREKMEZ; middleware'de /q korumalı

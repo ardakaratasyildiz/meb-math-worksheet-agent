@@ -133,9 +133,10 @@ function Hero() {
             hazırlayın
           </h1>
           <p className="mt-6 max-w-xl text-balance text-lg text-muted-foreground sm:text-xl">
-            Sınıf ve konuyu seçin; MEB kazanımlarına uygun sorular, cevap anahtarı
-            ve adım adım çözümüyle hazır PDF birkaç saniyede elinizde. İndirin,
-            yazdırın, öğrencilerinizle paylaşın.
+            {multi ? "Sınıf, ders ve kazanımı seçin" : "Sınıf ve kazanımı seçin"};
+            MEB kazanımlarına uygun sorular, cevap anahtarı ve adım adım
+            çözümüyle hazırlanan PDF saniyeler içinde elinizde. İndirin, yazdırın,
+            öğrencilerinizle paylaşın.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button asChild size="lg" className="gap-2 px-7">
@@ -215,7 +216,7 @@ const SOLVE_FEATURES = [
   {
     icon: <PencilLine className="h-5 w-5" />,
     title: "Site içinde çöz",
-    body: "Üretilen quizi test gibi çöz: çoktan seçmeli, doğru/yanlış, boşluk doldurma ve işlem.",
+    body: "Üretilen quizi site içinde çöz: çoktan seçmeli, doğru/yanlış, boşluk doldurma ve işlem.",
   },
   {
     icon: <BarChart3 className="h-5 w-5" />,
@@ -250,8 +251,8 @@ function SolveAndGrow() {
                 Sadece kağıt değil — çocuğunuz için eğlenceli bir öğrenme döngüsü
               </h2>
               <p className="mt-3 text-base leading-relaxed text-white/85">
-                Üret → test gibi çöz → anında kaç doğru/yanlış → eksik kazanıma
-                göre pratik. Öğrenci rozet kazanır, seri yapar, seviye atlar; siz
+                Üret → Çöz → Geliş: anında kaç doğru/yanlış, eksik kazanıma göre
+                pratik. Öğrenci rozet kazanır, seri yapar, seviye atlar; siz
                 gelişimini takip edersiniz.
               </p>
               <Button
@@ -366,7 +367,7 @@ function Showroom() {
         <SectionHeader
           eyebrow="Gerçek çıktı"
           title="Sistemin ürettiği örnek sorular"
-          body="Aşağıdakiler sistemin gerçekten ürettiği sorulardan bir kesit. Hazır PDF'te ayrıca cevap anahtarı ve adım adım çözüm sayfası bulunur."
+          body="Aşağıdakiler sistemin ürettiği sorulardan bir kesittir. Hazırlanan PDF'te ayrıca cevap anahtarı ve adım adım çözüm sayfası yer alır."
         />
         <div className="mt-12 grid gap-4 md:grid-cols-3">
           {items.map(({ label, q }, i) => (
@@ -512,20 +513,20 @@ function BrowseByGrade() {
 const STEPS = [
   {
     n: "1",
-    title: "Sınıf ve konuyu seç",
-    body: "Sınıf, konu ve istersen kazanım kodunu seç; zorluk düzeyini ve soru sayısını (5–20) belirle. Hepsi birkaç tıkla.",
+    title: "Sınıf, ders ve konuyu seç",
+    body: "Sınıf, ders, konu ve istersen kazanım kodunu seç; zorluk düzeyini ve soru sayısını (5–20) belirle. Hepsi birkaç tıkla.",
     icon: <BookOpen className="h-6 w-6" />,
   },
   {
     n: "2",
     title: "Sorular hazırlansın",
-    body: "Sistem MEB kazanımına uygun soruları üretir ve her birinin matematiğini + konuya uygunluğunu otomatik kontrol eder. Hatalı sorular sana hiç gösterilmeden elenir.",
+    body: "Sistem MEB kazanımına uygun soruları üretir ve her birinin içeriğini/doğruluğunu + konuya uygunluğunu otomatik kontrol eder. Hatalı sorular sana hiç gösterilmeden elenir.",
     icon: <Sparkles className="h-6 w-6" />,
   },
   {
     n: "3",
     title: "İndir ve paylaş",
-    body: "Sorular, cevap anahtarı ve adım adım çözüm tek bir A4 PDF'te — yaklaşık 30 saniyede. İndir, yazdır, öğrencilerinle paylaş.",
+    body: "Sorular, cevap anahtarı ve adım adım çözüm tek bir A4 PDF'te — saniyeler içinde. İndir, yazdır, öğrencilerinle paylaş.",
     icon: <Zap className="h-6 w-6" />,
   },
 ];
@@ -804,7 +805,7 @@ function FinalCta() {
       <div className="container">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-2xl border bg-card p-12 text-center shadow-pop">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            İlk çalışma kağıdını 5 dakikada hazırla
+            İlk çalışma kağıdını saniyeler içinde hazırla
           </h2>
           <p className="text-base text-muted-foreground">
             Hesap açmak için yalnızca e-posta yeterli, ödeme bilgisi istenmez.

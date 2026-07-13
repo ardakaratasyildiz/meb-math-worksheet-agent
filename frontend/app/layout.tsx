@@ -53,12 +53,12 @@ const SITE_URL =
 
 const SITE_NAME = "Soru Atölyesi";
 const SITE_DESC =
-  "MEB matematik müfredatı (1.→8. sınıf, 8. sınıf LGS hazırlık dahil) için kazanım koduna göre çalışma kağıdı üreten otomatik sistem. PDF çıktı, cevap anahtarı ve adım adım çözüm dahil — öğretmenler ve veliler için.";
+  "MEB müfredatına göre (Matematik, Fen Bilimleri, Türkçe, Sosyal Bilgiler ve İngilizce; 1.→8. sınıf, 8. sınıf LGS hazırlık dahil) kazanım koduna göre çalışma kağıdı üreten otomatik sistem. PDF çıktı, cevap anahtarı ve adım adım çözüm dahil — öğretmenler ve veliler için.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — MEB matematik çalışma kağıdı üretici`,
+    default: `${SITE_NAME} — MEB çalışma kağıdı üretici: Matematik, Fen, Türkçe, Sosyal, İngilizce`,
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESC,
@@ -82,6 +82,11 @@ export const metadata: Metadata = {
     "öğretmen kaynak",
     "ilkokul matematik",
     "ortaokul matematik",
+    "fen bilimleri çalışma kağıdı",
+    "türkçe çalışma kağıdı",
+    "sosyal bilgiler çalışma kağıdı",
+    "ingilizce çalışma kağıdı",
+    "MEB kazanım soru üretici",
   ],
   authors: [{ name: SITE_NAME, url: SITE_URL }],
   creator: SITE_NAME,
@@ -103,7 +108,7 @@ export const metadata: Metadata = {
     locale: "tr_TR",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — MEB matematik çalışma kağıdı üretici`,
+    title: `${SITE_NAME} — MEB çalışma kağıdı üretici: Matematik, Fen, Türkçe, Sosyal, İngilizce`,
     description: SITE_DESC,
     // og:image — frontend/app/opengraph-image.tsx Next.js tarafından otomatik
     // bu URL'e map edilir (manuel images: [...] belirtmeye gerek yok).

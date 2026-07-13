@@ -32,8 +32,8 @@ export function SubjectShowroom() {
       <div className="container max-w-4xl">
         <SectionHeader
           eyebrow="Gerçek çıktı"
-          title="Artık tek ders değil — dersini seç, ne ürettiğimizi gör"
-          body="Sistemin her ders için ürettiği sorulardan bir kesit. Hazır PDF'te ayrıca cevap anahtarı ve adım adım çözüm yer alır."
+          title="Dersini seç, ürettiğimiz soruları gör"
+          body="Sistemin her ders için ürettiği sorulardan bir kesittir. Hazırlanan PDF'te ayrıca cevap anahtarı ve adım adım çözüm yer alır."
         />
 
         {/* Ders sekmeleri */}

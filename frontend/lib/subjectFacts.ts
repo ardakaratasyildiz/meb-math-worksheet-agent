@@ -9,7 +9,7 @@ const FEN_FACTS: string[] = [
   "Işık, Güneş’ten Dünya’ya yaklaşık 8 dakika 20 saniyede ulaşır.",
   "İnsan vücudundaki en güçlü kas, boyutuna göre çene kasıdır (masseter).",
   "Su, katı hâlde (buz) sıvı hâlinden daha hafiftir — bu yüzden buz suda yüzer.",
-  "Ay’da yerçekimi Dünya’nın yaklaşık 1/6’sı kadardır; 60 kg biri Ay’da ~10 kg gelir.",
+  "Ay’da KÜTLEN değişmez (hep aynı maddesin); değişen AĞIRLIKTIR. Ay’ın çekimi Dünya’nın ~1/6’sı olduğu için orada yaklaşık 6 kat daha hafif tartılırsın.",
   "Şimşek, sesten çok daha hızlı olan ışıkla görünür; gök gürültüsünü sonra duyarız.",
   "Bir yıldırımın sıcaklığı Güneş’in yüzeyinden yaklaşık 5 kat daha sıcaktır.",
   "Bitkiler fotosentezde karbondioksit alıp oksijen verir — soluduğumuz oksijenin kaynağı.",

@@ -517,7 +517,7 @@ export function SolveForm() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[11px] text-muted-foreground">
           Çözülebilir tipler üretilir (çoktan seçmeli, doğru/yanlış, boşluk
-          doldurma, işlem). Üretim ~30 saniye sürer.
+          doldurma, işlem). Üretim saniyeler içinde tamamlanır.
         </p>
         <Button
           onClick={onStart}
