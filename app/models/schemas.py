@@ -505,6 +505,26 @@ class ProgressResponse(BaseModel):
     daily_trend: list[DailyTrendPoint] = []  # son 30 gün, gün-bazlı (eski→yeni)
 
 
+class StudyPlanDay(BaseModel):
+    """Haftalık çalışma programında bir gün — eksik kazanıma odaklı (WS-6a)."""
+    day_no: int
+    title: str                 # AI/varsayılan motive edici başlık
+    subject: str = "matematik"
+    grade: int | None = None
+    kazanim_kod: str = ""
+    topic_name: str = ""
+    question_count: int = 10
+    tip: str = ""              # kısa AI ipucu (fail-open: varsayılan)
+    ratio: float = 0.0         # mevcut doğruluk (0-1) — ne kadar zayıf
+
+
+class StudyPlanResponse(BaseModel):
+    """AI destekli haftalık çalışma programı (eksiklere göre)."""
+    summary: str
+    days: list[StudyPlanDay] = []
+    ai_generated: bool = False  # LLM zenginleştirmesi başarılı mı (yoksa deterministik)
+
+
 class GamificationResponse(BaseModel):
     """Oyunlaştırma — XP/seviye/seri (rozetler frontend'de mastery'den türetilir)."""
 

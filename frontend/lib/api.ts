@@ -30,6 +30,7 @@ import type {
   QuizPublic,
   ShareResultsResponse,
   ShareSummary,
+  StudyPlanResponse,
   SubmittedAnswer,
   TopicInfo,
   UnitInfo,
@@ -431,6 +432,15 @@ export async function submitAttempt(
 export async function getProgress(tenantId: string): Promise<ProgressResponse> {
   return request<ProgressResponse>(
     `/api/me/progress?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** AI destekli haftalık çalışma programı (eksiklere göre). LLM çağrısı içerir. */
+export async function getStudyPlan(
+  tenantId: string,
+): Promise<StudyPlanResponse> {
+  return request<StudyPlanResponse>(
+    `/api/me/study-plan?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 
