@@ -26,6 +26,12 @@ from app.models.schemas import (
 from app.services.math_verifier import numeric_equivalent
 
 
+# Şapkalı (circumflex) ünlüler önceden-birleşik karakterlerdir; casefold/NFKC bunları
+# sadeleştirmez. "beşerî" ≡ "beşeri" eşleşsin diye â/î/û → a/i/u katlanır (Sosyal'de
+# "beşerî" cevabı, kullanıcının "beşeri" girişiyle eşleşmiyordu — WS-5.2).
+_CIRCUMFLEX_FOLD = str.maketrans("âîûÂÎÛ", "aiuaiu")
+
+
 def _normalize_text(s: str) -> str:
     """Boşluk/büyük-küçük/aksan toleranslı normalize (string-eşleşme için)."""
     if not s:
@@ -33,6 +39,7 @@ def _normalize_text(s: str) -> str:
     s = s.strip().casefold()
     # Aksan/diakritik sadeleştir (Türkçe ı/İ casefold ile zaten ele alınır).
     s = unicodedata.normalize("NFKC", s)
+    s = s.translate(_CIRCUMFLEX_FOLD)  # şapkalı ünlüler: â/î/û → a/i/u
     s = re.sub(r"\s+", " ", s)
     return s.strip(" .,:;!?")
 

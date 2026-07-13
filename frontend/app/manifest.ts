@@ -4,10 +4,10 @@ import type { MetadataRoute } from "next";
 // <link rel="manifest"> ekler. Kurulabilir uygulama + "ana ekrana ekle".
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Soru Atölyesi — MEB matematik",
+    name: "Soru Atölyesi — MEB çalışma kağıdı",
     short_name: "Soru Atölyesi",
     description:
-      "MEB matematik çalışma kağıdı üret, site içinde test gibi çöz, gelişimini gör.",
+      "MEB çalışma kağıdı üret, site içinde çöz, gelişimini gör.",
     start_url: "/",
     scope: "/",
     display: "standalone",

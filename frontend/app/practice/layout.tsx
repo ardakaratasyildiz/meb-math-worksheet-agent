@@ -3,7 +3,7 @@ import * as React from "react";
 export const metadata = {
   title: "Çöz & Geliş · Soru Atölyesi",
   description:
-    "Soru üret, site içinde test gibi çöz, kaç doğru kaç yanlış yaptığını gör ve eksik kazanımlarına göre pratik yap.",
+    "Soru üret, site içinde çöz, kaç doğru kaç yanlış yaptığını gör ve eksik kazanımlarına göre pratik yap.",
 };
 
 // /practice nested layout — kişisel öğrenme alanı. Login zorunlu (middleware).
