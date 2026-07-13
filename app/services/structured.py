@@ -144,6 +144,90 @@ def _parse_blanks(answer: str) -> list[str]:
     return [raw]
 
 
+# ── Atıf bütünlüğü (WS-5.27) ─────────────────────────────────────────────────
+# Soru bir öğeye ("öncüller", "görsel/şekil/grafik", "tablo") atıf yapıp o öğeyi
+# İÇERMİYORSA cevaplanamaz → üretimde elenir (top-up doldurur). Yanlış-eleme maliyeti
+# düşük (yeniden üretilir) ama SİSTEMATİK yanlış-eleme (periyodik/çarpım tablosu gibi
+# kavramlar) yield'i düşürür → bilinen kavramlar dışlanır.
+
+# "hangileri" + Roman-set cevap kalıbı: "I ve II", "I, II ve III" (yalnız bitişik
+# Roman'lar; "I. Dünya Savaşı ve II. Meşrutiyet" gibi araya isim girenler eşleşmez).
+_ROMAN_ANSWER_RE = re.compile(r"\b(?:I|II|III|IV|V)\b\s*(?:,|ve|-)\s*\b(?:I|II|III|IV|V)\b")
+# Gerçek numaralı/Roman öğe listesi — SATIR-İÇİ de olabilir ("I. Ocak II. Mart").
+# Roman öğe işaretçileri (kelime-içi harfi saymamak için sınır guard'ı).
+_ROMAN_ITEM_RE = re.compile(r"(?<![A-Za-zÇĞİÖŞÜçğıöşü])(I{1,3}|IV|V)\s*[.\)]")
+_NUM_ITEM_RE = re.compile(r"(?<!\d)([1-9])\s*[.\)]\s")
+
+
+def _has_enum_items(text: str) -> bool:
+    """Metinde en az iki ardışık numaralı/Roman öğe var mı (I. II. / 1. 2.)?"""
+    romans = set(_ROMAN_ITEM_RE.findall(text))
+    if "I" in romans and "II" in romans:
+        return True
+    nums = set(_NUM_ITEM_RE.findall(text))
+    return "1" in nums and "2" in nums
+# Görsel atfı — Türkçe ünsüz yumuşaması/ünlü düşmesi için yaygın çekimli biçimler
+# AÇIKÇA sayılır (yanlış-eleme riskini düşürür). "bu/aşağıdaki ŞEKİLDE" ZARFI dahil
+# DEĞİL (şekle/şekildeki gibi net isim kullanımları dahil).
+_VISUAL_REF_RE = re.compile(
+    r"\b(?:"
+    r"görsel(?:e|de|deki|i|den)?|"
+    r"grafi(?:ğe|kte|ğinde|ği|kten)|"
+    r"şema(?:ya|da|daki|yı|dan)?|"
+    r"harita(?:ya|da|daki|yı|dan)?|"
+    r"diyagram(?:a|da|daki|ı|dan)?|"
+    r"şekle|şekildeki|şekilden|şekli"
+    r")\b",
+    re.IGNORECASE,
+)
+# Demonstratif + çıplak görsel-ismi ("yukarıdaki grafik", "verilen şema"). "şekil"
+# burada YOK — "aşağıdaki şekilde" zarfıyla karışmasın (şekil biçimleri üstte açık).
+_VISUAL_DEMO_RE = re.compile(
+    r"(?:yukar\w+|aşağ\w+|verilen|yanda\w*)\s+(?:[^.?!\n]{0,30}?)?"
+    r"(?:görsel|grafik|şema|harita|diyagram)\b",
+    re.IGNORECASE,
+)
+# Tablo atfı ("tabloya göre", "yukarıdaki tablo"); "periyodik/çarpım tablosu" KAVRAM → dışla.
+_TABLE_REF_RE = re.compile(
+    r"tablo\w*\s+göre|(?:yukar\w+|aşağ\w+|verilen)\s+(?:[^.?!\n]{0,30}?)?tablo\w*",
+    re.IGNORECASE,
+)
+_TABLE_EXCLUDE_RE = re.compile(r"periyodik\s+tablo|çarp[ıi]m\s+tablo", re.IGNORECASE)
+# Markdown tablo: en az bir "| ... |" satırı.
+_MD_TABLE_RE = re.compile(r"\|[^\n|]*\|")
+
+
+def reference_integrity_issue(question: str) -> str | None:
+    """Soru bir öğeye ("öncül", "görsel/grafik", "tablo") atıf yapıp o öğeyi
+    İÇERMİYORSA neden döner (cevaplanamaz → elenmeli). Emin değilse None."""
+    if not question:
+        return None
+    low = question.lower()
+    has_visual = ("<svg" in low) or ("{{chart" in low)
+
+    # 1) Öncül / Roman-set "hangileri" → numaralı/Roman öğe listesi olmalı.
+    refers_premise = ("öncül" in low) or bool(_ROMAN_ANSWER_RE.search(question))
+    if refers_premise and not _has_enum_items(question):
+        return "öncül/numaralı-liste atfı var ama öğeler metinde yok"
+
+    # 2) Görsel atfı → <svg> veya {{chart}} olmalı.
+    if not has_visual and (
+        _VISUAL_REF_RE.search(question) or _VISUAL_DEMO_RE.search(question)
+    ):
+        return "görsel/grafik/şema atfı var ama görsel yok"
+
+    # 3) Tablo atfı → markdown tablo olmalı (periyodik/çarpım tablosu hariç).
+    if (
+        _TABLE_REF_RE.search(question)
+        and not _TABLE_EXCLUDE_RE.search(question)
+        and not _MD_TABLE_RE.search(question)
+        and not has_visual
+    ):
+        return "tablo atfı var ama tablo yok"
+
+    return None
+
+
 def derive_structured_fields(q: Question) -> Question:
     """LLM yapısal alan üretmediyse metinden en-iyi-çaba doldurur.
 
