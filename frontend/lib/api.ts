@@ -10,6 +10,7 @@ import type {
   AttemptDetail,
   AttemptHistoryItem,
   AttemptResult,
+  ChildItem,
   ClassroomDetail,
   ClassroomsResponse,
   CreateQuizRequest,
@@ -441,6 +442,46 @@ export async function getStudyPlan(
 ): Promise<StudyPlanResponse> {
   return request<StudyPlanResponse>(
     `/api/me/study-plan?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+// ---- Veli ↔ öğrenci bağı (WS-6b) ----------------------------------------
+
+/** Öğrencinin veli takip kodu (yoksa üretilir, kalıcı). */
+export async function getParentCode(tenantId: string): Promise<{ code: string }> {
+  return request<{ code: string }>("/api/me/parent-code", {
+    method: "POST",
+    body: JSON.stringify({ tenant_id: tenantId }),
+  });
+}
+
+/** Veli, öğrencinin kodunu girerek bağlanır. */
+export async function linkChild(
+  tenantId: string,
+  code: string,
+  childLabel?: string,
+): Promise<{ student_id: string }> {
+  return request<{ student_id: string }>("/api/me/link-child", {
+    method: "POST",
+    body: JSON.stringify({ tenant_id: tenantId, code, child_label: childLabel ?? null }),
+  });
+}
+
+/** Velinin bağlı olduğu öğrenciler. */
+export async function listChildren(tenantId: string): Promise<ChildItem[]> {
+  const r = await request<{ items: ChildItem[] }>(
+    `/api/me/children?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+/** Velinin, bağlı olduğu öğrencinin ilerlemesi (salt-okunur). */
+export async function getChildProgress(
+  tenantId: string,
+  studentId: string,
+): Promise<ProgressResponse> {
+  return request<ProgressResponse>(
+    `/api/me/children/${encodeURIComponent(studentId)}/progress?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 

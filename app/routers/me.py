@@ -26,6 +26,11 @@ from app.models.schemas import (
     ShareResultItem,
     ShareResultsResponse,
     SharesResponse,
+    ChildItem,
+    ChildrenResponse,
+    LinkChildRequest,
+    ParentCodeRequest,
+    ParentCodeResponse,
     ShareSummary,
     StudyPlanResponse,
     SubmittedAnswer,
@@ -35,6 +40,7 @@ from app.services.attempt_review import build_attempt_detail
 from app.services.classroom_store import CLASSROOM_STORE
 from app.services.email_prefs_store import EMAIL_PREFS
 from app.services.gamification import build_gamification
+from app.services.parent_link_store import PARENT_LINK_STORE
 from app.services.progress import build_daily_trend, build_progress
 from app.services.quiz_store import QUIZ_STORE
 from app.services.study_plan import build_study_plan
@@ -74,6 +80,62 @@ def get_study_plan(
     quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
     progress = build_progress(mastery_rows, quizzes_solved, [])
     return build_study_plan(progress)
+
+
+# ── Veli ↔ öğrenci bağı (WS-6b) ──────────────────────────────────────────────
+
+
+@router.post("/parent-code", response_model=ParentCodeResponse)
+def get_parent_code(
+    req: ParentCodeRequest,
+    _api_key: str = Depends(require_api_key),
+) -> ParentCodeResponse:
+    """Öğrencinin veli takip kodu (yoksa üretilir, kalıcı). Veli bu kodla bağlanır."""
+    return ParentCodeResponse(code=PARENT_LINK_STORE.get_or_create_code(req.tenant_id))
+
+
+@router.post("/link-child")
+def link_child(
+    req: LinkChildRequest,
+    _api_key: str = Depends(require_api_key),
+) -> dict:
+    """Veli, öğrencinin kodunu girerek bağlanır. Geçersiz/kendi kodu → 404."""
+    student = PARENT_LINK_STORE.link(req.tenant_id, req.code, req.child_label)
+    if student is None:
+        raise HTTPException(status_code=404, detail="Kod geçersiz veya kendi kodun.")
+    return {"student_id": student, "ok": True}
+
+
+@router.get("/children", response_model=ChildrenResponse)
+def list_children(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> ChildrenResponse:
+    """Velinin bağlı olduğu öğrenciler."""
+    return ChildrenResponse(
+        items=[ChildItem(**c) for c in PARENT_LINK_STORE.list_children(tenant_id)]
+    )
+
+
+@router.get("/children/{student_id}/progress", response_model=ProgressResponse)
+def get_child_progress(
+    student_id: str,
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> ProgressResponse:
+    """Velinin, bağlı olduğu öğrencinin ilerlemesi (SALT-OKUNUR). Bağlı değilse 403."""
+    if not PARENT_LINK_STORE.is_linked(tenant_id, student_id):
+        raise HTTPException(status_code=403, detail="Bu öğrenciye bağlı değilsin.")
+    mastery_rows = QUIZ_STORE.get_mastery(student_id)
+    quizzes_solved = QUIZ_STORE.count_attempts(student_id)
+    recent = QUIZ_STORE.recent_attempts(student_id, limit=10)
+    resp = build_progress(mastery_rows, quizzes_solved, recent)
+    since = time.time() - 30 * 86400
+    today = datetime.now(_IST).date()
+    resp.daily_trend = build_daily_trend(
+        QUIZ_STORE.attempts_since(student_id, since), today
+    )
+    return resp
 
 
 @router.get("/gamification", response_model=GamificationResponse)

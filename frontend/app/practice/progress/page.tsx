@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { ProgressDashboard } from "@/components/ProgressDashboard";
 import { StudyPlan } from "@/components/StudyPlan";
+import { ParentSection } from "@/components/ParentSection";
 
 export default function CozIlerlemePage() {
   return (
@@ -23,6 +24,7 @@ export default function CozIlerlemePage() {
 
       <ProgressDashboard />
       <StudyPlan />
+      <ParentSection />
     </div>
   );
 }
