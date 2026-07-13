@@ -44,7 +44,7 @@ type SolvableType =
   | "coktan_secmeli"
   | "dogru_yanlis"
   | "bosluk_doldurma"
-  | "salt_islem";
+  | "sozel_problem";
 
 const DIFFICULTIES: { value: Difficulty; label: string }[] = [
   { value: "kolay", label: "Kolay" },
@@ -63,7 +63,7 @@ const SOLVABLE_TYPES: { value: SolvableType; label: string; hint: string }[] = [
   { value: "coktan_secmeli", label: "Çoktan seçmeli", hint: "4 şıklı, tek doğru" },
   { value: "dogru_yanlis", label: "Doğru / Yanlış", hint: "Tek önerme" },
   { value: "bosluk_doldurma", label: "Boşluk doldurma", hint: "____ ile boşluk" },
-  { value: "salt_islem", label: "İşlem", hint: "Sayısal sonuç" },
+  { value: "sozel_problem", label: "Açık uçlu", hint: "Serbest cevap — kendin değerlendir" },
 ];
 
 const KAZANIM_AUTO = "__AUTO__";
@@ -72,7 +72,7 @@ const ALL_TYPES_ON: Record<SolvableType, boolean> = {
   coktan_secmeli: true,
   dogru_yanlis: true,
   bosluk_doldurma: true,
-  salt_islem: true,
+  sozel_problem: true,
 };
 
 // Çözülebilir quiz üretim formu — /generate'in sade kardeşi. PDF/markalama/
@@ -517,7 +517,7 @@ export function SolveForm() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[11px] text-muted-foreground">
           Çözülebilir tipler üretilir (çoktan seçmeli, doğru/yanlış, boşluk
-          doldurma, işlem). Üretim saniyeler içinde tamamlanır.
+          doldurma, açık uçlu). Üretim saniyeler içinde tamamlanır.
         </p>
         <Button
           onClick={onStart}

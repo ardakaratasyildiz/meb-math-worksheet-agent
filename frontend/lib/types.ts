@@ -204,6 +204,8 @@ export interface QuizQuestionPublic {
   kazanim_kod: string;
   options?: string[] | null;
   blank_count?: number | null;
+  // Açık uçlu (sozel_problem) öz-değerlendirmede "cevabı gör" ile gösterilir.
+  reveal_answer?: string | null;
 }
 
 export interface QuizPublic {

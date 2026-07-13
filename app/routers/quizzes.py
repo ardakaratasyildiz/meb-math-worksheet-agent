@@ -46,7 +46,10 @@ _SOLVABLE_TYPES = [
     QuestionType.COKTAN_SECMELI,
     QuestionType.DOGRU_YANLIS,
     QuestionType.BOSLUK_DOLDURMA,
-    QuestionType.SALT_ISLEM,
+    # SALT_ISLEM (sayısal) → SOZEL_PROBLEM (açık uçlu): serbest cevap, ÖZ-DEĞERLENDİRME
+    # ile puanlanır (öğrenci cevabı görür, kendini işaretler). Eski salt_islem quizleri
+    # yine puanlanır (grading'de branch korunur).
+    QuestionType.SOZEL_PROBLEM,
 ]
 
 
@@ -211,6 +214,9 @@ def _to_public(
     for q in questions:
         is_mcq = q.question_type == QuestionType.COKTAN_SECMELI
         is_blank = q.question_type == QuestionType.BOSLUK_DOLDURMA
+        # Açık uçlu (öz-değerlendirme): otomatik puanlanamaz → cevap istemciye AÇILIR
+        # (öğrenci "cevabı gör" deyip kendini işaretler). Diğer tiplerde cevap gizli.
+        is_open = q.question_type == QuestionType.SOZEL_PROBLEM
         pub.append(
             QuizQuestionPublic(
                 number=q.number,
@@ -219,6 +225,7 @@ def _to_public(
                 kazanim_kod=q.kazanim_kod,
                 options=q.options if is_mcq else None,
                 blank_count=(len(q.blanks) if (is_blank and q.blanks) else None),
+                reveal_answer=q.answer if is_open else None,
             )
         )
     return QuizPublic(

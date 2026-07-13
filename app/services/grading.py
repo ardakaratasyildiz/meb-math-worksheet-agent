@@ -82,6 +82,11 @@ def grade_question(stored: Question, submitted: SubmittedAnswer | None) -> bool:
             return False
         return numeric_equivalent(submitted.texts[0], stored.answer) is True
 
+    # Açık uçlu (sozel_problem) — OTOMATİK puanlanamaz; ÖZ-DEĞERLENDİRME: öğrenci
+    # cevabı gördükten sonra "doğru bildim" (bool_answer=True) derse doğru sayılır.
+    if t == QuestionType.SOZEL_PROBLEM:
+        return submitted.bool_answer is True
+
     # Çözülebilir olmayan tip puanlanamaz → yanlış (bu havuza hiç girmemeli).
     return False
 
