@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/PageHeader";
@@ -23,9 +23,19 @@ export function SubjectShowroom() {
   const [active, setActive] = React.useState<Subject>(
     subjects[0]?.value ?? "matematik",
   );
+  // Aktif dersin gösterilen örnek indeksi — "başka örnek" ile döner.
+  const [idx, setIdx] = React.useState(0);
 
-  const q = SUBJECT_SHOWCASE[active];
+  const examples = SUBJECT_SHOWCASE[active] ?? [];
+  const q = examples[idx] ?? examples[0];
   const st = subjectStyle(active);
+
+  function selectSubject(value: Subject) {
+    setActive(value);
+    setIdx(0); // ders değişince ilk örnekten başla
+  }
+
+  if (!q) return null; // güvenlik (her derste örnek var; TS strict için)
 
   return (
     <section id="dersler" className="py-20">
@@ -51,7 +61,7 @@ export function SubjectShowroom() {
                 type="button"
                 role="tab"
                 aria-selected={on}
-                onClick={() => setActive(s.value)}
+                onClick={() => selectSubject(s.value)}
                 className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
                   on
                     ? `${sst.bg} ${sst.text} ${sst.border}`
@@ -119,7 +129,18 @@ export function SubjectShowroom() {
           </div>
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          {examples.length > 1 ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="gap-2"
+              onClick={() => setIdx((i) => (i + 1) % examples.length)}
+            >
+              <RefreshCw className="h-4 w-4" /> Başka örnek
+            </Button>
+          ) : null}
           <Button asChild size="lg" className="gap-2 px-7">
             <Link
               href={
