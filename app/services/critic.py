@@ -85,8 +85,13 @@ class GeminiCritic:
         questions: list[Question],
         kazanimlar: list[Kazanim],
         difficulty: Difficulty,
+        context: str = "",
     ) -> list[CriticVerdict]:
-        """Her soru için verdict döner. Critic çağrısı tamamen başarısızsa boş liste — fail-open."""
+        """Her soru için verdict döner. Critic çağrısı tamamen başarısızsa boş liste — fail-open.
+
+        `context`: opsiyonel referans ders kitabı bağlamı (RAG). Verilirse olgusal
+        doğrulama öncelikle buna göre yapılır (özellikle Fen bilimsel doğruluğu için).
+        """
         from app.services.llm_providers import TokenUsage
         self._last_usage = TokenUsage(model_name=self.model)  # sıfırla
         if not questions:
@@ -102,8 +107,17 @@ class GeminiCritic:
             f"Çözüm: {q.solution_steps}"
             for i, q in enumerate(questions)
         )
+        context_block = ""
+        if context.strip():
+            # Bağlamı makul bir üst sınırla kes (token/maliyet).
+            ctx = context.strip()[:6000]
+            context_block = (
+                "REFERANS DERS KİTABI BAĞLAMI (olguları öncelikle buna göre doğrula; "
+                f"bağlamla çelişen bilgi geçersizdir):\n{ctx}\n\n"
+            )
         prompt = (
             f"Hedef zorluk: {difficulty.value}\n\n"
+            f"{context_block}"
             f"Geçerli kazanımlar:\n{kazanim_block}\n\n"
             f"Değerlendirilecek sorular:\n{questions_block}"
         )
