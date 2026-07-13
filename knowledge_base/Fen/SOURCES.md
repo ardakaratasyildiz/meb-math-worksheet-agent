@@ -19,6 +19,25 @@
 | 7 | `7.sinif/c1_fen-bilimleri-7.pdf` (2.0M), `fen-bilimleri-7-tam.pdf` (612K) | mufredat.meb.gov.tr TTKB/Ortaokul/7 | ⚠️ İkisi de küçük — **tam kitap olmayabilir**, doğrula. TYMM'de 7. sınıf henüz yok. |
 | 8 | `8.sinif/c1_fen-bilimleri-8.pdf` (12M) | mufredat.meb.gov.tr TTKB/Ortaokul/8 | Resmî |
 
+## 1b. ODSGM resmî çalışma kitapları — TAM içerik (2026-07-13 eklendi)
+> Kademeli TYMM geçişinde 3-4-7-8 için TYMM ders kitabı HENÜZ yok (resmî
+> tymm.meb.gov.tr sayfası doğrulandı: yalnız 5-6). mufredat.meb TTKB "c1"
+> dosyaları KISMİ (~50 sf). Tam içerik için ODSGM resmî e-kitap/çalışma
+> kitapları indirildi (cdn.eba.gov.tr, kamuya açık):
+
+| Sınıf | Dosya | Sayfa | Kaynak |
+|---|---|---|---|
+| 3 | `3.sinif/3fen_calisma_kitabi_odsgm.pdf` (63M) | 200 | cdn.eba.gov.tr/.../ekitap/veri/3fen.pdf (ODSGM, meb.ai/xo3BL6) |
+| 4 | `4.sinif/4fen_calisma_kitabi_odsgm.pdf` (75M) | 312 | cdn.eba.gov.tr/.../ekitap/veri/4fen.pdf (ODSGM, meb.ai/UFEBqqH) |
+| 8 | `8.sinif/8fen_calisma_kitabi_odsgm.pdf` (63M) | 153 | cdn.eba.gov.tr/.../ekitap/lgs/8fen_ck2.pdf (ODSGM) |
+| 8 | `8.sinif/lgs_fen_odsgm.pdf` (198M) | 392 | cdn.eba.gov.tr/.../ekitap/lgs/lgs2/lgs_fen_a.pdf (LGS Fen soru derlemesi) |
+
+**Sonuç:** 3, 4, 5, 6, 8 → TAM içerik (TYMM ders kitabı ya da ODSGM çalışma kitabı).
+**7. sınıf → hâlâ KISMİ:** tam ders/çalışma kitabı kamuya açık tek-PDF olarak
+bulunamadı (mufredat c1 = 56 sf alıntı + 2024 TYMM programı + EBA ünite örnek
+soruları + beceri cevap anahtarı ile kısmen kaplanıyor). LGS ağırlığı 8'de olduğu
+için 7 boşluğu düşük riskli; ileride EBA viewer'dan (ogmmateryal) temin edilebilir.
+
 ## 2. Örnek soru kitapçıkları (Track B — few-shot ALTIN kaynak)
 Resmî MEB/EBA **ünitelendirilmiş örnek sorular** (`cdn.eba.gov.tr/yardimcikaynaklar/2022/11/kt/{sınıf}kt/fen/`):
 
