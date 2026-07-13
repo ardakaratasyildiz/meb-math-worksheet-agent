@@ -27,6 +27,7 @@ from app.models.schemas import (
     ShareResultsResponse,
     SharesResponse,
     ShareSummary,
+    StudyPlanResponse,
     SubmittedAnswer,
 )
 from app.security import require_api_key
@@ -36,6 +37,7 @@ from app.services.email_prefs_store import EMAIL_PREFS
 from app.services.gamification import build_gamification
 from app.services.progress import build_daily_trend, build_progress
 from app.services.quiz_store import QUIZ_STORE
+from app.services.study_plan import build_study_plan
 
 _IST = timezone(timedelta(hours=3))
 
@@ -59,6 +61,19 @@ def get_progress(
         QUIZ_STORE.attempts_since(tenant_id, since), today
     )
     return resp
+
+
+@router.get("/study-plan", response_model=StudyPlanResponse)
+def get_study_plan(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> StudyPlanResponse:
+    """AI destekli haftalık çalışma programı — kullanıcının zayıf kazanımlarına göre.
+    Buton-tetikli (LLM çağrısı içerir); zayıf konu yoksa teşvik mesajı döner."""
+    mastery_rows = QUIZ_STORE.get_mastery(tenant_id)
+    quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
+    progress = build_progress(mastery_rows, quizzes_solved, [])
+    return build_study_plan(progress)
 
 
 @router.get("/gamification", response_model=GamificationResponse)

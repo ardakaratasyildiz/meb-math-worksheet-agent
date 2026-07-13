@@ -1,0 +1,150 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
+import { CalendarDays, Loader2, Sparkles } from "lucide-react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { getStudyPlan } from "@/lib/api";
+import { practiceHref } from "@/lib/curriculum";
+import { subjectLabel, subjectStyle } from "@/lib/subjects";
+import type { StudyPlanDay, StudyPlanResponse, Subject } from "@/lib/types";
+
+/** Programdaki bir günün kazanımı için "Çalış" derin-linki (ders-farkında). */
+function hrefForDay(d: StudyPlanDay): string {
+  const subject = (d.subject ?? "matematik") as Subject;
+  const kod = d.kazanim_kod ?? "";
+  if (subject === "matematik") return kod ? practiceHref(kod) : "/practice/new";
+  const p = new URLSearchParams({ subject });
+  if (d.grade) p.set("grade", String(d.grade));
+  if (kod) p.set("kazanim", kod);
+  return `/practice/new?${p.toString()}`;
+}
+
+/**
+ * AI haftalık çalışma programı (WS-6a) — buton-tetikli (LLM maliyeti kontrolü).
+ * Öğrencinin zayıf kazanımlarına göre güne yayılmış plan + her gün için "Çalış".
+ */
+export function StudyPlan() {
+  const { userId, isLoaded } = useAuth();
+  const [plan, setPlan] = React.useState<StudyPlanResponse | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  async function generate() {
+    if (!userId) return;
+    setLoading(true);
+    try {
+      setPlan(await getStudyPlan(userId));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Program oluşturulamadı.";
+      toast.error("Program oluşturulamadı", { description: msg });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (!isLoaded || !userId) return null;
+
+  return (
+    <section className="space-y-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div className="flex items-baseline gap-2">
+          <CalendarDays className="h-4 w-4 self-center text-grape" />
+          <h2 className="font-display text-lg font-bold">Haftalık çalışma programı</h2>
+          <span className="text-xs text-muted-foreground">
+            eksiklerine göre, yapay zeka destekli
+          </span>
+        </div>
+        {plan ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={generate}
+            disabled={loading}
+            className="gap-1.5 text-xs"
+          >
+            {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+            Yenile
+          </Button>
+        ) : null}
+      </div>
+
+      {!plan ? (
+        <Card className="flex flex-col items-start gap-3 p-5 shadow-pop">
+          <p className="text-sm text-muted-foreground">
+            Zayıf kaldığın konulara göre sana özel, güne yayılmış bir çalışma
+            programı oluşturalım.
+          </p>
+          <Button onClick={generate} disabled={loading} className="gap-2">
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Hazırlanıyor…
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" /> AI ile programımı oluştur
+              </>
+            )}
+          </Button>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          <Card className="p-4 shadow-pop">
+            <p className="text-sm">{plan.summary}</p>
+          </Card>
+
+          {plan.days.map((d) => {
+            const subject = (d.subject ?? "matematik") as Subject;
+            const st = subjectStyle(subject);
+            return (
+              <Card
+                key={d.day_no}
+                className="flex items-start gap-3 border-l-4 p-4 shadow-pop"
+                style={{ borderLeftColor: st.hex }}
+              >
+                <span
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-xl font-display text-sm font-bold text-white"
+                  style={{ background: st.hex }}
+                >
+                  {d.day_no}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-display text-sm font-bold">{d.title}</span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${st.bg} ${st.text}`}
+                    >
+                      {st.emoji} {subjectLabel(subject)}
+                      {d.grade ? ` · ${d.grade}. sınıf` : ""}
+                    </span>
+                  </div>
+                  {d.tip ? (
+                    <p className="mt-1 text-xs text-muted-foreground">{d.tip}</p>
+                  ) : null}
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-semibold text-muted-foreground">
+                      {d.topic_name} · {d.question_count} soru
+                    </span>
+                    <Button asChild size="sm" className="h-8 shrink-0 gap-1">
+                      <Link href={hrefForDay(d)}>Çalış →</Link>
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+
+          {plan.ai_generated ? (
+            <p className="text-[11px] text-muted-foreground">
+              ✨ Bu program yapay zeka ile eksiklerine göre hazırlandı.
+            </p>
+          ) : null}
+        </div>
+      )}
+    </section>
+  );
+}

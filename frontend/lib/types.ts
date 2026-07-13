@@ -495,6 +495,25 @@ export interface ProgressResponse {
   daily_trend?: DailyTrendPoint[];
 }
 
+// AI haftalık çalışma programı (WS-6a)
+export interface StudyPlanDay {
+  day_no: number;
+  title: string;
+  subject?: Subject;
+  grade?: number | null;
+  kazanim_kod?: string;
+  topic_name?: string;
+  question_count: number;
+  tip?: string;
+  ratio?: number;
+}
+
+export interface StudyPlanResponse {
+  summary: string;
+  days: StudyPlanDay[];
+  ai_generated: boolean;
+}
+
 // ── Oyunlaştırma ───────────────────────────────────────────────────────────
 
 export interface GamificationResponse {
