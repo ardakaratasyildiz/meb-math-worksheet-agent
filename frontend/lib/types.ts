@@ -514,6 +514,13 @@ export interface StudyPlanResponse {
   ai_generated: boolean;
 }
 
+// Veli ↔ öğrenci bağı (WS-6b)
+export interface ChildItem {
+  student_id: string;
+  label: string;
+  linked_at: string;
+}
+
 // ── Oyunlaştırma ───────────────────────────────────────────────────────────
 
 export interface GamificationResponse {

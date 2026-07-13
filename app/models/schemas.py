@@ -525,6 +525,33 @@ class StudyPlanResponse(BaseModel):
     ai_generated: bool = False  # LLM zenginleştirmesi başarılı mı (yoksa deterministik)
 
 
+# ── Veli ↔ öğrenci bağı (WS-6b) ──────────────────────────────────────────────
+
+
+class ParentCodeRequest(BaseModel):
+    tenant_id: str  # öğrenci
+
+
+class ParentCodeResponse(BaseModel):
+    code: str
+
+
+class LinkChildRequest(BaseModel):
+    tenant_id: str  # veli
+    code: str
+    child_label: str | None = None
+
+
+class ChildItem(BaseModel):
+    student_id: str
+    label: str
+    linked_at: str
+
+
+class ChildrenResponse(BaseModel):
+    items: list[ChildItem] = []
+
+
 class GamificationResponse(BaseModel):
     """Oyunlaştırma — XP/seviye/seri (rozetler frontend'de mastery'den türetilir)."""
 
