@@ -108,8 +108,11 @@ def test_to_public_anti_copy() -> None:
     )
     dumped = pub.model_dump()
     flat = str(dumped)
-    # CEVAP SIZMAMALI
-    check("answer" not in flat, "answer alanı public'te yok")
+    # CEVAP SIZMAMALI — örnek sorular açık uçlu DEĞİL → reveal_answer hepsinde None.
+    check(
+        all(x.reveal_answer is None for x in pub.questions),
+        "açık-uçlu olmayan sorularda cevap açılmaz (reveal_answer None)",
+    )
     check("correct_index" not in flat, "correct_index public'te yok")
     check("correct_bool" not in flat, "correct_bool public'te yok")
     check("solution_steps" not in flat, "solution_steps public'te yok")
@@ -125,18 +128,36 @@ def test_to_public_anti_copy() -> None:
     check(pub.questions[3].blank_count is None, "salt_islem'de blank_count yok")
     check(pub.question_count == 4, "question_count=4")
 
+    # Açık uçlu (sozel_problem): ÖZ-DEĞERLENDİRME için cevap AÇILIR (reveal_answer),
+    # ama çözüm/diğer alanlar yine gizli.
+    open_q = Question(
+        number=1, question="Bir problemi çöz ve açıkla.", answer="Çözüm: 42",
+        solution_steps="adım adım", kazanim_kod="M.5.1.9",
+        question_type=QuestionType.SOZEL_PROBLEM,
+    )
+    open_pub = _to_public(
+        quiz_id="q2", title="T", grade=5, topic_id="dogal_sayilar",
+        difficulty=Difficulty.ORTA, created_at="2026-06-10T00:00:00+00:00",
+        questions=[open_q],
+    )
+    check(open_pub.questions[0].reveal_answer == "Çözüm: 42", "açık uçluda cevap açılır")
+    check("solution_steps" not in str(open_pub.model_dump()), "açık uçluda çözüm yine gizli")
+
 
 def test_advanced_options_helpers() -> None:
     print("gelişmiş seçenek helper'ları (tip filtresi + bucket)")
     # None → 4 çözülebilir tip
     check(len(_resolve_solvable_types(None)) == 4, "None → 4 tip")
-    # Çözülebilir olmayan tip elenir
+    # sozel_problem artık ÇÖZÜLEBİLİR (açık uçlu, öz-değerlendirme) → korunur.
     mixed = _resolve_solvable_types(
         [QuestionType.COKTAN_SECMELI, QuestionType.SOZEL_PROBLEM]
     )
-    check(mixed == [QuestionType.COKTAN_SECMELI], f"sözel elendi: {mixed}")
-    # Hiç çözülebilir yoksa boş (router 400 döner)
-    check(_resolve_solvable_types([QuestionType.SOZEL_PROBLEM]) == [], "çözülebilir yoksa boş")
+    check(
+        mixed == [QuestionType.COKTAN_SECMELI, QuestionType.SOZEL_PROBLEM],
+        f"çoktan seçmeli + açık uçlu korunur: {mixed}",
+    )
+    # Çözülebilir olmayan tip (salt_islem artık havuzda değil) elenir → boş (router 400).
+    check(_resolve_solvable_types([QuestionType.SALT_ISLEM]) == [], "çözülebilir olmayan elenir → boş")
     # Bucket dağılımı
     b10 = _split_buckets(10)
     check(sum(b10.values()) == 10, f"bucket toplamı 10: {b10}")
