@@ -290,6 +290,53 @@ def _clamp_temp(t: float) -> float:
     return max(TEMPERATURE_MIN, min(TEMPERATURE_MAX, t))
 
 
+def _collect_critic_context(
+    subject: SubjectId,
+    grade: int,
+    kazanimlar: list[dict],
+    max_chunks: int = 6,
+) -> str:
+    """Non-math ders için critic'e verilecek REFERANS ders kitabı bağlamı (RAG).
+
+    Fen chunk'ları subject=fen + grade ile çekilir (kazanım koduyla değil — Fen
+    chunk'larında kazanım tag yok; grade+subject+embedding benzerliği yeterli).
+    Matematik için boş döner (math kendi doğrulayıcılarını kullanır)."""
+    if subject == SubjectId.MATEMATIK or not settings.use_rag:
+        return ""
+    retriever = get_retriever()
+    if retriever is None or retriever.count() == 0:
+        return ""
+    subj = subject.value if hasattr(subject, "value") else str(subject)
+    seen: set[str] = set()
+    parts: list[str] = []
+    per = max(1, max_chunks // max(len(kazanimlar), 1))
+    for k in kazanimlar:
+        try:
+            chunks = retriever.retrieve_textbook(
+                query_text=k.get("metin", ""),
+                grade=grade,
+                kazanim_kod=None,
+                topic_id="",  # eşleşmez → (subject, grade) fallback'ine düşer (embedding)
+                k=per,
+                subject=subj,
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Critic context retrieval başarısız (%s): %s", subj, exc)
+            continue
+        for c in chunks:
+            txt = (c.get("question") or "").strip()
+            key = txt[:80]
+            if not txt or key in seen:
+                continue
+            seen.add(key)
+            parts.append(txt)
+            if len(parts) >= max_chunks:
+                break
+        if len(parts) >= max_chunks:
+            break
+    return "\n---\n".join(parts)
+
+
 class GeminiAgent:
     def __init__(
         self,
@@ -743,9 +790,16 @@ class GeminiAgent:
         # Critic geçişi: matematik doğruluğu + kazanım/zorluk uyumu kontrolü.
         critic_rejected = 0
         if settings.enable_critic and questions:
-            critic = self._get_critic()
+            # DÜZELTME: subject'i geçir — Fen soruları ana geçişte de bilimsel-
+            # doğruluk prompt'uyla denetlensin (önceden math critic'ine düşüyordu).
+            critic = self._get_critic(subject)
             if critic is not None:
-                verdicts = critic.evaluate(questions, kazanimlar, difficulty)
+                # Non-math: referans ders kitabı bağlamını (RAG) critic'e ver → olgusal
+                # doğrulama kitaba dayansın (Fen "hücre duvarı" vb. hatalar).
+                critic_context = _collect_critic_context(subject, grade, kazanimlar)
+                verdicts = critic.evaluate(
+                    questions, kazanimlar, difficulty, context=critic_context
+                )
                 _cu = getattr(critic, "_last_usage", None)
                 if _cu is not None:
                     total_prompt_tokens += _cu.input_tokens
@@ -856,7 +910,10 @@ class GeminiAgent:
             if settings.enable_critic and new_questions:
                 critic = self._get_critic(subject)
                 if critic is not None:
-                    verdicts_c = critic.evaluate(new_questions, kazanimlar, difficulty) or []
+                    critic_context = _collect_critic_context(subject, grade, kazanimlar)
+                    verdicts_c = critic.evaluate(
+                        new_questions, kazanimlar, difficulty, context=critic_context
+                    ) or []
                     _cu2 = getattr(critic, "_last_usage", None)
                     if _cu2 is not None:
                         total_prompt_tokens += _cu2.input_tokens
