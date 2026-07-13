@@ -28,6 +28,7 @@ from app.services.diversity import (
 from app.services.embedder import EmbedderError, GeminiEmbedder
 from app.services.examples import get_examples_for_kazanim, select_diverse
 from app.services.llm_cache import GENERATION_CACHE
+from app.services.structured import reference_integrity_issue
 from app.services.llm_providers import (
     AnthropicProvider,
     GeminiProvider,
@@ -1038,6 +1039,14 @@ class GeminiAgent:
                         raw.question[:70],
                     )
                     continue
+            # Atıf bütünlüğü: "öncüllere/görsele/tabloya göre" deyip o öğeyi İÇERMEYEN
+            # soru cevaplanamaz → ele (top-up doldurur). WS-5.27.
+            ref_issue = reference_integrity_issue(q_text)
+            if ref_issue:
+                logger.info(
+                    "Atıf bütünlüğü ihlali (%s): %s", ref_issue, raw.question[:70]
+                )
+                continue
             kod = raw.kazanim_kod if raw.kazanim_kod in valid_kazanim_codes else fallback_kazanim
             dedup.add(raw.question)
             steps = raw.solution_steps
