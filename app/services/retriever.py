@@ -232,10 +232,12 @@ class ExampleRetriever:
         difficulty: str,
         k: int = 5,
         rng: random.Random | None = None,
+        subject: str = "matematik",
     ) -> list[dict]:
         """Soru-cevap formatlı few-shot örnekleri döndürür (textbook chunk'ları HARİÇ).
 
-        Katmanlı fallback: dar filtreden geniş filtreye.
+        Katmanlı fallback: dar filtreden geniş filtreye. Tüm filtreler `subject`
+        ile kısıtlanır (çapraz-ders bulaşması olmasın; varsayılan matematik).
         rng verilirse oversample + weighted random sampling — aynı sorguda farklı çağrıların
         farklı k seçmesi için.
         """
@@ -248,6 +250,7 @@ class ExampleRetriever:
             k=k,
             include_textbook=False,
             rng=rng,
+            subject=subject,
         )
 
     def retrieve_textbook(
@@ -258,9 +261,11 @@ class ExampleRetriever:
         topic_id: str,
         k: int = 3,
         rng: random.Random | None = None,
+        subject: str = "matematik",
     ) -> list[dict]:
         """Sadece MEB ders kitabı chunk'larını döndürür. Difficulty filtresi YOK
-        (kitap içeriği zorluk-agnostic). curriculum_expansion da dahildir."""
+        (kitap içeriği zorluk-agnostic). curriculum_expansion da dahildir.
+        `subject` ile kısıtlanır (varsayılan matematik)."""
         return self._query_with_fallback(
             query_text=query_text,
             grade=grade,
@@ -271,6 +276,7 @@ class ExampleRetriever:
             include_textbook=True,
             textbook_only=True,
             rng=rng,
+            subject=subject,
         )
 
     def _query_with_fallback(
@@ -284,6 +290,7 @@ class ExampleRetriever:
         include_textbook: bool,
         textbook_only: bool = False,
         rng: random.Random | None = None,
+        subject: str = "matematik",
     ) -> list[dict]:
         query_embedding = self.embedder.embed_one(query_text)
 
@@ -296,10 +303,14 @@ class ExampleRetriever:
         # sıralamayla azaltılır: synthetic kolay/zor pool boyutu kazanım başına
         # 5; (1)'de yeterli bulunmazsa (3)'e atlamak yerine (2) ile topic genişler
         # ama kolay/zor kalır.
+        # Her filtre `subject` ile kısıtlanır → grade fallback'inde bile çapraz-ders
+        # bulaşması olmaz (ör. grade-8 matematik sorgusu Fen chunk'ı çekmez).
+        subj = {"subject": subject}
         filters_to_try: list[dict[str, Any] | None] = []
         if kazanim_kod and difficulty:
             filters_to_try.append(
                 _where_and(
+                    subj,
                     {"grade": grade},
                     {"kazanim_kod": kazanim_kod},
                     {"difficulty": difficulty},
@@ -308,6 +319,7 @@ class ExampleRetriever:
         if difficulty:
             filters_to_try.append(
                 _where_and(
+                    subj,
                     {"grade": grade},
                     {"topic_id": topic_id},
                     {"difficulty": difficulty},
@@ -316,19 +328,21 @@ class ExampleRetriever:
         if kazanim_kod:
             filters_to_try.append(
                 _where_and(
+                    subj,
                     {"grade": grade},
                     {"kazanim_kod": kazanim_kod},
                 )
             )
         filters_to_try.append(
             _where_and(
+                subj,
                 {"grade": grade},
                 {"topic_id": topic_id},
             )
         )
         if textbook_only:
             # Ders kitabı için son fallback: sadece sınıf bazlı, kazanım/topic yok
-            filters_to_try.append(_where_and({"grade": grade}))
+            filters_to_try.append(_where_and(subj, {"grade": grade}))
 
         seen_ids: set[str] = set()
         # Jitter aktifse aday havuzunu biriktir, sonunda örnekle.
