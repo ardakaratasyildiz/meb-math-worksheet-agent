@@ -4,24 +4,35 @@ import { ArrowRight, GraduationCap } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHeader } from "@/components/PageHeader";
-import { CURRICULUM_PAGES } from "@/lib/curriculum";
+import { UNIT_PAGES } from "@/lib/units";
 
 export const metadata = {
-  title: "Sınıf ve Konuya Göre Matematik Çalışma Kağıtları",
+  title: "Sınıf ve Üniteye Göre Matematik Çalışma Kağıtları",
   description:
-    "1.-8. sınıf MEB matematik müfredatı (8. sınıf LGS hazırlık dahil) kapsamındaki tüm konular için hazır çalışma kağıtları. Sınıfını ve konunu seç, kazanım kodu bazlı PDF üret.",
+    "1.-8. sınıf MEB matematik müfredatı (8. sınıf LGS hazırlık dahil) — üretimde kullanılan güncel ünite/tema yapısı. Sınıfını ve üniteni seç, kazanım bazlı PDF üret.",
   alternates: { canonical: "/calismalar" },
 };
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://soruatolyesi.com";
 
-// İçindekiler list schema — Google'a "bu hub sayfası" diyor.
+// Sınıf → üniteler (üretimin kullandığı units.json ile BİREBİR; eski konu
+// listesinden değil → Konular sekmesi ile üretim artık tutarlı).
+function _byGrade() {
+  const m = new Map<number, typeof UNIT_PAGES>();
+  for (const u of UNIT_PAGES) {
+    if (!m.has(u.grade)) m.set(u.grade, []);
+    m.get(u.grade)!.push(u);
+  }
+  for (const arr of m.values()) arr.sort((a, b) => a.no - b.no);
+  return new Map([...m.entries()].sort((a, b) => a[0] - b[0]));
+}
+
 function collectionPageSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Sınıf ve konuya göre matematik çalışma kağıtları",
+    name: "Sınıf ve üniteye göre matematik çalışma kağıtları",
     url: `${SITE_URL}/calismalar`,
     inLanguage: "tr-TR",
     isPartOf: {
@@ -29,30 +40,25 @@ function collectionPageSchema() {
       name: "Soru Atölyesi",
       url: SITE_URL,
     },
-    hasPart: CURRICULUM_PAGES.map((p) => ({
+    hasPart: [...new Set(UNIT_PAGES.map((u) => u.grade))].map((grade) => ({
       "@type": "LearningResource",
-      name: `${p.grade}. Sınıf ${p.topicName}`,
-      url: `${SITE_URL}/calismalar/${p.slug}`,
-      educationalLevel: `Grade ${p.grade}`,
+      name: `${grade}. Sınıf Matematik`,
+      url: `${SITE_URL}/${grade === 8 ? "lgs-matematik" : `${grade}-sinif-matematik`}`,
+      educationalLevel: `Grade ${grade}`,
     })),
   };
 }
 
 export default function CalismalarHubPage() {
-  // Sınıf bazlı grupla — UI'da sınıf headerları altında konular listelensin.
-  const byGrade = new Map<number, typeof CURRICULUM_PAGES>();
-  for (const page of CURRICULUM_PAGES) {
-    if (!byGrade.has(page.grade)) byGrade.set(page.grade, []);
-    byGrade.get(page.grade)!.push(page);
-  }
+  const byGrade = _byGrade();
 
   return (
     <>
       <JsonLd id="collection-schema" data={collectionPageSchema()} />
       <PageHeader
         eyebrow="Çalışma Kağıtları"
-        title="Sınıf ve konuya göre matematik çalışma kağıtları"
-        body="MEB müfredatına uygun 1.-8. sınıf tüm konular (8. sınıf LGS hazırlık dahil). Sınıfını ve istediğin konuyu seçerek o konuya özel kazanım kodu bazlı çalışma kağıdı üretebilirsin."
+        title="Sınıf ve üniteye göre matematik çalışma kağıtları"
+        body="MEB güncel müfredatına uygun 1.-8. sınıf tüm üniteler (8. sınıf LGS hazırlık dahil). Sınıfını ve üniteni seç; o üniteye özel, kazanım bazlı çalışma kağıdı üret."
       />
 
       <section className="pt-10">
@@ -79,7 +85,7 @@ export default function CalismalarHubPage() {
 
       <section className="py-16">
         <div className="container max-w-5xl space-y-12">
-          {Array.from(byGrade.entries()).map(([grade, topics]) => (
+          {Array.from(byGrade.entries()).map(([grade, units]) => (
             <div key={grade}>
               <Link
                 href={grade === 8 ? "/lgs-matematik" : `/${grade}-sinif-matematik`}
@@ -90,24 +96,24 @@ export default function CalismalarHubPage() {
                 <ArrowRight className="h-4 w-4 text-primary opacity-0 transition group-hover:opacity-100" />
               </Link>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {topics.map((t) => (
+                {units.map((u) => (
                   <Link
-                    key={t.slug}
-                    href={`/calismalar/${t.slug}`}
+                    key={u.unit_id}
+                    href={`/generate?grade=${grade}&unit=${encodeURIComponent(u.unit_id)}`}
                     className="group rounded-lg border bg-card p-4 transition hover:border-primary/50 hover:shadow-sm"
                   >
                     <h3 className="font-medium text-foreground group-hover:text-primary">
-                      {t.topicName}
+                      {u.no}. {u.name}
                     </h3>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {t.description}
+                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                      {u.kazanimlar[0]?.metin ?? "MEB kazanımlarına uygun sorular."}
                     </p>
                     <div className="mt-3 flex items-center justify-between text-xs">
                       <span className="font-medium text-primary">
-                        {t.kazanimCount} kazanım
+                        {u.kazanimlar.length} kazanım
                       </span>
                       <span className="inline-flex items-center gap-1 font-medium text-primary opacity-0 transition group-hover:opacity-100">
-                        Kazanımları gör <ArrowRight className="h-3 w-3" />
+                        Çalışma kağıdı üret <ArrowRight className="h-3 w-3" />
                       </span>
                     </div>
                   </Link>
