@@ -1,0 +1,26 @@
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+gemini/gemini-2.5-flash geçici hata: Gemini 503: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}} — 1.7s sonra tekrar (1/3)
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+RAG few-shot başarısız (embedding/retrieval), statik havuza düşülüyor: Embedding istemci hatası: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.', 'status': 'RESOURCE_EXHAUSTED'}}
+gemini/gemini-2.5-flash geçici hata: Gemini 503: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}} — 1.7s sonra tekrar (1/3)
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+gemini/gemini-2.5-flash geçici hata: Gemini 503: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}} — 1.6s sonra tekrar (1/3)
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+# Mixed-bucket latency: mode=mixed q=10 grade=5 topic=cebir iter=3
+
+ARDIŞIK (parallel_difficulty_buckets=False):
+    [ARDIŞIK] iter 1/3: 10 soru, 112.6s
+    [ARDIŞIK] iter 2/3: 10 soru, 108.3s
+    [ARDIŞIK] iter 3/3: 10 soru, 136.2s
+
+PARALEL (parallel_difficulty_buckets=True):
+    [PARALEL] iter 1/3: 10 soru, 88.4s
+    [PARALEL] iter 2/3: 10 soru, 96.6s
+    [PARALEL] iter 3/3: 10 soru, 46.4s
+
+## Özet
+  ardışık : medyan=112.6s  ort=119.0s  min=108.3  max=136.2  (n=3)
+  paralel : medyan=88.4s  ort=77.1s  min=46.4  max=96.6  (n=3)
+  hızlanma (medyan): 1.27×

@@ -1,0 +1,146 @@
+11:28:11 INFO Mevcut koleksiyon silindi: meb_examples
+11:28:11 INFO Koleksiyonda mevcut: 0 kayıt
+11:28:11 INFO Sentetik örnek: 1845
+11:28:11 INFO Görsel sentetik örnek: 85
+11:28:11 INFO Format sentetik örnek: 212
+11:28:11 INFO Geometry SVG örnek: 39
+11:28:11 INFO Chart/Pattern SVG örnek: 30
+11:28:11 INFO salt_islem LaTeX örnek: 40
+11:28:11 INFO LGS örnek: 457 (topic_id türetilen: 282)
+11:28:11 INFO Sınıf 5 soru örneği (questions_grade5_validated.json): 906
+11:28:11 INFO Sınıf 6 soru örneği (questions_grade6_validated.json): 194
+11:28:11 INFO Sınıf 7 soru örneği (questions_grade7_validated.json): 140
+11:28:11 INFO Sınıf 8 soru örneği (questions_grade8_validated.json): 25
+11:28:11 INFO Manuel few-shot örnek: 259
+11:28:11 INFO Toplam aday örnek: 4232
+11:28:11 INFO Yeni eklenecek örnek: 4220 (koşu-içi mükerrer atlandı: 12)
+11:28:15 INFO Embedding batch 0-100 / 4220 ...
+11:28:17 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:18 INFO   → eklenen kümülatif: 100 / 4220
+11:28:18 INFO Embedding batch 100-200 / 4220 ...
+11:28:19 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:20 INFO   → eklenen kümülatif: 200 / 4220
+11:28:20 INFO Embedding batch 200-300 / 4220 ...
+11:28:22 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:22 INFO   → eklenen kümülatif: 300 / 4220
+11:28:22 INFO Embedding batch 300-400 / 4220 ...
+11:28:26 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:27 INFO   → eklenen kümülatif: 400 / 4220
+11:28:27 INFO Embedding batch 400-500 / 4220 ...
+11:28:28 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:29 INFO   → eklenen kümülatif: 500 / 4220
+11:28:29 INFO Embedding batch 500-600 / 4220 ...
+11:28:30 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:31 INFO   → eklenen kümülatif: 600 / 4220
+11:28:31 INFO Embedding batch 600-700 / 4220 ...
+11:28:32 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:33 INFO   → eklenen kümülatif: 700 / 4220
+11:28:33 INFO Embedding batch 700-800 / 4220 ...
+11:28:34 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:35 INFO   → eklenen kümülatif: 800 / 4220
+11:28:35 INFO Embedding batch 800-900 / 4220 ...
+11:28:36 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:37 INFO   → eklenen kümülatif: 900 / 4220
+11:28:37 INFO Embedding batch 900-1000 / 4220 ...
+11:28:38 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:39 INFO   → eklenen kümülatif: 1000 / 4220
+11:28:39 INFO Embedding batch 1000-1100 / 4220 ...
+11:28:41 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:42 INFO   → eklenen kümülatif: 1100 / 4220
+11:28:42 INFO Embedding batch 1100-1200 / 4220 ...
+11:28:43 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:44 INFO   → eklenen kümülatif: 1200 / 4220
+11:28:44 INFO Embedding batch 1200-1300 / 4220 ...
+11:28:45 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:46 INFO   → eklenen kümülatif: 1300 / 4220
+11:28:46 INFO Embedding batch 1300-1400 / 4220 ...
+11:28:47 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:48 INFO   → eklenen kümülatif: 1400 / 4220
+11:28:48 INFO Embedding batch 1400-1500 / 4220 ...
+11:28:50 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:50 INFO   → eklenen kümülatif: 1500 / 4220
+11:28:50 INFO Embedding batch 1500-1600 / 4220 ...
+11:28:52 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:52 INFO   → eklenen kümülatif: 1600 / 4220
+11:28:52 INFO Embedding batch 1600-1700 / 4220 ...
+11:28:54 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:55 INFO   → eklenen kümülatif: 1700 / 4220
+11:28:55 INFO Embedding batch 1700-1800 / 4220 ...
+11:28:56 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:57 INFO   → eklenen kümülatif: 1800 / 4220
+11:28:57 INFO Embedding batch 1800-1900 / 4220 ...
+11:28:59 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:28:59 INFO   → eklenen kümülatif: 1900 / 4220
+11:28:59 INFO Embedding batch 1900-2000 / 4220 ...
+11:29:01 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:02 INFO   → eklenen kümülatif: 2000 / 4220
+11:29:02 INFO Embedding batch 2000-2100 / 4220 ...
+11:29:03 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:04 INFO   → eklenen kümülatif: 2100 / 4220
+11:29:04 INFO Embedding batch 2100-2200 / 4220 ...
+11:29:06 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:07 INFO   → eklenen kümülatif: 2200 / 4220
+11:29:07 INFO Embedding batch 2200-2300 / 4220 ...
+11:29:08 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:09 INFO   → eklenen kümülatif: 2300 / 4220
+11:29:09 INFO Embedding batch 2300-2400 / 4220 ...
+11:29:12 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:13 INFO   → eklenen kümülatif: 2400 / 4220
+11:29:13 INFO Embedding batch 2400-2500 / 4220 ...
+11:29:16 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:16 INFO   → eklenen kümülatif: 2500 / 4220
+11:29:16 INFO Embedding batch 2500-2600 / 4220 ...
+11:29:18 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:19 INFO   → eklenen kümülatif: 2600 / 4220
+11:29:19 INFO Embedding batch 2600-2700 / 4220 ...
+11:29:21 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:23 INFO   → eklenen kümülatif: 2700 / 4220
+11:29:23 INFO Embedding batch 2700-2800 / 4220 ...
+11:29:25 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:25 INFO   → eklenen kümülatif: 2800 / 4220
+11:29:25 INFO Embedding batch 2800-2900 / 4220 ...
+11:29:27 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:28 INFO   → eklenen kümülatif: 2900 / 4220
+11:29:28 INFO Embedding batch 2900-3000 / 4220 ...
+11:29:29 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:30 INFO   → eklenen kümülatif: 3000 / 4220
+11:29:30 INFO Embedding batch 3000-3100 / 4220 ...
+11:29:32 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:33 INFO   → eklenen kümülatif: 3100 / 4220
+11:29:33 INFO Embedding batch 3100-3200 / 4220 ...
+11:29:35 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:35 INFO   → eklenen kümülatif: 3200 / 4220
+11:29:35 INFO Embedding batch 3200-3300 / 4220 ...
+11:29:37 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:38 INFO   → eklenen kümülatif: 3300 / 4220
+11:29:38 INFO Embedding batch 3300-3400 / 4220 ...
+11:29:39 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:40 INFO   → eklenen kümülatif: 3400 / 4220
+11:29:40 INFO Embedding batch 3400-3500 / 4220 ...
+11:29:42 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:43 INFO   → eklenen kümülatif: 3500 / 4220
+11:29:43 INFO Embedding batch 3500-3600 / 4220 ...
+11:29:45 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:45 INFO   → eklenen kümülatif: 3600 / 4220
+11:29:45 INFO Embedding batch 3600-3700 / 4220 ...
+11:29:47 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:48 INFO   → eklenen kümülatif: 3700 / 4220
+11:29:48 INFO Embedding batch 3700-3800 / 4220 ...
+11:29:49 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:50 INFO   → eklenen kümülatif: 3800 / 4220
+11:29:50 INFO Embedding batch 3800-3900 / 4220 ...
+11:29:51 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:52 INFO   → eklenen kümülatif: 3900 / 4220
+11:29:52 INFO Embedding batch 3900-4000 / 4220 ...
+11:29:54 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:55 INFO   → eklenen kümülatif: 4000 / 4220
+11:29:55 INFO Embedding batch 4000-4100 / 4220 ...
+11:29:56 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:56 INFO   → eklenen kümülatif: 4100 / 4220
+11:29:56 INFO Embedding batch 4100-4200 / 4220 ...
+11:29:57 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:58 INFO   → eklenen kümülatif: 4200 / 4220
+11:29:58 INFO Embedding batch 4200-4220 / 4220 ...
+11:29:59 INFO HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+11:29:59 INFO   → eklenen kümülatif: 4220 / 4220
+11:29:59 INFO Tamamlandı. Koleksiyonda toplam kayıt: 4220
