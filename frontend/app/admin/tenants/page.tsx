@@ -25,6 +25,8 @@ type SortBy = "questions" | "worksheets" | "last";
 export default function TenantsPage() {
   const [history, setHistory] = useState<HistoryTenant[]>([]);
   const [worksheets, setWorksheets] = useState<WorksheetTenant[]>([]);
+  const [emails, setEmails] = useState<Record<string, { email: string; name: string }>>({});
+  const [emailsLoaded, setEmailsLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -38,8 +40,27 @@ export default function TenantsPage() {
         fetch("/api/admin/tenants", { cache: "no-store" }).then((r) => r.json()),
         fetch("/api/admin/worksheets", { cache: "no-store" }).then((r) => r.json()),
       ]);
-      setHistory(h.tenants ?? []);
-      setWorksheets(w.tenants ?? []);
+      const hTenants: HistoryTenant[] = h.tenants ?? [];
+      const wTenants: WorksheetTenant[] = w.tenants ?? [];
+      setHistory(hTenants);
+      setWorksheets(wTenants);
+      // Tenant id'lerini (Clerk userId) e-posta/ad'a çevir — admin görünürlüğü.
+      const ids = Array.from(
+        new Set([...hTenants, ...wTenants].map((t) => t.tenant_id)),
+      );
+      setEmailsLoaded(false);
+      fetch("/api/admin/user-emails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+        cache: "no-store",
+      })
+        .then((r) => r.json())
+        .then((d) => setEmails(d.users ?? {}))
+        .catch(() => {
+          /* çözülemezse id gösterilir */
+        })
+        .finally(() => setEmailsLoaded(true));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -83,7 +104,14 @@ export default function TenantsPage() {
     let arr = Array.from(byId.values());
     if (search.trim()) {
       const q = search.toLowerCase();
-      arr = arr.filter((t) => t.tenant_id.toLowerCase().includes(q));
+      arr = arr.filter((t) => {
+        const e = emails[t.tenant_id];
+        return (
+          t.tenant_id.toLowerCase().includes(q) ||
+          (e?.email ?? "").toLowerCase().includes(q) ||
+          (e?.name ?? "").toLowerCase().includes(q)
+        );
+      });
     }
     arr.sort((a, b) => {
       if (sortBy === "questions") return b.questions - a.questions;
@@ -91,7 +119,7 @@ export default function TenantsPage() {
       return (b.last_at ?? 0) - (a.last_at ?? 0);
     });
     return arr;
-  }, [history, worksheets, search, sortBy]);
+  }, [history, worksheets, emails, search, sortBy]);
 
   return (
     <Card>
@@ -99,7 +127,8 @@ export default function TenantsPage() {
         <div>
           <CardTitle>Kullanıcılar</CardTitle>
           <CardDescription>
-            Tenant başına gördüğü soru sayısı + ürettiği PDF sayısı. Detay için satıra tıkla.
+            Kullanıcı (e-posta) başına gördüğü soru sayısı + ürettiği PDF sayısı. Detay için
+            satıra tıkla. Giriş yapmamış üretimler &quot;Anonim&quot; olarak görünür.
           </CardDescription>
         </div>
         <Button variant="outline" size="sm" onClick={load} disabled={loading}>
@@ -110,7 +139,7 @@ export default function TenantsPage() {
       <CardContent>
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <Input
-            placeholder="Tenant ID ile ara…"
+            placeholder="E-posta, ad veya tenant ID ile ara…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="max-w-sm"
@@ -131,7 +160,7 @@ export default function TenantsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b text-left text-muted-foreground">
-                  <th className="py-2 font-medium">Tenant ID</th>
+                  <th className="py-2 font-medium">Kullanıcı</th>
                   <SortableHeader
                     label="Sorular"
                     active={sortBy === "questions"}
@@ -162,9 +191,14 @@ export default function TenantsPage() {
                       <td className="py-2">
                         <Link
                           href={`/admin/tenants/${encodeURIComponent(t.tenant_id)}`}
-                          className="font-mono text-xs text-primary hover:underline"
+                          className="block hover:underline"
                         >
-                          {t.tenant_id}
+                          <span className="block text-sm font-medium text-primary">
+                            {tenantLabel(t.tenant_id, emails, emailsLoaded)}
+                          </span>
+                          <span className="block font-mono text-[11px] text-muted-foreground">
+                            {t.tenant_id}
+                          </span>
                         </Link>
                       </td>
                       <td className="py-2 text-right">{t.questions}</td>
@@ -204,6 +238,19 @@ function SortableHeader({
       </button>
     </th>
   );
+}
+
+/** Tenant id → okunur etiket: Anonim / e-posta / ad / yükleniyor / bulunamadı. */
+function tenantLabel(
+  id: string,
+  emails: Record<string, { email: string; name: string }>,
+  loaded: boolean,
+): string {
+  if (id === "anon") return "Anonim (giriş yapmamış)";
+  const e = emails[id];
+  if (e) return e.email || e.name || "—";
+  if (!id.startsWith("user_")) return "—";
+  return loaded ? "(bilinmeyen / silinmiş)" : "…";
 }
 
 function formatTimestamp(ts: number | null): string {
