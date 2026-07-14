@@ -514,6 +514,7 @@ export interface StudyPlanResponse {
   summary: string;
   days: StudyPlanDay[];
   ai_generated: boolean;
+  created_at?: string;
 }
 
 // Veli ↔ öğrenci bağı (WS-6b)

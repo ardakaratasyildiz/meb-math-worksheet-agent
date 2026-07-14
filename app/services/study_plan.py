@@ -30,13 +30,15 @@ logger = logging.getLogger(__name__)
 
 # Haftalık şablon: gün adı + tercih edilen tür. Veri yetmezse tür otomatik düşer
 # (focus→review→mixed). Böylece program HER ZAMAN 7 gün, dengeli ve çeşitli.
+# docs/STUDY_PLAN_TEMPLATE.md — araştırma-temelli yapı: hafta içi eksik-odaklı (öncelik
+# en zayıf kazanımlar), Cuma aralıklı tekrar, hafta sonu karışık/deneme + hata analizi.
 _WEEK: list[tuple[str, str]] = [
     ("Pazartesi", "focus"),
     ("Salı", "focus"),
-    ("Çarşamba", "review"),
+    ("Çarşamba", "focus"),
     ("Perşembe", "focus"),
-    ("Cuma", "mixed"),
-    ("Cumartesi", "review"),
+    ("Cuma", "review"),
+    ("Cumartesi", "mixed"),
     ("Pazar", "mixed"),
 ]
 

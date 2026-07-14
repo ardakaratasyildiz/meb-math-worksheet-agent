@@ -525,6 +525,7 @@ class StudyPlanResponse(BaseModel):
     summary: str
     days: list[StudyPlanDay] = []
     ai_generated: bool = False  # LLM zenginleştirmesi başarılı mı (yoksa deterministik)
+    created_at: str = ""        # kayıtlı programın oluşturulma zamanı (ISO); boşsa henüz yok
 
 
 # ── Veli ↔ öğrenci bağı (WS-6b) ──────────────────────────────────────────────

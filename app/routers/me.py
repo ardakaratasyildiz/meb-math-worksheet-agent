@@ -44,6 +44,7 @@ from app.services.parent_link_store import PARENT_LINK_STORE
 from app.services.progress import build_daily_trend, build_progress
 from app.services.quiz_store import QUIZ_STORE
 from app.services.study_plan import build_study_plan
+from app.services.study_plan_store import STUDY_PLAN_STORE
 
 _IST = timezone(timedelta(hours=3))
 
@@ -69,17 +70,40 @@ def get_progress(
     return resp
 
 
+def _iso(epoch: float) -> str:
+    return datetime.fromtimestamp(epoch, tz=timezone.utc).isoformat()
+
+
 @router.get("/study-plan", response_model=StudyPlanResponse)
 def get_study_plan(
     tenant_id: str,
     _api_key: str = Depends(require_api_key),
 ) -> StudyPlanResponse:
-    """AI destekli haftalık çalışma programı — kullanıcının zayıf kazanımlarına göre.
-    Buton-tetikli (LLM çağrısı içerir); zayıf konu yoksa teşvik mesajı döner."""
+    """Kayıtlı haftalık programı döner (varsa). LLM çağrısı YOK → hızlı. Kayıt yoksa
+    boş döner (created_at=""), frontend 'oluştur' CTA'sı gösterir."""
+    saved = STUDY_PLAN_STORE.get(tenant_id)
+    if saved is None:
+        return StudyPlanResponse(summary="", days=[], created_at="")
+    plan_json, created = saved
+    resp = StudyPlanResponse.model_validate_json(plan_json)
+    resp.created_at = _iso(created)
+    return resp
+
+
+@router.post("/study-plan", response_model=StudyPlanResponse)
+def create_study_plan(
+    tenant_id: str,
+    _api_key: str = Depends(require_api_key),
+) -> StudyPlanResponse:
+    """Haftalık programı (yeniden) üretir, KAYDEDER ve döner (LLM çağrısı içerir).
+    Zayıf konu yoksa tekrar+karışık haftası; hiç veri yoksa teşvik mesajı."""
     mastery_rows = QUIZ_STORE.get_mastery(tenant_id)
     quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
     progress = build_progress(mastery_rows, quizzes_solved, [])
-    return build_study_plan(progress)
+    plan = build_study_plan(progress)
+    created = STUDY_PLAN_STORE.save(tenant_id, plan.model_dump_json())
+    plan.created_at = _iso(created)
+    return plan
 
 
 # ── Veli ↔ öğrenci bağı (WS-6b) ──────────────────────────────────────────────

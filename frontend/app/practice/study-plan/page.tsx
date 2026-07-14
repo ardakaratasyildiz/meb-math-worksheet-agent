@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-import { ProgressDashboard } from "@/components/ProgressDashboard";
-import { ParentSection } from "@/components/ParentSection";
+import { StudyPlan } from "@/components/StudyPlan";
 
-export default function CozIlerlemePage() {
+export default function CozStudyPlanPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -15,14 +14,14 @@ export default function CozIlerlemePage() {
           <ArrowLeft className="h-4 w-4" />
           Çöz &amp; Geliş
         </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">İlerlemem</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Çalışma Programım</h1>
         <p className="text-sm text-muted-foreground">
-          Kazanım bazlı gelişimin, zayıf konuların ve genel doğru oranın.
+          Eksiklerine göre haftaya yayılmış, kişisel çalışma programın — oluşturunca
+          burada kalır.
         </p>
       </div>
 
-      <ProgressDashboard />
-      <ParentSection />
+      <StudyPlan />
     </div>
   );
 }

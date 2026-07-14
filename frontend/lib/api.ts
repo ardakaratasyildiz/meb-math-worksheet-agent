@@ -437,11 +437,22 @@ export async function getProgress(tenantId: string): Promise<ProgressResponse> {
 }
 
 /** AI destekli haftalık çalışma programı (eksiklere göre). LLM çağrısı içerir. */
+/** Kayıtlı haftalık programı getir (LLM yok, hızlı). Kayıt yoksa created_at boş. */
 export async function getStudyPlan(
   tenantId: string,
 ): Promise<StudyPlanResponse> {
   return request<StudyPlanResponse>(
     `/api/me/study-plan?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Programı (yeniden) üret + kaydet (LLM çağrısı içerir). */
+export async function createStudyPlan(
+  tenantId: string,
+): Promise<StudyPlanResponse> {
+  return request<StudyPlanResponse>(
+    `/api/me/study-plan?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "POST" },
   );
 }
 

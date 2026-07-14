@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  CalendarDays,
   GraduationCap,
   History,
   NotebookPen,
@@ -132,6 +133,14 @@ export function PracticeHub({ roleParam }: { roleParam: Role | null }) {
               title="İlerlemem"
               desc="Kazanım bazlı gelişimin, zayıf konuların ve genel doğru oranın."
               cta="Görüntüle"
+            />
+            <HubCard
+              href="/practice/study-plan"
+              color="grape"
+              icon={<CalendarDays className="h-6 w-6 text-grape" />}
+              title="Çalışma Programım"
+              desc="Eksiklerine göre haftalık, gün gün AI çalışma programı — oluştur, kalıcı olsun."
+              cta="Aç"
             />
             <HubCard
               href="/practice/history"
