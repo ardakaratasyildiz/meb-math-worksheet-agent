@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { ChevronDown, Lightbulb, Loader2, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, GraduationCap, Lightbulb, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -78,9 +79,13 @@ const ALL_TYPES_ON: Record<SolvableType, boolean> = {
 // Çözülebilir quiz üretim formu — /generate'in sade kardeşi. PDF/markalama/
 // gelişmiş ayar YOK; çıktı PDF değil, çözülecek quiz. Dropdownlar lokal müfredat
 // snapshot'ından anında dolar (backend cold-start'a bağımlı değil).
-export function SolveForm() {
+//
+// mode: "solve" (öğrenci — üret ve doğrudan çöz) | "create" (öğretmen — üret + kaydet,
+// sonra sınıfa ödev ata; ÇÖZMEYE sokmaz). Rol /practice/new sayfasında belirlenir.
+export function SolveForm({ mode = "solve" }: { mode?: "solve" | "create" }) {
   const router = useRouter();
   const { userId } = useAuth();
+  const [createdQuizId, setCreatedQuizId] = React.useState<string | null>(null);
   // "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&unit=&kazanim=&subject=
   const searchParams = useSearchParams();
   const initialGrade = Number(searchParams.get("grade")) || 5;
@@ -248,12 +253,57 @@ export function SolveForm() {
         // Matematik'te parametre eklenmez (geriye uyum); diğer derslerde gönderilir.
         ...(isMath ? {} : { subject }),
       });
-      router.push(`/practice/quiz/${quiz.id}`);
+      // Öğretmen: çözmeye SOKMA — "oluşturuldu, sınıfına ata" başarı ekranı.
+      // Öğrenci: doğrudan çözmeye geç.
+      if (mode === "create") {
+        setCreatedQuizId(quiz.id);
+        setSubmitting(false);
+      } else {
+        router.push(`/practice/quiz/${quiz.id}`);
+      }
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
       toast.error("Quiz üretilemedi", { description: msg });
       setSubmitting(false);
     }
+  }
+
+  // Öğretmen — quiz oluşturuldu: çözmeye sokmadan "sınıfa ata" yönlendirmesi.
+  if (createdQuizId) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-start gap-3 rounded-2xl border border-mint/40 bg-mint/10 p-5">
+          <CheckCircle2 className="mt-0.5 h-6 w-6 flex-shrink-0 text-mint" />
+          <div className="min-w-0">
+            <p className="font-display text-lg font-bold">Quiz oluşturuldu 🎉</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Quiz &quot;Sınıflarım&quot;daki ödev listende hazır. Bir sınıfa gidip
+              ödev olarak atayabilir, öğrencilerin çözünce sonuçlarını görebilirsin.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Button asChild size="lg" className="gap-2">
+            <Link href="/practice/classes">
+              <GraduationCap className="h-4 w-4" />
+              Sınıfıma ödev ata
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={() => setCreatedQuizId(null)}
+          >
+            Başka quiz üret
+          </Button>
+          <Button asChild variant="ghost" size="lg">
+            <Link href={`/practice/quiz/${createdQuizId}`}>Önce ben çözeyim</Link>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   // Üretim sürerken (~30 sn) "Bunu biliyor muydun?" bekleme ekranı göster.
@@ -516,8 +566,9 @@ export function SolveForm() {
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[11px] text-muted-foreground">
-          Çözülebilir tipler üretilir (çoktan seçmeli, doğru/yanlış, boşluk
-          doldurma, açık uçlu). Üretim saniyeler içinde tamamlanır.
+          {mode === "create"
+            ? "Çözülebilir bir quiz üretilir ve sınıfına ödev atamak üzere kaydedilir (çözmeye sokmaz)."
+            : "Çözülebilir tipler üretilir (çoktan seçmeli, doğru/yanlış, boşluk doldurma, açık uçlu). Üretim saniyeler içinde tamamlanır."}
         </p>
         <Button
           onClick={onStart}
@@ -533,7 +584,7 @@ export function SolveForm() {
           ) : (
             <>
               <Sparkles className="h-4 w-4" />
-              Quiz oluştur & çöz
+              {mode === "create" ? "Quiz oluştur" : "Quiz oluştur & çöz"}
             </>
           )}
         </Button>
