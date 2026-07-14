@@ -1,0 +1,23 @@
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+Critic yanıtı parse edilemedi, sorular geçiriliyor: Critic JSON şemaya uymadı.
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+gemini/gemini-2.5-flash geçici hata: Gemini 503: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}} — 1.8s sonra tekrar (1/3)
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+worksheet_history ATLANDI: istekte tenant_id yok (frontend Clerk userId göndermemiş — giriş/oturum sorunu).
+# Mixed-bucket latency: mode=mixed q=10 grade=5 topic=cebir iter=3
+
+ARDIŞIK (parallel_difficulty_buckets=False):
+    [ARDIŞIK] iter 1/3: 10 soru, 121.8s
+    [ARDIŞIK] iter 2/3: 10 soru, 257.8s
+    [ARDIŞIK] iter 3/3: 10 soru, 162.9s
+
+PARALEL (parallel_difficulty_buckets=True):
+    [PARALEL] iter 1/3: 10 soru, 61.6s
+    [PARALEL] iter 2: HATA Embedding istemci hatası: 429 RESOURCE_EXHAUSTED. {'error': {'code': 4 (68.3s)
+    [PARALEL] iter 3/3: 10 soru, 82.9s
+
+## Özet
+  ardışık : medyan=162.9s  ort=180.9s  min=121.8  max=257.8  (n=3)
+  paralel : medyan=72.3s  ort=72.3s  min=61.6  max=82.9  (n=2)
+  hızlanma (medyan): 2.25×

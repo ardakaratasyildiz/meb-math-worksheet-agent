@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Soru Atölyesi — Bento Komut Merkezi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800;900&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { display: ['"Schibsted Grotesk"','sans-serif'], body: ['"Hanken Grotesk"','sans-serif'] },
+      colors: {
+        coal:'#0E0F0C', coal2:'#17190F', tile:'#F7F5EE', tile2:'#ECE8DC',
+        lime:'#C6F24E', lime2:'#A6D62F', ink:'#15170E', mute:'#6B6E5C',
+        plum:'#6C5CE7', sun:'#FFB020',
+      },
+    }},
+  };
+</script>
+<style>
+  body{background:#0E0F0C;}
+  .tilecard{border-radius:22px;}
+  .reveal{opacity:0;transform:translateY(20px) scale(.98);animation:rise .7s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.04s}.d2{animation-delay:.10s}.d3{animation-delay:.16s}.d4{animation-delay:.22s}
+  .d5{animation-delay:.28s}.d6{animation-delay:.34s}.d7{animation-delay:.40s}.d8{animation-delay:.46s}
+  @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+  .livedot{animation:pulse 1.8s ease-in-out infinite}
+  .dotgrid{background-image:radial-gradient(rgba(255,255,255,.06) 1.2px, transparent 1.2px);background-size:20px 20px;}
+</style>
+</head>
+<body class="font-body text-tile antialiased">
+
+<header class="sticky top-0 z-30 border-b border-white/5 bg-coal/80 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <div class="flex items-center gap-2.5">
+      <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-lime font-display text-lg font-900 text-coal">S</div>
+      <span class="font-display text-xl font-800 text-tile">Soru Atölyesi</span>
+    </div>
+    <nav class="hidden items-center gap-8 text-sm font-600 text-mute md:flex">
+      <a href="#" class="hover:text-tile">Nasıl çalışır</a><a href="#" class="hover:text-tile">Örnekler</a><a href="#" class="hover:text-tile">Özellikler</a><a href="#" class="hover:text-tile">Fiyat</a>
+    </nav>
+    <a href="#" class="rounded-xl bg-lime px-4 py-2 text-sm font-700 text-coal transition hover:bg-lime2">Ücretsiz dene</a>
+  </div>
+</header>
+
+<!-- HERO = BENTO -->
+<section class="dotgrid">
+  <div class="mx-auto max-w-6xl px-6 py-10 sm:py-14">
+    <div class="grid auto-rows-[minmax(0,auto)] gap-3 sm:grid-cols-6 sm:gap-4">
+
+      <!-- big headline tile -->
+      <div class="reveal d1 tilecard bg-tile p-7 text-ink sm:col-span-4 sm:row-span-2 sm:p-9">
+        <span class="inline-flex items-center gap-2 rounded-full bg-ink/5 px-3 py-1 text-xs font-700 uppercase tracking-wider text-mute">
+          <span class="livedot h-1.5 w-1.5 rounded-full bg-lime2"></span> 1.→7. sınıf · MEB matematik
+        </span>
+        <h1 class="mt-5 font-display text-5xl font-900 leading-[0.98] tracking-tight sm:text-6xl">
+          Çalışma kağıtların için
+          <span class="rounded-lg bg-lime px-2">komut merkezi</span>
+        </h1>
+        <p class="mt-5 max-w-md text-lg text-mute">
+          Sınıf ve konuyu seç; MEB kazanımlarına uygun sorular, cevap anahtarı ve
+          adım adım çözümle hazır PDF saniyeler içinde.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="#" class="rounded-xl bg-coal px-6 py-3 text-sm font-700 text-tile transition hover:bg-coal2">Ücretsiz dene →</a>
+          <a href="#" class="rounded-xl border border-ink/15 px-6 py-3 text-sm font-700 text-ink transition hover:bg-ink/5">Çözerek çalış</a>
+        </div>
+      </div>
+
+      <!-- lime stat tile -->
+      <div class="reveal d2 tilecard bg-lime p-6 text-coal sm:col-span-2">
+        <p class="font-display text-6xl font-900 leading-none">208</p>
+        <p class="mt-2 text-sm font-700">MEB kazanımı kapsanıyor</p>
+      </div>
+
+      <!-- live generate tile -->
+      <div class="reveal d3 tilecard bg-coal2 p-6 ring-1 ring-white/10 sm:col-span-2">
+        <div class="flex items-center gap-2 text-xs font-600 text-mute"><span class="livedot h-1.5 w-1.5 rounded-full bg-lime"></span> üretiliyor…</div>
+        <p class="mt-3 font-display text-2xl font-800 text-tile">~30 sn</p>
+        <p class="mt-1 text-sm text-mute">soru + cevap + çözüm → A4 PDF</p>
+      </div>
+
+      <!-- sample question tile -->
+      <div class="reveal d4 tilecard bg-tile p-6 text-ink sm:col-span-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-700 uppercase tracking-wider text-mute">5. sınıf · Cebir</span>
+          <span class="rounded-md bg-coal px-2 py-0.5 text-[10px] font-700 text-lime">M.5.2.1</span>
+        </div>
+        <p class="mt-3 text-sm leading-relaxed">Bir sayının 3 katının 4 eksiği 17'dir. Bu sayı kaçtır?</p>
+        <details class="mt-3"><summary class="cursor-pointer text-sm font-700 text-plum">Cevabı göster</summary><p class="mt-2 rounded-lg bg-plum/10 p-2.5 text-sm font-600 text-plum">7</p></details>
+      </div>
+
+      <!-- gamify tile -->
+      <div class="reveal d5 tilecard bg-plum p-6 text-white sm:col-span-3">
+        <div class="flex items-center justify-between">
+          <div><p class="font-display text-3xl font-900">🔥 12</p><p class="text-xs font-600 text-white/80">günlük seri</p></div>
+          <div><p class="font-display text-3xl font-900">Lv 7</p><p class="text-xs font-600 text-white/80">seviye</p></div>
+          <div><p class="font-display text-3xl font-900">🏅 9</p><p class="text-xs font-600 text-white/80">rozet</p></div>
+        </div>
+        <p class="mt-4 text-sm text-white/80">Çöz → puan al → seviye atla. Tam öğrenme döngüsü.</p>
+      </div>
+
+      <!-- trust strip tiles -->
+      <div class="reveal d6 tilecard bg-coal2 p-5 text-center ring-1 ring-white/10 sm:col-span-2"><p class="text-sm font-700 text-tile">Aylık 100 soru</p><p class="text-xs text-mute">ücretsiz</p></div>
+      <div class="reveal d7 tilecard bg-coal2 p-5 text-center ring-1 ring-white/10 sm:col-span-2"><p class="text-sm font-700 text-tile">Yalnızca e-posta</p><p class="text-xs text-mute">ile kayıt</p></div>
+      <div class="reveal d8 tilecard bg-sun p-5 text-center text-coal sm:col-span-2"><p class="text-sm font-800">Ödeme bilgisi</p><p class="text-xs font-600">alınmaz</p></div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SHOWROOM -->
+<section class="mx-auto max-w-6xl px-6 py-16">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-700 uppercase tracking-[0.2em] text-lime2">Gerçek çıktı</p>
+      <h2 class="mt-2 font-display text-4xl font-900 tracking-tight text-tile">Sistemin ürettiği sorular</h2>
+    </div>
+    <p class="max-w-sm text-sm text-mute">Aşağıdakiler sistemin gerçekten ürettiği sorulardan bir kesit. PDF'te cevap anahtarı ve adım adım çözüm de var.</p>
+  </div>
+  <div class="mt-10 grid gap-3 sm:grid-cols-3 sm:gap-4">
+    <article class="tilecard bg-tile p-6 text-ink"><span class="text-xs font-700 uppercase tracking-wider text-mute">2. sınıf · Doğal sayılar</span><p class="mt-3 text-sm leading-relaxed">Bir manavda 47 elma vardı. 18 elma satıldı. Manavda kaç elma kaldı?</p><details class="mt-3"><summary class="cursor-pointer text-sm font-700 text-plum">Cevabı göster</summary><p class="mt-2 rounded-lg bg-plum/10 p-2.5 text-sm font-600 text-plum">29 elma</p></details></article>
+    <article class="tilecard bg-tile p-6 text-ink"><span class="text-xs font-700 uppercase tracking-wider text-mute">5. sınıf · Cebir</span><p class="mt-3 text-sm leading-relaxed">Bir sayının 3 katının 4 eksiği 17'dir. Bu sayı kaçtır?</p><details class="mt-3"><summary class="cursor-pointer text-sm font-700 text-plum">Cevabı göster</summary><p class="mt-2 rounded-lg bg-plum/10 p-2.5 text-sm font-600 text-plum">7</p></details></article>
+    <article class="tilecard bg-tile p-6 text-ink"><span class="text-xs font-700 uppercase tracking-wider text-mute">6. sınıf · Veri işleme</span><p class="mt-3 text-sm leading-relaxed">4, 6, 6, 8, 11 saat ders çalışan öğrencilerin ortalaması kaç saattir?</p><details class="mt-3"><summary class="cursor-pointer text-sm font-700 text-plum">Cevabı göster</summary><p class="mt-2 rounded-lg bg-plum/10 p-2.5 text-sm font-600 text-plum">7 saat</p></details></article>
+  </div>
+</section>
+
+<!-- SOLVE & GROW (bento) -->
+<section class="mx-auto max-w-6xl px-6 py-16">
+  <div class="mx-auto max-w-2xl text-center">
+    <span class="inline-flex items-center gap-2 rounded-full bg-lime/15 px-4 py-1.5 text-xs font-700 uppercase tracking-wider text-lime2">Yeni · Çöz &amp; Geliş</span>
+    <h2 class="mt-4 font-display text-4xl font-900 tracking-tight text-tile">Sadece üretme — çöz, gelişimini gör</h2>
+  </div>
+  <div class="mt-10 grid gap-3 sm:grid-cols-4 sm:gap-4">
+    <div class="tilecard bg-coal2 p-6 ring-1 ring-white/10"><div class="mb-3 text-2xl">✏️</div><h3 class="font-display text-lg font-800 text-tile">Site içinde çöz</h3><p class="mt-1.5 text-sm text-mute">Çoktan seçmeli, doğru/yanlış, boşluk doldurma, işlem.</p></div>
+    <div class="tilecard bg-coal2 p-6 ring-1 ring-white/10"><div class="mb-3 text-2xl">📊</div><h3 class="font-display text-lg font-800 text-tile">Anında puan</h3><p class="mt-1.5 text-sm text-mute">Konu bazında kırılım, eksiğini hemen gör.</p></div>
+    <div class="tilecard bg-coal2 p-6 ring-1 ring-white/10"><div class="mb-3 text-2xl">🎯</div><h3 class="font-display text-lg font-800 text-tile">Eksiğine pratik</h3><p class="mt-1.5 text-sm text-mute">Zayıf kazanımına tek tıkla yeni test.</p></div>
+    <div class="tilecard bg-lime p-6 text-coal"><div class="mb-3 text-2xl">🏆</div><h3 class="font-display text-lg font-900">Rozet & seri</h3><p class="mt-1.5 text-sm font-600">30 günlük grafik, seviye, seri, konu rozetleri.</p></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="mx-auto max-w-6xl px-6 py-16">
+  <div class="grid gap-3 sm:grid-cols-3 sm:gap-4">
+    <div class="tilecard bg-tile p-7 text-ink"><div class="font-display text-5xl font-900 text-lime2">01</div><h3 class="mt-3 font-display text-xl font-800">Sınıf ve konuyu seç</h3><p class="mt-2 text-sm text-mute">Sınıf, konu, kazanım; zorluk ve soru sayısı (5–20).</p></div>
+    <div class="tilecard bg-tile p-7 text-ink"><div class="font-display text-5xl font-900 text-lime2">02</div><h3 class="mt-3 font-display text-xl font-800">Sorular hazırlansın</h3><p class="mt-2 text-sm text-mute">Her sorunun matematiği + konu uyumu otomatik denetlenir.</p></div>
+    <div class="tilecard bg-tile p-7 text-ink"><div class="font-display text-5xl font-900 text-lime2">03</div><h3 class="mt-3 font-display text-xl font-800">İndir ve paylaş</h3><p class="mt-2 text-sm text-mute">Sorular, cevap anahtarı ve çözüm tek A4 PDF'te — ~30 sn.</p></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="mx-auto max-w-6xl px-6 py-10">
+  <div class="tilecard bg-lime p-10 text-center text-coal sm:p-14">
+    <p class="text-xs font-700 uppercase tracking-[0.2em] text-coal/60">Fiyatlandırma</p>
+    <h2 class="mt-2 font-display text-4xl font-900 tracking-tight sm:text-5xl">Erken kullanım dönemi</h2>
+    <p class="mx-auto mt-4 max-w-xl text-coal/75">Tüm hesaplara aylık 100 soruluk ücretsiz kullanım hakkı tanınmaktadır. Pro abonelik ileride duyurulacak.</p>
+    <div class="mt-7 flex flex-wrap justify-center gap-3">
+      <a href="#" class="rounded-xl bg-coal px-7 py-3.5 text-sm font-700 text-tile transition hover:bg-coal2">Hesap aç →</a>
+      <a href="#" class="rounded-xl border border-coal/25 px-7 py-3.5 text-sm font-700 text-coal transition hover:bg-coal/5">Detaylar</a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="mx-auto max-w-6xl px-6 py-16">
+  <div class="tilecard bg-coal2 p-10 text-center ring-1 ring-white/10 sm:p-14">
+    <h2 class="font-display text-4xl font-900 tracking-tight text-tile sm:text-5xl">İlk çalışma kağıdını 5 dakikada hazırla</h2>
+    <p class="mx-auto mt-4 max-w-lg text-mute">Hesap açmak için yalnızca e-posta yeterli, ödeme bilgisi istenmez. Aylık 100 soru ücretsiz.</p>
+    <a href="#" class="mt-7 inline-flex rounded-xl bg-lime px-8 py-4 text-sm font-700 text-coal transition hover:bg-lime2">Ücretsiz dene →</a>
+  </div>
+</section>
+
+<footer class="border-t border-white/5">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-sm text-mute">
+    <span class="font-display text-lg font-800 text-tile">Soru Atölyesi</span><span>© 2026 · soruatolyesi.com</span>
+  </div>
+</footer>
+
+</body>
+</html>

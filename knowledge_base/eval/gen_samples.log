@@ -1,0 +1,43 @@
+# Örnek üretimi: 38 combo × 3 soru (orta)
+
+  [1/38] OK 1-sinif-dogal-sayilar: 3 soru
+  [2/38] OK 1-sinif-geometri: 3 soru
+  [3/38] OK 1-sinif-olcme: 3 soru
+  [4/38] OK 1-sinif-cebir: 3 soru
+  [5/38] OK 2-sinif-dogal-sayilar: 3 soru
+  [6/38] OK 2-sinif-geometri: 3 soru
+  [7/38] OK 2-sinif-olcme: 3 soru
+  [8/38] OK 2-sinif-cebir: 3 soru
+  [9/38] OK 3-sinif-dogal-sayilar: 3 soru
+  [10/38] OK 3-sinif-kesirler: 3 soru
+  [11/38] OK 3-sinif-geometri: 3 soru
+  [12/38] OK 3-sinif-olcme: 3 soru
+  [13/38] OK 3-sinif-cebir: 3 soru
+  [14/38] OK 4-sinif-dogal-sayilar: 3 soru
+  [15/38] OK 4-sinif-kesirler: 3 soru
+  [16/38] OK 4-sinif-geometri: 3 soru
+  [17/38] OK 4-sinif-olcme: 3 soru
+  [18/38] OK 4-sinif-cebir: 3 soru
+  [19/38] OK 5-sinif-dogal-sayilar: 3 soru
+  [20/38] OK 5-sinif-kesirler: 3 soru
+  [21/38] OK 5-sinif-geometri: 3 soru
+  [22/38] OK 5-sinif-olcme: 3 soru
+  [23/38] OK 5-sinif-cebir: 3 soru
+  [24/38] OK 5-sinif-veri-isleme: 3 soru
+  [25/38] OK 6-sinif-dogal-sayilar: 3 soru
+  [26/38] OK 6-sinif-kesirler: 3 soru
+  [27/38] OK 6-sinif-geometri: 3 soru
+  [28/38] OK 6-sinif-olcme: 3 soru
+  [29/38] OK 6-sinif-cebir: 3 soru
+  [30/38] OK 6-sinif-veri-isleme: 3 soru
+  [31/38] OK 6-sinif-olasilik: 3 soru
+  [32/38] OK 7-sinif-dogal-sayilar: 3 soru
+  [33/38] OK 7-sinif-kesirler: 3 soru
+  [34/38] OK 7-sinif-geometri: 3 soru
+  [35/38] OK 7-sinif-olcme: 3 soru
+  [36/38] OK 7-sinif-cebir: 3 soru
+  [37/38] OK 7-sinif-veri-isleme: 3 soru
+  [38/38] OK 7-sinif-olasilik: 3 soru
+
+## Özet: üretildi=38 atlandı=0 hata=0
+  çıktı: C:\Users\arda.karatas\Desktop\Projects\Claude\GenAgent\frontend\lib\sample-questions.json  (38 slug)

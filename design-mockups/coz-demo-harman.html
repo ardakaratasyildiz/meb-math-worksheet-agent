@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Soru Atölyesi — Çöz & Geliş (öğrenci alanı demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    fontFamily: { display: ['Fredoka','sans-serif'], body: ['Nunito','sans-serif'] },
+    colors: {
+      cloud:'#FFF4EA', ink:'#3A2C4A',
+      sky:'#3BB0F5', sky2:'#1E90E0', sun:'#FFC93C', coral:'#FF6B6B', mint:'#3DD9B3', grape:'#9B5DE5',
+    },
+  }}};
+</script>
+<style>
+  body{
+    background-color:#FFF4EA;
+    background-image:
+      radial-gradient(38% 30% at 10% 6%, rgba(255,201,60,.18), transparent 60%),
+      radial-gradient(34% 28% at 92% 4%, rgba(255,107,107,.13), transparent 60%),
+      radial-gradient(42% 36% at 86% 92%, rgba(155,93,229,.12), transparent 62%);
+    background-attachment:fixed;
+  }
+  .pop{box-shadow:0 8px 0 0 rgba(58,44,74,.10);}
+  .pop-sky{box-shadow:0 8px 0 0 rgba(30,144,224,.35);}
+  .pop-coral{box-shadow:0 8px 0 0 rgba(255,107,107,.40);}
+  .pop-grape{box-shadow:0 8px 0 0 rgba(155,93,229,.38);}
+  .pop-sun{box-shadow:0 8px 0 0 rgba(214,158,0,.38);}
+  .pop-mint{box-shadow:0 8px 0 0 rgba(40,180,140,.38);}
+  .press{transition:transform .15s, box-shadow .15s;}
+  .press:hover{transform:translateY(-2px);}
+  .blob{border-radius:42% 58% 63% 37% / 41% 44% 56% 59%;}
+  .reveal{opacity:0;transform:translateY(16px) scale(.97);animation:pop .6s cubic-bezier(.2,.8,.2,1.2) forwards}
+  @keyframes pop{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.13s}.d3{animation-delay:.21s}.d4{animation-delay:.29s}.d5{animation-delay:.37s}.d6{animation-delay:.45s}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+  .bob{animation:bob 3.4s ease-in-out infinite}
+  @keyframes grow{from{width:0}}
+  .barfill{animation:grow 1.2s cubic-bezier(.2,.8,.2,1) .3s both}
+</style>
+</head>
+<body class="font-body text-ink antialiased">
+
+<!-- APP BAR -->
+<header class="sticky top-0 z-30 bg-cloud/85 backdrop-blur">
+  <div class="mx-auto flex max-w-5xl items-center justify-between px-5 py-3.5">
+    <div class="flex items-center gap-2.5">
+      <div class="flex h-10 w-10 rotate-3 items-center justify-center rounded-2xl bg-coral font-display text-lg font-700 text-white pop-coral">S</div>
+      <span class="font-display text-xl font-700">Soru Atölyesi</span>
+    </div>
+    <nav class="hidden items-center gap-1.5 md:flex">
+      <a href="#" class="rounded-full bg-grape px-4 py-2 font-display text-sm font-600 text-white">Çöz &amp; Geliş</a>
+      <a href="#" class="rounded-full px-4 py-2 font-display text-sm font-500 text-ink/60 hover:bg-white/60">İlerlemem</a>
+      <a href="#" class="rounded-full px-4 py-2 font-display text-sm font-500 text-ink/60 hover:bg-white/60">Geçmiş</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <span class="hidden rounded-full bg-sun/25 px-3 py-1.5 font-display text-sm font-700 text-ink sm:inline-flex">🔥 12</span>
+      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-sky font-display text-sm font-700 text-white">EA</div>
+    </div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-5xl px-5 py-8">
+
+  <!-- GREETING + MASCOT -->
+  <div class="reveal d1 relative mb-6 overflow-hidden rounded-[28px] bg-white p-6 pop sm:p-7">
+    <div class="bob pointer-events-none absolute -right-2 -top-2 hidden text-6xl sm:block">🦊</div>
+    <p class="font-display text-sm font-600 text-grape">Merhaba Elif! 👋</p>
+    <h1 class="mt-1 font-display text-3xl font-700">Bugün de matematiğe devam!</h1>
+    <p class="mt-2 max-w-md text-ink/65">Soru üret, test gibi çöz, anında kaç doğru kaç yanlış yaptığını gör. Eksik kazanımlarına göre pratiğe yönlen.</p>
+  </div>
+
+  <!-- GAMIFICATION STRIP -->
+  <div class="reveal d2 mb-6 grid gap-4 sm:grid-cols-3">
+    <!-- seviye + xp -->
+    <div class="rounded-[24px] bg-white p-5 pop sm:col-span-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-grape font-display text-2xl font-700 text-white pop-grape">7</div>
+          <div>
+            <p class="font-display text-lg font-700">Seviye 7</p>
+            <p class="text-sm text-ink/55">1.840 XP</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 rounded-full bg-sun/20 px-3 py-1.5">
+          <span class="text-lg">🔥</span>
+          <span class="font-display text-lg font-700">12</span>
+          <span class="text-xs text-ink/60">gün seri</span>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="mb-1 flex items-center justify-between font-display text-xs font-600 text-ink/55">
+          <span>Seviye 7</span><span>140 / 300 XP</span>
+        </div>
+        <div class="h-3 overflow-hidden rounded-full bg-grape/12">
+          <div class="barfill h-full rounded-full bg-gradient-to-r from-sky to-grape" style="width:47%"></div>
+        </div>
+        <p class="mt-1.5 text-xs text-ink/50">Sonraki seviyeye <span class="font-700 text-grape">160 XP</span> kaldı 🚀</p>
+      </div>
+    </div>
+    <!-- rozetler -->
+    <div class="rounded-[24px] bg-white p-5 pop">
+      <p class="font-display text-sm font-700">Rozetlerin 🏅</p>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <span class="inline-flex items-center gap-1 rounded-full bg-yellow-400/15 px-2.5 py-1 text-xs font-600">🥇 Doğal sayılar</span>
+        <span class="inline-flex items-center gap-1 rounded-full bg-slate-300/20 px-2.5 py-1 text-xs font-600">🥈 Cebir</span>
+        <span class="inline-flex items-center gap-1 rounded-full bg-amber-700/12 px-2.5 py-1 text-xs font-600">🥉 Geometri</span>
+      </div>
+      <p class="mt-3 text-xs text-ink/50">Veri işlemede 2 soru daha → 🥉 bronz!</p>
+    </div>
+  </div>
+
+  <!-- BUGÜNÜN GÖREVİ -->
+  <div class="reveal d3 mb-6 flex flex-col items-start gap-4 rounded-[28px] bg-gradient-to-br from-sky to-grape p-6 text-white pop sm:flex-row sm:items-center sm:justify-between sm:p-7">
+    <div>
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 font-display text-xs font-600">✨ Günün görevi</span>
+      <h2 class="mt-2 font-display text-2xl font-700">5. sınıf · Cebir — 10 soruluk quiz</h2>
+      <p class="mt-1 text-white/85">Bitir, <span class="font-700">+50 XP</span> kazan ve serini koru!</p>
+    </div>
+    <a href="#" class="press shrink-0 rounded-full bg-sun px-7 py-3.5 font-display text-base font-600 text-ink pop-sun">Göreve başla →</a>
+  </div>
+
+  <!-- 3 AKSİYON KARTI -->
+  <div class="reveal d4 mb-8 grid gap-4 sm:grid-cols-3">
+    <a href="#" class="press group flex flex-col rounded-[26px] bg-white p-6 pop">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-coral/15 text-2xl">✏️</div>
+      <h3 class="mt-3 font-display text-lg font-700">Yeni quiz çöz</h3>
+      <p class="mt-1.5 flex-1 text-sm text-ink/60">Sınıf ve konu seç, çözülebilir bir quiz üret ve hemen çözmeye başla.</p>
+      <span class="mt-3 inline-flex items-center gap-1 font-display text-sm font-600 text-coral">Başla →</span>
+    </a>
+    <a href="#" class="press group flex flex-col rounded-[26px] bg-white p-6 pop">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky/15 text-2xl">📈</div>
+      <h3 class="mt-3 font-display text-lg font-700">İlerlemem</h3>
+      <p class="mt-1.5 flex-1 text-sm text-ink/60">Kazanım bazlı gelişimin, zayıf konuların ve genel doğru oranın.</p>
+      <span class="mt-3 inline-flex items-center gap-1 font-display text-sm font-600 text-sky2">Görüntüle →</span>
+    </a>
+    <a href="#" class="press group flex flex-col rounded-[26px] bg-white p-6 pop">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/15 text-2xl">🕓</div>
+      <h3 class="mt-3 font-display text-lg font-700">Geçmiş quizlerim</h3>
+      <p class="mt-1.5 flex-1 text-sm text-ink/60">Çözdüğün quizleri, doğru cevapları ve kendi cevaplarını incele.</p>
+      <span class="mt-3 inline-flex items-center gap-1 font-display text-sm font-600 text-mint">Aç →</span>
+    </a>
+  </div>
+
+  <!-- QUIZ ÇÖZME ÖNİZLEMESİ -->
+  <div class="reveal d5 mb-8">
+    <h2 class="mb-3 font-display text-xl font-700">Quiz çözerken böyle görünür 👇</h2>
+    <div class="rounded-[28px] bg-white p-6 pop sm:p-8">
+      <!-- üst bar -->
+      <div class="flex items-center justify-between">
+        <span class="rounded-full bg-grape/12 px-3 py-1 font-display text-xs font-700 text-grape">5. sınıf · Cebir · M.5.2.1</span>
+        <span class="font-display text-sm font-600 text-ink/55">Soru 4 / 10</span>
+      </div>
+      <!-- ilerleme noktaları -->
+      <div class="mt-3 flex gap-1.5">
+        <span class="h-2 flex-1 rounded-full bg-mint"></span>
+        <span class="h-2 flex-1 rounded-full bg-mint"></span>
+        <span class="h-2 flex-1 rounded-full bg-coral"></span>
+        <span class="h-2 flex-1 rounded-full bg-grape"></span>
+        <span class="h-2 flex-1 rounded-full bg-grape/15"></span>
+        <span class="h-2 flex-1 rounded-full bg-grape/15"></span>
+        <span class="h-2 flex-1 rounded-full bg-grape/15"></span>
+        <span class="h-2 flex-1 rounded-full bg-grape/15"></span>
+        <span class="h-2 flex-1 rounded-full bg-grape/15"></span>
+        <span class="h-2 flex-1 rounded-full bg-grape/15"></span>
+      </div>
+      <!-- soru -->
+      <p class="mt-6 font-display text-2xl font-600 leading-snug">Bir sayının 3 katının 4 eksiği 17'dir. Bu sayı kaçtır?</p>
+      <!-- şıklar -->
+      <div class="mt-5 grid gap-3 sm:grid-cols-2">
+        <button class="press flex items-center gap-3 rounded-2xl bg-cloud px-4 py-3.5 text-left font-600 ring-2 ring-transparent hover:ring-sky/40">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky/15 font-display text-sky2">A</span> 5
+        </button>
+        <!-- seçili doğru -->
+        <button class="flex items-center gap-3 rounded-2xl bg-mint/15 px-4 py-3.5 text-left font-700 ring-2 ring-mint">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-mint font-display text-white">B</span> 7 <span class="ml-auto text-mint">✓ Doğru!</span>
+        </button>
+        <button class="press flex items-center gap-3 rounded-2xl bg-cloud px-4 py-3.5 text-left font-600 ring-2 ring-transparent hover:ring-sky/40">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky/15 font-display text-sky2">C</span> 9
+        </button>
+        <button class="press flex items-center gap-3 rounded-2xl bg-cloud px-4 py-3.5 text-left font-600 ring-2 ring-transparent hover:ring-sky/40">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky/15 font-display text-sky2">D</span> 11
+        </button>
+      </div>
+      <div class="mt-5 flex items-center justify-between">
+        <span class="font-display text-sm font-600 text-mint">+10 XP kazandın 🎉</span>
+        <a href="#" class="press rounded-full bg-coral px-7 py-3 font-display text-base font-600 text-white pop-coral">Sonraki soru →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MİNİ İLERLEME -->
+  <div class="reveal d6 rounded-[28px] bg-white p-6 pop sm:p-7">
+    <div class="flex items-center justify-between">
+      <h2 class="font-display text-xl font-700">Kazanım gelişimin 📊</h2>
+      <a href="#" class="font-display text-sm font-600 text-grape">Tümünü gör →</a>
+    </div>
+    <div class="mt-5 space-y-4">
+      <div>
+        <div class="mb-1 flex items-center justify-between text-sm"><span class="font-600">Doğal sayılarda işlemler</span><span class="font-700 text-mint">%92</span></div>
+        <div class="h-2.5 overflow-hidden rounded-full bg-mint/12"><div class="barfill h-full rounded-full bg-mint" style="width:92%"></div></div>
+      </div>
+      <div>
+        <div class="mb-1 flex items-center justify-between text-sm"><span class="font-600">Cebirsel ifadeler</span><span class="font-700 text-sky2">%74</span></div>
+        <div class="h-2.5 overflow-hidden rounded-full bg-sky/12"><div class="barfill h-full rounded-full bg-sky" style="width:74%"></div></div>
+      </div>
+      <div>
+        <div class="mb-1 flex items-center justify-between text-sm"><span class="font-600">Veri işleme <span class="ml-1 rounded-full bg-coral/15 px-2 py-0.5 text-[11px] font-700 text-coral">zayıf</span></span><span class="font-700 text-coral">%48</span></div>
+        <div class="h-2.5 overflow-hidden rounded-full bg-coral/12"><div class="barfill h-full rounded-full bg-coral" style="width:48%"></div></div>
+        <a href="#" class="mt-2 inline-flex items-center gap-1 font-display text-sm font-600 text-coral">Bu konuya pratik yap →</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="mt-6 bg-cloud">
+  <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-8 font-display text-sm font-500 text-ink/55">
+    <span class="text-lg font-700 text-ink">🦊 Soru Atölyesi</span><span>© 2026 · soruatolyesi.com</span>
+  </div>
+</footer>
+
+</body>
+</html>

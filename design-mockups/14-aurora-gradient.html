@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Soru Atölyesi — Aurora Gradient</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    fontFamily: { display: ['Sora','sans-serif'], body: ['"Inter Tight"','sans-serif'] },
+    colors: {
+      void:'#0A0A1A', void2:'#12122B',
+      aqua:'#39E5C8', iris:'#6D5BFF', fuchsia:'#FF5CCB', amber:'#FFC24B', soft:'#E7E5FF',
+    },
+  }}};
+</script>
+<style>
+  body{background:#0A0A1A;position:relative;overflow-x:hidden;}
+  .aurora{position:fixed;inset:-20%;z-index:0;pointer-events:none;filter:blur(80px);opacity:.7;
+    background:
+      radial-gradient(40% 40% at 20% 25%, rgba(109,91,255,.55), transparent 60%),
+      radial-gradient(35% 35% at 80% 15%, rgba(57,229,200,.45), transparent 60%),
+      radial-gradient(45% 45% at 65% 80%, rgba(255,92,203,.45), transparent 60%),
+      radial-gradient(30% 30% at 10% 85%, rgba(255,194,75,.30), transparent 60%);
+    animation:drift 18s ease-in-out infinite alternate;}
+  @keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-3%,2%) scale(1.08)}}
+  .wrap{position:relative;z-index:1;}
+  .glass{background:rgba(255,255,255,.06);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);}
+  .glass-strong{background:rgba(255,255,255,.09);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.16);}
+  .reveal{opacity:0;transform:translateY(18px);animation:rise .8s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}.d5{animation-delay:.45s}
+  .grad-text{background:linear-gradient(100deg,#39E5C8,#6D5BFF,#FF5CCB);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .float{animation:float 5s ease-in-out infinite}
+</style>
+</head>
+<body class="font-body text-soft antialiased">
+<div class="aurora"></div>
+<div class="wrap">
+
+<header class="sticky top-0 z-30 border-b border-white/8 bg-void/50 backdrop-blur-xl">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <div class="flex items-center gap-2.5">
+      <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-aqua to-iris font-display text-lg font-800 text-void">S</div>
+      <span class="font-display text-xl font-700">Soru Atölyesi</span>
+    </div>
+    <nav class="hidden items-center gap-8 text-sm font-500 text-soft/60 md:flex">
+      <a href="#" class="hover:text-white">Nasıl çalışır</a><a href="#" class="hover:text-white">Örnekler</a><a href="#" class="hover:text-white">Özellikler</a><a href="#" class="hover:text-white">Fiyat</a>
+    </nav>
+    <a href="#" class="rounded-xl bg-gradient-to-r from-aqua to-iris px-4 py-2 text-sm font-700 text-void transition hover:brightness-110">Ücretsiz dene</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="relative">
+  <div class="mx-auto max-w-6xl px-6 pt-20 pb-14 text-center sm:pt-28">
+    <span class="reveal d1 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-600 uppercase tracking-wider text-aqua">✦ 1.→7. sınıf · MEB matematik müfredatı</span>
+    <h1 class="reveal d2 mx-auto mt-7 max-w-4xl font-display text-5xl font-800 leading-[1.02] tracking-tight sm:text-7xl">
+      Matematik kağıtların
+      <span class="grad-text">ışıltıyla</span>
+      saniyeler içinde hazır
+    </h1>
+    <p class="reveal d3 mx-auto mt-6 max-w-2xl text-lg text-soft/70">
+      Sınıf ve konunu seç; MEB kazanımlarına uygun sorular, cevap anahtarı ve
+      adım adım çözümle hazır PDF saniyeler içinde. İndir, yazdır, paylaş.
+    </p>
+    <div class="reveal d4 mt-9 flex flex-wrap justify-center gap-3">
+      <a href="#" class="rounded-xl bg-gradient-to-r from-aqua to-iris px-7 py-3.5 text-sm font-700 text-void shadow-[0_8px_40px_-8px_rgba(109,91,255,.7)] transition hover:brightness-110">Ücretsiz dene →</a>
+      <a href="#" class="rounded-xl glass-strong px-7 py-3.5 text-sm font-600 text-white transition hover:bg-white/15">Çözerek çalış</a>
+    </div>
+    <div class="reveal d5 mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-500 text-soft/60">
+      <span class="text-aqua">✓</span> Aylık 100 soru ücretsiz <span class="text-aqua">✓</span> Sadece e-posta <span class="text-aqua">✓</span> Ödeme yok
+    </div>
+
+    <!-- floating glass card -->
+    <div class="reveal d5 float mx-auto mt-14 max-w-md rounded-3xl glass-strong p-6 text-left">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <span class="font-display text-base font-700">5. sınıf · Cebir</span>
+        <span class="rounded-full bg-gradient-to-r from-fuchsia to-iris px-2.5 py-1 text-[10px] font-700 text-white">M.5.2.1</span>
+      </div>
+      <ol class="mt-4 space-y-3 text-sm text-soft/85">
+        <li class="flex gap-2.5"><span class="text-aqua">1.</span> 3a + 5 ifadesinin a = 4 için değeri kaç?</li>
+        <li class="flex gap-2.5"><span class="text-iris">2.</span> x − 7 = 12 ise x kaç?</li>
+        <li class="flex gap-2.5"><span class="text-fuchsia">3.</span> Bir sayının 2 katının 6 fazlası 20 ise sayı kaç?</li>
+      </ol>
+      <div class="mt-4 rounded-xl bg-white/5 px-3 py-2 text-center text-xs font-600 text-aqua">✦ Cevap anahtarı · ✦ Adım adım çözüm</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="border-y border-white/8">
+  <div class="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-12 sm:grid-cols-4">
+    <div class="text-center"><p class="grad-text font-display text-5xl font-800">208</p><p class="mt-1 text-sm text-soft/60">MEB kazanımı</p></div>
+    <div class="text-center"><p class="grad-text font-display text-5xl font-800">1–7</p><p class="mt-1 text-sm text-soft/60">sınıf kapsamı</p></div>
+    <div class="text-center"><p class="grad-text font-display text-5xl font-800">38</p><p class="mt-1 text-sm text-soft/60">konu başlığı</p></div>
+    <div class="text-center"><p class="grad-text font-display text-5xl font-800">96</p><p class="mt-1 text-sm text-soft/60">çalışma alanı</p></div>
+  </div>
+</section>
+
+<!-- SHOWROOM -->
+<section class="mx-auto max-w-6xl px-6 py-20">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="text-xs font-700 uppercase tracking-[0.2em] text-aqua">Gerçek çıktı</p>
+    <h2 class="mt-2 font-display text-4xl font-800 tracking-tight">Sistemin ürettiği örnek sorular</h2>
+    <p class="mt-3 text-soft/65">Bunlar sistemin gerçekten ürettiği sorulardan bir kesit. PDF'te cevap anahtarı ve çözüm de var.</p>
+  </div>
+  <div class="mt-12 grid gap-5 md:grid-cols-3">
+    <article class="rounded-2xl glass p-6 transition hover:-translate-y-1"><span class="rounded-full bg-aqua/15 px-3 py-1 text-xs font-600 text-aqua">2. sınıf · Doğal sayılar</span><p class="mt-3 text-soft/85">Bir manavda 47 elma vardı. 18 elma satıldı. Kaç elma kaldı?</p><details class="mt-3"><summary class="cursor-pointer text-sm font-600 text-aqua">Cevabı göster</summary><p class="mt-2 rounded-lg bg-aqua/10 p-2.5 text-sm font-600 text-aqua">29 elma</p></details></article>
+    <article class="rounded-2xl glass p-6 transition hover:-translate-y-1"><span class="rounded-full bg-iris/20 px-3 py-1 text-xs font-600 text-iris">5. sınıf · Cebir</span><p class="mt-3 text-soft/85">Bir sayının 3 katının 4 eksiği 17. Bu sayı kaç?</p><details class="mt-3"><summary class="cursor-pointer text-sm font-600 text-iris">Cevabı göster</summary><p class="mt-2 rounded-lg bg-iris/10 p-2.5 text-sm font-600 text-iris">7</p></details></article>
+    <article class="rounded-2xl glass p-6 transition hover:-translate-y-1"><span class="rounded-full bg-fuchsia/20 px-3 py-1 text-xs font-600 text-fuchsia">6. sınıf · Veri işleme</span><p class="mt-3 text-soft/85">4, 6, 6, 8, 11 saat çalışan öğrencilerin ortalaması kaç saat?</p><details class="mt-3"><summary class="cursor-pointer text-sm font-600 text-fuchsia">Cevabı göster</summary><p class="mt-2 rounded-lg bg-fuchsia/10 p-2.5 text-sm font-600 text-fuchsia">7 saat</p></details></article>
+  </div>
+</section>
+
+<!-- SOLVE & GROW -->
+<section class="mx-auto max-w-6xl px-6 py-16">
+  <div class="rounded-3xl glass-strong p-10 sm:p-14">
+    <div class="mx-auto max-w-2xl text-center">
+      <span class="inline-flex items-center gap-2 rounded-full bg-aqua/15 px-4 py-1.5 text-xs font-600 uppercase tracking-wider text-aqua">✦ Yeni · Çöz &amp; Geliş</span>
+      <h2 class="mt-4 font-display text-4xl font-800 tracking-tight">Sadece üretme — çöz, gelişimini gör</h2>
+      <p class="mt-3 text-soft/70">Üret → test gibi çöz → anında kaç doğru/yanlış → eksiğine göre pratik. Tam bir öğrenme döngüsü.</p>
+    </div>
+    <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-2xl glass p-6"><div class="mb-3 text-2xl">✏️</div><h3 class="font-display text-lg font-700">Site içinde çöz</h3><p class="mt-1.5 text-sm text-soft/65">Çoktan seçmeli, doğru/yanlış, boşluk doldurma, işlem.</p></div>
+      <div class="rounded-2xl glass p-6"><div class="mb-3 text-2xl">📊</div><h3 class="font-display text-lg font-700">Anında puan</h3><p class="mt-1.5 text-sm text-soft/65">Konu bazında kırılım, eksiğini hemen gör.</p></div>
+      <div class="rounded-2xl glass p-6"><div class="mb-3 text-2xl">🎯</div><h3 class="font-display text-lg font-700">Eksiğine pratik</h3><p class="mt-1.5 text-sm text-soft/65">Zayıf kazanımına tek tıkla yeni test.</p></div>
+      <div class="rounded-2xl bg-gradient-to-br from-iris/30 to-fuchsia/20 p-6 ring-1 ring-white/15"><div class="mb-3 text-2xl">🏆</div><h3 class="font-display text-lg font-700">Rozet & seri</h3><p class="mt-1.5 text-sm text-soft/70">Gelişim grafiği, seviye, seri, konu rozetleri.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="mx-auto max-w-6xl px-6 py-16">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="text-xs font-700 uppercase tracking-[0.2em] text-aqua">Nasıl çalışır</p>
+    <h2 class="mt-2 font-display text-4xl font-800 tracking-tight">Üç adımda hazır</h2>
+  </div>
+  <div class="mt-12 grid gap-5 md:grid-cols-3">
+    <div class="rounded-2xl glass p-7"><div class="grad-text font-display text-5xl font-800">01</div><h3 class="mt-3 font-display text-xl font-700">Sınıf ve konuyu seç</h3><p class="mt-2 text-sm text-soft/65">Sınıf, konu, kazanım; zorluk ve soru sayısı (5–20).</p></div>
+    <div class="rounded-2xl glass p-7"><div class="grad-text font-display text-5xl font-800">02</div><h3 class="mt-3 font-display text-xl font-700">Sorular hazırlansın</h3><p class="mt-2 text-sm text-soft/65">Her sorunun matematiği + konu uyumu otomatik denetlenir.</p></div>
+    <div class="rounded-2xl glass p-7"><div class="grad-text font-display text-5xl font-800">03</div><h3 class="mt-3 font-display text-xl font-700">İndir ve paylaş</h3><p class="mt-2 text-sm text-soft/65">Sorular, cevap anahtarı ve çözüm tek A4 PDF'te — ~30 sn.</p></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="mx-auto max-w-4xl px-6 py-12">
+  <div class="rounded-3xl bg-gradient-to-br from-iris/40 via-fuchsia/20 to-aqua/20 p-10 text-center ring-1 ring-white/15 backdrop-blur-xl">
+    <p class="text-xs font-700 uppercase tracking-[0.2em] text-aqua">Fiyatlandırma</p>
+    <h2 class="mt-2 font-display text-4xl font-800">Erken kullanım dönemi</h2>
+    <p class="mx-auto mt-3 max-w-xl text-soft/80">Tüm hesaplara aylık 100 soruluk ücretsiz kullanım hakkı! Pro abonelik ileride duyurulacak.</p>
+    <div class="mt-7 flex flex-wrap justify-center gap-3">
+      <a href="#" class="rounded-xl bg-gradient-to-r from-aqua to-iris px-7 py-3.5 text-sm font-700 text-void transition hover:brightness-110">Hesap aç →</a>
+      <a href="#" class="rounded-xl glass-strong px-7 py-3.5 text-sm font-600 text-white transition hover:bg-white/15">Detaylar</a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="mx-auto max-w-4xl px-6 pb-20">
+  <div class="rounded-3xl glass-strong p-12 text-center">
+    <h2 class="font-display text-4xl font-800 tracking-tight sm:text-5xl">İlk çalışma kağıdını 5 dakikada hazırla</h2>
+    <p class="mx-auto mt-4 max-w-lg text-soft/70">Hesap için yalnızca e-posta yeterli, ödeme istenmez. Aylık 100 soru ücretsiz.</p>
+    <a href="#" class="mt-7 inline-flex rounded-xl bg-gradient-to-r from-aqua to-iris px-8 py-4 text-sm font-700 text-void shadow-[0_8px_40px_-8px_rgba(109,91,255,.7)] transition hover:brightness-110">Ücretsiz dene →</a>
+  </div>
+</section>
+
+<footer class="border-t border-white/8">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-sm text-soft/55">
+    <span class="font-display text-lg font-700 text-white">Soru Atölyesi</span><span>© 2026 · soruatolyesi.com</span>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

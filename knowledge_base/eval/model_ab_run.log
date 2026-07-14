@@ -1,0 +1,321 @@
+2026-06-02 19:26:11,931 [INFO] ab_runner: A/B değerlendirmesi başlıyor: configs=['gen_25flash', 'gen_25pro', 'gen_35flash', 'gen_31pro', 'critic_25flash'], iter=2, q_count=5
+2026-06-02 19:26:11,932 [INFO] ab_runner: ======================================================================
+2026-06-02 19:26:11,932 [INFO] ab_runner: Config: gen_25flash
+2026-06-02 19:26:11,932 [INFO] ab_runner: ======================================================================
+2026-06-02 19:26:13,574 [INFO] ab_runner:   Senaryo: g5_cebir_orta
+2026-06-02 19:26:15,232 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:26:15,728 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:26:15,755 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:26:16,628 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:26:49,622 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:26:50,034 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:26:50,907 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:26:52,182 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:26:52,184 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=5403 completion_tokens=1633 cost_usd=0.000895 model=gemini-2.5-flash
+2026-06-02 19:26:52,230 [INFO] ab_runner:     iter 1/2: 5 soru, 38.66s
+2026-06-02 19:26:52,607 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:26:53,019 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:26:53,051 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:26:53,051 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:27:10,572 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:27:11,213 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:27:11,311 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:27:13,180 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:27:13,180 [INFO] app.services.agent: Critic reddetti [2] (conf=0.80): Aşağıdaki örüntüde soru işareti (?) yerine gelmesi gereken şeklin değeri kaçtır? | issues=['Kazanım uyumu: Soru, bir bilinmeyen içeren basit denklemleri çözme kazanımıyla doğrudan örtüşmemektedir. Bir örüntüdeki eksik terimi bulma becerisini ölçmektedir, bu da dolaylı olarak denklem kurma ile ilişkili olsa da, doğrudan kazanım kapsamına girmez.']
+2026-06-02 19:27:13,180 [INFO] app.services.agent: Post-filter top-up [1/2]: eksik=1 temp=0.90
+2026-06-02 19:27:13,181 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:27:32,688 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:27:33,318 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:27:33,345 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:27:34,348 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:27:34,349 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=11996 completion_tokens=1785 cost_usd=0.001435 model=gemini-2.5-flash
+2026-06-02 19:27:34,392 [INFO] ab_runner:     iter 2/2: 5 soru, 42.16s
+2026-06-02 19:27:34,392 [INFO] ab_runner:   Senaryo: g6_kesir_zor
+2026-06-02 19:27:34,796 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:27:35,177 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:27:35,211 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:27:35,212 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:28:11,778 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:28:12,405 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:28:12,497 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:28:13,532 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:28:13,533 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=7306 completion_tokens=2124 cost_usd=0.001185 model=gemini-2.5-flash
+2026-06-02 19:28:13,576 [INFO] ab_runner:     iter 1/2: 5 soru, 39.18s
+2026-06-02 19:28:14,148 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:28:14,521 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:28:14,548 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:28:14,549 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:28:40,731 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:28:41,344 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:28:41,426 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:28:43,456 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:28:43,457 [INFO] app.services.agent: Critic reddetti [3] (conf=0.90): Aşağıdaki işlemin sonucu kaçtır?
+
+A) 10/3
+B) 25/12
+C) 15/4
+D) 45/16 | issues=["The provided solution calculates the answer as 5/8, but the stated answer is D, which corresponds to 45/16. The solution then states that the correct answer is 5/8 and that the options should be revised. This indicates a discrepancy between the stated answer and the calculated answer, and the solution itself acknowledges an error in the question's options."]
+2026-06-02 19:28:43,457 [INFO] app.services.agent: Critic reddetti [4] (conf=0.90): $$(\frac{4}{3} + 2\frac{1}{2}) \div (\frac{5}{6} - \frac{1}{4}) = ?$$ | issues=['The calculation in step 7 of the solution results in 46/7, but the stated answer is 100/7. There is a calculation error in the solution.']
+2026-06-02 19:28:43,457 [INFO] app.services.agent: Post-filter top-up [1/2]: eksik=2 temp=1.15
+2026-06-02 19:28:43,457 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:29:24,366 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:29:25,517 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:29:25,876 [INFO] app.services.agent: Semantic duplicate atıldı (sim=0.892): $$ \left( 3 \frac{1}{2} - \frac{3}{4} \right) \div \left( \frac{5}{6} + \frac{1}
+2026-06-02 19:29:25,877 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:29:27,280 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:29:27,281 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=14079 completion_tokens=5529 cost_usd=0.002715 model=gemini-2.5-flash
+2026-06-02 19:29:27,324 [INFO] ab_runner:     iter 2/2: 5 soru, 73.75s
+2026-06-02 19:29:27,350 [INFO] ab_runner: ======================================================================
+2026-06-02 19:29:27,350 [INFO] ab_runner: Config: gen_25pro
+2026-06-02 19:29:27,350 [INFO] ab_runner: ======================================================================
+2026-06-02 19:29:28,915 [INFO] ab_runner:   Senaryo: g5_cebir_orta
+2026-06-02 19:29:29,468 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:29:29,905 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:29:29,928 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:29:30,674 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:29:57,555 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:29:58,687 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:29:59,716 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:30:00,763 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:30:00,764 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=5780 completion_tokens=1499 cost_usd=0.014720 model=gemini-2.5-pro
+2026-06-02 19:30:00,810 [INFO] ab_runner:     iter 1/2: 5 soru, 31.89s
+2026-06-02 19:30:01,374 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:30:01,820 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:30:01,844 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:30:01,844 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:30:41,648 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:30:42,243 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:30:42,335 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:30:43,562 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:30:43,562 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=5636 completion_tokens=1334 cost_usd=0.013715 model=gemini-2.5-pro
+2026-06-02 19:30:43,609 [INFO] ab_runner:     iter 2/2: 5 soru, 42.80s
+2026-06-02 19:30:43,609 [INFO] ab_runner:   Senaryo: g6_kesir_zor
+2026-06-02 19:30:44,001 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:30:44,365 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:30:44,394 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:30:44,395 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:31:26,310 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:31:26,731 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:31:26,820 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:31:27,998 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:31:27,998 [INFO] app.services.agent: Critic reddetti [0] (conf=0.90): Bir sayı, 3/5'e bölündüğünde elde edilen sonucun 1/2'si, 2 tam 1/2'ye eşit olmak | issues=['The final answer is incorrect. The calculation leads to 3, but the provided answer is 3. The steps are correct, but the final answer stated in the problem is incorrect.']
+2026-06-02 19:31:27,998 [INFO] app.services.agent: Post-filter top-up [1/2]: eksik=1 temp=1.10
+2026-06-02 19:31:27,999 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:32:15,118 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:32:15,753 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:32:15,851 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:32:17,040 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:32:17,041 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=13580 completion_tokens=5001 cost_usd=0.041980 model=gemini-2.5-pro
+2026-06-02 19:32:17,087 [INFO] ab_runner:     iter 1/2: 5 soru, 93.48s
+2026-06-02 19:32:17,651 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:32:18,203 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:32:18,230 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:32:18,230 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:35:02,314 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:35:03,379 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:35:03,521 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:35:04,788 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:35:04,789 [INFO] app.services.agent: Critic reddetti [4] (conf=0.80): $$(5 \frac{1}{3} \times \frac{3}{4}) \text{ } \boldsymbol{\boldsymbol{\boldsymbo | issues=["The question is a multiple-choice question, but the provided answer is 'C' which is a letter, not a numerical value. The solution correctly calculates 9, which corresponds to option C. However, the question type is listed as 'kavram_sorusu' (concept question) instead of 'coktan_secmeli' (multiple-choice)."]
+2026-06-02 19:35:04,790 [INFO] app.services.agent: Post-filter top-up [1/2]: eksik=1 temp=1.09
+2026-06-02 19:35:04,790 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:35:56,460 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:35:57,076 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:35:57,167 [INFO] app.services.agent: Semantic duplicate atıldı (sim=0.935): Bir terzi, `15 tam 3/4` metre kumaşın `3 tam 1/2` metresi ile bir elbise dikmişt
+2026-06-02 19:35:57,174 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:35:58,342 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:35:58,343 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=14550 completion_tokens=26119 cost_usd=0.148782 model=gemini-2.5-pro
+2026-06-02 19:35:58,388 [INFO] ab_runner:     iter 2/2: 5 soru, 221.30s
+2026-06-02 19:35:58,406 [INFO] ab_runner: ======================================================================
+2026-06-02 19:35:58,406 [INFO] ab_runner: Config: gen_35flash
+2026-06-02 19:35:58,406 [INFO] ab_runner: ======================================================================
+2026-06-02 19:35:59,884 [INFO] ab_runner:   Senaryo: g5_cebir_orta
+2026-06-02 19:36:00,283 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:36:01,463 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:36:01,492 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:36:02,209 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:36:31,499 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:36:31,928 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:36:32,741 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:36:34,271 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:36:34,271 [INFO] app.services.agent: Critic reddetti [3] (conf=0.80): Aşağıdaki geometrik şekillerin içine yazılan sayılar belirli bir kurala göre art | issues=['Kazanım uyumu: Soru, M.5.5.1 kazanımı ile tam olarak örtüşmemektedir. Kazanım, bilinmeyen içeren basit denklemlerin çözümüne odaklanırken, bu soru örüntüdeki kuralı bulmayı gerektirir. Denklem çözme adımı olsa da, asıl zorluk örüntüyü fark etmektir.']
+2026-06-02 19:36:34,271 [INFO] app.services.agent: Post-filter top-up [1/2]: eksik=1 temp=1.02
+2026-06-02 19:36:34,271 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:37:01,420 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:37:02,028 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:37:02,099 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:37:03,441 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:37:03,441 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=11475 completion_tokens=2939 cost_usd=0.000000 model=gemini-3.5-flash
+2026-06-02 19:37:03,488 [INFO] ab_runner:     iter 1/2: 5 soru, 63.60s
+2026-06-02 19:37:04,612 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:37:05,174 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:37:05,200 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:37:05,201 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:37:43,012 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:37:43,481 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:37:43,569 [INFO] app.services.agent: Eksik 1 soru için yeniden üretim (round 1, temp=0.96)
+2026-06-02 19:37:43,569 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:38:00,926 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:38:01,334 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:38:01,354 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:38:02,677 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:38:02,677 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=12059 completion_tokens=1475 cost_usd=0.000000 model=gemini-3.5-flash
+2026-06-02 19:38:02,724 [INFO] ab_runner:     iter 2/2: 5 soru, 59.24s
+2026-06-02 19:38:02,724 [INFO] ab_runner:   Senaryo: g6_kesir_zor
+2026-06-02 19:38:03,137 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:38:03,527 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:38:03,556 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:38:03,556 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:38:44,317 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:38:44,765 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:38:44,859 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:38:45,797 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:38:45,798 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=6947 completion_tokens=2289 cost_usd=0.000000 model=gemini-3.5-flash
+2026-06-02 19:38:45,841 [INFO] ab_runner:     iter 1/2: 5 soru, 43.12s
+2026-06-02 19:38:46,236 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:38:46,620 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:38:46,647 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:38:46,648 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:39:23,172 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:39:23,618 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:39:23,712 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:39:24,736 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:39:24,736 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=7459 completion_tokens=2151 cost_usd=0.000000 model=gemini-3.5-flash
+2026-06-02 19:39:24,782 [INFO] ab_runner:     iter 2/2: 5 soru, 38.94s
+2026-06-02 19:39:24,798 [INFO] ab_runner: ======================================================================
+2026-06-02 19:39:24,798 [INFO] ab_runner: Config: gen_31pro
+2026-06-02 19:39:24,798 [INFO] ab_runner: ======================================================================
+2026-06-02 19:39:26,250 [INFO] ab_runner:   Senaryo: g5_cebir_orta
+2026-06-02 19:39:26,702 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:39:27,117 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:39:27,143 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:39:27,863 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:40:27,729 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:40:28,206 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:40:29,023 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:40:35,129 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:40:35,130 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=5500 completion_tokens=1446 cost_usd=0.000000 model=gemini-3.1-pro-preview
+2026-06-02 19:40:35,172 [INFO] ab_runner:     iter 1/2: 5 soru, 68.92s
+2026-06-02 19:40:35,631 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:40:36,119 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:40:36,149 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:40:36,149 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:41:44,962 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:41:45,434 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:41:45,522 [INFO] app.services.agent: Eksik 1 soru için yeniden üretim (round 1, temp=1.00)
+2026-06-02 19:41:45,522 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:42:04,305 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:42:04,309 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:42:05,450 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:42:05,451 [INFO] app.services.agent: Post-filter top-up [1/2]: eksik=1 temp=1.15
+2026-06-02 19:42:05,451 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:43:02,966 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:43:03,462 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:43:03,559 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:43:04,481 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:43:04,482 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=18003 completion_tokens=3114 cost_usd=0.000000 model=gemini-3.1-pro-preview
+2026-06-02 19:43:04,527 [INFO] ab_runner:     iter 2/2: 5 soru, 149.35s
+2026-06-02 19:43:04,527 [INFO] ab_runner:   Senaryo: g6_kesir_zor
+2026-06-02 19:43:04,887 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:43:05,255 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:43:05,282 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:43:05,283 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:44:12,401 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:44:12,965 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:44:13,058 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:44:14,193 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 503 Service Unavailable"
+2026-06-02 19:44:14,193 [WARNING] app.services.critic: Critic geçici hata (503), 1.5s sonra tekrar (1/2)
+2026-06-02 19:44:15,719 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:44:16,852 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:44:16,853 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=6636 completion_tokens=2177 cost_usd=0.000000 model=gemini-3.1-pro-preview
+2026-06-02 19:44:16,933 [INFO] ab_runner:     iter 1/2: 5 soru, 72.41s
+2026-06-02 19:44:17,337 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:44:17,726 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:44:17,754 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:44:17,755 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:45:30,946 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:45:31,418 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:45:31,515 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:45:32,917 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:45:32,917 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=7222 completion_tokens=1768 cost_usd=0.000000 model=gemini-3.1-pro-preview
+2026-06-02 19:45:32,967 [INFO] ab_runner:     iter 2/2: 5 soru, 76.03s
+2026-06-02 19:45:32,977 [INFO] ab_runner: ======================================================================
+2026-06-02 19:45:32,977 [INFO] ab_runner: Config: critic_25flash
+2026-06-02 19:45:32,977 [INFO] ab_runner: ======================================================================
+2026-06-02 19:45:34,573 [INFO] ab_runner:   Senaryo: g5_cebir_orta
+2026-06-02 19:45:34,980 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:45:35,391 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:45:35,433 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:45:36,183 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:46:05,124 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:46:05,900 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:46:06,903 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:46:22,425 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:46:22,426 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=5965 completion_tokens=1570 cost_usd=0.000918 model=gemini-2.5-flash
+2026-06-02 19:46:22,476 [INFO] ab_runner:     iter 1/2: 5 soru, 47.90s
+2026-06-02 19:46:22,907 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:46:23,332 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:46:23,362 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:46:23,363 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:47:01,137 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:47:01,598 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:47:01,691 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:47:13,910 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:47:13,910 [INFO] app.services.agent: cost_meter | grade=5 topic=cebir kazanim=M.5.5.1 diff=orta prompt_tokens=6072 completion_tokens=1345 cost_usd=0.000859 model=gemini-2.5-flash
+2026-06-02 19:47:13,957 [INFO] ab_runner:     iter 2/2: 5 soru, 51.48s
+2026-06-02 19:47:13,957 [INFO] ab_runner:   Senaryo: g6_kesir_zor
+2026-06-02 19:47:14,347 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:47:14,679 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:47:14,705 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:47:14,706 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:47:41,105 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:47:41,553 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:47:41,640 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:48:05,322 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:48:05,323 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=7045 completion_tokens=1957 cost_usd=0.001115 model=gemini-2.5-flash
+2026-06-02 19:48:05,366 [INFO] ab_runner:     iter 1/2: 5 soru, 51.41s
+2026-06-02 19:48:05,951 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:48:06,347 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:48:06,375 [INFO] app.services.agent: Few-shot kaynağı: rag (6 örnek) | textbook chunks: 3
+2026-06-02 19:48:06,375 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:48:56,947 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:48:57,408 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:48:57,505 [INFO] google_genai.models: AFC is enabled with max remote calls: 10.
+2026-06-02 19:49:14,747 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2026-06-02 19:49:14,748 [INFO] app.services.agent: cost_meter | grade=6 topic=kesirler kazanim=M.6.2.3 diff=zor prompt_tokens=7647 completion_tokens=2394 cost_usd=0.001292 model=gemini-2.5-flash
+2026-06-02 19:49:14,798 [INFO] ab_runner:     iter 2/2: 5 soru, 69.43s
+2026-06-02 19:49:14,812 [INFO] ab_runner: Tüm config'ler tamamlandı. Embedding hesaplanıyor...
+2026-06-02 19:49:15,524 [INFO] ab_runner: Embedding üretiliyor: 100 soru, 2 kazanım metni
+2026-06-02 19:49:17,223 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:49:17,889 [INFO] httpx: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents "HTTP/1.1 200 OK"
+2026-06-02 19:49:17,924 [INFO] ab_runner: Metrikler hesaplanıyor...
+2026-06-02 19:49:18,134 [INFO] ab_runner: Ham çıktı: knowledge_base\eval\ab_raw_20260602_162611.json
+2026-06-02 19:49:18,135 [INFO] ab_runner: Rapor: knowledge_base\eval\ab_report_20260602_162611.md
+
+# A/B Değerlendirme Raporu — Sprint 1+2
+
+Karşılaştırılan config'ler: gen_25flash, gen_25pro, gen_35flash, gen_31pro, critic_25flash
+Baseline: `gen_25flash` (delta hesaplaması bu sütuna göre).
+
+## Genel Metrikler
+
+| Metrik | gen_25flash | gen_25pro | gen_35flash | gen_31pro | critic_25flash |
+|---|---|---|---|---|---|
+| Intra-batch semantic distance ⬆ | 0.3201 | 0.3432 (+7.2% ⬆) | 0.3102 (-3.1%) | 0.2998 (-6.3% ⬇) | 0.3301 (+3.1%) |
+| Cross-batch semantic distance ⬆ | 0.3119 | 0.3339 (+7.1% ⬆) | 0.3026 (-3.0%) | 0.2934 (-5.9% ⬇) | 0.3252 (+4.3%) |
+| Unique normalize ratio ⬆ | 1.0000 | 1.0000 (+0.0%) | 1.0000 (+0.0%) | 1.0000 (+0.0%) | 1.0000 (+0.0%) |
+| Unique context tokens / batch ⬆ | 62.50 | 61.50 (-1.6%) | 59.75 (-4.4%) | 71.25 (+14.0% ⬆) | 53.75 (-14.0% ⬇) |
+| Critic pass rate ⬆ | 0.8869 | 0.8869 (+0.0%) | 0.9583 (+8.1% ⬆) | 1.0000 (+12.8% ⬆) | 1.0000 (+12.8% ⬆) |
+| Delivered ratio ⬆ | 1.0000 | 1.0000 (+0.0%) | 1.0000 (+0.0%) | 1.0000 (+0.0%) | 1.0000 (+0.0%) |
+| Kazanım alignment ⬆ | 0.6465 | 0.6423 (-0.7%) | 0.6714 (+3.8%) | 0.6751 (+4.4%) | 0.6441 (-0.4%) |
+| Temperature variance ⬆ | 0.1370 | 0.0668 (-51.3% ⬇) | 0.1045 (-23.8% ⬇) | 0.1108 (-19.1% ⬇) | 0.1356 (-1.0%) |
+| Retrieval distance variance ⬆ | 0.0253 | 0.0329 (+29.6% ⬆) | 0.0315 (+24.4% ⬆) | 0.0293 (+15.6% ⬆) | 0.0359 (+41.7% ⬆) |
+| Avg duration (s) ⬇ | 48.44 | 97.37 (+101.0% ⬆) | 51.22 (+5.8% ⬆) | 91.68 (+89.3% ⬆) | 55.06 (+13.7% ⬆) |
+| Total questions generated | 20 | 20 (+0.0%) | 20 (+0.0%) | 20 (+0.0%) | 20 (+0.0%) |
+| Successful runs / total | 4/4 | 4/4 | 4/4 | 4/4 | 4/4 |
+
+## Senaryo Bazlı Cross-Batch Distance
+
+| Senaryo | gen_25flash | gen_25pro | gen_35flash | gen_31pro | critic_25flash |
+|---|---|---|---|---|---|
+| g5_cebir_orta | 0.3281 | 0.3598 (+9.7% ⬆) | 0.3157 (-3.8%) | 0.3092 (-5.8% ⬇) | 0.3420 (+4.2%) |
+| g6_kesir_zor | 0.2958 | 0.3080 (+4.1%) | 0.2895 (-2.1%) | 0.2776 (-6.1% ⬇) | 0.3084 (+4.3%) |
