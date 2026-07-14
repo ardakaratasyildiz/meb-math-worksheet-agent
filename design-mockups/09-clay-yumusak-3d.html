@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Soru Atölyesi — Clay Yumuşak 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { display: ['Gabarito','sans-serif'], body: ['"Plus Jakarta Sans"','sans-serif'] },
+      colors: {
+        bg:'#EFE9FB', bg2:'#E7DEF8',
+        violet:'#8B6CF0', violet2:'#7A57EE',
+        peach:'#FF9E7A', mint:'#5CD9B8', lemon:'#FFD36E', berry:'#FF6FA5', ink:'#3A2E5C',
+      },
+    }},
+  };
+</script>
+<style>
+  body{background:#EFE9FB;}
+  /* claymorphism: soft outer drop + inner highlight + inner shadow */
+  .clay{box-shadow: 8px 8px 20px rgba(122,87,238,.22), -6px -6px 16px rgba(255,255,255,.9), inset 2px 2px 4px rgba(255,255,255,.7), inset -4px -4px 10px rgba(122,87,238,.12);}
+  .clay-violet{box-shadow: 8px 10px 22px rgba(99,64,210,.45), inset 3px 3px 6px rgba(255,255,255,.45), inset -5px -6px 12px rgba(70,40,170,.45);}
+  .clay-peach{box-shadow: 8px 10px 22px rgba(255,120,80,.4), inset 3px 3px 6px rgba(255,255,255,.5), inset -5px -6px 12px rgba(220,90,50,.4);}
+  .clay-mint{box-shadow: 8px 10px 22px rgba(60,190,150,.4), inset 3px 3px 6px rgba(255,255,255,.55), inset -5px -6px 12px rgba(30,150,110,.4);}
+  .clay-btn{box-shadow: 5px 6px 14px rgba(99,64,210,.4), inset 2px 2px 4px rgba(255,255,255,.4), inset -3px -4px 8px rgba(70,40,170,.4); transition:transform .15s, box-shadow .15s;}
+  .clay-btn:active{transform:translateY(3px); box-shadow: 2px 2px 6px rgba(99,64,210,.4), inset 2px 2px 4px rgba(255,255,255,.4), inset -3px -4px 8px rgba(70,40,170,.4);}
+  .reveal{opacity:0;transform:translateY(18px) scale(.96);animation:rise .7s cubic-bezier(.2,.8,.2,1.1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}.d5{animation-delay:.45s}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+  .bob{animation:bob 3.6s ease-in-out infinite}
+</style>
+</head>
+<body class="font-body text-ink antialiased">
+
+<header class="sticky top-0 z-30 bg-bg/80 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <div class="flex items-center gap-3">
+      <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-violet font-display text-xl font-900 text-white clay-violet">S</div>
+      <span class="font-display text-2xl font-800 text-ink">Soru Atölyesi</span>
+    </div>
+    <nav class="hidden items-center gap-7 text-sm font-600 text-ink/60 md:flex">
+      <a href="#" class="hover:text-violet">Nasıl çalışır</a><a href="#" class="hover:text-violet">Örnekler</a><a href="#" class="hover:text-violet">Özellikler</a><a href="#" class="hover:text-violet">Fiyat</a>
+    </nav>
+    <a href="#" class="clay-btn rounded-2xl bg-violet px-5 py-2.5 font-display text-sm font-700 text-white">Hadi başla</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="relative overflow-hidden">
+  <div aria-hidden class="bob pointer-events-none absolute right-10 top-20 h-20 w-20 rounded-[30px] bg-lemon clay"></div>
+  <div aria-hidden class="pointer-events-none absolute -left-6 bottom-10 h-16 w-16 rounded-full bg-mint clay"></div>
+  <div class="mx-auto grid max-w-6xl items-center gap-12 px-6 pt-16 pb-12 lg:grid-cols-12 sm:pt-20">
+    <div class="lg:col-span-7">
+      <span class="reveal d1 inline-flex items-center gap-2 rounded-full bg-bg px-4 py-2 text-sm font-700 text-violet2 clay">🧮 1.→7. sınıf · MEB matematik</span>
+      <h1 class="reveal d2 mt-6 font-display text-5xl font-900 leading-[1.02] text-ink sm:text-6xl">
+        Matematik kağıtları
+        <span class="text-violet">parmak şıkırtısında</span>
+        hazır olsun
+      </h1>
+      <p class="reveal d3 mt-5 max-w-xl text-lg text-ink/70">
+        Sınıf ve konunu seç; MEB kazanımlarına uygun sorular, cevap anahtarı ve
+        adım adım çözümle hazır PDF saniyeler içinde. İndir, yazdır, çöz!
+      </p>
+      <div class="reveal d4 mt-8 flex flex-wrap items-center gap-4">
+        <a href="#" class="clay-btn rounded-2xl bg-violet px-7 py-4 font-display text-base font-700 text-white">Ücretsiz dene →</a>
+        <a href="#" class="clay-btn rounded-2xl bg-peach px-7 py-4 font-display text-base font-700 text-white">Çözerek çalış</a>
+      </div>
+      <div class="reveal d5 mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm font-600 text-ink/60">
+        <span>🟢 Aylık 100 soru ücretsiz</span><span>🟢 Sadece e-posta</span><span>🟢 Ödeme yok</span>
+      </div>
+    </div>
+    <!-- clay kart + maskot -->
+    <div class="reveal d4 lg:col-span-5">
+      <div class="relative mx-auto max-w-xs">
+        <div class="bob absolute -left-7 -top-9 z-10 flex h-20 w-20 items-center justify-center rounded-[28px] bg-berry text-4xl clay-peach">🐙</div>
+        <div class="rounded-[32px] bg-bg p-6 clay">
+          <div class="flex items-center justify-between">
+            <span class="font-display text-base font-800 text-ink">5. sınıf · Cebir</span>
+            <span class="rounded-full bg-violet px-3 py-1 font-display text-[11px] font-700 text-white clay-violet">M.5.2.1</span>
+          </div>
+          <ol class="mt-4 space-y-3 text-sm text-ink/80">
+            <li class="flex gap-2.5"><span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet/15 font-display text-xs font-800 text-violet">1</span> 3a + 5 ifadesinin a = 4 için değeri kaç?</li>
+            <li class="flex gap-2.5"><span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-peach/20 font-display text-xs font-800 text-peach">2</span> x − 7 = 12 ise x kaç?</li>
+            <li class="flex gap-2.5"><span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-mint/20 font-display text-xs font-800 text-mint">3</span> Bir sayının 2 katının 6 fazlası 20 ise sayı kaç?</li>
+          </ol>
+          <div class="mt-5 rounded-2xl bg-mint/15 px-3 py-2.5 text-center font-display text-xs font-700 text-mint">✓ Cevap anahtarı · ✓ Adım adım çözüm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="mx-auto max-w-6xl px-6 py-8">
+  <div class="grid grid-cols-2 gap-5 sm:grid-cols-4">
+    <div class="rounded-[28px] bg-bg p-6 text-center clay"><p class="font-display text-4xl font-900 text-violet">208</p><p class="mt-1 text-sm font-600 text-ink/55">MEB kazanımı</p></div>
+    <div class="rounded-[28px] bg-bg p-6 text-center clay"><p class="font-display text-4xl font-900 text-peach">1–7</p><p class="mt-1 text-sm font-600 text-ink/55">sınıf kapsamı</p></div>
+    <div class="rounded-[28px] bg-bg p-6 text-center clay"><p class="font-display text-4xl font-900 text-mint">38</p><p class="mt-1 text-sm font-600 text-ink/55">konu başlığı</p></div>
+    <div class="rounded-[28px] bg-bg p-6 text-center clay"><p class="font-display text-4xl font-900 text-berry">96</p><p class="mt-1 text-sm font-600 text-ink/55">çalışma alanı</p></div>
+  </div>
+</section>
+
+<!-- SHOWROOM -->
+<section class="mx-auto max-w-6xl px-6 py-16">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="font-display text-sm font-800 uppercase tracking-wider text-violet2">Gerçek çıktı</p>
+    <h2 class="mt-2 font-display text-4xl font-900 text-ink">Sistemin ürettiği örnek sorular</h2>
+    <p class="mt-3 text-ink/65">Bunlar sistemin gerçekten ürettiği sorulardan bir kesit. PDF'te cevap anahtarı ve çözüm de var.</p>
+  </div>
+  <div class="mt-12 grid gap-7 md:grid-cols-3">
+    <article class="rounded-[30px] bg-bg p-6 clay"><span class="rounded-full bg-violet/12 px-3 py-1 font-display text-xs font-700 text-violet">2. sınıf · Doğal sayılar</span><p class="mt-3 text-ink/80">Bir manavda 47 elma vardı. 18 elma satıldı. Kaç elma kaldı?</p><details class="mt-3"><summary class="cursor-pointer font-display text-sm font-700 text-violet">Cevabı göster</summary><p class="mt-2 rounded-2xl bg-violet/10 p-3 text-sm font-600">29 elma 🍎</p></details></article>
+    <article class="rounded-[30px] bg-bg p-6 clay"><span class="rounded-full bg-peach/15 px-3 py-1 font-display text-xs font-700 text-peach">5. sınıf · Cebir</span><p class="mt-3 text-ink/80">Bir sayının 3 katının 4 eksiği 17. Bu sayı kaç?</p><details class="mt-3"><summary class="cursor-pointer font-display text-sm font-700 text-peach">Cevabı göster</summary><p class="mt-2 rounded-2xl bg-peach/12 p-3 text-sm font-600">7 ✨</p></details></article>
+    <article class="rounded-[30px] bg-bg p-6 clay"><span class="rounded-full bg-mint/15 px-3 py-1 font-display text-xs font-700 text-mint">6. sınıf · Veri işleme</span><p class="mt-3 text-ink/80">4, 6, 6, 8, 11 saat çalışan öğrencilerin ortalaması kaç saat?</p><details class="mt-3"><summary class="cursor-pointer font-display text-sm font-700 text-mint">Cevabı göster</summary><p class="mt-2 rounded-2xl bg-mint/12 p-3 text-sm font-600">7 saat ⏰</p></details></article>
+  </div>
+</section>
+
+<!-- SOLVE & GROW -->
+<section class="bg-bg2">
+  <div class="mx-auto max-w-6xl px-6 py-16">
+    <div class="mx-auto max-w-2xl text-center">
+      <span class="inline-flex items-center gap-2 rounded-full bg-violet px-4 py-2 font-display text-sm font-700 text-white clay-violet">✨ Yeni · Çöz &amp; Geliş</span>
+      <h2 class="mt-4 font-display text-4xl font-900 text-ink">Sadece üretme — çöz, puan al, gelişimini gör</h2>
+      <p class="mt-3 text-ink/65">Üret → test gibi çöz → anında kaç doğru/yanlış → eksiğine göre pratik. Tam bir öğrenme döngüsü!</p>
+    </div>
+    <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-[26px] bg-bg p-6 clay"><div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet/12 text-2xl">✏️</div><h3 class="font-display text-lg font-800">Site içinde çöz</h3><p class="mt-1.5 text-sm text-ink/60">Çoktan seçmeli, doğru/yanlış, boşluk doldurma, işlem.</p></div>
+      <div class="rounded-[26px] bg-bg p-6 clay"><div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-peach/15 text-2xl">📊</div><h3 class="font-display text-lg font-800">Anında puan</h3><p class="mt-1.5 text-sm text-ink/60">Konu bazında kırılım, eksiğini hemen gör.</p></div>
+      <div class="rounded-[26px] bg-bg p-6 clay"><div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/15 text-2xl">🎯</div><h3 class="font-display text-lg font-800">Eksiğine pratik</h3><p class="mt-1.5 text-sm text-ink/60">Zayıf kazanımına tek tıkla yeni test.</p></div>
+      <div class="rounded-[26px] bg-lemon p-6 clay"><div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/40 text-2xl">🏆</div><h3 class="font-display text-lg font-800 text-ink">Rozet & seri</h3><p class="mt-1.5 text-sm text-ink/70">Gelişim grafiği, seviye, seri, konu rozetleri.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="mx-auto max-w-6xl px-6 py-16">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="font-display text-sm font-800 uppercase tracking-wider text-peach">Nasıl çalışır</p>
+    <h2 class="mt-2 font-display text-4xl font-900 text-ink">Üç adımda hazır</h2>
+  </div>
+  <div class="mt-12 grid gap-7 md:grid-cols-3">
+    <div class="rounded-[30px] bg-bg p-7 clay"><div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet font-display text-2xl font-900 text-white clay-violet">1</div><h3 class="mt-4 font-display text-xl font-800">Sınıf ve konuyu seç</h3><p class="mt-2 text-sm text-ink/60">Sınıf, konu, kazanım; zorluk ve soru sayısı (5–20).</p></div>
+    <div class="rounded-[30px] bg-bg p-7 clay"><div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-peach font-display text-2xl font-900 text-white clay-peach">2</div><h3 class="mt-4 font-display text-xl font-800">Sorular hazırlansın</h3><p class="mt-2 text-sm text-ink/60">Her sorunun matematiği + konu uyumu otomatik denetlenir.</p></div>
+    <div class="rounded-[30px] bg-bg p-7 clay"><div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-mint font-display text-2xl font-900 text-white clay-mint">3</div><h3 class="mt-4 font-display text-xl font-800">İndir ve paylaş</h3><p class="mt-2 text-sm text-ink/60">Sorular, cevap anahtarı ve çözüm tek A4 PDF'te — ~30 sn.</p></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="mx-auto max-w-4xl px-6 py-12">
+  <div class="rounded-[40px] bg-violet p-10 text-center text-white clay-violet">
+    <p class="font-display text-sm font-800 uppercase tracking-wider text-white/80">Fiyatlandırma</p>
+    <h2 class="mt-2 font-display text-4xl font-900">Erken kullanım dönemi 🎈</h2>
+    <p class="mx-auto mt-3 max-w-xl text-white/85">Tüm hesaplara aylık 100 soruluk ücretsiz kullanım hakkı! Pro abonelik ileride duyurulacak.</p>
+    <div class="mt-7 flex flex-wrap justify-center gap-4">
+      <a href="#" class="clay-btn rounded-2xl bg-lemon px-7 py-4 font-display text-base font-700 text-ink">Hesap aç →</a>
+      <a href="#" class="rounded-2xl bg-white/15 px-7 py-4 font-display text-base font-700 text-white ring-1 ring-white/40 transition hover:bg-white/25">Detaylar</a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="mx-auto max-w-4xl px-6 pb-20">
+  <div class="rounded-[40px] bg-bg p-10 text-center clay">
+    <div class="bob mx-auto mb-2 text-5xl">🐙</div>
+    <h2 class="font-display text-4xl font-900 text-ink">İlk çalışma kağıdını 5 dakikada hazırla</h2>
+    <p class="mx-auto mt-3 max-w-lg text-ink/65">Hesap için yalnızca e-posta yeterli, ödeme istenmez. Aylık 100 soru ücretsiz.</p>
+    <a href="#" class="clay-btn mt-6 inline-flex rounded-2xl bg-violet px-9 py-4 font-display text-base font-700 text-white">Ücretsiz dene →</a>
+  </div>
+</section>
+
+<footer class="bg-bg2">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 font-display text-sm font-600 text-ink/55">
+    <span class="text-lg font-800 text-ink">🐙 Soru Atölyesi</span><span>© 2026 · soruatolyesi.com</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Soru Atölyesi — Tasarım Karşılaştırma</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background:#0f172a; font-family: ui-sans-serif, system-ui, sans-serif; }
+  .frame-wrap { height: 520px; overflow: hidden; border-radius: 12px; }
+  .frame-wrap iframe {
+    width: 1280px; height: 1733px;
+    transform: scale(.33); transform-origin: top left;
+    border: 0;
+  }
+  .tab-yetiskin { color:#fca5a5 } .tab-cocuk { color:#86efac }
+</style>
+</head>
+<body class="text-slate-100">
+
+<header class="mx-auto max-w-7xl px-6 pt-10 pb-6">
+  <h1 class="text-3xl font-bold tracking-tight">Soru Atölyesi — 14 Tasarım Yönü</h1>
+  <p class="mt-2 max-w-3xl text-slate-400">Hepsi landing sayfasının <strong>gerçek içeriğiyle</strong>. Küçük önizlemeler aşağıda; tam ekran için kartların üstündeki butona tıkla. Tarayıcıda açtığın için kurulum/derleme yok.</p>
+  <div class="mt-4 flex flex-wrap gap-3 text-sm">
+    <span class="rounded-full bg-rose-500/15 px-3 py-1 tab-yetiskin font-semibold">1–3 · Yetişkin / kurumsal</span>
+    <span class="rounded-full bg-emerald-500/15 px-3 py-1 tab-cocuk font-semibold">4–6 · Çocuk / oyunsu</span>
+    <span class="rounded-full bg-amber-400/15 px-3 py-1 font-semibold text-amber-300">7–9 ★ Cesur yönler</span>
+    <span class="rounded-full bg-cyan-400/15 px-3 py-1 font-semibold text-cyan-300">10–14 · Matematik-temalı yeni set</span>
+  </div>
+</header>
+
+<main class="mx-auto grid max-w-7xl gap-6 px-6 pb-16 lg:grid-cols-3">
+
+  <section class="rounded-2xl border border-slate-700 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-amber-500/20 px-2.5 py-0.5 text-xs font-semibold text-amber-300">Yön 1</span><h2 class="mt-1.5 text-lg font-bold">Editöryel Akademik</h2><p class="text-xs text-slate-400">Fraunces serif · petrol+amber · güven veren</p></div>
+      <a href="01-editoryel-akademik.html" target="_blank" class="rounded-lg bg-amber-500 px-3 py-2 text-xs font-bold text-slate-900 hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="01-editoryel-akademik.html" loading="lazy" title="Editöryel"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border border-slate-700 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-violet-500/20 px-2.5 py-0.5 text-xs font-semibold text-violet-300">Yön 2</span><h2 class="mt-1.5 text-lg font-bold">Modern Oyunlaştırma</h2><p class="text-xs text-slate-400">Clash Display · indigo+neon · enerjik</p></div>
+      <a href="02-modern-oyunlastirma.html" target="_blank" class="rounded-lg bg-violet-500 px-3 py-2 text-xs font-bold text-white hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="02-modern-oyunlastirma.html" loading="lazy" title="Oyunlaştırma"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border border-slate-700 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-orange-500/20 px-2.5 py-0.5 text-xs font-semibold text-orange-300">Yön 3</span><h2 class="mt-1.5 text-lg font-bold">Sıcak / Elle Çizilmiş Kağıt</h2><p class="text-xs text-slate-400">Bricolage + Newsreader · krem+kiremit</p></div>
+      <a href="03-sicak-kagit.html" target="_blank" class="rounded-lg bg-orange-500 px-3 py-2 text-xs font-bold text-white hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="03-sicak-kagit.html" loading="lazy" title="Kağıt"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-emerald-600/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-sky-500/20 px-2.5 py-0.5 text-xs font-semibold text-sky-300">Yön 4 · çocuk</span><h2 class="mt-1.5 text-lg font-bold">Neşeli Çizgi</h2><p class="text-xs text-slate-400">Fredoka · gökyüzü+güneş · maskotlu, balon kartlar</p></div>
+      <a href="04-nese-cizgi.html" target="_blank" class="rounded-lg bg-sky-500 px-3 py-2 text-xs font-bold text-white hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="04-nese-cizgi.html" loading="lazy" title="Neşeli"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-emerald-600/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">Yön 5 · çocuk</span><h2 class="mt-1.5 text-lg font-bold">Macera Yolu</h2><p class="text-xs text-slate-400">Baloo 2 · çimen yeşili · Duolingo tarzı seviye yolu</p></div>
+      <a href="05-macera-yolu.html" target="_blank" class="rounded-lg bg-emerald-500 px-3 py-2 text-xs font-bold text-white hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="05-macera-yolu.html" loading="lazy" title="Macera"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-emerald-600/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-fuchsia-500/20 px-2.5 py-0.5 text-xs font-semibold text-fuchsia-300">Yön 6 · çocuk</span><h2 class="mt-1.5 text-lg font-bold">Uzay Kâşifi</h2><p class="text-xs text-slate-400">Lilita One · galaksi mor · gezegen, yıldız, roket</p></div>
+      <a href="06-uzay-kasifi.html" target="_blank" class="rounded-lg bg-fuchsia-500 px-3 py-2 text-xs font-bold text-white hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="06-uzay-kasifi.html" loading="lazy" title="Uzay"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-amber-400/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-lime-400/20 px-2.5 py-0.5 text-xs font-semibold text-lime-300">Yön 7 ★</span><h2 class="mt-1.5 text-lg font-bold">Bento Komut Merkezi</h2><p class="text-xs text-slate-400">Schibsted Grotesk · kömür+lime · premium bento ızgara</p></div>
+      <a href="07-bento-komut-merkezi.html" target="_blank" class="rounded-lg bg-lime-400 px-3 py-2 text-xs font-bold text-slate-900 hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="07-bento-komut-merkezi.html" loading="lazy" title="Bento"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-amber-400/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-red-500/20 px-2.5 py-0.5 text-xs font-semibold text-red-300">Yön 8 ★</span><h2 class="mt-1.5 text-lg font-bold">Risograph Retro</h2><p class="text-xs text-slate-400">Gloock + Darker Grotesque · baskı dokusu · cesur afiş</p></div>
+      <a href="08-risograph-retro.html" target="_blank" class="rounded-lg bg-red-500 px-3 py-2 text-xs font-bold text-white hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="08-risograph-retro.html" loading="lazy" title="Risograph"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-amber-400/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-violet-400/20 px-2.5 py-0.5 text-xs font-semibold text-violet-300">Yön 9 ★</span><h2 class="mt-1.5 text-lg font-bold">Clay Yumuşak 3D</h2><p class="text-xs text-slate-400">Gabarito · lavanta · oyun hamuru kabarık 3D</p></div>
+      <a href="09-clay-yumusak-3d.html" target="_blank" class="rounded-lg bg-violet-400 px-3 py-2 text-xs font-bold text-white hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="09-clay-yumusak-3d.html" loading="lazy" title="Clay"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-cyan-400/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-emerald-400/20 px-2.5 py-0.5 text-xs font-semibold text-emerald-300">Yön 10</span><h2 class="mt-1.5 text-lg font-bold">Kara Tahta</h2><p class="text-xs text-slate-400">Caveat tebeşir · okul tahtası yeşili · tema açısından birebir</p></div>
+      <a href="10-kara-tahta.html" target="_blank" class="rounded-lg bg-emerald-400 px-3 py-2 text-xs font-bold text-slate-900 hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="10-kara-tahta.html" loading="lazy" title="Kara Tahta"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-cyan-400/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-blue-400/20 px-2.5 py-0.5 text-xs font-semibold text-blue-300">Yön 11</span><h2 class="mt-1.5 text-lg font-bold">Kareli Defter / Blueprint</h2><p class="text-xs text-slate-400">Sora + mono · kareli ızgara · STEM/teknik hassasiyet</p></div>
+      <a href="11-kareli-defter-blueprint.html" target="_blank" class="rounded-lg bg-blue-400 px-3 py-2 text-xs font-bold text-slate-900 hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="11-kareli-defter-blueprint.html" loading="lazy" title="Blueprint"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-cyan-400/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-pink-400/20 px-2.5 py-0.5 text-xs font-semibold text-pink-300">Yön 12</span><h2 class="mt-1.5 text-lg font-bold">Memphis Matematik</h2><p class="text-xs text-slate-400">Syne · cesur geometri + uçuşan π ÷ √ · enerjik-pro</p></div>
+      <a href="12-memphis-matematik.html" target="_blank" class="rounded-lg bg-pink-400 px-3 py-2 text-xs font-bold text-slate-900 hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="12-memphis-matematik.html" loading="lazy" title="Memphis"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-cyan-400/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-amber-600/25 px-2.5 py-0.5 text-xs font-semibold text-amber-200">Yön 13</span><h2 class="mt-1.5 text-lg font-bold">Kraft Doğal</h2><p class="text-xs text-slate-400">Spectral serif · kraft kağıt + adaçayı/terracotta · sakin-premium</p></div>
+      <a href="13-kraft-dogal.html" target="_blank" class="rounded-lg bg-amber-600 px-3 py-2 text-xs font-bold text-white hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="13-kraft-dogal.html" loading="lazy" title="Kraft"></iframe></div>
+  </section>
+
+  <section class="rounded-2xl border-2 border-cyan-400/40 bg-slate-800/40 p-4">
+    <div class="mb-3 flex items-center justify-between">
+      <div><span class="rounded-full bg-fuchsia-400/20 px-2.5 py-0.5 text-xs font-semibold text-fuchsia-300">Yön 14</span><h2 class="mt-1.5 text-lg font-bold">Aurora Gradient</h2><p class="text-xs text-slate-400">Sora · canlı aurora mesh + camsı · rüya gibi modern</p></div>
+      <a href="14-aurora-gradient.html" target="_blank" class="rounded-lg bg-fuchsia-400 px-3 py-2 text-xs font-bold text-slate-900 hover:brightness-110">Tam ekran ↗</a>
+    </div>
+    <div class="frame-wrap"><iframe src="14-aurora-gradient.html" loading="lazy" title="Aurora"></iframe></div>
+  </section>
+
+</main>
+
+<footer class="mx-auto max-w-7xl px-6 pb-12 text-sm text-slate-500">
+  Beğendiğin yönü söyle (1–6) — istersen harmanla (örn. "6'nın teması ama 5'in butonları"). Karar verince o yönü gerçek Next.js koduna döküp Vercel preview linkinde onaylatırım.
+</footer>
+
+</body>
+</html>
