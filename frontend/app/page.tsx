@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/JsonLd";
+import { HeroSubjectFan } from "@/components/HeroSubjectFan";
 import { SectionHeader } from "@/components/PageHeader";
 import { SubjectShowroom } from "@/components/SubjectShowroom";
 import { hasMultipleSubjects } from "@/lib/subjects";
@@ -113,7 +114,7 @@ function Hero() {
       >
         π
       </div>
-      <div className="container grid items-center gap-12 py-20 sm:py-24 lg:grid-cols-12">
+      <div className="container grid gap-12 pb-16 pt-8 sm:pb-20 sm:pt-12 lg:grid-cols-12 lg:items-start">
         {/* Sol — metin */}
         <div className="lg:col-span-7">
           <Badge
@@ -152,49 +153,53 @@ function Hero() {
           </div>
         </div>
 
-        {/* Sağ — örnek soru kartı */}
+        {/* Sağ — çok-ders: ders kartı fanı (maskotlu); tek-ders: statik matematik kartı */}
         <div className="lg:col-span-5">
-          <div className="relative mx-auto max-w-sm">
-            {/* Zıplayan maskot — demolardaki oyunsu dokunuş */}
-            <div
-              aria-hidden
-              className="absolute -left-6 -top-9 z-10 animate-bob text-5xl drop-shadow-md"
-            >
-              🦊
-            </div>
-            <div
-              aria-hidden
-              className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-primary/10"
-            />
-            <div className="relative rounded-3xl border bg-card p-6 shadow-pop">
-              <div className="flex items-center justify-between border-b pb-3">
-                <span className="font-display text-base font-bold text-foreground">
-                  5. sınıf · Cebir
-                </span>
-                <span className="rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold text-accent-foreground">
-                  M.5.2.1
-                </span>
+          {multi ? (
+            <HeroSubjectFan />
+          ) : (
+            <div className="relative mx-auto max-w-sm">
+              {/* Zıplayan maskot — demolardaki oyunsu dokunuş */}
+              <div
+                aria-hidden
+                className="absolute -left-6 -top-9 z-10 animate-bob text-5xl drop-shadow-md"
+              >
+                🦊
               </div>
-              <ol className="mt-4 space-y-3 text-sm text-muted-foreground">
-                <li>
-                  <span className="font-bold text-foreground">1.</span> 3a + 5
-                  ifadesinin a = 4 için değeri kaçtır?
-                </li>
-                <li>
-                  <span className="font-bold text-foreground">2.</span> x − 7 = 12
-                  denkleminde x kaçtır?
-                </li>
-                <li>
-                  <span className="font-bold text-foreground">3.</span> Bir sayının
-                  2 katının 6 fazlası 20 ise sayı kaçtır?
-                </li>
-              </ol>
-              <div className="mt-5 flex items-center gap-2 border-t pt-3 text-[11px] font-bold text-mint">
-                <CheckCircle2 className="h-3.5 w-3.5" /> Cevap anahtarı · adım adım
-                çözüm
+              <div
+                aria-hidden
+                className="absolute inset-0 translate-x-3 translate-y-3 rounded-3xl bg-primary/10"
+              />
+              <div className="relative rounded-3xl border bg-card p-6 shadow-pop">
+                <div className="flex items-center justify-between border-b pb-3">
+                  <span className="font-display text-base font-bold text-foreground">
+                    5. sınıf · Cebir
+                  </span>
+                  <span className="rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold text-accent-foreground">
+                    M.5.2.1
+                  </span>
+                </div>
+                <ol className="mt-4 space-y-3 text-sm text-muted-foreground">
+                  <li>
+                    <span className="font-bold text-foreground">1.</span> 3a + 5
+                    ifadesinin a = 4 için değeri kaçtır?
+                  </li>
+                  <li>
+                    <span className="font-bold text-foreground">2.</span> x − 7 = 12
+                    denkleminde x kaçtır?
+                  </li>
+                  <li>
+                    <span className="font-bold text-foreground">3.</span> Bir sayının
+                    2 katının 6 fazlası 20 ise sayı kaçtır?
+                  </li>
+                </ol>
+                <div className="mt-5 flex items-center gap-2 border-t pt-3 text-[11px] font-bold text-mint">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Cevap anahtarı · adım adım
+                  çözüm
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>
