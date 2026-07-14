@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { History, Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { UserButton, useAuth } from "@clerk/nextjs";
+import { UserButton, useAuth, useUser } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,31 +14,50 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { effectiveRole, type Role } from "@/lib/roles";
+
+// Uygulamanın "kendi alanı" linki role göre etiketlenir (hepsi /practice'e gider;
+// hub yüzü kalıcı role göre render edilir). Admin ek olarak /admin görür.
+function appLink(role: Role | null): { href: string; label: string } {
+  switch (role) {
+    case "teacher":
+      return { href: "/practice", label: "Sınıfım" };
+    case "parent":
+      return { href: "/practice", label: "Çocuğum" };
+    default: // student / admin / rolü yok / çıkış yapmış
+      return { href: "/practice", label: "Çöz & Geliş" };
+  }
+}
 
 // Genel (tanıtım + ana iş akışı) navigasyon. "Geçmiş" buraya KONULMAZ —
 // kişisel/korumalı bir görünüm olduğu için UserButton açılır menüsünde.
-const NAV_LINKS = [
-  { href: "/generate", label: "Üretim" },
-  { href: "/practice", label: "Çöz & Geliş" },
-  // Öğretmen/veli kapısı — aynı sayfaya gider ama öğretmen yüzünü açar (?role=teacher).
-  { href: "/practice?role=teacher", label: "Sınıfım" },
-  // Sınıf/konu SEO ağacının site-geneli girişi. Bu link olmadan /calismalar ve
-  // altındaki 300+ landing sayfası hiçbir otoriteli sayfadan linklenmiyordu (orphan
-  // ada) → Google ya hiç taramıyor ya "crawled - not indexed" bırakıyordu.
-  { href: "/calismalar", label: "Konular" },
-  { href: "/features", label: "Özellikler" },
-  { href: "/pricing", label: "Fiyatlandırma" },
-  { href: "/faq", label: "Sıkça Sorulanlar" },
-];
+function buildNavLinks(role: Role | null): { href: string; label: string }[] {
+  const app = appLink(role);
+  const links = [
+    { href: "/generate", label: "Üretim" },
+    { href: app.href, label: app.label },
+    // Sınıf/konu SEO ağacının site-geneli girişi (orphan-ada fix'i — indeksleme).
+    { href: "/calismalar", label: "Konular" },
+    { href: "/features", label: "Özellikler" },
+    { href: "/pricing", label: "Fiyatlandırma" },
+    { href: "/faq", label: "Sıkça Sorulanlar" },
+  ];
+  if (role === "admin") links.push({ href: "/admin", label: "Admin" });
+  return links;
+}
 
 const TopNavBar = () => {
   const { setTheme } = useTheme();
   const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const role = effectiveRole(user);
+  const NAV_LINKS = buildNavLinks(role);
 
   return (
     <nav className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">

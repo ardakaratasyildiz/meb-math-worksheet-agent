@@ -2,37 +2,25 @@
 
 import * as React from "react";
 import { useAuth } from "@clerk/nextjs";
-import { Copy, Loader2, UserPlus, Users } from "lucide-react";
+import { Loader2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  getChildProgress,
-  getParentCode,
-  linkChild,
-  listChildren,
-} from "@/lib/api";
+import { getChildProgress, linkChild, listChildren } from "@/lib/api";
 import { subjectLabel, subjectStyle } from "@/lib/subjects";
 import type { ChildItem, ProgressResponse, Subject } from "@/lib/types";
 
 const pct = (r: number) => Math.round(r * 100);
 
 /**
- * Veli ↔ öğrenci bağı (WS-6b). Tek kart, İlerlemem sayfasında:
- *  - Öğrenci: "Velin seni takip etsin" → veli takip kodu üret/göster.
- *  - Veli: kod girip çocuğu ekle → çocuğun ilerlemesini (salt-okunur) gör.
- * Öğrenci onayı koddadır (öğrenci kodu paylaşmadıkça kimse bağlanamaz).
+ * Veli tarafı (WS-6b): çocuğun takip kodunu gir → ekle → ilerlemesini (salt-okunur) gör.
+ * Öğrenci onayı KODDADIR (öğrenci kodu paylaşmadıkça kimse bağlanamaz). Veli yüzünde
+ * gösterilir. Öğrenci kendi kodunu StudentParentCodeCard'dan alır.
  */
-export function ParentSection() {
+export function ParentDashboard() {
   const { userId, isLoaded } = useAuth();
-
-  // Öğrenci tarafı
-  const [code, setCode] = React.useState<string | null>(null);
-  const [codeLoading, setCodeLoading] = React.useState(false);
-
-  // Veli tarafı
   const [childCode, setChildCode] = React.useState("");
   const [childLabel, setChildLabel] = React.useState("");
   const [children, setChildren] = React.useState<ChildItem[]>([]);
@@ -48,18 +36,6 @@ export function ParentSection() {
   }, [userId, isLoaded]);
 
   if (!isLoaded || !userId) return null;
-
-  async function genCode() {
-    if (!userId) return;
-    setCodeLoading(true);
-    try {
-      setCode((await getParentCode(userId)).code);
-    } catch {
-      toast.error("Kod alınamadı");
-    } finally {
-      setCodeLoading(false);
-    }
-  }
 
   async function addChild() {
     if (!userId || !childCode.trim()) return;
@@ -94,50 +70,13 @@ export function ParentSection() {
   }
 
   return (
-    <section className="space-y-3">
-      <div className="flex items-baseline gap-2">
-        <Users className="h-4 w-4 self-center text-grape" />
-        <h2 className="font-display text-lg font-bold">Veli takibi</h2>
-      </div>
-
-      {/* Öğrenci: veli takip kodu */}
+    <div className="space-y-4">
       <Card className="space-y-3 p-4 shadow-pop">
-        <p className="text-sm font-semibold">Velin seni takip etsin</p>
+        <p className="text-sm font-semibold">Çocuğunu ekle</p>
         <p className="text-xs text-muted-foreground">
-          Bu kodu velinle paylaş; veli hesabından bu kodu girerek ilerlemeni
-          (sadece görüntüleme) takip edebilir.
+          Çocuğun kendi hesabından aldığı takip kodunu gir. Kodu yalnızca çocuğun
+          paylaşabilir (onay koddadır).
         </p>
-        {code ? (
-          <div className="flex items-center gap-2">
-            <span className="rounded-lg border bg-accent/40 px-4 py-2 font-mono text-lg font-bold tracking-widest">
-              {code}
-            </span>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="gap-1.5"
-              onClick={() => {
-                navigator.clipboard?.writeText(code).then(
-                  () => toast.success("Kod kopyalandı"),
-                  () => {},
-                );
-              }}
-            >
-              <Copy className="h-3.5 w-3.5" /> Kopyala
-            </Button>
-          </div>
-        ) : (
-          <Button onClick={genCode} disabled={codeLoading} size="sm" className="gap-2">
-            {codeLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            Takip kodumu göster
-          </Button>
-        )}
-      </Card>
-
-      {/* Veli: çocuk ekle + ilerlemesini gör */}
-      <Card className="space-y-3 p-4 shadow-pop">
-        <p className="text-sm font-semibold">Veli misin? Çocuğunu ekle</p>
         <div className="flex flex-wrap items-end gap-2">
           <div className="flex-1 space-y-1">
             <label className="text-xs text-muted-foreground">Çocuğun takip kodu</label>
@@ -182,7 +121,6 @@ export function ParentSection() {
         ) : null}
       </Card>
 
-      {/* Seçili çocuğun ilerlemesi (salt-okunur, kompakt) */}
       {selected ? (
         <Card className="space-y-3 p-4 shadow-pop">
           <p className="text-sm font-semibold">{selected.label} · ilerleme</p>
@@ -193,13 +131,11 @@ export function ParentSection() {
           ) : childProgress && childProgress.summary.total_answered > 0 ? (
             <ChildSummary data={childProgress} />
           ) : (
-            <p className="text-sm text-muted-foreground">
-              Bu öğrenci henüz quiz çözmemiş.
-            </p>
+            <p className="text-sm text-muted-foreground">Bu öğrenci henüz quiz çözmemiş.</p>
           )}
         </Card>
       ) : null}
-    </section>
+    </div>
   );
 }
 
@@ -210,22 +146,15 @@ function ChildSummary({ data }: { data: ProgressResponse }) {
     <div className="space-y-3">
       <div className="flex flex-wrap gap-4 text-sm">
         <span>
-          Doğruluk:{" "}
-          <b className="tabular-nums">%{pct(s.accuracy)}</b>
+          Doğruluk: <b className="tabular-nums">%{pct(s.accuracy)}</b>
         </span>
-        <span className="text-emerald-600 dark:text-emerald-400">
-          {s.total_correct} doğru
-        </span>
+        <span className="text-emerald-600 dark:text-emerald-400">{s.total_correct} doğru</span>
         <span className="text-rose-600 dark:text-rose-400">{wrong} yanlış</span>
-        <span className="text-muted-foreground tabular-nums">
-          {s.quizzes_solved} quiz
-        </span>
+        <span className="tabular-nums text-muted-foreground">{s.quizzes_solved} quiz</span>
       </div>
       {data.weak.length ? (
         <div className="space-y-1.5">
-          <p className="text-xs font-semibold text-muted-foreground">
-            Geliştirilecek konular
-          </p>
+          <p className="text-xs font-semibold text-muted-foreground">Geliştirilecek konular</p>
           {data.weak.slice(0, 5).map((k) => {
             const subject = (k.subject ?? "matematik") as Subject;
             const st = subjectStyle(subject);

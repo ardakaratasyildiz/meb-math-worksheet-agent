@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import { Analytics } from "@/components/Analytics";
 import { BackendWarmup } from "@/components/BackendWarmup";
 import { CookieConsent } from "@/components/CookieConsent";
+import { RoleGate } from "@/components/RoleGate";
 import { ThemeProvider } from "@/components/theme-provider";
 import TopNavBar from "@/components/TopNavBar";
 
@@ -171,6 +172,7 @@ export default function RootLayout({
               {/* Toaster + CookieConsent app-theme içinde → sıcak/grape paleti
                   alır (yoksa cookie banner'ı eski lacivert primary'de kalıyor). */}
               <Toaster richColors position="top-center" />
+              <RoleGate />
               <CookieConsent />
               <Analytics />
               <BackendWarmup />
