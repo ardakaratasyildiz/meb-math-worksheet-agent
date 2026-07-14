@@ -27,12 +27,23 @@ export default function TenantDetailPage({
 }) {
   const { id } = use(params);
   const [data, setData] = useState<TenantHistoryResponse | null>(null);
+  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
     setError(null);
+    // Kullanıcı e-posta/ad çözümü (Clerk) — best-effort, geçmişle paralel.
+    fetch("/api/admin/user-emails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: [id] }),
+      cache: "no-store",
+    })
+      .then((r) => r.json())
+      .then((d) => setUser(d.users?.[id] ?? null))
+      .catch(() => {});
     try {
       const res = await fetch(
         `/api/admin/tenants/${encodeURIComponent(id)}?limit=200`,
@@ -73,8 +84,16 @@ export default function TenantDetailPage({
 
       <Card>
         <CardHeader>
-          <CardDescription>Tenant</CardDescription>
-          <CardTitle className="break-all font-mono text-lg">{id}</CardTitle>
+          <CardDescription>Kullanıcı</CardDescription>
+          <CardTitle className="break-words text-lg">
+            {id === "anon"
+              ? "Anonim (giriş yapmamış)"
+              : user?.email || user?.name || (id.startsWith("user_") ? "…" : id)}
+          </CardTitle>
+          <p className="break-all font-mono text-xs text-muted-foreground">{id}</p>
+          {user?.name && user?.email ? (
+            <p className="text-sm text-muted-foreground">{user.name}</p>
+          ) : null}
           {data && (
             <p className="text-sm text-muted-foreground">
               {data.count} soru kaydı gösteriliyor (en yeni 200 ile sınırlı).
