@@ -498,6 +498,8 @@ export interface ProgressResponse {
 // AI haftalık çalışma programı (WS-6a)
 export interface StudyPlanDay {
   day_no: number;
+  weekday?: string;
+  kind?: "focus" | "review" | "mixed";
   title: string;
   subject?: Subject;
   grade?: number | null;

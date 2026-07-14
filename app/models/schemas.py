@@ -506,8 +506,10 @@ class ProgressResponse(BaseModel):
 
 
 class StudyPlanDay(BaseModel):
-    """Haftalık çalışma programında bir gün — eksik kazanıma odaklı (WS-6a)."""
+    """Haftalık çalışma programında bir gün (WS-6a) — odak/tekrar/karışık."""
     day_no: int
+    weekday: str = ""          # gün adı (Pazartesi…Pazar)
+    kind: str = "focus"        # focus (eksik) | review (tekrar) | mixed (karışık)
     title: str                 # AI/varsayılan motive edici başlık
     subject: str = "matematik"
     grade: int | None = None
