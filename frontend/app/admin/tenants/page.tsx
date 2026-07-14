@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fetchTenantUsers, tenantDisplay, type TenantUser } from "@/lib/tenant-label";
 
 interface HistoryTenant {
   tenant_id: string;
@@ -25,7 +26,7 @@ type SortBy = "questions" | "worksheets" | "last";
 export default function TenantsPage() {
   const [history, setHistory] = useState<HistoryTenant[]>([]);
   const [worksheets, setWorksheets] = useState<WorksheetTenant[]>([]);
-  const [emails, setEmails] = useState<Record<string, { email: string; name: string }>>({});
+  const [emails, setEmails] = useState<Record<string, TenantUser>>({});
   const [emailsLoaded, setEmailsLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,17 +50,8 @@ export default function TenantsPage() {
         new Set([...hTenants, ...wTenants].map((t) => t.tenant_id)),
       );
       setEmailsLoaded(false);
-      fetch("/api/admin/user-emails", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids }),
-        cache: "no-store",
-      })
-        .then((r) => r.json())
-        .then((d) => setEmails(d.users ?? {}))
-        .catch(() => {
-          /* çözülemezse id gösterilir */
-        })
+      fetchTenantUsers(ids)
+        .then(setEmails)
         .finally(() => setEmailsLoaded(true));
     } catch (e) {
       setError((e as Error).message);
@@ -194,7 +186,7 @@ export default function TenantsPage() {
                           className="block hover:underline"
                         >
                           <span className="block text-sm font-medium text-primary">
-                            {tenantLabel(t.tenant_id, emails, emailsLoaded)}
+                            {tenantDisplay(t.tenant_id, emails, emailsLoaded)}
                           </span>
                           <span className="block font-mono text-[11px] text-muted-foreground">
                             {t.tenant_id}
@@ -238,19 +230,6 @@ function SortableHeader({
       </button>
     </th>
   );
-}
-
-/** Tenant id → okunur etiket: Anonim / e-posta / ad / yükleniyor / bulunamadı. */
-function tenantLabel(
-  id: string,
-  emails: Record<string, { email: string; name: string }>,
-  loaded: boolean,
-): string {
-  if (id === "anon") return "Anonim (giriş yapmamış)";
-  const e = emails[id];
-  if (e) return e.email || e.name || "—";
-  if (!id.startsWith("user_")) return "—";
-  return loaded ? "(bilinmeyen / silinmiş)" : "…";
 }
 
 function formatTimestamp(ts: number | null): string {
