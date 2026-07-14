@@ -13,6 +13,13 @@ import { practiceHref } from "@/lib/curriculum";
 import { subjectLabel, subjectStyle } from "@/lib/subjects";
 import type { StudyPlanDay, StudyPlanResponse, Subject } from "@/lib/types";
 
+/** Gün türü rozeti — odak (eksik) / tekrar / karışık. */
+const KIND_META: Record<string, { label: string; cls: string }> = {
+  focus: { label: "Odak", cls: "bg-grape/10 text-grape" },
+  review: { label: "Tekrar", cls: "bg-mint/20 text-emerald-600 dark:text-emerald-400" },
+  mixed: { label: "Karışık", cls: "bg-sun/25 text-amber-600 dark:text-amber-400" },
+};
+
 /** Programdaki bir günün kazanımı için "Çalış" derin-linki (ders-farkında). */
 function hrefForDay(d: StudyPlanDay): string {
   const subject = (d.subject ?? "matematik") as Subject;
@@ -55,7 +62,7 @@ export function StudyPlan() {
           <CalendarDays className="h-4 w-4 self-center text-grape" />
           <h2 className="font-display text-lg font-bold">Haftalık çalışma programı</h2>
           <span className="text-xs text-muted-foreground">
-            eksiklerine göre, yapay zeka destekli
+            7 gün · eksik + tekrar + karışık, yapay zeka destekli
           </span>
         </div>
         {plan ? (
@@ -76,8 +83,8 @@ export function StudyPlan() {
       {!plan ? (
         <Card className="flex flex-col items-start gap-3 p-5 shadow-pop">
           <p className="text-sm text-muted-foreground">
-            Zayıf kaldığın konulara göre sana özel, güne yayılmış bir çalışma
-            programı oluşturalım.
+            Haftaya yayılmış, dengeli bir program: eksik konularını pekiştir,
+            öğrendiklerini tekrar et ve karışık sorularla kendini dene.
           </p>
           <Button onClick={generate} disabled={loading} className="gap-2">
             {loading ? (
@@ -114,6 +121,20 @@ export function StudyPlan() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
+                    {d.weekday ? (
+                      <span className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+                        {d.weekday}
+                      </span>
+                    ) : null}
+                    {d.kind && KIND_META[d.kind] ? (
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${KIND_META[d.kind].cls}`}
+                      >
+                        {KIND_META[d.kind].label}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-2">
                     <span className="font-display text-sm font-bold">{d.title}</span>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${st.bg} ${st.text}`}
@@ -140,7 +161,7 @@ export function StudyPlan() {
 
           {plan.ai_generated ? (
             <p className="text-[11px] text-muted-foreground">
-              ✨ Bu program yapay zeka ile eksiklerine göre hazırlandı.
+              ✨ Bu haftalık program yapay zeka ile hazırlandı (eksik + tekrar + karışık).
             </p>
           ) : null}
         </div>
