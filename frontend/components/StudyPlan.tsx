@@ -48,23 +48,26 @@ export function StudyPlan() {
   const { userId, isLoaded } = useAuth();
   const [plan, setPlan] = React.useState<StudyPlanResponse | null>(null);
   const [loading, setLoading] = React.useState(false); // üretim in-flight
-  const [initializing, setInitializing] = React.useState(true);
+  const [checking, setChecking] = React.useState(true); // kayıtlı plan kontrolü (bloklamaz)
+  // Kullanıcı üretime başladıysa arka plandaki GET sonucu ARTIK plan'ı ezmesin.
+  const interactedRef = React.useRef(false);
 
-  // Kayıtlı programı getir (created_at boşsa henüz yok → CTA).
+  // Kayıtlı programı ARKA PLANDA getir — UI'ı bloklamaz (buton anında görünür).
+  // Cold-start'ta bu GET yavaş olabilir; kullanıcı beklemeden butona basabilir.
   React.useEffect(() => {
     if (!userId) {
-      setInitializing(false);
+      setChecking(false);
       return;
     }
     let cancelled = false;
     (async () => {
       try {
         const p = await getStudyPlan(userId);
-        if (!cancelled) setPlan(p.created_at ? p : null);
+        if (!cancelled && !interactedRef.current && p.created_at) setPlan(p);
       } catch {
         // sessiz — CTA gösterilir
       } finally {
-        if (!cancelled) setInitializing(false);
+        if (!cancelled) setChecking(false);
       }
     })();
     return () => {
@@ -74,6 +77,7 @@ export function StudyPlan() {
 
   async function generate() {
     if (!userId) return;
+    interactedRef.current = true; // arka plan GET'i bundan sonra ezmesin
     setLoading(true);
     try {
       setPlan(await createStudyPlan(userId));
@@ -118,11 +122,7 @@ export function StudyPlan() {
         ) : null}
       </div>
 
-      {initializing ? (
-        <Card className="flex items-center gap-2 p-5 text-sm text-muted-foreground shadow-pop">
-          <Loader2 className="h-4 w-4 animate-spin" /> Programın yükleniyor…
-        </Card>
-      ) : !hasPlan ? (
+      {!hasPlan ? (
         <Card className="flex flex-col items-start gap-3 p-5 shadow-pop">
           <p className="text-sm text-muted-foreground">
             Haftaya yayılmış, dengeli bir program: eksik konularını pekiştir,
@@ -140,6 +140,11 @@ export function StudyPlan() {
               </>
             )}
           </Button>
+          {checking && !loading ? (
+            <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin" /> Kayıtlı programın kontrol ediliyor…
+            </span>
+          ) : null}
         </Card>
       ) : (
         <div className="space-y-3">
