@@ -114,7 +114,7 @@ function Hero() {
       >
         π
       </div>
-      <div className="container grid items-center gap-12 pb-16 pt-8 sm:pb-20 sm:pt-12 lg:grid-cols-12">
+      <div className="container grid gap-12 pb-16 pt-8 sm:pb-20 sm:pt-12 lg:grid-cols-12 lg:items-start">
         {/* Sol — metin */}
         <div className="lg:col-span-7">
           <Badge
