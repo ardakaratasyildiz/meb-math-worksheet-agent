@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 import { ProgressDashboard } from "@/components/ProgressDashboard";
-import { ParentSection } from "@/components/ParentSection";
+import { StudentParentCodeCard } from "@/components/StudentParentCodeCard";
 
 export default function CozIlerlemePage() {
   return (
@@ -22,7 +22,7 @@ export default function CozIlerlemePage() {
       </div>
 
       <ProgressDashboard />
-      <ParentSection />
+      <StudentParentCodeCard />
     </div>
   );
 }

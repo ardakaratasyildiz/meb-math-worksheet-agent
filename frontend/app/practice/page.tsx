@@ -1,15 +1,13 @@
-import { PracticeHub } from "@/components/PracticeHub";
+import { currentUser } from "@clerk/nextjs/server";
 
-// /practice hub — rol toggle (öğrenci / öğretmen-veli). Navbar "Sınıfım" kapısı
-// ?role=teacher ile öğretmen yüzünü açar; aksi halde son seçim (localStorage) /
-// öğrenci varsayılır. Login zorunlu (middleware /practice).
-export default async function PracticePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ role?: string }>;
-}) {
-  const sp = await searchParams;
-  const roleParam =
-    sp.role === "teacher" ? "teacher" : sp.role === "student" ? "student" : null;
-  return <PracticeHub roleParam={roleParam} />;
+import { PracticeHub } from "@/components/PracticeHub";
+import { effectiveRole } from "@/lib/roles";
+
+// /practice hub — KALICI role göre yüz gösterir (öğrenci/öğretmen/veli); admin hepsini
+// görür. Rol Clerk metadata'da (onboarding → unsafeMetadata.role; admin publicMetadata).
+// Rol yoksa RoleGate (layout) zaten zorunlu seçim modalını gösterir. Login zorunlu.
+export default async function PracticePage() {
+  const user = await currentUser();
+  const role = effectiveRole(user);
+  return <PracticeHub role={role} />;
 }

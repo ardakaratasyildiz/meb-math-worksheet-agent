@@ -76,7 +76,7 @@ function ClassroomCta() {
               </p>
             </div>
             <Button asChild size="lg" className="gap-2 sm:shrink-0">
-              <Link href="/practice?role=teacher">
+              <Link href="/practice">
                 <Users className="h-4 w-4" />
                 Sınıf oluştur
                 <ArrowRight className="h-4 w-4" />
