@@ -6,6 +6,7 @@ import { AlertCircle, CheckCircle2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fetchTenantUsers, tenantDisplay, type TenantUser } from "@/lib/tenant-label";
 
 // ─── Tipler — backend'in döndürdüğü JSON ile birebir ─────────────────────────
 
@@ -57,6 +58,8 @@ export default function AdminDashboard() {
   const [cache, setCache] = useState<CacheStats | null>(null);
   const [cost, setCost] = useState<CostSummary | null>(null);
   const [costDays, setCostDays] = useState(30);
+  const [users, setUsers] = useState<Record<string, TenantUser>>({});
+  const [usersLoaded, setUsersLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -74,6 +77,14 @@ export default function AdminDashboard() {
       setHealth(h);
       setCache(c);
       setCost(cs);
+      // by_tenant kimliklerini ad/e-posta'ya çöz (isim öncelikli).
+      const ids: string[] = (cs?.by_tenant ?? []).map(
+        (t: { tenant_id: string }) => t.tenant_id,
+      );
+      setUsersLoaded(false);
+      fetchTenantUsers(ids)
+        .then(setUsers)
+        .finally(() => setUsersLoaded(true));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -158,7 +169,7 @@ export default function AdminDashboard() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b text-left text-muted-foreground">
-                          <th className="py-2 font-medium">Tenant</th>
+                          <th className="py-2 font-medium">Kullanıcı</th>
                           <th className="py-2 text-right font-medium">Üretim</th>
                           <th className="py-2 text-right font-medium">Maliyet</th>
                         </tr>
@@ -167,8 +178,13 @@ export default function AdminDashboard() {
                         {cost.by_tenant?.length ? (
                           cost.by_tenant.map((t) => (
                             <tr key={t.tenant_id} className="border-b last:border-0">
-                              <td className="max-w-[180px] truncate py-2 font-mono text-xs">
-                                {t.tenant_id === "anon" ? "🕶️ anonim" : t.tenant_id}
+                              <td className="max-w-[220px] py-2">
+                                <span className="block truncate text-xs font-medium">
+                                  {tenantDisplay(t.tenant_id, users, usersLoaded)}
+                                </span>
+                                <span className="block truncate font-mono text-[10px] text-muted-foreground">
+                                  {t.tenant_id}
+                                </span>
                               </td>
                               <td className="py-2 text-right tabular-nums">{t.generations}</td>
                               <td className="py-2 text-right font-medium tabular-nums">
