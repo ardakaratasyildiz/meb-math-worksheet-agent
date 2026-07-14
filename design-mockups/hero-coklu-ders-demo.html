@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hero Yeniden Tasarım — Çoklu Ders Demo · Soru Atölyesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --cream:#FFF4EA; --ink:#3A2C4A; --grape:#7C5BD6; --grape-d:#5F3FB8;
+    --coral:#FF6B6B; --sun:#FFC93C; --mint:#3DD9B3; --card:#fff;
+    --muted:#6B5E78; --border:#ECE4F3;
+    /* ders renkleri (subjects.ts hex) */
+    --mat:#2563eb; --fen:#059669; --turkce:#e11d48; --sosyal:#d97706; --ing:#7c3aed;
+    --radius:1rem;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Nunito',system-ui,sans-serif;color:var(--ink);
+    background:var(--cream);
+    background-image:
+      radial-gradient(34% 26% at 6% 3%, rgba(255,201,60,.13), transparent 60%),
+      radial-gradient(30% 24% at 96% 1%, rgba(124,91,214,.09), transparent 60%);
+    background-attachment:fixed;line-height:1.5;
+  }
+  h1,h2,h3,.display{font-family:'Fredoka',system-ui,sans-serif;letter-spacing:-.01em}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+  .demo-top{background:#1f1830;color:#fff;padding:22px 0}
+  .demo-top .wrap{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:baseline;justify-content:space-between}
+  .demo-top h1{font-size:20px;font-weight:700}
+  .demo-top p{color:#c9bfe0;font-size:13px;max-width:640px}
+  .variant-label{
+    display:inline-flex;align-items:center;gap:8px;background:var(--grape);color:#fff;
+    font-family:'Fredoka';font-weight:600;font-size:13px;padding:6px 14px;border-radius:999px;
+    margin:0 0 4px;box-shadow:0 4px 0 rgba(95,63,184,.35)
+  }
+  .variant-note{color:var(--muted);font-size:14px;max-width:720px;margin:10px 0 0}
+  section.hero{padding:64px 0 72px;position:relative;overflow:hidden}
+  section.hero + section.hero{border-top:1px dashed #e4d8ef}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;margin-top:26px}
+  @media(max-width:880px){.hero-grid{grid-template-columns:1fr;gap:36px}}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;background:#F3ECFB;color:var(--grape-d);
+    border:1px solid #e3d5f7;border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px
+  }
+  .hero h2{font-size:52px;line-height:1.02;font-weight:700;margin:22px 0 0}
+  @media(max-width:880px){.hero h2{font-size:40px}}
+  .grad{background:linear-gradient(90deg,var(--grape),var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:18px;color:var(--muted);max-width:520px;margin:18px 0 0}
+  .cta{
+    display:inline-flex;align-items:center;gap:9px;background:var(--grape);color:#fff;
+    font-family:'Fredoka';font-weight:600;font-size:17px;padding:15px 26px;border-radius:14px;
+    text-decoration:none;margin-top:26px;box-shadow:0 6px 0 var(--grape-d);transition:transform .08s,box-shadow .08s
+  }
+  .cta:active{transform:translateY(3px);box-shadow:0 3px 0 var(--grape-d)}
+  .trust{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:24px;color:var(--muted);font-size:13px;font-weight:600}
+  .trust span::before{content:"✓";color:var(--grape);font-weight:800;margin-right:6px}
+
+  /* ---- ortak kart öğeleri ---- */
+  .pills{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--border);background:#fff;
+    color:var(--muted);font-weight:700;font-size:13.5px;padding:8px 14px;border-radius:999px;cursor:pointer;
+    transition:all .15s;font-family:'Nunito'
+  }
+  .pill .em{font-size:15px}
+  .pill.on{color:#fff;border-color:transparent}
+  .qcard{
+    background:var(--card);border-radius:20px;padding:22px 22px 20px;
+    box-shadow:0 18px 40px -18px rgba(58,44,74,.35), 0 2px 0 rgba(0,0,0,.02);
+    border:1px solid #f0e9f6;position:relative
+  }
+  .qcard .head{display:flex;align-items:center;gap:8px;font-weight:800;font-size:12.5px}
+  .qcard .kod{margin-left:auto;font-family:'Fredoka';font-size:11px;padding:4px 10px;border-radius:999px}
+  .qcard .q{margin-top:15px;font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.5}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .opts div{border:1px solid #eee5f2;border-radius:11px;padding:9px 12px;font-size:13.5px;font-weight:600;background:#fcfaff}
+  .ans{margin-top:14px;padding-top:13px;border-top:1px dashed #ece2f5;font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:7px}
+  .maskot{position:absolute;font-size:44px;left:-14px;top:-26px;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));z-index:3;animation:bob 3s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .float-em{position:absolute;font-size:40px;opacity:.16;pointer-events:none;animation:bob 4s ease-in-out infinite}
+
+  /* ================= VARYANT A — sekmeli canlı kart ================= */
+  .A .stack{position:relative;max-width:440px;margin:0 auto}
+  .A .shadow-card{position:absolute;inset:0;transform:translate(14px,16px);border-radius:20px;background:rgba(124,91,214,.10)}
+
+  /* ================= VARYANT B — fan/deste ================= */
+  .B .fan{position:relative;height:360px;max-width:460px;margin:0 auto}
+  .B .fan .qcard{position:absolute;top:20px;left:50%;width:340px;transform-origin:bottom center;transition:.4s}
+  .B .fan .qcard{margin-left:-170px}
+  .B .fan .qcard.c0{transform:rotate(-9deg) translateY(14px) scale(.94);opacity:.55;z-index:1}
+  .B .fan .qcard.c1{transform:rotate(-4deg) translateY(6px) scale(.97);opacity:.8;z-index:2}
+  .B .fan .qcard.c2{transform:rotate(0) translateY(0) scale(1);z-index:5}
+  .B .fan .qcard.c3{transform:rotate(4deg) translateY(6px) scale(.97);opacity:.8;z-index:2}
+  .B .fan .qcard.c4{transform:rotate(9deg) translateY(14px) scale(.94);opacity:.55;z-index:1}
+
+  /* ================= VARYANT C — bento ================= */
+  .C .bento{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;gap:12px;max-width:480px;margin:0 auto}
+  .C .tile{
+    background:#fff;border-radius:16px;padding:15px;border:1px solid #f0e9f6;
+    box-shadow:0 10px 24px -16px rgba(58,44,74,.4);position:relative;overflow:hidden
+  }
+  .C .tile .em{font-size:26px}
+  .C .tile .nm{font-family:'Fredoka';font-weight:600;font-size:15px;margin-top:6px}
+  .C .tile .sub{font-size:12px;color:var(--muted);margin-top:2px;font-weight:600}
+  .C .tile.big{grid-column:1 / -1;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:18px 20px}
+  .C .tile.big .q{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.45}
+  .C .tile.big .em{font-size:40px}
+  .C .tile .bar{position:absolute;left:0;top:0;bottom:0;width:5px}
+  footer{padding:40px 0 60px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="demo-top">
+  <div class="wrap">
+    <div>
+      <h1>Hero Yeniden Tasarım · Çoklu Ders</h1>
+      <p>Gerçek ders verisi, renk kodu (subjects.ts) ve örnek sorularla (subject-showcase.ts) 3 varyant. Sekmelere/derslere tıkla, otomatik de döner. Beğendiğini söyle, gerçek koda uygulayayım.</p>
+    </div>
+    <p style="text-align:right">Krem · Grape · Fredoka+Nunito<br/>➗ 🔬 📖 🌍 🔤</p>
+  </div>
+</div>
+
+<!-- ================= VARYANT A ================= -->
+<section class="hero A">
+  <span class="float-em" style="right:8%;top:80px">🔬</span>
+  <span class="float-em" style="left:44%;bottom:40px;font-size:52px">📖</span>
+  <div class="wrap">
+    <span class="variant-label">Varyant A — Sekmeli canlı kart</span>
+    <p class="variant-note">Kartın üstünde renk-kodlu ders sekmeleri; tıkla (veya otomatik dönsün) → o dersin örnek sorusu ve rengi gelir. Kompakt, tek kart, en yakın mevcut tasarıma.</p>
+    <div class="hero-grid">
+      <div>
+        <span class="badge">✦ 1.→8. sınıf · LGS hazırlık · MEB müfredatı</span>
+        <h2>Çalışma kağıtlarını <span class="grad">saniyeler içinde</span> hazırlayın</h2>
+        <p class="lead">Matematik, Türkçe, Fen, Sosyal ve İngilizce — sınıf, ders ve kazanımı seçin; cevap anahtarı ve adım adım çözümüyle hazır PDF elinizde.</p>
+        <a class="cta" href="#">Ücretsiz dene →</a>
+        <div class="trust"><span>Aylık 100 soru ücretsiz</span><span>Yalnızca e-posta</span><span>Ödeme bilgisi alınmaz</span></div>
+      </div>
+      <div>
+        <div class="stack">
+          <div class="shadow-card"></div>
+          <div style="position:relative">
+            <div class="maskot">🦊</div>
+            <div class="pills" id="A-pills" style="margin-bottom:14px"></div>
+            <div class="qcard" id="A-card"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VARYANT B ================= -->
+<section class="hero B">
+  <span class="float-em" style="right:12%;top:70px;font-size:46px">🌍</span>
+  <div class="wrap">
+    <span class="variant-label">Varyant B — Fan / kart destesi</span>
+    <p class="variant-note">5 ders kartı yelpaze gibi dizili (her biri kendi renginde), öndeki otomatik döner. Zengin, "çok ders var" hissini güçlü verir; hover'da öne çıkar.</p>
+    <div class="hero-grid">
+      <div>
+        <span class="badge">✦ 5 ders · tek atölye</span>
+        <h2>Tüm derslerin çalışma kağıdı <span class="grad">tek yerde</span></h2>
+        <p class="lead">Matematikten İngilizceye 5 derste MEB kazanımlarına uygun sorular. Sınıf ve dersi seç, saniyeler içinde baskıya hazır PDF al.</p>
+        <a class="cta" href="#">Ücretsiz dene →</a>
+        <div class="trust"><span>5 ders</span><span>1.→8. sınıf</span><span>Cevap anahtarı + çözüm</span></div>
+      </div>
+      <div>
+        <div class="fan" id="B-fan"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VARYANT C ================= -->
+<section class="hero C">
+  <div class="wrap">
+    <span class="variant-label">Varyant C — Bento ızgara</span>
+    <p class="variant-note">Modern "bento" düzeni: üstte vurgulu bir örnek soru, altta 5 dersin renkli mini kutucukları. En modern/dashboard hissi; tüm dersleri aynı anda gösterir.</p>
+    <div class="hero-grid">
+      <div>
+        <span class="badge">✦ 1.→8. sınıf · 5 ders</span>
+        <h2>Sınıf, ders, kazanım — <span class="grad">gerisini biz</span> hazırlarız</h2>
+        <p class="lead">Tek panelden beş dersin tümü. Kazanıma hizalı sorular, cevap anahtarı ve adım adım çözüm; saniyeler içinde PDF.</p>
+        <a class="cta" href="#">Ücretsiz dene →</a>
+        <div class="trust"><span>Aylık 100 soru ücretsiz</span><span>Yalnızca e-posta</span></div>
+      </div>
+      <div>
+        <div class="bento" id="C-bento"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Soru Atölyesi · hero yeniden tasarım demosu · 3 varyant — hangisi? (karma/ayar da isteyebilirsin)</footer>
+
+<script>
+const SUBJECTS = [
+  {v:'matematik',label:'Matematik',em:'➗',color:'#2563eb',
+   q:{grade:'8. sınıf · LGS',topic:'Cebirsel İfadeler',kod:'M.8.2.1',
+      text:'Bir kenar uzunluğu (x + 3) cm olan karenin çevresi 32 cm ise x kaçtır?',
+      opts:['A) 3','B) 5','C) 7','D) 9'],ans:'B) 5'}},
+  {v:'turkce',label:'Türkçe',em:'📖',color:'#e11d48',
+   q:{grade:'7. sınıf',topic:'Yazım ve Noktalama',kod:'T.7.4.2',
+      text:'Aşağıdaki cümlelerin hangisinde yazım yanlışı vardır?',
+      opts:['A) Yarın yola çıkacağız.','B) Herşey yolunda.','C) Kitabı bıraktı.','D) Hava çok güzel.'],ans:'B) “Herşey” → doğrusu “Her şey”'}},
+  {v:'fen',label:'Fen Bilimleri',em:'🔬',color:'#059669',
+   q:{grade:'6. sınıf',topic:'Güneş, Dünya ve Ay',kod:'F.6.1.2',
+      text:'Ay’ın Dünya çevresindeki dolanımında görünen aydınlık yüzünün düzenli değişmesine ne denir?',
+      opts:['A) Güneş tutulması','B) Ay’ın evreleri','C) Mevsimler','D) Gel-git'],ans:'B) Ay’ın evreleri'}},
+  {v:'sosyal',label:'Sosyal Bilgiler',em:'🌍',color:'#d97706',
+   q:{grade:'8. sınıf · İnkılap',topic:'Bir Kahraman Doğuyor',kod:'SB.8.2.1',
+      text:'Mondros Ateşkes Antlaşması hangi tarihte imzalanmıştır?',
+      opts:['A) 30 Ekim 1918','B) 22 Haziran 1919','C) 23 Nisan 1920','D) 24 Temmuz 1923'],ans:'A) 30 Ekim 1918'}},
+  {v:'ingilizce',label:'İngilizce',em:'🔤',color:'#7c3aed',
+   q:{grade:'5. sınıf',topic:'Daily Routines',kod:'E5.3',
+      text:'“My sister ___ to school at 8 o’clock every morning.”',
+      opts:['A) go','B) goes','C) going','D) is go'],ans:'B) goes'}},
+];
+const hex2rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`};
+
+/* ---------- VARYANT A ---------- */
+function cardHTML(s){const q=s.q;return `
+  <div class="head" style="color:${s.color}"><span>${s.em}</span> ${q.grade}
+    <span class="kod" style="background:${hex2rgba(s.color,.12)};color:${s.color}">${q.kod}</span></div>
+  <div class="q">${q.text}</div>
+  <div class="opts">${q.opts.map(o=>`<div>${o}</div>`).join('')}</div>
+  <div class="ans" style="color:${s.color}">✓ ${q.ans}</div>`;}
+const Apills=document.getElementById('A-pills'), Acard=document.getElementById('A-card');
+let Ai=0;
+function renderA(i){
+  Ai=i;const s=SUBJECTS[i];
+  Apills.innerHTML=SUBJECTS.map((x,j)=>`<button class="pill ${j===i?'on':''}" style="${j===i?`background:${x.color}`:''}" onclick="renderA(${j})"><span class="em">${x.em}</span>${x.label}</button>`).join('');
+  Acard.style.borderLeft=`5px solid ${s.color}`;
+  Acard.innerHTML=cardHTML(s);
+}
+renderA(0);
+setInterval(()=>renderA((Ai+1)%SUBJECTS.length),3200);
+
+/* ---------- VARYANT B ---------- */
+const Bfan=document.getElementById('B-fan');
+function renderB(active){
+  // sıralama: aktif ortada
+  Bfan.innerHTML=SUBJECTS.map((s,idx)=>{
+    // pozisyon sınıfı: aktife göre -2..+2
+    let rel=(idx-active+SUBJECTS.length)%SUBJECTS.length;
+    const posMap={0:'c2',1:'c3',2:'c4',3:'c0',4:'c1'}; // aktif=c2 orta
+    const cls=posMap[rel];
+    return `<div class="qcard ${cls}" style="border-top:5px solid ${s.color}" onclick="renderB(${idx})">
+      <div class="head" style="color:${s.color}"><span>${s.em}</span> ${s.q.grade}
+        <span class="kod" style="background:${hex2rgba(s.color,.12)};color:${s.color}">${s.q.kod}</span></div>
+      <div class="q" style="font-size:14px">${s.q.text}</div>
+      <div class="ans" style="color:${s.color}">✓ ${s.q.ans}</div></div>`;
+  }).join('');
+}
+let Bi=0;renderB(0);
+setInterval(()=>{Bi=(Bi+1)%SUBJECTS.length;renderB(Bi)},2800);
+
+/* ---------- VARYANT C ---------- */
+const Cbento=document.getElementById('C-bento');
+const feat=SUBJECTS[0];
+Cbento.innerHTML=`
+  <div class="tile big" style="border-top:0">
+    <div class="bar" style="background:${feat.color}"></div>
+    <div class="em">${feat.em}</div>
+    <div><div class="sub" style="color:${feat.color}">${feat.q.grade} · ${feat.q.topic}</div>
+    <div class="q">${feat.q.text}</div>
+    <div class="ans" style="color:${feat.color};border:0;padding-top:8px">✓ ${feat.q.ans}</div></div>
+  </div>
+  ${SUBJECTS.slice(1).map(s=>`
+   <div class="tile"><div class="bar" style="background:${s.color}"></div>
+     <div class="em">${s.em}</div>
+     <div class="nm">${s.label}</div>
+     <div class="sub">${s.q.grade}</div></div>`).join('')}
+  <div class="tile" style="display:flex;align-items:center;justify-content:center;background:${hex2rgba(feat.color,.06)};border-style:dashed">
+     <div class="nm" style="color:${feat.color}">+ 5 ders →</div></div>
+`;
+</script>
+</body>
+</html>
