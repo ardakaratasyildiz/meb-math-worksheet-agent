@@ -25,7 +25,7 @@ import { JsonLd, organizationSchema, websiteSchema } from "@/components/JsonLd";
 import { HeroSubjectFan } from "@/components/HeroSubjectFan";
 import { SectionHeader } from "@/components/PageHeader";
 import { SubjectShowroom } from "@/components/SubjectShowroom";
-import { hasMultipleSubjects } from "@/lib/subjects";
+import { availableSubjects, hasMultipleSubjects, subjectStyle } from "@/lib/subjects";
 import sampleData from "@/lib/sample-questions.json";
 
 export default function LandingPage() {
@@ -469,15 +469,48 @@ const GRADE_HUBS: { label: string; sub: string; href: string }[] = [
 ];
 
 function BrowseByGrade() {
+  const multi = hasMultipleSubjects();
+  const subjects = multi ? availableSubjects() : [];
   return (
     <section className="py-20">
       <div className="container">
         <SectionHeader
-          eyebrow="Sınıfa göre göz at"
+          eyebrow="Sınıf ve derse göre göz at"
           title="Sınıf ve konu bazlı çalışma kağıtları"
-          body="Sınıfını seç; o sınıfın MEB matematik konularına ve kazanımlarına uygun hazır çalışma kağıtlarına göz at."
+          body={
+            multi
+              ? "Dersini ve sınıfını seç; o sınıfın MEB kazanımlarına uygun hazır çalışma kağıtlarına göz at."
+              : "Sınıfını seç; o sınıfın MEB matematik konularına ve kazanımlarına uygun hazır çalışma kağıtlarına göz at."
+          }
         />
-        <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+
+        {/* Derse göre — renkli ders çipleri (Konular'daki ilgili bölüme köprü) */}
+        {multi ? (
+          <div className="mt-10 flex flex-wrap justify-center gap-2.5">
+            {subjects.map((s) => {
+              const st = subjectStyle(s.value);
+              return (
+                <Link
+                  key={s.value}
+                  href={`/calismalar#${s.value}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border bg-card px-4 py-2 text-sm font-semibold shadow-pop transition-colors hover:bg-accent/40"
+                  style={{ borderColor: `${st.hex}55`, color: st.hex }}
+                >
+                  <span aria-hidden>{st.emoji}</span>
+                  {s.label}
+                </Link>
+              );
+            })}
+          </div>
+        ) : null}
+
+        {/* Sınıf hub'ları — matematik SEO iç linki (indeksleme kaldıracı, korunur) */}
+        {multi ? (
+          <p className="mt-10 text-center text-sm font-medium text-muted-foreground">
+            Sınıf bazlı matematik hub&apos;ları:
+          </p>
+        ) : null}
+        <div className={`grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 ${multi ? "mt-4" : "mt-12"}`}>
           {GRADE_HUBS.map((g) => (
             <Link
               key={g.href}
