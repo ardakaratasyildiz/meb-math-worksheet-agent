@@ -15,6 +15,7 @@ import { AssignmentAlert } from "@/components/AssignmentAlert";
 import { EmailOptInCard } from "@/components/EmailOptInCard";
 import { ParentDashboard } from "@/components/ParentDashboard";
 import { PracticeTodayCard } from "@/components/PracticeTodayCard";
+import { RoleSwitcher } from "@/components/RoleSwitcher";
 import { hasMultipleSubjects } from "@/lib/subjects";
 import type { Role } from "@/lib/roles";
 
@@ -200,6 +201,9 @@ export function PracticeHub({ role }: { role: Role | null }) {
 
   return (
     <div className="space-y-7">
+      {/* Profil değiştirici — onboarding sonrası rolü değiştir (admin/rolsüzde gizli). */}
+      <RoleSwitcher />
+
       <header className="relative overflow-hidden rounded-3xl bg-card p-6 shadow-pop sm:p-7">
         <span
           aria-hidden
