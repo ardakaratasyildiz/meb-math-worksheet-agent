@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getStudyPlan } from "@/lib/api";
+import { createStudyPlan, getStudyPlan } from "@/lib/api";
 import { practiceHref } from "@/lib/curriculum";
 import { subjectLabel, subjectStyle } from "@/lib/subjects";
 import type { StudyPlanDay, StudyPlanResponse, Subject } from "@/lib/types";
@@ -31,20 +31,52 @@ function hrefForDay(d: StudyPlanDay): string {
   return `/practice/new?${p.toString()}`;
 }
 
+function formatDate(iso?: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? ""
+    : d.toLocaleDateString("tr-TR", { day: "numeric", month: "long" });
+}
+
 /**
- * AI haftalık çalışma programı (WS-6a) — buton-tetikli (LLM maliyeti kontrolü).
- * Öğrencinin zayıf kazanımlarına göre güne yayılmış plan + her gün için "Çalış".
+ * AI haftalık çalışma programı (WS-6a) — kullanıcı bazlı KALICI ("Çalışma Programım"
+ * sekmesi). Mount'ta kayıtlı program getirilir; yoksa "oluştur" CTA'sı gösterilir.
+ * "Yenile" yeni program üretip kaydeder. 7 gün · odak (eksik) + tekrar + karışık.
  */
 export function StudyPlan() {
   const { userId, isLoaded } = useAuth();
   const [plan, setPlan] = React.useState<StudyPlanResponse | null>(null);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false); // üretim in-flight
+  const [initializing, setInitializing] = React.useState(true);
+
+  // Kayıtlı programı getir (created_at boşsa henüz yok → CTA).
+  React.useEffect(() => {
+    if (!userId) {
+      setInitializing(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const p = await getStudyPlan(userId);
+        if (!cancelled) setPlan(p.created_at ? p : null);
+      } catch {
+        // sessiz — CTA gösterilir
+      } finally {
+        if (!cancelled) setInitializing(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
   async function generate() {
     if (!userId) return;
     setLoading(true);
     try {
-      setPlan(await getStudyPlan(userId));
+      setPlan(await createStudyPlan(userId));
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Program oluşturulamadı.";
       toast.error("Program oluşturulamadı", { description: msg });
@@ -54,6 +86,8 @@ export function StudyPlan() {
   }
 
   if (!isLoaded || !userId) return null;
+
+  const hasPlan = !!plan?.created_at;
 
   return (
     <section className="space-y-3">
@@ -65,7 +99,7 @@ export function StudyPlan() {
             7 gün · eksik + tekrar + karışık, yapay zeka destekli
           </span>
         </div>
-        {plan ? (
+        {hasPlan ? (
           <Button
             type="button"
             variant="ghost"
@@ -74,17 +108,26 @@ export function StudyPlan() {
             disabled={loading}
             className="gap-1.5 text-xs"
           >
-            {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+            {loading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="h-3.5 w-3.5" />
+            )}
             Yenile
           </Button>
         ) : null}
       </div>
 
-      {!plan ? (
+      {initializing ? (
+        <Card className="flex items-center gap-2 p-5 text-sm text-muted-foreground shadow-pop">
+          <Loader2 className="h-4 w-4 animate-spin" /> Programın yükleniyor…
+        </Card>
+      ) : !hasPlan ? (
         <Card className="flex flex-col items-start gap-3 p-5 shadow-pop">
           <p className="text-sm text-muted-foreground">
             Haftaya yayılmış, dengeli bir program: eksik konularını pekiştir,
-            öğrendiklerini tekrar et ve karışık sorularla kendini dene.
+            öğrendiklerini tekrar et ve karışık sorularla kendini dene. Program
+            oluşturunca burada kalır.
           </p>
           <Button onClick={generate} disabled={loading} className="gap-2">
             {loading ? (
@@ -100,11 +143,16 @@ export function StudyPlan() {
         </Card>
       ) : (
         <div className="space-y-3">
-          <Card className="p-4 shadow-pop">
-            <p className="text-sm">{plan.summary}</p>
+          <Card className="flex flex-wrap items-center justify-between gap-2 p-4 shadow-pop">
+            <p className="text-sm">{plan!.summary}</p>
+            {plan!.created_at ? (
+              <span className="shrink-0 text-[11px] text-muted-foreground">
+                {formatDate(plan!.created_at)} tarihinde hazırlandı
+              </span>
+            ) : null}
           </Card>
 
-          {plan.days.map((d) => {
+          {plan!.days.map((d) => {
             const subject = (d.subject ?? "matematik") as Subject;
             const st = subjectStyle(subject);
             return (
@@ -159,7 +207,7 @@ export function StudyPlan() {
             );
           })}
 
-          {plan.ai_generated ? (
+          {plan!.ai_generated ? (
             <p className="text-[11px] text-muted-foreground">
               ✨ Bu haftalık program yapay zeka ile hazırlandı (eksik + tekrar + karışık).
             </p>
