@@ -410,8 +410,9 @@ class ClassroomStore:
     def list_my_assignments(self, student_tenant_id: str) -> list[dict]:
         """Öğrencinin katıldığı sınıflardaki ödevler + çözüldü durumu/skor.
 
-        attempts (quiz_store tablosu, aynı DB) ile LEFT JOIN — solved = deneme var mı.
-        Çok denemede en iyi skor gösterilir.
+        Skor = İLK deneme (en erken completed_at). Tekrar çözmeye izin verilir ama
+        kaydedilen/gösterilen skor ilk denemedir → öğrenci ilk gönderimden sonra
+        cevap anahtarını görse bile puanını şişiremez (anti-kopya, H2).
         """
         if not student_tenant_id:
             return []
@@ -420,18 +421,22 @@ class ClassroomStore:
             rows = self._db.execute(
                 """
                 SELECT a.id, a.classroom_id, c.name, a.quiz_id, a.title, a.created_at,
-                       COUNT(att.id), MAX(att.score), MAX(att.total), a.due_at,
-                       a.assignment_type
+                       (SELECT COUNT(*) FROM attempts x
+                          WHERE x.assignment_id = a.id AND x.solver_tenant_id = ?),
+                       (SELECT x.score FROM attempts x
+                          WHERE x.assignment_id = a.id AND x.solver_tenant_id = ?
+                          ORDER BY x.completed_at ASC, x.id ASC LIMIT 1),
+                       (SELECT x.total FROM attempts x
+                          WHERE x.assignment_id = a.id AND x.solver_tenant_id = ?
+                          ORDER BY x.completed_at ASC, x.id ASC LIMIT 1),
+                       a.due_at, a.assignment_type
                 FROM classroom_members m
                 JOIN assignments a ON a.classroom_id = m.classroom_id
                 JOIN classrooms c ON c.id = a.classroom_id
-                LEFT JOIN attempts att
-                       ON att.assignment_id = a.id AND att.solver_tenant_id = ?
                 WHERE m.student_tenant_id = ?
-                GROUP BY a.id
                 ORDER BY a.created_at DESC
                 """,
-                (student_tenant_id, student_tenant_id),
+                (student_tenant_id, student_tenant_id, student_tenant_id, student_tenant_id),
             ).fetchall()
         out: list[dict] = []
         for r in rows:
@@ -459,7 +464,9 @@ class ClassroomStore:
         """Bir ödevin sonuç panosu (sınıf sahibi-only). Sahip değilse None.
 
         Sınıf roster'ı bazlı: her ÜYE bir satır (çözmeyen de görünür → kimin yapmadığı
-        belli). Dönüş: {title, question_count, member_count, solved_count,
+        belli). Skor = İLK deneme (en erken completed_at), MAX değil → tekrar çözüp
+        cevap anahtarıyla puan şişirme engellenir (anti-kopya, H2). Dönüş: {title,
+        question_count, member_count, solved_count,
         items:[{student_tenant_id, display_name, solved, score, total, completed_at}]}.
         """
         if not assignment_id or not owner_tenant_id:
@@ -481,15 +488,22 @@ class ClassroomStore:
             rows = self._db.execute(
                 """
                 SELECT m.student_tenant_id, m.display_name,
-                       COUNT(att.id), MAX(att.score), MAX(att.total), MAX(att.completed_at)
+                       (SELECT COUNT(*) FROM attempts x
+                          WHERE x.assignment_id = ? AND x.solver_tenant_id = m.student_tenant_id),
+                       (SELECT x.score FROM attempts x
+                          WHERE x.assignment_id = ? AND x.solver_tenant_id = m.student_tenant_id
+                          ORDER BY x.completed_at ASC, x.id ASC LIMIT 1),
+                       (SELECT x.total FROM attempts x
+                          WHERE x.assignment_id = ? AND x.solver_tenant_id = m.student_tenant_id
+                          ORDER BY x.completed_at ASC, x.id ASC LIMIT 1),
+                       (SELECT x.completed_at FROM attempts x
+                          WHERE x.assignment_id = ? AND x.solver_tenant_id = m.student_tenant_id
+                          ORDER BY x.completed_at ASC, x.id ASC LIMIT 1)
                 FROM classroom_members m
-                LEFT JOIN attempts att
-                       ON att.assignment_id = ? AND att.solver_tenant_id = m.student_tenant_id
                 WHERE m.classroom_id = ?
-                GROUP BY m.student_tenant_id
                 ORDER BY m.display_name
                 """,
-                (assignment_id, classroom_id),
+                (assignment_id, assignment_id, assignment_id, assignment_id, classroom_id),
             ).fetchall()
         question_count = 0
         if qrow and qrow[0]:

@@ -167,6 +167,56 @@ def test_assignment_results() -> None:
             cs.close(); qs.close()
 
 
+def test_first_attempt_counts_not_max() -> None:
+    """H2 anti-kopya: tekrar çözmeye izin var ama İLK deneme sayılır (MAX değil).
+
+    Senaryo: öğrenci ödevi bir kez düşük puanla gönderir (cevap anahtarını görür),
+    sonra tam puanla yeniden gönderir. Hem 'Ödevlerim' hem öğretmen panosu İLK
+    (düşük) skoru göstermeli → cevap anahtarıyla puan şişirilemez.
+    """
+    print("İlk-deneme sayılır (tekrar serbest, MAX değil)")
+    import time as _t
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        db = str(Path(tmp) / "t.sqlite3")
+        qs = QuizStore(db_path=db)
+        cs = ClassroomStore(db_path=db)
+        try:
+            quiz_id = _make_quiz(qs, "teacher-1")
+            c = cs.create_classroom(owner_tenant_id="teacher-1", name="5/A")
+            cs.join_classroom(code=c["join_code"], student_tenant_id="stu-1", display_name="Ali")
+            a = cs.create_assignment(
+                classroom_id=c["id"], owner_tenant_id="teacher-1",
+                quiz_id=quiz_id, title="Ödev 1",
+            )
+            # 1. deneme — düşük (0/1)
+            qs.record_attempt(
+                quiz_id=quiz_id, solver_tenant_id="stu-1",
+                answers=[{"number": 1, "texts": ["3"]}],
+                score=0, total=1, duration_seconds=10,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 0, "total": 1}],
+                assignment_id=a["id"],
+            )
+            _t.sleep(0.05)  # distinct completed_at (epoch) → deterministik sıralama
+            # 2. deneme — cevabı görüp tam puan (1/1)
+            qs.record_attempt(
+                quiz_id=quiz_id, solver_tenant_id="stu-1",
+                answers=[{"number": 1, "texts": ["4"]}],
+                score=1, total=1, duration_seconds=5,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 1, "total": 1}],
+                assignment_id=a["id"],
+            )
+            # Öğrencinin kendi görünümü — İLK skor (0), MAX (1) değil
+            mine = cs.list_my_assignments("stu-1")[0]
+            check(mine["score"] == 0, f"Ödevlerim İLK skoru gösterir (0), beklenen 0 → {mine['score']}")
+            # Öğretmen panosu — İLK skor (0), MAX (1) değil
+            res = cs.assignment_results(a["id"], "teacher-1")
+            ali = next(i for i in res["items"] if i["display_name"] == "Ali")
+            check(ali["score"] == 0, f"Pano İLK skoru gösterir (0), beklenen 0 → {ali['score']}")
+            check(ali["solved"] is True, "iki deneme sonrası solved True")
+        finally:
+            cs.close(); qs.close()
+
+
 def test_pdf_assignment() -> None:
     print("PDF ödev — tip + worksheet snapshot")
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
@@ -216,6 +266,7 @@ def main() -> int:
         test_assign_and_access,
         test_my_assignments_solved,
         test_assignment_results,
+        test_first_attempt_counts_not_max,
         test_pdf_assignment,
         test_app_imports,
     ):
