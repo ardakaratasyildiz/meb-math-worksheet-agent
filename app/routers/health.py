@@ -76,6 +76,7 @@ def readyz(response: Response) -> dict[str, object]:
 def diag_gemini(_api_key: str = Depends(require_api_key)) -> dict[str, object]:
     import importlib.metadata
     import os
+    import urllib.error
     import urllib.request
 
     out: dict[str, object] = {}
@@ -132,4 +133,29 @@ def diag_gemini(_api_key: str = Depends(require_api_key)) -> dict[str, object]:
     out["gemini_test_raw"] = _try(k)
     if k != k.strip():
         out["gemini_test_stripped"] = _try(k.strip())
+
+    # SDK'sız HAM REST çağrısı — SDK sürüm davranışı mı yoksa IP bloğu mu ayırır.
+    # SDK 403 ama REST 200 → SDK (2.x) sorunu. İkisi de 403 → IP bloğu.
+    try:
+        import json as _json
+        import urllib.request
+
+        rbody = _json.dumps(
+            {"contents": [{"parts": [{"text": "hi"}]}],
+             "generationConfig": {"maxOutputTokens": 1}}
+        ).encode()
+        rurl = (
+            "https://generativelanguage.googleapis.com/v1beta/models/"
+            f"gemini-2.5-flash:generateContent?key={k.strip()}"
+        )
+        rq = urllib.request.Request(
+            rurl, data=rbody,
+            headers={"Content-Type": "application/json"}, method="POST",
+        )
+        with urllib.request.urlopen(rq, timeout=15) as rr:
+            out["rest_test"] = {"ok": True, "status": rr.status}
+    except urllib.error.HTTPError as he:  # type: ignore[name-defined]
+        out["rest_test"] = {"ok": False, "status": he.code, "error": he.read().decode()[:200]}
+    except Exception as exc:  # noqa: BLE001
+        out["rest_test"] = {"ok": False, "error": str(exc)[:200]}
     return out
