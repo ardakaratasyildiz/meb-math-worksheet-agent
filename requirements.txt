@@ -27,3 +27,8 @@ sentry-sdk[fastapi]>=2.0.0
 # Turso/libSQL — opsiyonel persistence backend (TURSO_DATABASE_URL set ise aktif).
 # Set değilse db_connection.py klasik sqlite3'e fallback yapar.
 libsql-experimental>=0.0.40
+# P0 (billing ön koşulu): Clerk oturum JWT'sini sunucu-tarafı doğrulamak için.
+# app/services/clerk_auth.py Clerk JWKS'inden RS256 imza doğrular → client'ın
+# gönderdiği tenant_id'ye güvenmek yerine token'ın `sub` claim'inden üretir.
+# [crypto] extra'sı RSA imza doğrulama (cryptography) getirir.
+pyjwt[crypto]>=2.8.0
