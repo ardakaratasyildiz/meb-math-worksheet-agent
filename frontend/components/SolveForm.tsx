@@ -20,7 +20,9 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 
-import { createQuiz, listKazanimlarByUnit, listUnits } from "@/lib/api";
+import { QuotaExceededError, createQuiz, listKazanimlarByUnit, listUnits } from "@/lib/api";
+import type { QuotaInfo } from "@/lib/api";
+import { Paywall } from "@/components/Paywall";
 import { getGradesLocal } from "@/lib/curriculum";
 import { getKazanimlarByUnitLocal, getUnitsLocal } from "@/lib/units";
 import { factsForSubject } from "@/lib/subjectFacts";
@@ -86,6 +88,8 @@ export function SolveForm({ mode = "solve" }: { mode?: "solve" | "create" }) {
   const router = useRouter();
   const { userId } = useAuth();
   const [createdQuizId, setCreatedQuizId] = React.useState<string | null>(null);
+  // Kota aşımı (402) → paywall. billing_enabled kapalıyken hiç tetiklenmez.
+  const [paywall, setPaywall] = React.useState<QuotaInfo | null>(null);
   // "Bu kazanımda pratik yap" derin-linki: /practice/new?grade=&unit=&kazanim=&subject=
   const searchParams = useSearchParams();
   const initialGrade = Number(searchParams.get("grade")) || 5;
@@ -262,6 +266,12 @@ export function SolveForm({ mode = "solve" }: { mode?: "solve" | "create" }) {
         router.push(`/practice/quiz/${quiz.id}`);
       }
     } catch (e: unknown) {
+      // Kota aşımı (402) → paywall (jenerik hata yerine).
+      if (e instanceof QuotaExceededError) {
+        setPaywall(e.info);
+        setSubmitting(false);
+        return;
+      }
       const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
       toast.error("Quiz üretilemedi", { description: msg });
       setSubmitting(false);
@@ -313,6 +323,11 @@ export function SolveForm({ mode = "solve" }: { mode?: "solve" | "create" }) {
 
   return (
     <div className="space-y-6">
+      <Paywall
+        open={paywall !== null}
+        onOpenChange={(o) => !o && setPaywall(null)}
+        info={paywall}
+      />
       {/* Ders seçici — yalnız matematik dışı ders açıkken görünür. Renk kodlaması
           ana sayfa vitriniyle ortak (lib/subjects → subjectStyle). */}
       {multiSubject ? (
