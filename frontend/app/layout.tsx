@@ -5,6 +5,7 @@ import { trTR } from "@clerk/localizations";
 import { Toaster } from "sonner";
 
 import { Analytics } from "@/components/Analytics";
+import { AuthTokenBridge } from "@/components/AuthTokenBridge";
 import { BackendWarmup } from "@/components/BackendWarmup";
 import { CookieConsent } from "@/components/CookieConsent";
 import { RoleGate } from "@/components/RoleGate";
@@ -176,6 +177,7 @@ export default function RootLayout({
               <CookieConsent />
               <Analytics />
               <BackendWarmup />
+              <AuthTokenBridge />
             </div>
           </ThemeProvider>
         </body>
