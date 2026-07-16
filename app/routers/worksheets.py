@@ -24,7 +24,7 @@ from app.models.schemas import (
 from app.security import limiter, rate_limit_string, require_api_key
 from app.services import entitlements
 from app.services.agent import AgentError, GeminiAgent, model_for_grade
-from app.services.clerk_auth import verified_tenant_id
+from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.pdf_renderer import render_worksheet_pdf
 from app.services.usage_ledger import USAGE_LEDGER
 from app.services.worksheet_history import WORKSHEET_HISTORY
@@ -478,13 +478,16 @@ def generate_worksheet_pdf(
 def get_worksheet_history(
     tenant_id: str,
     limit: int = 50,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> dict:
     """Kullanıcının ürettiği çalışma kağıtları — en yeni önce.
 
-    `tenant_id` zorunlu query parametresidir (frontend Clerk userId'sini geçer).
+    `tenant_id` zorunlu query parametresidir (frontend Clerk userId'sini geçer),
+    ancak kimlik doğrulanmış Clerk oturumundan türetilir (spoof/IDOR koruması).
     Dönen her öğe frontend'in `HistoryItem` yapısındadır.
     """
+    tenant_id = require_tenant(verified, tenant_id)
     return {"items": WORKSHEET_HISTORY.list(tenant_id, limit=limit)}
 
 
@@ -492,18 +495,23 @@ def get_worksheet_history(
 def delete_worksheet_history(
     item_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> None:
-    """Tek bir geçmiş kaydını siler. tenant_id filtresi → başkasının kaydı silinemez."""
+    """Tek bir geçmiş kaydını siler. tenant_id doğrulanmış kimlikten türetilir
+    → başkasının kaydı silinemez (IDOR koruması)."""
+    tenant_id = require_tenant(verified, tenant_id)
     WORKSHEET_HISTORY.delete(tenant_id, item_id)
 
 
 @router.delete("/history", status_code=204)
 def clear_worksheet_history(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> None:
-    """Kullanıcının tüm geçmişini siler."""
+    """Kullanıcının tüm geçmişini siler (tenant_id doğrulanmış kimlikten)."""
+    tenant_id = require_tenant(verified, tenant_id)
     WORKSHEET_HISTORY.clear(tenant_id)
 
 

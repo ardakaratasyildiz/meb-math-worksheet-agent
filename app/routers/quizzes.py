@@ -33,7 +33,7 @@ from app.models.schemas import (
 from app.security import limiter, rate_limit_string, require_api_key
 from app.services import entitlements
 from app.services.agent import AgentError, GeminiAgent, model_for_grade
-from app.services.clerk_auth import verified_tenant_id
+from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.grading import grade_quiz
 from app.services.quiz_store import QUIZ_STORE
 from app.services.structured import derive_structured_fields, validate_structured
@@ -252,6 +252,8 @@ def create_quiz(
 ) -> QuizPublic:
     """Çözülebilir quiz üret + kaydet → CEVAPSIZ döndür. LLM çağrısı (rate limitli)."""
     entitlements.enforce_quota(verified, req.question_count)
+    # Sahiplik client-supplied tenant'a DEĞİL, doğrulanmış kimliğe bağlanır (IDOR/spoof).
+    req.tenant_id = require_tenant(verified, req.tenant_id)
     questions, topic_name = _generate_solvable(req)
     if not questions:
         # Üretilenlerin hiçbiri yapısal doğrulamadan geçmedi (nadir) → tekrar deneyin.
@@ -291,9 +293,11 @@ def create_quiz(
 def get_quiz(
     quiz_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> QuizPublic:
     """Quiz'i çözmek için getir — CEVAPSIZ, yalnız sahibi (tenant_id) erişir."""
+    tenant_id = require_tenant(verified, tenant_id)
     record = QUIZ_STORE.get(quiz_id, tenant_id)
     if record is None:
         raise HTTPException(status_code=404, detail="Quiz bulunamadı.")
@@ -313,6 +317,7 @@ def get_quiz(
 def submit_attempt(
     quiz_id: str,
     req: SubmitAttemptRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> AttemptResult:
     """Cevapları gönder → sunucuda LLM'siz puanla → sonuç + kazanım kırılımı.
@@ -320,6 +325,7 @@ def submit_attempt(
     Puanlama sunucuda yapılır (cevaplar istemcide yok). Sonuçta doğru cevap +
     çözüm açığa çıkar (çözüm sonrası geri bildirim). Deneme + mastery kaydedilir.
     """
+    req.tenant_id = require_tenant(verified, req.tenant_id)
     record = QUIZ_STORE.get(quiz_id, req.tenant_id)
     if record is None:
         raise HTTPException(status_code=404, detail="Quiz bulunamadı.")
@@ -371,12 +377,14 @@ def submit_attempt(
 def share_quiz(
     quiz_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> CreateShareResponse:
     """Quiz için link paylaşımı oluştur (idempotent) — yalnız sahibi.
 
     Dönen share_url görecedir (/q/{code}); frontend origin'i ekler.
     """
+    tenant_id = require_tenant(verified, tenant_id)
     res = QUIZ_STORE.create_share(quiz_id=quiz_id, owner_tenant_id=tenant_id)
     if res is None:
         raise HTTPException(status_code=404, detail="Quiz bulunamadı.")

@@ -451,17 +451,21 @@ export async function deleteWorksheetHistory(
   tenantId: string,
   id: string,
 ): Promise<void> {
+  // 204 (gövdesiz) döndüğü için request() yerine ham fetch; ama Authorization
+  // Bearer ŞART (backend artık doğrulanmış kimlik ister — spoof/IDOR koruması).
+  const auth = await authHeader();
   const res = await fetch(
     `${BASE}/api/worksheets/history/${encodeURIComponent(id)}?tenant_id=${encodeURIComponent(tenantId)}`,
-    { method: "DELETE", headers: headers() },
+    { method: "DELETE", headers: { ...headers(), ...auth } },
   );
   if (!res.ok) throw new Error(`Geçmiş kaydı silinemedi: ${res.status}`);
 }
 
 export async function clearWorksheetHistory(tenantId: string): Promise<void> {
+  const auth = await authHeader();
   const res = await fetch(
     `${BASE}/api/worksheets/history?tenant_id=${encodeURIComponent(tenantId)}`,
-    { method: "DELETE", headers: headers() },
+    { method: "DELETE", headers: { ...headers(), ...auth } },
   );
   if (!res.ok) throw new Error(`Geçmiş temizlenemedi: ${res.status}`);
 }

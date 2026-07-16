@@ -29,6 +29,7 @@ from app.models.schemas import (
 from app.routers.quizzes import _to_public
 from app.security import require_api_key
 from app.services.classroom_store import CLASSROOM_STORE
+from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.grading import grade_quiz
 from app.services.quiz_store import QUIZ_STORE
 
@@ -54,9 +55,11 @@ def _resolve_assignment(assignment_id: str, tenant_id: str) -> dict:
 def get_assignment_quiz(
     assignment_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> QuizPublic:
     """Ödev quiz'ini çözmek için getir — CEVAPSIZ, yalnız sınıf üyesi/sahibi."""
+    tenant_id = require_tenant(verified, tenant_id)
     quiz = _resolve_assignment(assignment_id, tenant_id)["quiz"]
     questions = [Question(**q) for q in quiz["questions"]]
     return _to_public(
@@ -74,9 +77,11 @@ def get_assignment_quiz(
 def submit_assignment_attempt(
     assignment_id: str,
     req: SubmitAttemptRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> AttemptResult:
     """Ödev cevaplarını gönder → sunucuda puanla → öğrencinin tenant'ına + ödeve kaydet."""
+    req.tenant_id = require_tenant(verified, req.tenant_id)
     resolved = _resolve_assignment(assignment_id, req.tenant_id)
     assignment, quiz = resolved["assignment"], resolved["quiz"]
     stored = [Question(**q) for q in quiz["questions"]]
@@ -127,10 +132,12 @@ def submit_assignment_attempt(
 def get_assignment_worksheet(
     assignment_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> AssignmentWorksheetResponse:
     """PDF ödevinin worksheet'ini getir — yalnız sınıf üyesi/sahibi. Öğrenci istemcide
     PDF'e render eder (cevap anahtarı kapalı)."""
+    tenant_id = require_tenant(verified, tenant_id)
     assignment = CLASSROOM_STORE.get_assignment(assignment_id)
     if assignment is None:
         raise HTTPException(status_code=404, detail="Ödev bulunamadı.")
@@ -151,9 +158,11 @@ def get_assignment_worksheet(
 def get_assignment_results(
     assignment_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> AssignmentResultsResponse:
     """Ödevin sonuç panosu — sınıf roster'ı bazlı (çözen/çözmeyen). Yalnız sınıf sahibi."""
+    tenant_id = require_tenant(verified, tenant_id)
     data = CLASSROOM_STORE.assignment_results(assignment_id, tenant_id)
     if data is None:
         raise HTTPException(status_code=404, detail="Ödev bulunamadı.")

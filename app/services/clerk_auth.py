@@ -168,9 +168,32 @@ def resolve_tenant_id(verified: str | None, supplied: str | None) -> str | None:
     return supplied
 
 
+def require_tenant(verified: str | None, supplied: str | None) -> str:
+    """`resolve_tenant_id` + fail-closed 401. Tenant-kapsamlı uçlar için ortak kapı.
+
+    Doğrulama açıkken geçerli oturum yoksa client-supplied `tenant_id`'ye GÜVENMEZ
+    (spoof/IDOR koruması). `me.py` deseninin tekrar kullanılabilir hali.
+    """
+    tid = resolve_tenant_id(verified, supplied)
+    if not tid:
+        raise HTTPException(status_code=401, detail="Kimlik doğrulanamadı.")
+    return tid
+
+
+def verified_sub_from_header(authorization: str | None) -> str | None:
+    """Raw Authorization header'ından doğrulanmış `sub` (dependency dışı kullanım).
+
+    Rate-limit anahtarı gibi FastAPI dependency olamayan yerlerde kullanılır.
+    Doğrulama kapalıyken/geçersiz token'da None (fırlatmaz).
+    """
+    return _verified_sub_or_none(authorization)
+
+
 __all__ = [
     "verified_tenant_id",
     "require_verified_tenant_id",
     "resolve_tenant_id",
+    "require_tenant",
+    "verified_sub_from_header",
     "verify_token",
 ]

@@ -53,10 +53,21 @@ app = FastAPI(
 )
 
 # CORS — frontend domain'leri için izin (Vercel + lokal dev)
+#
+# GÜVENLİK: `allow_origins=["*"]` (CORS_ORIGINS boşken varsayılan) İLE
+# `allow_credentials=True` BİRLİKTE kullanılamaz — Starlette bu kombinasyonda
+# gelen Origin'i aynen yansıtır ve `Access-Control-Allow-Credentials: true` verir,
+# yani HERHANGİ bir web sitesi kurbanın tarayıcısı üzerinden kimlik-doğrulamalı
+# cross-origin istek atıp yanıtı okuyabilir. Auth burada tamamen header-tabanlı
+# (Authorization: Bearer / X-API-Key), cookie DEĞİL → credentials'a gerek yok.
+# Bu yüzden credentials yalnızca AÇIK (explicit, non-wildcard) bir origin listesi
+# yapılandırıldığında etkinleşir; wildcard/boşta kapalıdır.
+_cors_origins = settings.cors_origin_list
+_allow_credentials = bool(_cors_origins) and "*" not in _cors_origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origin_list,
-    allow_credentials=True,
+    allow_origins=_cors_origins,
+    allow_credentials=_allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
