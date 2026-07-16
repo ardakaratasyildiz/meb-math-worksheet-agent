@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { createClassroom, joinClassroom, listClassrooms } from "@/lib/api";
+import { effectiveRole } from "@/lib/roles";
 import type { ClassroomSummary } from "@/lib/types";
 
 export function ClassesView({
@@ -34,6 +35,12 @@ export function ClassesView({
   const [joining, setJoining] = React.useState(false);
 
   const defaultName = user?.fullName ?? user?.firstName ?? "";
+
+  // Rol-bazlı ayrım: sınıf AÇMA öğretmene, sınıfa KATILMA öğrenciye. Admin ikisini de görür.
+  // (Veli sınıf akışında değil — çocuğunu takip koduyla ekler; ParentDashboard'a yönlendirilir.)
+  const role = effectiveRole(user);
+  const canCreate = role === "teacher" || role === "admin";
+  const canJoin = role === "student" || role === "admin";
 
   const load = React.useCallback(() => {
     if (!userId) return;
@@ -100,58 +107,64 @@ export function ClassesView({
 
   return (
     <div className="space-y-7">
-      {/* Aksiyonlar: oluştur + katıl */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Card className="space-y-3 p-5">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-grape" />
-            <h2 className="font-display font-bold">Sınıf oluştur</h2>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Öğretmen/veli olarak sınıf aç; öğrenciler katılma koduyla katılır.
-          </p>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Sınıf adı (ör. 5/A Matematik)"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && onCreate()}
-            />
-            <Button onClick={onCreate} disabled={creating || !newName.trim()} className="shrink-0 gap-1">
-              {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-              Oluştur
-            </Button>
-          </div>
-        </Card>
+      {/* Aksiyonlar rol-bazlı: öğretmen → oluştur, öğrenci → katıl (admin ikisi de). */}
+      {(canCreate || canJoin) && (
+        <div className={`grid gap-4 ${canCreate && canJoin ? "sm:grid-cols-2" : ""}`}>
+          {canCreate && (
+            <Card className="space-y-3 p-5">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-5 w-5 text-grape" />
+                <h2 className="font-display font-bold">Sınıf oluştur</h2>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Sınıf aç; öğrencilerin katılma koduyla katılır, ödev atarsın.
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Sınıf adı (ör. 5/A Matematik)"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && onCreate()}
+                />
+                <Button onClick={onCreate} disabled={creating || !newName.trim()} className="shrink-0 gap-1">
+                  {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                  Oluştur
+                </Button>
+              </div>
+            </Card>
+          )}
 
-        <Card className="space-y-3 p-5">
-          <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-coral" />
-            <h2 className="font-display font-bold">Sınıfa katıl</h2>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Öğretmeninin verdiği katılma kodunu gir.
-          </p>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <Input
-              placeholder="Katılma kodu"
-              value={joinCode}
-              onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-              className="uppercase"
-            />
-            <Input
-              placeholder={defaultName ? `Adın (${defaultName})` : "Adın"}
-              value={joinName}
-              onChange={(e) => setJoinName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && onJoin()}
-            />
-          </div>
-          <Button onClick={onJoin} disabled={joining || !joinCode.trim()} variant="outline" className="gap-1">
-            {joining ? <Loader2 className="h-4 w-4 animate-spin" /> : <Users className="h-4 w-4" />}
-            Katıl
-          </Button>
-        </Card>
-      </div>
+          {canJoin && (
+            <Card className="space-y-3 p-5">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-coral" />
+                <h2 className="font-display font-bold">Sınıfa katıl</h2>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Öğretmeninin verdiği katılma kodunu gir.
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Input
+                  placeholder="Katılma kodu"
+                  value={joinCode}
+                  onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                  className="uppercase"
+                />
+                <Input
+                  placeholder={defaultName ? `Adın (${defaultName})` : "Adın"}
+                  value={joinName}
+                  onChange={(e) => setJoinName(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && onJoin()}
+                />
+              </div>
+              <Button onClick={onJoin} disabled={joining || !joinCode.trim()} variant="outline" className="gap-1">
+                {joining ? <Loader2 className="h-4 w-4 animate-spin" /> : <Users className="h-4 w-4" />}
+                Katıl
+              </Button>
+            </Card>
+          )}
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-16 text-muted-foreground">
@@ -164,17 +177,32 @@ export function ClassesView({
         </Card>
       ) : (
         <>
-          <ClassroomGroup
-            title="Öğretmeni olduğun sınıflar"
-            empty="Henüz sınıf açmadın."
-            items={teaching}
-            showCode
-          />
-          <ClassroomGroup
-            title="Katıldığın sınıflar"
-            empty="Henüz bir sınıfa katılmadın."
-            items={enrolled}
-          />
+          {canCreate && (
+            <ClassroomGroup
+              title="Öğretmeni olduğun sınıflar"
+              empty="Henüz sınıf açmadın."
+              items={teaching}
+              showCode
+            />
+          )}
+          {canJoin && (
+            <ClassroomGroup
+              title="Katıldığın sınıflar"
+              empty="Henüz bir sınıfa katılmadın."
+              items={enrolled}
+            />
+          )}
+          {!canCreate && !canJoin && (
+            <Card className="p-6">
+              <p className="text-sm text-muted-foreground">
+                Sınıf akışı öğretmen ve öğrenciler içindir. Veli olarak çocuğunu{" "}
+                <Link href="/practice" className="underline-offset-2 hover:underline">
+                  takip koduyla ekleyebilirsin
+                </Link>
+                .
+              </p>
+            </Card>
+          )}
         </>
       )}
     </div>

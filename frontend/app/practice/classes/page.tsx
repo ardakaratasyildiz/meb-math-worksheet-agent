@@ -24,7 +24,7 @@ export default async function ClassesPage({
         </Link>
         <h1 className="text-2xl font-semibold tracking-tight">Sınıflarım</h1>
         <p className="text-sm text-muted-foreground">
-          Sınıf aç ve öğrencilerini katılma koduyla davet et; ya da bir sınıfa katıl.
+          Öğretmensen sınıf aç ve ödev ata; öğrenciysen katılma kodunla sınıfına katıl.
         </p>
       </div>
 
