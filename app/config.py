@@ -105,6 +105,12 @@ class Settings(BaseSettings):
     # JWKS anahtarları bellekte bu kadar saniye cache'lenir (imza doğrulama her istekte
     # ağ çağrısı yapmasın). Bilinmeyen kid görülürse süreden bağımsız bir kez yenilenir.
     clerk_jwks_cache_ttl: int = 3600
+    # Clerk Backend API sırrı — sunucu-tarafı ROL kontrolü için (publicMetadata.role'ü
+    # Clerk'ten çeker; app/services/clerk_roles.py). BOŞ → rol enforcement DEVRE DIŞI
+    # (fail-open; bugünkü davranış). Frontend'deki CLERK_SECRET_KEY ile aynı olabilir.
+    clerk_secret_key: str = ""
+    # Çekilen rolün bellek cache TTL'i (rol artık kalıcı → uzun tutulabilir).
+    clerk_role_cache_ttl: int = 3600
 
     # Premium yetkilendirme (entitlement) — "yeni nesil" GİZLİ kalite kaldıracı.
     # Gerçek billing/abonelik henüz yok; bu ayarlar app/services/entitlements.py
