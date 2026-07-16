@@ -230,12 +230,73 @@ def test_check_quota() -> None:
     entitlements.USAGE_LEDGER = LEDGER  # geri yükle
 
 
+# ── 5. ensure_trial + enforce_quota (Faz A: kota kapısı + reverse trial) ──────
+
+def test_ensure_trial() -> None:
+    print("test_ensure_trial")
+    entitlements.USAGE_LEDGER = LEDGER
+    entitlements.ensure_trial("u_et_new")
+    sub = STORE.get("u_et_new")
+    check(sub is not None and sub["status"] == "trialing",
+          "yeni tenant → ensure_trial trialing satırı açar")
+    # Mevcut abone → dokunma
+    entitlements.ensure_trial("u_pro")
+    check(STORE.get("u_pro")["plan_code"] == "pro", "mevcut abone → ensure_trial no-op")
+    entitlements.ensure_trial(None)  # anonim → hata vermez
+    check(True, "anonim ensure_trial → no-op (hata yok)")
+
+
+def test_enforce_quota() -> None:
+    print("test_enforce_quota")
+    from fastapi import HTTPException
+
+    settings.premium_all = False
+    settings.premium_tenant_ids = ""
+    settings.free_monthly_questions = 100
+
+    class _FakeLedger:
+        used = 100
+        def questions_used_since(self, tenant_id, since_ts):  # noqa: ARG002
+            return self.used
+
+    entitlements.USAGE_LEDGER = _FakeLedger()
+
+    # billing KAPALI → dolu olsa bile no-op (bugünkü davranış)
+    settings.billing_enabled = False
+    entitlements.enforce_quota("u_texp", 5)  # u_texp = süresi geçmiş trial → free
+    check(True, "billing_enabled=False → enforce_quota no-op")
+
+    # billing AÇIK + free dolu (100/100) → 402
+    settings.billing_enabled = True
+    try:
+        entitlements.enforce_quota("u_texp", 1)
+        check(False, "free dolu → 402 beklenir")
+    except HTTPException as e:
+        ok = e.status_code == 402 and isinstance(e.detail, dict) and \
+            e.detail.get("error") == "quota_exceeded"
+        check(ok, "free dolu + billing açık → 402 quota_exceeded + paywall sinyali")
+
+    # anonim → kotasız (no-op)
+    entitlements.enforce_quota(None, 50)
+    check(True, "anonim → enforce_quota no-op (SEO kotasız)")
+
+    # yeni tenant → ensure_trial trial açar → fair-use → bloklanmaz
+    entitlements.enforce_quota("u_fresh_eq", 5)
+    fresh = STORE.get("u_fresh_eq")
+    check(fresh is not None and fresh["status"] == "trialing",
+          "yeni tenant enforce → trial başlar, bloklanmaz (tam-Pro 7g)")
+
+    settings.billing_enabled = False
+    entitlements.USAGE_LEDGER = LEDGER
+
+
 def _run() -> int:
     for fn in [
         test_store_empty, test_start_trial, test_trial_expired, test_active_pro,
         test_past_due_grace, test_canceled_and_expired, test_upsert_preserves_created_at,
         test_cancel_flag, test_event_idempotency, test_plan_premium_all,
         test_plan_resolution, test_allowlist_dev, test_quota_limits, test_check_quota,
+        test_ensure_trial, test_enforce_quota,
     ]:
         fn()
     print()
