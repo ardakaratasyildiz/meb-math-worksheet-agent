@@ -1,38 +1,105 @@
-"""Premium yetkilendirme (entitlement) seam.
+"""Premium yetkilendirme (entitlement) + kota — TEK karar noktası.
 
-Gerçek bir billing/abonelik sistemi henüz yok. Bu modül "premium kullanıcı"
-kararını TEK bir yerde toplar; ileride Clerk publicMetadata / Stripe / iyzico
-gibi bir kaynağa bağlamak yalnızca bu dosyayı değiştirmeyi gerektirsin.
+Abonelik durumunun kaynak-of-truth'u `billing_store.subscriptions` satırıdır
+(webhook/callback ile senkronlanır). Bu modül o satırdan **plan** ve **kota**
+kararını verir. Karar HER ZAMAN sunucu tarafında; çağıranlar client'tan gelen bir
+bayrağa/tenant'a ASLA güvenmez (bkz. clerk_auth doğrulaması).
 
-ÖNEMLİ: Karar HER ZAMAN sunucu tarafında verilir. Çağıranlar client'tan gelen
-bir bayrağa ASLA güvenmez — böylece ücretsiz kullanıcı istekle premium kaliteyi
-(yeni nesil sorular) elde edemez.
+Model (MONETIZATION_PLAN §2, 2026-07-16):
+  free (satırsız, 100 soru/ay) · trial (7g kartsız tam-Pro) · pro (1000 soru/ay) ·
+  pro-plus (fair-use sınırsız — arka planda makul tavan).
 
-Bugünkü kaynak (app/config.py):
-  - settings.premium_all=True → herkes premium (dev/demo/A-B testi)
-  - tenant_id, settings.premium_tenant_ids allowlist'inde → premium
+Kademeli açılış:
+  - settings.premium_all=True → herkes pro-plus (dev/demo/dark-launch; BUGÜNKÜ prod).
+  - billing canlı olunca premium_all=False → gerçek abonelik/kota farkı devreye girer.
+  - Kota enforcement (402) generate uçlarında + settings.billing_enabled arkasında (ayrı PR).
 """
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
+
 from app.config import settings
+from app.services.billing_store import BILLING_STORE, STATUS_TRIALING
+from app.services.usage_ledger import USAGE_LEDGER
+
+_IST = timezone(timedelta(hours=3))  # Türkiye — aylık reset takvim ayına göre
+
+PLAN_FREE = "free"
+PLAN_TRIAL = "trial"
+PLAN_PRO = "pro"
+PLAN_PRO_PLUS = "pro-plus"
+
+
+def _month_start_ts() -> float:
+    """İçinde bulunulan takvim ayının başı (Türkiye saati) → unix saniye."""
+    now = datetime.now(_IST)
+    start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    return start.timestamp()
+
+
+def plan_of(tenant_id: str | None) -> str:
+    """Kullanıcının EFEKTİF planı: free | trial | pro | pro-plus.
+
+    Anonim (tenant yok) → free. premium_all/allowlist dev override'ları pro-plus sayar.
+    """
+    if not tenant_id:
+        return PLAN_FREE
+    if settings.premium_all:  # dev/demo/dark-launch — bugünkü prod davranışı
+        return PLAN_PRO_PLUS
+    sub = BILLING_STORE.get_active(tenant_id)  # yalnız erişim VEREN satır (period kontrollü)
+    if sub:
+        if sub["status"] == STATUS_TRIALING:
+            return PLAN_TRIAL
+        return sub["plan_code"]  # "pro" | "pro-plus"
+    if tenant_id in settings.premium_tenant_id_set:  # allowlist (dev)
+        return PLAN_PRO_PLUS
+    return PLAN_FREE
 
 
 def is_premium(tenant_id: str | None) -> bool:
-    """Verilen kullanıcı (Clerk userId = tenant_id) premium mi?
-
-    Anonim / giriş yapmamış (tenant_id yok) → ücretsiz.
-    """
-    if settings.premium_all:
-        return True
-    if not tenant_id:
-        return False
-    return tenant_id in settings.premium_tenant_id_set
+    """Kullanıcı ücretli/deneme erişimine sahip mi? (plan free değilse premium)."""
+    return plan_of(tenant_id) != PLAN_FREE
 
 
 def wants_yeni_nesil(tenant_id: str | None) -> bool:
-    """Bu kullanıcı için 'yeni nesil / senaryo' üretim modu açılsın mı?
+    """'Yeni nesil / senaryo' üretim modu açılsın mı? (gizli kalite kaldıracı.)
 
-    Özellik anahtarı (premium_yeni_nesil) AÇIK ve kullanıcı premium ise True.
-    Kullanıcı bu kararı göremez/değiştiremez — gizli kalite kaldıracıdır.
+    Özellik anahtarı AÇIK ve kullanıcı premium (pro/pro-plus/trial) ise True.
+    Kullanıcı bu kararı göremez/değiştiremez.
     """
     return settings.premium_yeni_nesil and is_premium(tenant_id)
+
+
+def quota_limit(plan: str) -> int:
+    """Plana göre aylık soru kotası. pro-plus/trial = fair-use tavanı ('sınırsız')."""
+    if plan == PLAN_FREE:
+        return settings.free_monthly_questions
+    if plan == PLAN_PRO:
+        return settings.pro_monthly_questions
+    # pro-plus + trial → fair-use makul tavan
+    return settings.pro_plus_fair_use_questions
+
+
+def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
+    """Aylık kota durumu. Enforcement değil — saf sorgu (çağıran 402 kararını verir).
+
+    Anonim üretim kotasızdır (SEO motoru) → daima allowed. Cache-hit üretimler
+    kotadan düşmez (usage_ledger.questions_used_since cache_hit=0 filtreler).
+
+    Dönen: {plan, limit, used, remaining, allowed}
+      allowed = kalan kota `requested` (en az 1) soruya yetiyor mu. requested=0 →
+      'en az 1 slot var mı' (dolu değil mi); requested=N → N soru üretilebilir mi.
+    """
+    if not tenant_id:
+        return {"plan": "anon", "limit": None, "used": 0, "remaining": None, "allowed": True}
+    plan = plan_of(tenant_id)
+    limit = quota_limit(plan)
+    used = USAGE_LEDGER.questions_used_since(tenant_id, _month_start_ts())
+    remaining = max(0, limit - used)
+    return {
+        "plan": plan,
+        "limit": limit,
+        "used": used,
+        "remaining": remaining,
+        "allowed": remaining >= max(requested, 1),
+    }

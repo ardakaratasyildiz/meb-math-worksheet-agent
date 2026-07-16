@@ -112,6 +112,20 @@ class Settings(BaseSettings):
     premium_all: bool = True
     premium_tenant_ids: str = ""
 
+    # --- Abonelik / kota (billing) — MONETIZATION_PLAN §2 (2026-07-16 modeli) ---
+    # Kademeler: free (100 soru/ay) · pro (1000 soru/ay) · pro-plus (fair-use sınırsız)
+    # · trial (7g kartsız tam-Pro). Kota birimi = soru/ay, aylık reset (Türkiye ayı),
+    # cache-hit üretimler sayılmaz, anonim üretim kotasız. Karar HER ZAMAN sunucuda.
+    #   billing_enabled: ödeme/kota enforcement feature flag (kademeli açılış §11).
+    #     False iken kota uygulanmaz (bugünkü davranış); billing canlı olunca True.
+    free_monthly_questions: int = 100
+    pro_monthly_questions: int = 1000
+    # pro-plus "sınırsız" ama suistimale karşı arka plan makul tavan (soru/ay).
+    pro_plus_fair_use_questions: int = 10000
+    # 7g reverse trial süresi (gün) + trial kotası (tam-Pro deneyim → pro-plus tavanı).
+    trial_days: int = 7
+    billing_enabled: bool = False
+
     # Ders (subject) ekseni — çok-ders geçişi (docs/FEN_BILIMLERI_PLAN.md).
     # KALİTE KAPISI feature-flag'leri. Kalite paritesi doğrulandıktan sonra
     # (2026-07-10 go-live) hepsi VARSAYILAN AÇIK: env ile (FEN_ENABLED=false vb.)

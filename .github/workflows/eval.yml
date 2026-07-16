@@ -74,7 +74,7 @@ jobs:
           import scripts.eval.check_regression
           print('imports OK')
           "
-      - name: Unit tests (yapısal + quiz store + puanlama + ilerleme + geçmiş + oyunlaştırma — saf)
+      - name: Unit tests (yapısal + quiz store + puanlama + ilerleme + geçmiş + oyunlaştırma + billing — saf)
         env:
           PYTHONIOENCODING: "utf-8"
           GEMINI_API_KEY: "fake-key-for-import-only"
@@ -85,6 +85,9 @@ jobs:
           python tests/test_progress.py
           python tests/test_attempt_review.py
           python tests/test_gamification.py
+          python tests/test_clerk_auth.py
+          python tests/test_me_tenant_guard.py
+          python tests/test_billing_store.py
 
   # 2. PR gate: hızlı eval (~1-2 dk) — sadece PR'lar ve manual dispatch'te
   quick-eval:
