@@ -22,7 +22,12 @@ _DANGEROUS_PATTERNS = [
     re.compile(r"\bon[a-z]+\s*=", re.IGNORECASE),  # onclick, onerror, ...
     re.compile(r"javascript:", re.IGNORECASE),
     re.compile(r"<foreignObject\b", re.IGNORECASE),
-    re.compile(r"<use\b[^>]*href\s*=\s*['\"]?https?://", re.IGNORECASE),  # external use
+    # Harici kaynak yükleme (SSRF): href / xlink:href'in http(s):// veya
+    # protokol-göreli (//) bir hedefe işaret etmesi. svglib render sırasında
+    # <image>/<use> hrefs'ini fetch eder → 169.254.169.254 gibi iç uçlara SSRF
+    # (validator'daki no_network yalnız parse aşamasını korur, render'ı değil).
+    # İç fragment (#id) ve data: URI güvenli → eşleşmez, engellenmez.
+    re.compile(r"(?:xlink:)?href\s*=\s*['\"]?\s*(?:https?:)?//", re.IGNORECASE),
 ]
 
 

@@ -515,20 +515,40 @@ def clear_worksheet_history(
     WORKSHEET_HISTORY.clear(tenant_id)
 
 
+# /render.pdf gövde tavanı: brand_logo base64 (birkaç yüz KB) + ≤60 soru (her biri
+# ≤50KB) rahat sığar; multi-MB DoS payload'ları erken (parse öncesi) reddedilir.
+_MAX_RENDER_BODY_BYTES = 8 * 1024 * 1024  # 8 MB
+
+
 @router.post("/render.pdf")
+# LLM çağrısı YOK ama CPU/bellek-yoğun (ReportLab + svglib + matplotlib) ve girdi
+# tümüyle client'tan → throttle şart (cost-DoS değil, kaynak-DoS). LLM uçlarından
+# daha cömert: PDF indirme meşru olarak arka arkaya yapılır.
+@limiter.limit("30/minute;200/hour")
 async def render_existing_worksheet(
     request: Request,
     _api_key: str = Depends(require_api_key),
 ) -> Response:
     """Önceden üretilmiş bir worksheet JSON'unu PDF'e çevirir.
 
-    LLM çağrısı YAPMAZ → rate limit yok; sadece auth. White-label: brand_name +
-    brand_subtitle + brand_logo (opsiyonel) PDF üst bilgisine basılır.
+    LLM çağrısı YAPMAZ. White-label: brand_name + brand_subtitle + brand_logo
+    (opsiyonel) PDF üst bilgisine basılır. Girdi sınırlıdır (gövde ≤8MB, ≤60 soru)
+    ve uç throttle'lıdır (kaynak-DoS koruması).
 
     Geriye uyumlu: YENİ format gövdede {worksheet, brand_logo, ...} (logo base64
     query'ye sığmaz); ESKİ format gövde=Worksheet + marka/toggle query'de. Deploy
     sırasında eski frontend yeni backend'e (veya tersi) çarparsa PDF kırılmasın.
     """
+    # Gövde boyutu tavanı — parse'tan ÖNCE Content-Length ile erken reddet
+    # (devasa payload'ı belleğe hiç almadan). Başlık yoksa json() yine de
+    # Pydantic sınırlarına (≤60 soru, alan max_length) takılır.
+    _clen = request.headers.get("content-length")
+    if _clen is not None:
+        try:
+            if int(_clen) > _MAX_RENDER_BODY_BYTES:
+                raise HTTPException(status_code=413, detail="İstek gövdesi çok büyük.")
+        except ValueError:
+            pass  # bozuk başlık → normal akışa bırak
     try:
         body = await request.json()
     except Exception as exc:  # noqa: BLE001
