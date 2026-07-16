@@ -97,6 +97,27 @@ class UsageLedger:
         except Exception as exc:  # noqa: BLE001 — maliyet kaydı üretimi bozmasın
             logger.warning("usage_ledger kayıt başarısız (yutuldu): %s", exc)
 
+    def questions_used_since(self, tenant_id: str | None, since_ts: float) -> int:
+        """Bir tenant'ın `since_ts`'ten beri ürettiği soru sayısı (cache-hit HARİÇ).
+
+        Kota enforcement için (entitlements.check_quota). Cache-hit üretimler kotadan
+        düşmez (fiyat sayfasındaki söz). Anonim (tenant yok) → 0. Fail-open: hata
+        halinde 0 döner (üretimi bloklamaz).
+        """
+        if not tenant_id:
+            return 0
+        try:
+            with self._lock:
+                row = self._db.execute(
+                    "SELECT COALESCE(SUM(question_count),0) FROM usage_ledger "
+                    "WHERE tenant_id=? AND cache_hit=0 AND created_at>=?",
+                    (tenant_id, since_ts),
+                ).fetchone()
+            return int(row[0] or 0)
+        except Exception as exc:  # noqa: BLE001 — kota sayımı üretimi bozmasın
+            logger.warning("usage_ledger kota sayımı başarısız (yutuldu): %s", exc)
+            return 0
+
     def summary(self, since_ts: float | None = None, until_ts: float | None = None) -> dict:
         """Dönem için agregasyon: toplam + tenant/model/gün kırılımı.
 

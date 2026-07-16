@@ -1,0 +1,252 @@
+"""billing_store + entitlements testleri (iyzico ön koşulu — §4).
+
+Pytest gerektirmez — `python tests/test_billing_store.py`.
+BillingStore + UsageLedger geçici DB'de; entitlements bu instance'lara bağlanır
+(singleton'lar monkeypatch edilir).
+"""
+from __future__ import annotations
+
+import os
+import sys
+import tempfile
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except (AttributeError, ValueError):
+    pass
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+os.environ.setdefault("GEMINI_API_KEY", "fake-key-for-tests")
+
+from app.config import settings  # noqa: E402
+from app.services import entitlements  # noqa: E402
+from app.services.billing_store import BillingStore  # noqa: E402
+from app.services.usage_ledger import UsageLedger  # noqa: E402
+
+_failures: list[str] = []
+
+
+def check(cond: bool, msg: str) -> None:
+    print(f"  {'ok  ' if cond else 'FAIL'} {msg}")
+    if not cond:
+        _failures.append(msg)
+
+
+def _iso_in(days: float) -> str:
+    return (datetime.now(timezone.utc) + timedelta(days=days)).isoformat()
+
+
+# Ortak geçici DB (billing + usage aynı dosyayı paylaşır)
+_TMP = tempfile.mkdtemp()
+_DB = str(Path(_TMP) / "billing_test.sqlite3")
+STORE = BillingStore(db_path=_DB)
+LEDGER = UsageLedger(db_path=_DB)
+
+# entitlements singleton'larını test instance'larına bağla
+entitlements.BILLING_STORE = STORE
+entitlements.USAGE_LEDGER = LEDGER
+
+
+# ── 1. BillingStore CRUD + get_active durum mantığı ──────────────────────────
+
+def test_store_empty() -> None:
+    print("test_store_empty")
+    check(STORE.get("u_none") is None, "kayıt yok → get None")
+    check(STORE.get_active("u_none") is None, "kayıt yok → get_active None")
+
+
+def test_start_trial() -> None:
+    print("test_start_trial")
+    sub = STORE.start_trial("u_trial", days=7)
+    check(sub is not None and sub["status"] == "trialing", "trial başlatıldı → trialing")
+    check(sub["plan_code"] == "trial", "trial plan_code=trial")
+    check(STORE.get_active("u_trial") is not None, "aktif trial → get_active döner")
+    # ikinci kez → None (trial zaten kullanılmış)
+    check(STORE.start_trial("u_trial") is None, "mevcut satır varsa start_trial None")
+
+
+def test_trial_expired() -> None:
+    print("test_trial_expired")
+    STORE.upsert(tenant_id="u_texp", plan_code="trial", status="trialing",
+                 trial_end=_iso_in(-1))
+    check(STORE.get("u_texp") is not None, "süresi geçmiş trial satırı var")
+    check(STORE.get_active("u_texp") is None, "trial_end geçmiş → get_active None")
+
+
+def test_active_pro() -> None:
+    print("test_active_pro")
+    STORE.upsert(tenant_id="u_pro", plan_code="pro", status="active",
+                 current_period_end=_iso_in(20), provider_ref="sub_123")
+    act = STORE.get_active("u_pro")
+    check(act is not None and act["plan_code"] == "pro", "aktif pro → get_active pro")
+    check(act["provider_ref"] == "sub_123", "provider_ref korunur")
+
+
+def test_past_due_grace() -> None:
+    print("test_past_due_grace")
+    STORE.upsert(tenant_id="u_pd", plan_code="pro", status="past_due",
+                 current_period_end=_iso_in(3))
+    check(STORE.get_active("u_pd") is not None,
+          "past_due + period_end gelecekte → erişim sürer (dunning grace)")
+    STORE.upsert(tenant_id="u_pd2", plan_code="pro", status="past_due",
+                 current_period_end=_iso_in(-3))
+    check(STORE.get_active("u_pd2") is None, "past_due + period_end geçmiş → erişim yok")
+
+
+def test_canceled_and_expired() -> None:
+    print("test_canceled_and_expired")
+    STORE.upsert(tenant_id="u_cx", plan_code="pro", status="canceled",
+                 current_period_end=_iso_in(10))
+    check(STORE.get_active("u_cx") is None, "canceled → get_active None (durum entitling değil)")
+    STORE.upsert(tenant_id="u_ex", plan_code="pro", status="expired",
+                 current_period_end=_iso_in(-1))
+    check(STORE.get_active("u_ex") is None, "expired → get_active None")
+
+
+def test_upsert_preserves_created_at() -> None:
+    print("test_upsert_preserves_created_at")
+    a = STORE.upsert(tenant_id="u_up", plan_code="pro", status="active",
+                     current_period_end=_iso_in(30))
+    b = STORE.upsert(tenant_id="u_up", plan_code="pro-plus", status="active",
+                     current_period_end=_iso_in(30))
+    check(a["created_at"] == b["created_at"], "upsert created_at'ı korur")
+    check(b["plan_code"] == "pro-plus", "upsert plan_code'u günceller (yükseltme)")
+
+
+def test_cancel_flag() -> None:
+    print("test_cancel_flag")
+    STORE.upsert(tenant_id="u_cf", plan_code="pro", status="active",
+                 current_period_end=_iso_in(30))
+    STORE.set_cancel_at_period_end("u_cf", True)
+    check(STORE.get("u_cf")["cancel_at_period_end"] is True, "cancel_at_period_end işaretlendi")
+    check(STORE.get_active("u_cf") is not None,
+          "dönem sonu iptal işaretli ama period_end'e kadar erişim sürer")
+
+
+# ── 2. billing_events idempotency ────────────────────────────────────────────
+
+def test_event_idempotency() -> None:
+    print("test_event_idempotency")
+    check(STORE.record_event(event_id="ev1", event_type="sub.created",
+                             payload={"a": 1}, tenant_id="u_pro") is True,
+          "yeni event → True")
+    check(STORE.record_event(event_id="ev1", event_type="sub.created",
+                             payload={"a": 1}) is False,
+          "aynı event_id tekrar → False (idempotent, iyzico retry güvenliği)")
+    check(STORE.is_event_processed("ev1") is False, "yeni event processed=False")
+    STORE.mark_event_processed("ev1")
+    check(STORE.is_event_processed("ev1") is True, "mark sonrası processed=True")
+
+
+# ── 3. entitlements plan / is_premium ────────────────────────────────────────
+
+def test_plan_premium_all() -> None:
+    print("test_plan_premium_all")
+    settings.premium_all = True
+    check(entitlements.plan_of("anybody") == "pro-plus", "premium_all → pro-plus")
+    check(entitlements.is_premium("anybody") is True, "premium_all → is_premium True")
+    settings.premium_all = False
+
+
+def test_plan_resolution() -> None:
+    print("test_plan_resolution")
+    settings.premium_all = False
+    settings.premium_tenant_ids = ""
+    check(entitlements.plan_of(None) == "free", "anonim → free")
+    check(entitlements.plan_of("u_none") == "free", "abonesiz → free")
+    check(entitlements.is_premium("u_none") is False, "free → is_premium False")
+    check(entitlements.plan_of("u_trial") == "trial", "aktif trial → plan trial")
+    check(entitlements.is_premium("u_trial") is True, "trial → is_premium True")
+    check(entitlements.plan_of("u_pro") == "pro", "aktif pro → plan pro")
+    check(entitlements.plan_of("u_up") == "pro-plus", "aktif pro-plus → plan pro-plus")
+    check(entitlements.plan_of("u_texp") == "free", "trial süresi geçmiş → free")
+
+
+def test_allowlist_dev() -> None:
+    print("test_allowlist_dev")
+    settings.premium_all = False
+    settings.premium_tenant_ids = "dev_user_1"
+    check(entitlements.plan_of("dev_user_1") == "pro-plus", "allowlist → pro-plus")
+    settings.premium_tenant_ids = ""
+
+
+# ── 4. Kota (check_quota / quota_limit) ──────────────────────────────────────
+
+def test_quota_limits() -> None:
+    print("test_quota_limits")
+    settings.free_monthly_questions = 100
+    settings.pro_monthly_questions = 1000
+    settings.pro_plus_fair_use_questions = 10000
+    check(entitlements.quota_limit("free") == 100, "free kota 100")
+    check(entitlements.quota_limit("pro") == 1000, "pro kota 1000")
+    check(entitlements.quota_limit("pro-plus") == 10000, "pro-plus fair-use 10000")
+    check(entitlements.quota_limit("trial") == 10000, "trial fair-use 10000")
+
+
+def test_check_quota() -> None:
+    print("test_check_quota")
+    settings.premium_all = False
+    settings.premium_tenant_ids = ""
+    settings.free_monthly_questions = 100
+
+    # Anonim → kotasız
+    q = entitlements.check_quota(None)
+    check(q["allowed"] is True and q["limit"] is None, "anonim → kotasız (allowed)")
+
+    # Sahte usage ledger ile kontrollü kullanım
+    class _FakeLedger:
+        used = 0
+        def questions_used_since(self, tenant_id, since_ts):  # noqa: ARG002
+            return self.used
+
+    fake = _FakeLedger()
+    entitlements.USAGE_LEDGER = fake
+
+    fake.used = 40
+    q = entitlements.check_quota("u_none")  # free
+    check(q["plan"] == "free" and q["allowed"] is True and q["remaining"] == 60,
+          "free 40/100 kullanılmış → allowed, remaining 60")
+
+    fake.used = 100
+    q = entitlements.check_quota("u_none")
+    check(q["allowed"] is False and q["remaining"] == 0,
+          "free 100/100 → dolu (allowed False)")
+
+    fake.used = 95
+    q = entitlements.check_quota("u_none", requested=10)
+    check(q["allowed"] is False, "free 95 + 10 istek > 100 → reddedilir")
+    q = entitlements.check_quota("u_none", requested=5)
+    check(q["allowed"] is True, "free 95 + 5 istek = 100 → izin")
+
+    # pro kullanıcı 1000'e kadar
+    fake.used = 500
+    q = entitlements.check_quota("u_pro")
+    check(q["plan"] == "pro" and q["allowed"] is True and q["remaining"] == 500,
+          "pro 500/1000 → allowed")
+
+    entitlements.USAGE_LEDGER = LEDGER  # geri yükle
+
+
+def _run() -> int:
+    for fn in [
+        test_store_empty, test_start_trial, test_trial_expired, test_active_pro,
+        test_past_due_grace, test_canceled_and_expired, test_upsert_preserves_created_at,
+        test_cancel_flag, test_event_idempotency, test_plan_premium_all,
+        test_plan_resolution, test_allowlist_dev, test_quota_limits, test_check_quota,
+    ]:
+        fn()
+    print()
+    if _failures:
+        print(f"❌ {len(_failures)} test BAŞARISIZ:")
+        for f in _failures:
+            print(f"   - {f}")
+        return 1
+    print("✅ Tüm billing_store + entitlements testleri geçti.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_run())
