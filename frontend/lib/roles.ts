@@ -1,13 +1,15 @@
 /**
  * Kullanıcı rolleri (öğrenci / öğretmen / veli / admin) — ekranları role göre gösterir.
  *
- * Depolama:
- *  - Kullanıcının SEÇTİĞİ profil → Clerk `unsafeMetadata.role` (kullanıcı kendi set eder,
- *    onboarding'de). student | teacher | parent.
- *  - `admin` → Clerk `publicMetadata.role === "admin"` (SUNUCU tarafında verilir; kullanıcı
- *    kendine admin atayamaz). Admin TÜM görünümleri görür.
+ * Depolama (2026-07: kalıcılık için SUNUCU-SET publicMetadata'ya taşındı):
+ *  - Rol → Clerk `publicMetadata.role` (student | teacher | parent | admin).
+ *    Yalnız SUNUCU yazabilir (`/api/role` route → Clerk backend). Kullanıcı kendi
+ *    rolünü değiştiremez; onboarding'de bir kez set edilir, sonra route 409 ile reddeder.
+ *  - `admin` yine publicMetadata (elle/dashboard'dan verilir); /api/role admin set edemez.
+ *  - LEGACY: eski kullanıcılarda rol `unsafeMetadata.role`'de olabilir → geçici fallback
+ *    okunur; RoleSync bileşeni bunları bir kez publicMetadata'ya taşır (kalıcılaştırır).
  *
- * Etkin rol: admin > seçilen profil. Rol yoksa (yeni/mevcut kullanıcı) → onboarding (RoleGate).
+ * Etkin rol: publicMetadata > legacy unsafeMetadata. Rol yoksa → onboarding (RoleGate).
  */
 
 export type Role = "student" | "teacher" | "parent" | "admin";
@@ -44,21 +46,27 @@ export const ROLE_META: RoleMeta[] = [
 
 const SELECTABLE = new Set<string>(["student", "teacher", "parent"]);
 
+/** Değer seçilebilir bir rol mü (student/teacher/parent)? */
+export function isSelectableRole(value: unknown): value is SelectableRole {
+  return typeof value === "string" && SELECTABLE.has(value);
+}
+
 /**
  * Clerk kullanıcısından etkin rolü çıkarır. `user` client'te `useUser().user`,
  * server'da `currentUser()` sonucu olabilir (ikisi de publicMetadata/unsafeMetadata taşır).
- * Rol yoksa null (→ onboarding gerekir).
+ * Öncelik: publicMetadata (sunucu-set, kalıcı) > legacy unsafeMetadata. Yoksa null.
  */
 export function effectiveRole(user: {
   publicMetadata?: Record<string, unknown> | null;
   unsafeMetadata?: Record<string, unknown> | null;
 } | null | undefined): Role | null {
   if (!user) return null;
-  if ((user.publicMetadata as { role?: string } | null)?.role === "admin") {
-    return "admin";
-  }
-  const r = (user.unsafeMetadata as { role?: string } | null)?.role;
-  return r && SELECTABLE.has(r) ? (r as Role) : null;
+  const pub = (user.publicMetadata as { role?: string } | null)?.role;
+  if (pub === "admin") return "admin";
+  if (pub && SELECTABLE.has(pub)) return pub as Role;
+  // Legacy: eski unsafeMetadata rolleri (RoleSync publicMetadata'ya taşıyana dek).
+  const legacy = (user.unsafeMetadata as { role?: string } | null)?.role;
+  return legacy && SELECTABLE.has(legacy) ? (legacy as Role) : null;
 }
 
 export function roleLabel(role: Role | null): string {

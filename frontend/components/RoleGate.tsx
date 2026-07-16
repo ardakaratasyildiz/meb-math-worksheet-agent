@@ -27,8 +27,18 @@ export function RoleGate() {
     if (!user) return;
     setSaving(role);
     try {
-      await user.update({ unsafeMetadata: { ...user.unsafeMetadata, role } });
-      // user.update sonrası useUser yeniden render eder → effectiveRole dolar → modal kapanır.
+      // Rol SUNUCU'da publicMetadata'ya yazılır (kalıcı, kullanıcı değiştiremez).
+      const res = await fetch("/api/role", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role }),
+      });
+      if (!res.ok) {
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(j.error || "Kaydedilemedi");
+      }
+      // publicMetadata güncellendi → Clerk kullanıcısını tazele → effectiveRole dolar → modal kapanır.
+      await user.reload();
     } catch (e: unknown) {
       toast.error("Kaydedilemedi", {
         description: e instanceof Error ? e.message : "Lütfen tekrar dene.",
