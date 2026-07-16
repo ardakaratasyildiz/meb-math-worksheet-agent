@@ -10,6 +10,7 @@ from google.genai import errors as genai_errors
 from google.genai import types
 
 from app.config import settings
+from app.services.gemini_client import make_gemini_client
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class GeminiEmbedder:
         key = api_key or settings.gemini_api_key
         if not key:
             raise EmbedderError("GEMINI_API_KEY ayarı boş.")
-        self.client = genai.Client(api_key=key)
+        self.client = make_gemini_client(key)
         self.model = model or settings.gemini_embedding_model
         self.dimensions = settings.embedding_dimensions
         # Son embed_many() çağrısının maliyet ölçümü (embedding yalnız girdi ücretli).

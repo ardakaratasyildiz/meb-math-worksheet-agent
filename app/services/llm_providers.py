@@ -85,10 +85,10 @@ class GeminiProvider:
         primary_model: str | None = None,
         fallback_models: list[str] | None = None,
     ) -> None:
-        from google import genai
+        from app.services.gemini_client import make_gemini_client
         if not settings.gemini_api_key:
             raise ProviderError("GEMINI_API_KEY boş.")
-        self.client = genai.Client(api_key=settings.gemini_api_key)
+        self.client = make_gemini_client(settings.gemini_api_key)
         self.primary = primary_model or settings.gemini_model
         self.fallbacks = (
             fallback_models if fallback_models is not None

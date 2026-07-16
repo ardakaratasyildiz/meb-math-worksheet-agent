@@ -19,6 +19,13 @@ services:
       # LLM
       - key: GEMINI_API_KEY
         sync: false # Render dashboard'dan elle gir (sırrı)
+      # Gemini'yi temiz-IP'li proxy (Cloudflare Worker) üzerinden geçir — Render
+      # free-tier paylaşımlı IP'si Google'ca bloklanınca (403 "from this server").
+      # BOŞ → doğrudan Google. Örn: https://gemini-proxy.<hesap>.workers.dev
+      - key: GEMINI_BASE_URL
+        sync: false
+      - key: GEMINI_PROXY_SECRET
+        sync: false # worker'daki PROXY_SECRET ile AYNI olmalı
       - key: ENABLE_ANTHROPIC_FALLBACK
         value: "false"
       - key: ANTHROPIC_API_KEY
