@@ -79,6 +79,25 @@ class Settings(BaseSettings):
     # CORS — frontend domain'leri (virgülle). Boşsa "*" (yalnızca dev için).
     cors_origins: str = ""
 
+    # --- Clerk oturum JWT doğrulama (P0 — billing ön koşulu) ---
+    # Bugün backend, istekteki tenant_id'ye (Clerk userId) DOĞRULAMADAN güveniyor.
+    # Premium/abonelik tenant_id'ye bağlanınca, kullanıcı bu değeri değiştirip bedava
+    # premium olabilir. app/services/clerk_auth.py Clerk JWKS'inden oturum token'ının
+    # RS256 imzasını doğrular → `sub` claim'inden DOĞRULANMIŞ tenant_id üretir.
+    #
+    # Kademeli açılış (docs/IYZICO_ENTEGRASYON_PLANI.md §11):
+    #   1. clerk_issuer boş → doğrulama DEVRE DIŞI (bugünkü davranış; hiçbir şey kırılmaz).
+    #   2. clerk_issuer set + frontend Bearer token gönderir → doğrulama devreye girer.
+    # clerk_issuer: Clerk instance issuer URL'i (token'daki `iss` ile birebir eşleşmeli),
+    #   ör. https://clerk.soruatolyesi.com veya https://<slug>.clerk.accounts.dev
+    # clerk_jwks_url: normalde issuer'dan türetilir (/.well-known/jwks.json); yalnız
+    #   özel bir dağıtımda override gerekiyorsa doldur.
+    clerk_issuer: str = ""
+    clerk_jwks_url: str = ""
+    # JWKS anahtarları bellekte bu kadar saniye cache'lenir (imza doğrulama her istekte
+    # ağ çağrısı yapmasın). Bilinmeyen kid görülürse süreden bağımsız bir kez yenilenir.
+    clerk_jwks_cache_ttl: int = 3600
+
     # Premium yetkilendirme (entitlement) — "yeni nesil" GİZLİ kalite kaldıracı.
     # Gerçek billing/abonelik henüz yok; bu ayarlar app/services/entitlements.py
     # üzerinden okunur ve ileride Clerk publicMetadata / billing'e bağlanır.
@@ -115,6 +134,19 @@ class Settings(BaseSettings):
     def cors_origin_list(self) -> list[str]:
         items = [o.strip() for o in self.cors_origins.split(",") if o.strip()]
         return items or ["*"]
+
+    @property
+    def clerk_auth_enabled(self) -> bool:
+        """Clerk JWT doğrulaması yapılandırıldı mı? (issuer set ise açık)"""
+        return bool(self.clerk_issuer.strip())
+
+    @property
+    def clerk_jwks_url_resolved(self) -> str:
+        """JWKS endpoint: açık override varsa onu, yoksa issuer'dan türetir."""
+        if self.clerk_jwks_url.strip():
+            return self.clerk_jwks_url.strip()
+        issuer = self.clerk_issuer.strip().rstrip("/")
+        return f"{issuer}/.well-known/jwks.json" if issuer else ""
 
     app_host: str = "0.0.0.0"
     app_port: int = 8000

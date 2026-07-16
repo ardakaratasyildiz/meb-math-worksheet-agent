@@ -39,6 +39,14 @@ services:
       - key: TURSO_AUTH_TOKEN
         sync: false
 
+      # Clerk oturum JWT doğrulama (P0 — billing ön koşulu). BOŞ bırakılırsa
+      # doğrulama DEVRE DIŞI (bugünkü davranış; hiçbir şey kırılmaz). Frontend
+      # Bearer token göndermeye başladığında issuer'ı gir → doğrulama devreye girer.
+      # CLERK_ISSUER token'daki `iss` ile birebir eşleşmeli (ör.
+      # https://clerk.soruatolyesi.com veya https://<slug>.clerk.accounts.dev).
+      - key: CLERK_ISSUER
+        sync: false
+
       # Rate limit — production
       - key: RATE_LIMIT_PER_HOUR
         value: "60"
