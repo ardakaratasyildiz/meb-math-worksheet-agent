@@ -107,11 +107,38 @@ def test_render_endpoint_registered_and_limited() -> None:
     )
 
 
+def test_render_endpoint_oversized_returns_422_not_500() -> None:
+    """61 soruluk gövde → temiz 422 (500 DEĞİL). Modeller elle kurulduğu için
+    ValidationError'ı endpoint yakalayıp 422'ye çevirmeli."""
+    print("render.pdf aşırı girdi → 422 (500 değil)")
+    from fastapi.testclient import TestClient  # noqa: PLC0415
+    from app.main import app  # noqa: PLC0415
+
+    c = TestClient(app)
+
+    def q(n: int) -> dict:
+        return {"number": n, "question": "2+2?", "answer": "4",
+                "solution_steps": "adım", "kazanim_kod": "M.5.1.1",
+                "question_type": "salt_islem"}
+
+    def ws(count: int) -> dict:
+        return {"worksheet": {"title": "T", "grade": 5, "topic": "x",
+                "difficulty": "orta", "question_count": count,
+                "questions": [q(i) for i in range(count)],
+                "answer_key": [{"number": i, "answer": "4"} for i in range(count)]}}
+
+    r_big = c.post("/api/worksheets/render.pdf", json=ws(61))
+    check(r_big.status_code == 422, f"61 soru → 422 (got {r_big.status_code})")
+    r_ok = c.post("/api/worksheets/render.pdf", json=ws(2))
+    check(r_ok.status_code == 200, f"2 soru → 200 PDF (got {r_ok.status_code})")
+
+
 def _run() -> int:
     test_svg_ssrf_external_href_blocked()
     test_worksheet_question_count_capped()
     test_question_field_length_capped()
     test_render_endpoint_registered_and_limited()
+    test_render_endpoint_oversized_returns_422_not_500()
     print()
     if _failures:
         print(f"❌ {len(_failures)} test BAŞARISIZ")

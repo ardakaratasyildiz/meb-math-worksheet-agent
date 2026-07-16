@@ -7,6 +7,7 @@ from typing import AsyncIterator
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import Response, StreamingResponse
+from pydantic import ValidationError
 
 from app.config import settings
 from app.data.curriculum import get_topic
@@ -554,27 +555,36 @@ async def render_existing_worksheet(
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=400, detail="Geçersiz JSON gövde.") from exc
 
-    if isinstance(body, dict) and "worksheet" in body:
-        # Yeni format — gövde-model.
-        req = RenderRequest(**body)
-        return _pdf_response(
-            req.worksheet,
-            include_answer_key=req.include_answer_key,
-            include_solutions=req.include_solutions,
-            brand_name=req.brand_name,
-            brand_subtitle=req.brand_subtitle,
-            brand_logo=req.brand_logo,
-        )
+    # Modeller ELLE kurulur (gövde parse dallanması) → Pydantic ValidationError
+    # otomatik 422'ye çevrilmez, aksi halde 500 olur. Girdi sınırı ihlali (≤60 soru,
+    # alan max_length) burada temiz 422 döner — hem DoS kapısı hem net hata.
+    try:
+        if isinstance(body, dict) and "worksheet" in body:
+            # Yeni format — gövde-model.
+            req = RenderRequest(**body)
+            return _pdf_response(
+                req.worksheet,
+                include_answer_key=req.include_answer_key,
+                include_solutions=req.include_solutions,
+                brand_name=req.brand_name,
+                brand_subtitle=req.brand_subtitle,
+                brand_logo=req.brand_logo,
+            )
 
-    # Eski format — gövde doğrudan Worksheet, marka/toggle query parametrelerinde.
-    qp = request.query_params
-    return _pdf_response(
-        Worksheet(**body),
-        include_answer_key=qp.get("include_answer_key") != "false",
-        include_solutions=qp.get("include_solutions") != "false",
-        brand_name=qp.get("brand_name"),
-        brand_subtitle=qp.get("brand_subtitle"),
-    )
+        # Eski format — gövde doğrudan Worksheet, marka/toggle query parametrelerinde.
+        qp = request.query_params
+        return _pdf_response(
+            Worksheet(**body),
+            include_answer_key=qp.get("include_answer_key") != "false",
+            include_solutions=qp.get("include_solutions") != "false",
+            brand_name=qp.get("brand_name"),
+            brand_subtitle=qp.get("brand_subtitle"),
+        )
+    except ValidationError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail="Geçersiz veya sınır aşan worksheet (max 60 soru).",
+        ) from exc
 
 
 # ---- Tek soru yeniden üretimi ("Soruyu Değiştir") ---------------------------
