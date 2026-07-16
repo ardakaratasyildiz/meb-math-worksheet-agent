@@ -31,7 +31,9 @@ from app.models.schemas import (
     SubmitAttemptRequest,
 )
 from app.security import limiter, rate_limit_string, require_api_key
+from app.services import entitlements
 from app.services.agent import AgentError, GeminiAgent, model_for_grade
+from app.services.clerk_auth import verified_tenant_id
 from app.services.grading import grade_quiz
 from app.services.quiz_store import QUIZ_STORE
 from app.services.structured import derive_structured_fields, validate_structured
@@ -245,9 +247,11 @@ def _to_public(
 def create_quiz(
     request: Request,
     req: CreateQuizRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> QuizPublic:
     """Çözülebilir quiz üret + kaydet → CEVAPSIZ döndür. LLM çağrısı (rate limitli)."""
+    entitlements.enforce_quota(verified, req.question_count)
     questions, topic_name = _generate_solvable(req)
     if not questions:
         # Üretilenlerin hiçbiri yapısal doğrulamadan geçmedi (nadir) → tekrar deneyin.

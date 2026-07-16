@@ -257,7 +257,9 @@ export async function generateWorksheetStream(
 ): Promise<GenerateWorksheetResponse> {
   const res = await fetch(`${BASE}/api/worksheets/generate.stream`, {
     method: "POST",
-    headers: headers(tenantHeader(body.tenant_id)),
+    // Bearer token → backend kota kararını DOĞRULANMIŞ tenant'a bağlar (spoof yok).
+    // Girişsizde header eklenmez → anonim üretim kotasız (SEO) sürer.
+    headers: { ...headers(tenantHeader(body.tenant_id)), ...(await authHeader()) },
     body: JSON.stringify(body),
     signal,
   });

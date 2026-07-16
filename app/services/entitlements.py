@@ -80,6 +80,45 @@ def quota_limit(plan: str) -> int:
     return settings.pro_plus_fair_use_questions
 
 
+def ensure_trial(tenant_id: str | None) -> None:
+    """Doğrulanmış kullanıcının İLK üretiminde 7g kartsız reverse trial başlatır.
+
+    Zaten bir abonelik satırı varsa (trial kullanılmış / aktif abone) DOKUNMAZ.
+    iyzico çağrısı YOK — trial tamamen bizde tutulur (MONETIZATION_PLAN §2).
+    """
+    if not tenant_id:
+        return
+    if BILLING_STORE.get(tenant_id) is None:
+        BILLING_STORE.start_trial(tenant_id)
+
+
+def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
+    """Generate uçları için kota kapısı. Aşımda HTTP 402 + paywall sinyali fırlatır.
+
+    - `settings.billing_enabled` KAPALIYKEN no-op (bugünkü davranış; kademeli açılış).
+    - Yalnız DOĞRULANMIŞ tenant'a uygulanır → anonim (tenant None) kotasız kalır
+      (SEO motoru bozulmasın). Client-supplied tenant'a GÜVENİLMEZ (bkz. clerk_auth).
+    - İlk üretimde reverse trial'ı otomatik başlatır (ensure_trial).
+    """
+    if not settings.billing_enabled or not tenant_id:
+        return
+    ensure_trial(tenant_id)
+    q = check_quota(tenant_id, requested=requested)
+    if not q["allowed"]:
+        from fastapi import HTTPException  # local import — entitlements'ı saf tut
+
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "error": "quota_exceeded",
+                "message": "Aylık üretim hakkın doldu. Devam etmek için Pro'ya geçebilirsin.",
+                "plan": q["plan"],
+                "limit": q["limit"],
+                "used": q["used"],
+            },
+        )
+
+
 def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
     """Aylık kota durumu. Enforcement değil — saf sorgu (çağıran 402 kararını verir).
 

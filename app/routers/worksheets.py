@@ -22,7 +22,9 @@ from app.models.schemas import (
     WorksheetMetadata,
 )
 from app.security import limiter, rate_limit_string, require_api_key
+from app.services import entitlements
 from app.services.agent import AgentError, GeminiAgent, model_for_grade
+from app.services.clerk_auth import verified_tenant_id
 from app.services.pdf_renderer import render_worksheet_pdf
 from app.services.usage_ledger import USAGE_LEDGER
 from app.services.worksheet_history import WORKSHEET_HISTORY
@@ -392,8 +394,10 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
 def generate_worksheet(
     request: Request,
     req: GenerateWorksheetRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> GenerateWorksheetResponse:
+    entitlements.enforce_quota(verified, req.question_count)
     worksheet, metadata = _build_worksheet(req)
     return GenerateWorksheetResponse(worksheet=worksheet, metadata=metadata)
 
@@ -452,9 +456,11 @@ def _pdf_response(
 def generate_worksheet_pdf(
     request: Request,
     req: GenerateWorksheetRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> Response:
     """Üretim + PDF render tek call'da. Rate limit + auth uygulanır (LLM çağrısı yapar)."""
+    entitlements.enforce_quota(verified, req.question_count)
     worksheet, _ = _build_worksheet(req)
     return _pdf_response(
         worksheet,
@@ -704,9 +710,12 @@ async def _stream_worksheet_events(
 def generate_worksheet_stream(
     request: Request,
     req: GenerateWorksheetRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> StreamingResponse:
     """SSE streaming üretim. Frontend EventSource ile bağlanır."""
+    # Kota kapısı stream BAŞLAMADAN uygulanır (aşımda 402, akış hiç açılmaz).
+    entitlements.enforce_quota(verified, req.question_count)
     return StreamingResponse(
         _stream_worksheet_events(req),
         media_type="text/event-stream",
