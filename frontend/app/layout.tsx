@@ -9,6 +9,7 @@ import { AuthTokenBridge } from "@/components/AuthTokenBridge";
 import { BackendWarmup } from "@/components/BackendWarmup";
 import { CookieConsent } from "@/components/CookieConsent";
 import { RoleGate } from "@/components/RoleGate";
+import { RoleSync } from "@/components/RoleSync";
 import { ThemeProvider } from "@/components/theme-provider";
 import TopNavBar from "@/components/TopNavBar";
 
@@ -174,6 +175,7 @@ export default function RootLayout({
                   alır (yoksa cookie banner'ı eski lacivert primary'de kalıyor). */}
               <Toaster richColors position="top-center" />
               <RoleGate />
+              <RoleSync />
               <CookieConsent />
               <Analytics />
               <BackendWarmup />
