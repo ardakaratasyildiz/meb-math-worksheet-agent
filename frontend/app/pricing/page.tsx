@@ -35,66 +35,66 @@ const PLANS: Plan[] = [
   {
     slug: "ucretsiz",
     name: "Ücretsiz",
-    audience: "Denemek isteyen herkes",
+    audience: "Denemek isteyen herkes için",
     price: "0₺",
-    priceNote: "her zaman ücretsiz",
+    priceNote: "Her zaman ücretsiz",
     icon: <Sparkles className="h-5 w-5" />,
     cta: "signup",
     features: [
-      "Aylık 100 soru (kalıcı ücretsiz)",
-      "Üye olunca 7 gün tam-Pro deneme",
-      "1.→8. sınıf + LGS, kazanım bazlı üretim",
-      "Cevap anahtarı + adım adım çözüm PDF",
-      "Çöz & Geliş + temel sınıf/veli takibi",
+      "Ayda 100 soru üretim hakkı (Kalıcı ücretsiz)",
+      "Kayıt anında 7 günlük Pro denemesi",
+      "1'den 8. sınıfa kadar + LGS için kazanım bazlı üretim",
+      "Cevap anahtarı ve adım adım çözüm içeren PDF'ler",
+      "Çöz & Geliş modülü ve temel sınıf/veli takibi",
     ],
   },
   {
     slug: "pro",
     name: "Pro",
-    audience: "Veli & öğrenci",
+    audience: "Veli ve Öğrenciler için ideal",
     price: "₺189",
     priceNote: "/ay · KDV dahil",
     icon: <User className="h-5 w-5" />,
     cta: "interest",
     features: [
-      "Aylık 1.000 soru",
-      "Yeni nesil (senaryo) kalite",
-      "White-label PDF — kendi logon (filigransız)",
-      "Çöz & Geliş: sınırsız pratik + oyunlaştırma",
-      "Öncelikli üretim",
+      "Ayda 1.000 soru üretim hakkı",
+      "Yeni nesil (senaryo bazlı) soru kalitesi",
+      "Filigransız PDF — Kendi logonuzu ekleyin",
+      "Çöz & Geliş: Sınırsız pratik ve oyunlaştırma",
+      "Sistemde öncelikli soru üretimi",
     ],
   },
   {
     slug: "pro-plus",
     name: "Pro+",
-    audience: "Öğretmen & yoğun kullanım",
+    audience: "Öğretmenler ve yoğun kullanım için",
     price: "₺249",
     priceNote: "/ay · KDV dahil",
     icon: <GraduationCap className="h-5 w-5" />,
     featured: true,
     cta: "interest",
     features: [
-      "Pro'daki her şey",
-      "Adil kullanım sınırsız üretim",
-      "Çoklu sınıf + ödev + sonuç panosu",
-      "Tam veli & öğretmen takibi (kazanım analitiği)",
-      "Öncelikli destek",
+      "Pro planındaki her şeye ek olarak:",
+      "Sınırsız soru üretimi",
+      "Çoklu sınıf yönetimi, ödev verme ve sonuç panosu",
+      "Detaylı kazanım analitiği ile tam takip",
+      "Öncelikli müşteri desteği",
     ],
   },
   {
     slug: "kurumsal",
     name: "Kurumsal",
-    audience: "Okul & dershane",
+    audience: "Okullar ve Dershaneler için",
     price: "Teklif",
-    priceNote: "kuruma özel · faturalı",
+    priceNote: "Kuruma Özel · Faturalı",
     icon: <Building2 className="h-5 w-5" />,
     cta: "quote",
     features: [
-      "Pro+'daki her şey",
-      "Çoklu öğretmen / koltuk yönetimi",
-      "Kurumsal white-label + yönetici paneli",
-      "Fatura + öncelikli destek",
-      "Kuruma özel eğitim & devreye alma",
+      "Pro+ planındaki her şeye ek olarak:",
+      "Çoklu öğretmen / kullanıcı koltuğu yönetimi",
+      "Kurumunuza özel tasarım ve yönetici paneli",
+      "Kuruma özel eğitim ve sisteme entegrasyon",
+      "Özel faturalandırma ve VIP destek",
     ],
   },
 ];
@@ -104,16 +104,15 @@ export default function PricingPage() {
     <>
       <PageHeader
         eyebrow="Fiyatlandırma"
-        title="Sana uygun planı seç"
-        body="Ücretsiz plan bugün canlı — aylık 100 soru, tüm sınıflar. Üye olunca 7 gün tam-Pro deneme. Pro ve Pro+ yakında; aşağıdan ilgini bildir, açılınca ilk sen haberdar ol."
+        title="Sana En Uygun Planı Seç"
+        body="Ücretsiz planımız yayında! Kayıt olan herkese anında 7 günlük kartsız Pro denemesi hediye ediyoruz. Pro ve Pro+ paketlerimiz çok yakında aktif olacak; aşağıdan ilgilendiğini belirt, açıldığında ilk senin haberin olsun."
       />
 
       {/* Kampanya şeridi */}
       <div className="container">
         <div className="mx-auto max-w-5xl rounded-xl border border-primary/20 bg-accent/40 px-5 py-3 text-center text-sm text-foreground">
           🎁 <span className="font-semibold">Üye olana 7 gün kartsız tam-Pro deneme</span> ·
-          <span className="font-semibold"> istediğin an iptal</span> ·
-          öğretmenlere özel indirim
+          <span className="font-semibold">İstediğin an iptal</span>
         </div>
       </div>
 
@@ -156,7 +155,7 @@ export default function PricingPage() {
                 {p.cta === "signup" && (
                   <Button asChild size="lg" className="w-full gap-2">
                     <Link href="/sign-up">
-                      Ücretsiz başla <ArrowRight className="h-4 w-4" />
+                      Ücretsiz Başla <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                 )}
@@ -168,7 +167,7 @@ export default function PricingPage() {
                     variant={p.featured ? "default" : "outline"}
                     className="w-full gap-2"
                   >
-                    İlgileniyorum · yakında
+                    İlgileniyorum · Yakında
                   </PricingInterestButton>
                 )}
                 {p.cta === "quote" && (
@@ -179,7 +178,7 @@ export default function PricingPage() {
                     variant="outline"
                     className="w-full gap-2"
                   >
-                    Teklif al
+                    Teklif Al
                   </PricingInterestButton>
                 )}
               </div>
@@ -189,12 +188,16 @@ export default function PricingPage() {
 
         <div className="mx-auto mt-10 max-w-3xl space-y-2 text-center text-xs text-muted-foreground">
           <p>
-            Ücretsiz plan bugün kullanılabilir. Pro / Pro+ yakında; fiyatlar KDV
-            dahildir ve erken kullanım dönemi için planlanmıştır, lansmanda güncellenebilir.
+            📌 Ücretsiz planımız şu an kullanıma açıktır. Pro ve Pro+ paketleri çok
+            yakında eklenecektir. Belirtilen fiyatlar lansman dönemine özel
+            planlanmıştır ve ileride güncellenebilir.
           </p>
           <p>
-            Aynı parametrelerle yapılan tekrar üretimler önbellekten gelir ve
-            kotadan düşmez. Sorular için:{" "}
+            💡 İpucu: Aynı parametrelerle daha önce ürettiğiniz sorular önbellekten
+            gelir ve aylık kotanızdan düşmez.
+          </p>
+          <p>
+            Destek için:{" "}
             <a
               href="mailto:destek@soruatolyesi.com"
               className="underline-offset-2 hover:underline"
