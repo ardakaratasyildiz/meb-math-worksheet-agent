@@ -48,6 +48,36 @@ function headers(extra: Record<string, string> = {}): HeadersInit {
 }
 
 /**
+ * Clerk oturum token'ı sağlayıcısı (P0 — billing ön koşulu).
+ *
+ * api.ts saf modül (hook değil) → Clerk `getToken()`'a doğrudan erişemez.
+ * `AuthTokenBridge` bileşeni uygulama açılışında bunu bir kez register eder;
+ * `request()` her çağrıda token'ı çeker (Clerk kısa-ömürlü JWT'yi cache'ler →
+ * ucuz) ve `Authorization: Bearer <token>` başlığı ekler. Backend
+ * (app/services/clerk_auth.py) bu token'ın imzasını doğrulayıp DOĞRULANMIŞ
+ * tenant_id üretir → client'ın gönderdiği tenant_id'ye güvenmek zorunda kalmaz.
+ *
+ * Register edilmemişse / kullanıcı girişsizse header eklenmez → backend
+ * doğrulama kapalıyken (bugünkü prod) davranış aynen korunur.
+ */
+type TokenGetter = () => Promise<string | null>;
+let _tokenGetter: TokenGetter | null = null;
+
+export function setAuthTokenGetter(fn: TokenGetter | null): void {
+  _tokenGetter = fn;
+}
+
+async function authHeader(): Promise<Record<string, string>> {
+  if (!_tokenGetter) return {};
+  try {
+    const token = await _tokenGetter();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch {
+    return {}; // token alınamazsa sessiz geç (backend gerekiyorsa 401 döner)
+  }
+}
+
+/**
  * Backend'i uyandırma ping'i (fire-and-forget). Render free tier 15 dk
  * trafiksiz kalınca container'ı uyutur; uyanması ~25 sn sürer. Kullanıcı
  * siteye girer girmez bu ping backend'i uyandırmaya başlar → /practice sekmelerine
@@ -92,9 +122,10 @@ function parseErrorDetail(j: unknown, fallback: string): string {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const auth = await authHeader();
   const res = await fetch(`${BASE}${path}`, {
     ...init,
-    headers: { ...headers(), ...(init?.headers ?? {}) },
+    headers: { ...headers(), ...auth, ...(init?.headers ?? {}) },
   });
   if (!res.ok) {
     const fallback = `${res.status} ${res.statusText}`;

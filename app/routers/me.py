@@ -36,6 +36,7 @@ from app.models.schemas import (
     SubmittedAnswer,
 )
 from app.security import require_api_key
+from app.services.clerk_auth import resolve_tenant_id, verified_tenant_id
 from app.services.attempt_review import build_attempt_detail
 from app.services.classroom_store import CLASSROOM_STORE
 from app.services.email_prefs_store import EMAIL_PREFS
@@ -51,12 +52,27 @@ _IST = timezone(timedelta(hours=3))
 router = APIRouter()
 
 
+def _require_tenant(verified: str | None, supplied: str | None) -> str:
+    """Doğrulanmış kimliği tercih et; yoksa (auth kapalıyken) supplied'a düş.
+
+    Clerk doğrulaması AÇIKKEN ve doğrulanmış kimlik yoksa → 401 (client-supplied
+    tenant_id'ye GÜVENİLMEZ; spoof koruması). Doğrulama KAPALIYKEN supplied aynen
+    kullanılır → bugünkü davranış korunur (additive/kademeli açılış).
+    """
+    tid = resolve_tenant_id(verified, supplied)
+    if not tid:
+        raise HTTPException(status_code=401, detail="Kimlik doğrulanamadı.")
+    return tid
+
+
 @router.get("/progress", response_model=ProgressResponse)
 def get_progress(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> ProgressResponse:
     """Kullanıcının kazanım ustalığı + zayıf konuları + genel özeti."""
+    tenant_id = _require_tenant(verified, tenant_id)
     mastery_rows = QUIZ_STORE.get_mastery(tenant_id)
     quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
     recent = QUIZ_STORE.recent_attempts(tenant_id, limit=10)
@@ -77,10 +93,12 @@ def _iso(epoch: float) -> str:
 @router.get("/study-plan", response_model=StudyPlanResponse)
 def get_study_plan(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> StudyPlanResponse:
     """Kayıtlı haftalık programı döner (varsa). LLM çağrısı YOK → hızlı. Kayıt yoksa
     boş döner (created_at=""), frontend 'oluştur' CTA'sı gösterir."""
+    tenant_id = _require_tenant(verified, tenant_id)
     saved = STUDY_PLAN_STORE.get(tenant_id)
     if saved is None:
         return StudyPlanResponse(summary="", days=[], created_at="")
@@ -93,10 +111,12 @@ def get_study_plan(
 @router.post("/study-plan", response_model=StudyPlanResponse)
 def create_study_plan(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> StudyPlanResponse:
     """Haftalık programı (yeniden) üretir, KAYDEDER ve döner (LLM çağrısı içerir).
     Zayıf konu yoksa tekrar+karışık haftası; hiç veri yoksa teşvik mesajı."""
+    tenant_id = _require_tenant(verified, tenant_id)
     mastery_rows = QUIZ_STORE.get_mastery(tenant_id)
     quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
     progress = build_progress(mastery_rows, quizzes_solved, [])
@@ -112,19 +132,23 @@ def create_study_plan(
 @router.post("/parent-code", response_model=ParentCodeResponse)
 def get_parent_code(
     req: ParentCodeRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> ParentCodeResponse:
     """Öğrencinin veli takip kodu (yoksa üretilir, kalıcı). Veli bu kodla bağlanır."""
-    return ParentCodeResponse(code=PARENT_LINK_STORE.get_or_create_code(req.tenant_id))
+    tenant_id = _require_tenant(verified, req.tenant_id)
+    return ParentCodeResponse(code=PARENT_LINK_STORE.get_or_create_code(tenant_id))
 
 
 @router.post("/link-child")
 def link_child(
     req: LinkChildRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> dict:
     """Veli, öğrencinin kodunu girerek bağlanır. Geçersiz/kendi kodu → 404."""
-    student = PARENT_LINK_STORE.link(req.tenant_id, req.code, req.child_label)
+    tenant_id = _require_tenant(verified, req.tenant_id)
+    student = PARENT_LINK_STORE.link(tenant_id, req.code, req.child_label)
     if student is None:
         raise HTTPException(status_code=404, detail="Kod geçersiz veya kendi kodun.")
     return {"student_id": student, "ok": True}
@@ -133,9 +157,11 @@ def link_child(
 @router.get("/children", response_model=ChildrenResponse)
 def list_children(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> ChildrenResponse:
     """Velinin bağlı olduğu öğrenciler."""
+    tenant_id = _require_tenant(verified, tenant_id)
     return ChildrenResponse(
         items=[ChildItem(**c) for c in PARENT_LINK_STORE.list_children(tenant_id)]
     )
@@ -145,9 +171,11 @@ def list_children(
 def get_child_progress(
     student_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> ProgressResponse:
     """Velinin, bağlı olduğu öğrencinin ilerlemesi (SALT-OKUNUR). Bağlı değilse 403."""
+    tenant_id = _require_tenant(verified, tenant_id)
     if not PARENT_LINK_STORE.is_linked(tenant_id, student_id):
         raise HTTPException(status_code=403, detail="Bu öğrenciye bağlı değilsin.")
     mastery_rows = QUIZ_STORE.get_mastery(student_id)
@@ -165,9 +193,11 @@ def get_child_progress(
 @router.get("/gamification", response_model=GamificationResponse)
 def get_gamification(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> GamificationResponse:
     """XP / seviye / seri. Rozetler frontend'de mastery'den türetilir."""
+    tenant_id = _require_tenant(verified, tenant_id)
     mastery_rows = QUIZ_STORE.get_mastery(tenant_id)
     total_correct = sum(int(m.get("correct", 0)) for m in mastery_rows)
     quizzes_solved = QUIZ_STORE.count_attempts(tenant_id)
@@ -183,9 +213,11 @@ def get_gamification(
 def list_attempts(
     tenant_id: str,
     limit: int = 50,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> AttemptHistoryResponse:
     """Kullanıcının geçmiş çözüm denemeleri — en yeni önce."""
+    tenant_id = _require_tenant(verified, tenant_id)
     rows = QUIZ_STORE.list_attempts(tenant_id, limit=limit)
     return AttemptHistoryResponse(
         items=[AttemptHistoryItem(**r) for r in rows]
@@ -196,9 +228,11 @@ def list_attempts(
 def get_attempt_detail(
     attempt_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> AttemptDetail:
     """Geçmiş bir denemenin tam gözden geçirmesi (soru + doğru cevap + senin cevabın)."""
+    tenant_id = _require_tenant(verified, tenant_id)
     rec = QUIZ_STORE.get_attempt(attempt_id, tenant_id)
     if rec is None:
         raise HTTPException(status_code=404, detail="Deneme bulunamadı.")
@@ -237,9 +271,11 @@ def get_attempt_detail(
 @router.get("/shares", response_model=SharesResponse)
 def list_my_shares(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> SharesResponse:
     """Kullanıcının oluşturduğu aktif paylaşımlar + çözülme sayısı + ort. skor."""
+    tenant_id = _require_tenant(verified, tenant_id)
     rows = QUIZ_STORE.list_shares(tenant_id)
     return SharesResponse(items=[ShareSummary(**r) for r in rows])
 
@@ -248,9 +284,11 @@ def list_my_shares(
 def get_share_results(
     share_id: str,
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> ShareResultsResponse:
     """Bir paylaşımın sonuç panosu — kim çözdü, kaç doğru, ne sürede (sahip-only)."""
+    tenant_id = _require_tenant(verified, tenant_id)
     data = QUIZ_STORE.share_results(share_id, tenant_id)
     if data is None:
         raise HTTPException(status_code=404, detail="Paylaşım bulunamadı.")
@@ -267,9 +305,11 @@ def get_share_results(
 @router.get("/quizzes", response_model=MyQuizzesResponse)
 def list_my_quizzes(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> MyQuizzesResponse:
     """Kullanıcının ürettiği quiz'ler (hafif meta) — ödev atamak için seçim listesi."""
+    tenant_id = _require_tenant(verified, tenant_id)
     rows = QUIZ_STORE.list(tenant_id)
     return MyQuizzesResponse(items=[MyQuizItem(**r) for r in rows])
 
@@ -277,9 +317,11 @@ def list_my_quizzes(
 @router.get("/assignments", response_model=MyAssignmentsResponse)
 def list_my_assignments(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> MyAssignmentsResponse:
     """Öğrencinin katıldığı sınıflardaki ödevler + çözüldü durumu/skor ('Ödevlerim')."""
+    tenant_id = _require_tenant(verified, tenant_id)
     rows = CLASSROOM_STORE.list_my_assignments(tenant_id)
     return MyAssignmentsResponse(items=[MyAssignmentItem(**r) for r in rows])
 
@@ -290,9 +332,11 @@ def list_my_assignments(
 @router.get("/email-prefs", response_model=EmailPrefsResponse)
 def get_email_prefs(
     tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> EmailPrefsResponse:
     """Kullanıcının e-posta tercihi. Hiç ayarlamadıysa is_set=false (onay kartı gösterilir)."""
+    tenant_id = _require_tenant(verified, tenant_id)
     pref = EMAIL_PREFS.get(tenant_id)
     if pref is None:
         return EmailPrefsResponse(is_set=False)
@@ -306,11 +350,13 @@ def get_email_prefs(
 @router.post("/email-prefs", response_model=EmailPrefsResponse)
 def set_email_prefs(
     req: SetEmailPrefsRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> EmailPrefsResponse:
     """E-posta tercihini kaydet (bülten + hatırlatma izni). E-posta sonraki gönderim için saklanır."""
+    tenant_id = _require_tenant(verified, req.tenant_id)
     EMAIL_PREFS.set(
-        tenant_id=req.tenant_id,
+        tenant_id=tenant_id,
         email=req.email,
         newsletter_optin=req.newsletter_optin,
     )
