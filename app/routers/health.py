@@ -8,9 +8,10 @@ client'ları kırmamak için saklı tutuldu.
 """
 from __future__ import annotations
 
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Depends, Response, status
 
 from app.config import settings
+from app.security import require_api_key
 from app.services.db_connection import is_turso_enabled
 from app.services.retriever import get_retriever
 from app.services.worksheet_history import WORKSHEET_HISTORY
@@ -64,3 +65,71 @@ def readyz(response: Response) -> dict[str, object]:
     if not all_ok:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     return {"ready": all_ok, "checks": checks}
+
+
+# ── GEÇİCİ TEŞHİS — Gemini 403 incident (2026-07-16). Sonuç alınınca KALDIR. ──
+# Render'ın Gemini'ye erişimini SUNUCUNUN KENDİSİNDEN ölçer: çıkış IP'si, SDK
+# sürümü, key şekli (sır değil — uzunluk/prefix/whitespace), ve ham vs strip'li
+# key ile canlı Gemini çağrısı. "IP bloğu mu, whitespace mı, sürüm mü" sorusunu
+# tek istekle kesin ayırır. Public API-key ile gate'li (sır döndürmez).
+@router.get("/diag/gemini", tags=["system"])
+def diag_gemini(_api_key: str = Depends(require_api_key)) -> dict[str, object]:
+    import importlib.metadata
+    import os
+    import urllib.request
+
+    out: dict[str, object] = {}
+
+    try:
+        with urllib.request.urlopen("https://api.ipify.org", timeout=6) as r:
+            out["egress_ip"] = r.read().decode().strip()
+    except Exception as exc:  # noqa: BLE001
+        out["egress_ip"] = {"error": str(exc)[:200]}
+
+    try:
+        out["genai_version"] = importlib.metadata.version("google-genai")
+    except Exception as exc:  # noqa: BLE001
+        out["genai_version"] = {"error": str(exc)[:120]}
+
+    k = settings.gemini_api_key or ""
+    out["gemini_key_shape"] = {
+        "len": len(k),
+        "stripped_len": len(k.strip()),
+        "prefix": k[:6],
+        "has_edge_whitespace": k != k.strip(),
+    }
+
+    out["fallback_models"] = settings.fallback_model_list
+    out["primary_model"] = settings.gemini_model
+    out["region_env"] = (
+        os.environ.get("RENDER_REGION")
+        or os.environ.get("GOOGLE_CLOUD_LOCATION")
+        or "?"
+    )
+
+    def _try(key: str) -> dict[str, object]:
+        try:
+            from google import genai
+            from google.genai import types
+
+            client = genai.Client(api_key=key)
+            resp = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents="hi",
+                config=types.GenerateContentConfig(
+                    temperature=0.0, max_output_tokens=1
+                ),
+            )
+            return {"ok": True, "text": (getattr(resp, "text", "") or "")[:40]}
+        except Exception as exc:  # noqa: BLE001
+            return {
+                "ok": False,
+                "type": type(exc).__name__,
+                "code": getattr(exc, "code", None),
+                "error": str(exc)[:400],
+            }
+
+    out["gemini_test_raw"] = _try(k)
+    if k != k.strip():
+        out["gemini_test_stripped"] = _try(k.strip())
+    return out
