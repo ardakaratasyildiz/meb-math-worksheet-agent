@@ -325,8 +325,11 @@ def parse_solution_steps(text: str) -> list[SolutionStep]:
 
 class Question(BaseModel):
     number: int
-    question: str
-    answer: str
+    # max_length: /render.pdf gibi girdi-güdümlü uçlarda tek-devasa-alan DoS'unu
+    # engeller. 50KB/20KB inline SVG içeren meşru sorulara fazlasıyla yeter
+    # (gerçek sorular ~birkaç KB) → normal içeriği etkilemez.
+    question: str = Field(..., max_length=50_000)
+    answer: str = Field(..., max_length=20_000)
     solution_steps: str | list[SolutionStep] = Field(
         ...,
         description="Düz metin çözüm (eski format) ya da yapılandırılmış adım listesi.",
@@ -429,7 +432,10 @@ class Worksheet(BaseModel):
     topic: str
     difficulty: Difficulty
     question_count: int
-    questions: list[Question]
+    # max_length: /render.pdf keyfi worksheet kabul ediyor → soru sayısı sınırı
+    # bellek/CPU DoS'unu keser. Üretim zaten ≤20 soru döner (question_count le=20);
+    # 60 bol güvenlik payı, meşru worksheet'i etkilemez.
+    questions: list[Question] = Field(..., max_length=60)
     answer_key: list[AnswerKeyEntry]
 
 

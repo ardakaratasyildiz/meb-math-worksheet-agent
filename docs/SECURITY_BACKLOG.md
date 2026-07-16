@@ -25,18 +25,22 @@
   Kalıntı (düşük): attempts FIFO trim'i tenant başına 200; teorik olarak 200+ gönderimle honest
   ilk deneme trim'lenebilir — absürt eşik, ihtiyaç olursa "ilk skoru dondur" ile sağlamlaştır.
 
+- [x] **render.pdf sertleştirme** (SSRF + girdi-DoS + throttle) — üçü birden:
+  - **SSRF**: `svg_utils._DANGEROUS_PATTERNS`'e harici `href`/`xlink:href` (http(s):// veya
+    protokol-göreli `//`) pattern'i eklendi → `<image>`/`<use>` harici kaynak fetch'i
+    (svglib render'da) engellendi. İç fragment (#id) ve `data:` URI güvenli. Render yolu
+    `_render_svg_block` zaten svg2rlg ÖNCESİ `is_valid_svg`→`is_dangerous`'tan geçiyor.
+  - **Girdi-DoS**: `Worksheet.questions` `max_length=60`; `Question.question` ≤50KB,
+    `answer` ≤20KB; endpoint gövde tavanı 8MB (Content-Length ile parse öncesi 413).
+  - **Throttle**: `/render.pdf` artık `@limiter.limit("30/minute;200/hour")`.
+  - Test: `tests/test_render_pdf_hardening.py`.
+
 ## 🟠 Sırada (bakılacak — UNUTMA)
 - [ ] **H1 — Kota bypass** (latent; `BILLING_ENABLED=false` iken uyumuyor):
   kota doğrulanmış kimliğe göre uygulanıyor ama `usage_ledger` kaydı `req.tenant_id`'ye yazılıyor
-  (`app/routers/worksheets.py` ~340). Not: bu PR quiz sahipliğini doğrulanmış kimliğe bağladı;
+  (`app/routers/worksheets.py` ~340). Not: quiz sahipliği doğrulanmış kimliğe bağlandı (#98);
   worksheet üretim uçlarında `USAGE_LEDGER.record(tenant_id=...)` hâlâ client-supplied tenant
   kullanıyorsa doğrulanmış kimliğe çevir. Billing açılmadan önce kapat.
-- [ ] **M — `render.pdf` SSRF** (`app/services/svg_utils.py` `_DANGEROUS_PATTERNS`):
-  SVG `<image href="http://169.254.169.254/...">` engellenmiyor; svglib render'da fetch ediyor.
-  Fix: `<image>` href için şema allowlist (`data:` only) / external kaynak yüklemeyi kapat.
-- [ ] **M — `render.pdf` sınırsız girdi + throttle yok** (`app/routers/worksheets.py:510`,
-  `app/models/schemas.py` `Worksheet.questions`): 100k soruluk worksheet → bellek/CPU DoS.
-  Fix: `questions` liste uzunluğu + soru/çözüm string uzunluğu sınırı; uca `@limiter.limit`.
 - [ ] **M — Admin key sabit-zamanlı değil** (`app/routers/admin.py:38`): `!=` timing yan-kanalı.
   Fix: `hmac.compare_digest(x_admin_key or "", settings.admin_api_key)`.
 - [ ] **M — Sınıf/veli katılım kodları brute-force'lanabilir, throttle yok**
