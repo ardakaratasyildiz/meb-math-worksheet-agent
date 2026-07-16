@@ -624,7 +624,7 @@ function UseCases() {
         <SectionHeader
           eyebrow="Tipik kullanım senaryoları"
           title="Sistem hangi senaryolar için kullanılır?"
-          body="Öğretmen, veli ve öğrenci kullanımlarında ortak adımlar farklıdır; sistem her üç durumu da destekler."
+          body="Öğretmen, veli ve öğrenci kullanımlarında adımlar farklıdır; sistem her üç durumu da destekler."
         />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {USE_CASES.map((p, i) => (
