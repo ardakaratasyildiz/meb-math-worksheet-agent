@@ -17,13 +17,15 @@
 - [x] **Rate-limit spoof (maliyet-DoS)** — limiter anahtarı spoof-edilebilen `X-Tenant-Id`
   header'ındandı; rastgele header ile limit tamamen aşılabiliyordu. Fix: anahtar artık
   doğrulanmış Clerk oturumundan (`Authorization: Bearer`), yoksa IP'den türetiliyor.
+- [x] **H2 — Ödev cevap-tekrarı** — pano/skor `MAX(att.score)` kullanıyordu; öğrenci bir kez
+  gönderip anahtarı okuduktan sonra tam puanla yeniden gönderiyordu. Karar (kullanıcı):
+  **tekrar serbest ama İLK deneme sayılır**. Fix `app/services/classroom_store.py`:
+  `assignment_results` + `list_my_assignments` artık en erken `completed_at` denemesini
+  gösteriyor (MAX değil). Regresyon: `tests/test_assignment.py::test_first_attempt_counts_not_max`.
+  Kalıntı (düşük): attempts FIFO trim'i tenant başına 200; teorik olarak 200+ gönderimle honest
+  ilk deneme trim'lenebilir — absürt eşik, ihtiyaç olursa "ilk skoru dondur" ile sağlamlaştır.
 
-## 🟠 Sırada (bu PR sonrası bakılacak — UNUTMA)
-
-- [ ] **H2 — Ödev cevap-tekrarı** (`app/routers/assignments.py`, `submit_assignment_attempt`):
-  `/attempt` sınırsız gönderilebiliyor ve yanıt doğru cevapları içeriyor → öğrenci bir kez
-  gönderir, anahtarı okur, tam puanla yeniden gönderir (pano `MAX(score)` gösterir).
-  Fix: tek gönderim / due-date sonrası kilit; cevap anahtarını ödev kapanana dek gizle.
+## 🟠 Sırada (bakılacak — UNUTMA)
 - [ ] **H1 — Kota bypass** (latent; `BILLING_ENABLED=false` iken uyumuyor):
   kota doğrulanmış kimliğe göre uygulanıyor ama `usage_ledger` kaydı `req.tenant_id`'ye yazılıyor
   (`app/routers/worksheets.py` ~340). Not: bu PR quiz sahipliğini doğrulanmış kimliğe bağladı;
