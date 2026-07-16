@@ -32,6 +32,7 @@ from app.models.schemas import (
 from app.security import limiter, require_api_key
 from app.services.classroom_store import CLASSROOM_STORE
 from app.services.clerk_auth import require_tenant, verified_tenant_id
+from app.services.clerk_roles import enforce_role
 from app.services.quiz_store import QUIZ_STORE
 
 logger = logging.getLogger(__name__)
@@ -60,6 +61,7 @@ def create_classroom(
 ) -> ClassroomDetail:
     """Yeni sınıf oluştur (sahip = öğretmen). Katılma kodu döner."""
     tenant_id = require_tenant(verified, req.tenant_id)
+    enforce_role(tenant_id, {"teacher", "admin"})  # sınıf açma öğretmene özel
     rec = CLASSROOM_STORE.create_classroom(owner_tenant_id=tenant_id, name=req.name)
     logger.info("sınıf oluşturuldu: owner=%s id=%s", tenant_id, rec["id"])
     detail = CLASSROOM_STORE.get_classroom(rec["id"], tenant_id)
@@ -88,6 +90,7 @@ def join_classroom(
 ) -> JoinClassroomResponse:
     """Öğrenci katılma koduyla sınıfa katılır (üye Clerk hesabı şart)."""
     tenant_id = require_tenant(verified, req.tenant_id)
+    enforce_role(tenant_id, {"student", "admin"})  # sınıfa katılma öğrenciye özel
     res = CLASSROOM_STORE.join_classroom(
         code=req.code,
         student_tenant_id=tenant_id,

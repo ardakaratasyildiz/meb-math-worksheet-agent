@@ -53,6 +53,11 @@ services:
       # https://clerk.soruatolyesi.com veya https://<slug>.clerk.accounts.dev).
       - key: CLERK_ISSUER
         sync: false
+      # Clerk Backend API sırrı — sunucu-tarafı ROL kontrolü (publicMetadata.role çekimi;
+      # app/services/clerk_roles.py). BOŞ → rol enforcement kapalı (fail-open). Frontend
+      # (Vercel) CLERK_SECRET_KEY ile aynı değer girilebilir.
+      - key: CLERK_SECRET_KEY
+        sync: false
 
       # Rate limit — production
       - key: RATE_LIMIT_PER_HOUR
