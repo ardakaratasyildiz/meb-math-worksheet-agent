@@ -121,6 +121,43 @@ function parseErrorDetail(j: unknown, fallback: string): string {
   return fallback;
 }
 
+/** Aylık üretim kotası dolduğunda backend HTTP 402 + yapısal sinyal döner. */
+export interface QuotaInfo {
+  plan?: string;
+  limit?: number | null;
+  used?: number;
+  message?: string;
+}
+
+/**
+ * Kota aşımı (HTTP 402, detail.error === "quota_exceeded"). UI bunu yakalayıp
+ * paywall gösterir (jenerik hata toast'ı yerine). billing_enabled kapalıyken
+ * backend bu hatayı hiç döndürmez → mevcut davranış değişmez.
+ */
+export class QuotaExceededError extends Error {
+  info: QuotaInfo;
+  constructor(info: QuotaInfo) {
+    super(info.message || "Aylık üretim hakkın doldu.");
+    this.name = "QuotaExceededError";
+    this.info = info;
+  }
+}
+
+/** 402 + quota_exceeded ise QuotaExceededError fırlatır; aksi halde no-op. */
+function throwIfQuotaExceeded(status: number, json: unknown): void {
+  if (status !== 402) return;
+  const d = (json as { detail?: unknown } | null)?.detail;
+  if (d && typeof d === "object" && (d as { error?: string }).error === "quota_exceeded") {
+    const q = d as QuotaInfo & { error: string };
+    throw new QuotaExceededError({
+      plan: q.plan,
+      limit: q.limit,
+      used: q.used,
+      message: q.message,
+    });
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const auth = await authHeader();
   const res = await fetch(`${BASE}${path}`, {
@@ -129,13 +166,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     const fallback = `${res.status} ${res.statusText}`;
-    let detail = fallback;
+    let json: unknown = null;
     try {
-      detail = parseErrorDetail(await res.json(), fallback);
+      json = await res.json();
     } catch {
-      // ignore — gövde JSON değilse status metni kalır
+      // gövde JSON değilse status metni kalır
     }
-    throw new Error(detail);
+    throwIfQuotaExceeded(res.status, json);
+    throw new Error(parseErrorDetail(json, fallback));
   }
   return res.json() as Promise<T>;
 }
@@ -263,16 +301,17 @@ export async function generateWorksheetStream(
     body: JSON.stringify(body),
     signal,
   });
-  // Akış başlamadan önceki hatalar (429 rate limit, 401 auth, 422, 5xx) burada düşer.
+  // Akış başlamadan önceki hatalar (402 kota, 429 rate limit, 401 auth, 422, 5xx) burada düşer.
   if (!res.ok || !res.body) {
     const fallback = `${res.status} ${res.statusText}`;
-    let detail = fallback;
+    let json: unknown = null;
     try {
-      detail = parseErrorDetail(await res.json(), fallback);
+      json = await res.json();
     } catch {
-      // ignore — gövde JSON değilse status metni kalır
+      // gövde JSON değilse status metni kalır
     }
-    throw new Error(detail);
+    throwIfQuotaExceeded(res.status, json);
+    throw new Error(parseErrorDetail(json, fallback));
   }
 
   const reader = res.body.getReader();

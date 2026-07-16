@@ -16,7 +16,7 @@ import { PricingInterestButton } from "@/components/PricingInterestButton";
 export const metadata = {
   title: "Fiyatlandırma · Soru Atölyesi",
   description:
-    "Ücretsiz plan aylık 100 soru; Bireysel, Sınıf ve Kurumsal planlar daha yüksek kota, filigransız PDF, sınıf/ödev yönetimi ve white-label ile yakında.",
+    "Ücretsiz plan aylık 100 soru (kalıcı) + 7 gün Pro deneme. Pro ₺189/ay (1.000 soru), Pro+ ₺249/ay (sınırsız + veli/öğretmen takibi). Fiyatlar KDV dahil.",
 };
 
 interface Plan {
@@ -41,60 +41,60 @@ const PLANS: Plan[] = [
     icon: <Sparkles className="h-5 w-5" />,
     cta: "signup",
     features: [
-      "Aylık 100 soru",
+      "Aylık 100 soru (kalıcı ücretsiz)",
+      "Üye olunca 7 gün tam-Pro deneme",
       "1.→8. sınıf + LGS, kazanım bazlı üretim",
       "Cevap anahtarı + adım adım çözüm PDF",
-      "Çöz & Geliş: site içinde çöz, puanla (kişisel)",
-      "Kayıt için yalnızca e-posta",
+      "Çöz & Geliş + temel sınıf/veli takibi",
     ],
   },
   {
-    slug: "bireysel",
-    name: "Bireysel",
+    slug: "pro",
+    name: "Pro",
     audience: "Veli & öğrenci",
-    price: "₺99",
-    priceNote: "/ay · yıllık ₺990 (2 ay bedava)",
+    price: "₺189",
+    priceNote: "/ay · KDV dahil",
     icon: <User className="h-5 w-5" />,
     cta: "interest",
     features: [
       "Aylık 1.000 soru",
-      "Filigransız PDF",
-      "Tam çözüm + cevap anahtarı",
+      "Yeni nesil (senaryo) kalite",
+      "White-label PDF — kendi logon (filigransız)",
       "Çöz & Geliş: sınırsız pratik + oyunlaştırma",
       "Öncelikli üretim",
     ],
   },
   {
-    slug: "sinif",
-    name: "Sınıf",
-    audience: "Öğretmenler için",
+    slug: "pro-plus",
+    name: "Pro+",
+    audience: "Öğretmen & yoğun kullanım",
     price: "₺249",
-    priceNote: "/ay · yıllık ₺2.490 (2 ay bedava)",
+    priceNote: "/ay · KDV dahil",
     icon: <GraduationCap className="h-5 w-5" />,
     featured: true,
     cta: "interest",
     features: [
-      "Bireysel'deki her şey",
-      "Aylık 2.000 soru",
-      "Sınıf oluştur + katılma kodu + ödev ata",
-      "Öğrenci sonuç panosu (kim çözdü, kaç doğru)",
-      "White-label PDF — kendi logon",
+      "Pro'daki her şey",
+      "Adil kullanım sınırsız üretim",
+      "Çoklu sınıf + ödev + sonuç panosu",
+      "Tam veli & öğretmen takibi (kazanım analitiği)",
+      "Öncelikli destek",
     ],
   },
   {
     slug: "kurumsal",
     name: "Kurumsal",
     audience: "Okul & dershane",
-    price: "₺499'dan",
-    priceNote: "/ay · kuruma özel teklif",
+    price: "Teklif",
+    priceNote: "kuruma özel · faturalı",
     icon: <Building2 className="h-5 w-5" />,
     cta: "quote",
     features: [
-      "Sınıf'taki her şey",
-      "Adil kullanım yüksek kota",
+      "Pro+'daki her şey",
       "Çoklu öğretmen / koltuk yönetimi",
       "Kurumsal white-label + yönetici paneli",
       "Fatura + öncelikli destek",
+      "Kuruma özel eğitim & devreye alma",
     ],
   },
 ];
@@ -105,14 +105,14 @@ export default function PricingPage() {
       <PageHeader
         eyebrow="Fiyatlandırma"
         title="Sana uygun planı seç"
-        body="Ücretsiz plan bugün canlı — aylık 100 soru, tüm sınıflar. Bireysel, Sınıf ve Kurumsal planlar yakında; aşağıdan ilgini bildir, açılınca ilk sen haberdar ol."
+        body="Ücretsiz plan bugün canlı — aylık 100 soru, tüm sınıflar. Üye olunca 7 gün tam-Pro deneme. Pro ve Pro+ yakında; aşağıdan ilgini bildir, açılınca ilk sen haberdar ol."
       />
 
       {/* Kampanya şeridi */}
       <div className="container">
         <div className="mx-auto max-w-5xl rounded-xl border border-primary/20 bg-accent/40 px-5 py-3 text-center text-sm text-foreground">
-          🎉 <span className="font-semibold">Yıllık ödemede 2 ay bedava</span> ·
-          erken kullanıcılara <span className="font-semibold">ilk 3 ay indirimli</span> ·
+          🎁 <span className="font-semibold">Üye olana 7 gün kartsız tam-Pro deneme</span> ·
+          <span className="font-semibold"> istediğin an iptal</span> ·
           öğretmenlere özel indirim
         </div>
       </div>
@@ -189,8 +189,8 @@ export default function PricingPage() {
 
         <div className="mx-auto mt-10 max-w-3xl space-y-2 text-center text-xs text-muted-foreground">
           <p>
-            Ücretsiz plan bugün kullanılabilir. Ücretli planlar yakında; fiyatlar
-            erken kullanım dönemi için planlanmıştır, lansmanda güncellenebilir.
+            Ücretsiz plan bugün kullanılabilir. Pro / Pro+ yakında; fiyatlar KDV
+            dahildir ve erken kullanım dönemi için planlanmıştır, lansmanda güncellenebilir.
           </p>
           <p>
             Aynı parametrelerle yapılan tekrar üretimler önbellekten gelir ve

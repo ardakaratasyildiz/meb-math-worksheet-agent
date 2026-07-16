@@ -20,6 +20,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 
 import {
+  QuotaExceededError,
   StreamIncompleteError,
   generateWorksheetStream,
   listGrades,
@@ -27,6 +28,8 @@ import {
   listUnits,
   listWorksheetHistory,
 } from "@/lib/api";
+import type { QuotaInfo } from "@/lib/api";
+import { Paywall } from "@/components/Paywall";
 import { getGradesLocal } from "@/lib/curriculum";
 import { getKazanimlarByUnitLocal, getUnitsLocal } from "@/lib/units";
 import { track } from "@/lib/analytics";
@@ -202,6 +205,8 @@ export function GenerateForm({
   } = useGenerateStore();
 
   const { userId } = useAuth();
+  // Kota aşımı (402) → paywall. billing_enabled kapalıyken hiç tetiklenmez.
+  const [paywall, setPaywall] = React.useState<QuotaInfo | null>(null);
 
   // SEO deep-link hidrasyonu (?grade=&topic=&kazanim=) — bir kez, mount'ta.
   // URL niyeti, localStorage'a persist edilmiş son seçimi EZER (kullanıcı SEO'dan
@@ -446,6 +451,16 @@ export function GenerateForm({
         description: `${res.worksheet.questions.length} soru üretildi ve denetimden geçti.`,
       });
     } catch (e: unknown) {
+      // Kota aşımı (402) → jenerik hata yerine paywall göster (güven-önce).
+      if (e instanceof QuotaExceededError) {
+        setPaywall(e.info);
+        track("worksheet_generate_paywall", {
+          grade,
+          unit_id: unitId,
+          plan: e.info.plan ?? "free",
+        });
+        return;
+      }
       // Akış kesildiyse (bağlantı/timeout — özellikle mobil/uygulama-içi tarayıcı):
       // backend üretimi bitirip geçmişe kaydetmiş olabilir → loading'de kalıp
       // geçmişten kurtarmayı dene. Başarısızsa gerçek hata göster.
@@ -492,6 +507,11 @@ export function GenerateForm({
 
   return (
     <div className="space-y-6">
+      <Paywall
+        open={paywall !== null}
+        onOpenChange={(o) => !o && setPaywall(null)}
+        info={paywall}
+      />
       {/* ── Ders seçici (yalnız birden çok ders açıksa görünür) ─────────── */}
       {hasMultipleSubjects() ? (
         <div className="space-y-1.5">
