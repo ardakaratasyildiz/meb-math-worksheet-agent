@@ -102,6 +102,12 @@ def diag_gemini(_api_key: str = Depends(require_api_key)) -> dict[str, object]:
 
     out["fallback_models"] = settings.fallback_model_list
     out["primary_model"] = settings.gemini_model
+    _bu = settings.gemini_base_url.strip()
+    out["gemini_proxy"] = {
+        "base_url_set": bool(_bu),
+        "host": (_bu.split("//")[-1].split("/")[0] if _bu else None),
+        "secret_set": bool(settings.gemini_proxy_secret.strip()),
+    }
     out["region_env"] = (
         os.environ.get("RENDER_REGION")
         or os.environ.get("GOOGLE_CLOUD_LOCATION")
@@ -110,10 +116,12 @@ def diag_gemini(_api_key: str = Depends(require_api_key)) -> dict[str, object]:
 
     def _try(key: str) -> dict[str, object]:
         try:
-            from google import genai
             from google.genai import types
 
-            client = genai.Client(api_key=key)
+            from app.services.gemini_client import make_gemini_client
+
+            # base_url set ise proxy üzerinden test eder → deploy sonrası proxy doğrulaması.
+            client = make_gemini_client(key)
             resp = client.models.generate_content(
                 model="gemini-2.5-flash",
                 contents="hi",

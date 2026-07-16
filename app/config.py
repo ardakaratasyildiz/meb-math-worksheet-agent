@@ -5,6 +5,14 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     gemini_api_key: str = ""
+    # Gemini trafiğini temiz-IP'li bir proxy (ör. Cloudflare Worker) üzerinden geçir.
+    # Render free-tier paylaşımlı çıkış IP'si Google tarafından 403 ile bloklanınca
+    # (bkz. 2026-07 incident) devreye alınır. BOŞ → doğrudan Google'a (bugünkü davranış).
+    # Proxy, generativelanguage.googleapis.com'a birebir forward eder; genai SDK'nın
+    # base_url'i buna çevrilir. gemini_proxy_secret → proxy'nin x-proxy-secret kapısı
+    # (açık-proxy + key sızıntısı koruması). Hem generation hem embedding kapsanır.
+    gemini_base_url: str = ""
+    gemini_proxy_secret: str = ""
     gemini_model: str = "gemini-2.5-flash"
     # Yeni nesil (kalite/premium) yolu için daha güçlü model. Kodlama-optimize →
     # geometri SVG gibi yapısal çıktıda daha güvenilir; şekilli+bağlamsal soru için.
