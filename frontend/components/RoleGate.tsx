@@ -11,7 +11,8 @@ import { effectiveRole, ROLE_META, type SelectableRole } from "@/lib/roles";
  * Zorunlu rol seçimi (onboarding). Giriş yapmış ama rolü OLMAYAN kullanıcıya —
  * hem yeni üye hem tekrar giren mevcut kullanıcı — atlanamayan bir modal gösterir.
  * Seçim Clerk `unsafeMetadata.role`'e yazılır; sonra bir daha çıkmaz. Admin (publicMetadata)
- * ve rolü olanlar hiç görmez. Rol sonradan profilden değiştirilebilir (RoleSwitcher).
+ * ve rolü olanlar hiç görmez. Rol seçimi KALICIDIR — onboarding sonrası UI'dan
+ * değiştirilemez (RoleSwitcher kaldırıldı); her hesabın tek, sabit bir rolü olur.
  *
  * Layout'a global monte edilir → kullanıcı hangi sayfada olursa olsun önce rolünü seçer.
  */
