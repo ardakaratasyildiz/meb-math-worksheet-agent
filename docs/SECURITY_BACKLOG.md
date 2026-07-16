@@ -34,6 +34,12 @@
     `answer` ≤20KB; endpoint gövde tavanı 8MB (Content-Length ile parse öncesi 413).
   - **Throttle**: `/render.pdf` artık `@limiter.limit("30/minute;200/hour")`.
   - Test: `tests/test_render_pdf_hardening.py`.
+- [x] **Admin key sabit-zamanlı karşılaştırma** — `admin.py` `!=` yerine
+  `hmac.compare_digest(x_admin_key or "", settings.admin_api_key)` → timing yan-kanalı kapandı,
+  None güvenli. Test: `tests/test_admin_and_throttle.py::test_admin_key_constant_time`.
+- [x] **Sınıf/veli kod brute-force throttle** — `join_classroom` + `link_child` uçlarına
+  `@limiter.limit("10/minute;60/hour")` eklendi (kimlik doğrulanmış tenant / IP). 30^6 kod
+  uzayında enumerasyon negatif. Test: `test_admin_and_throttle.py::test_throttle_join_and_link`.
 
 ## 🟠 Sırada (bakılacak — UNUTMA)
 - [ ] **H1 — Kota bypass** (latent; `BILLING_ENABLED=false` iken uyumuyor):
@@ -41,11 +47,6 @@
   (`app/routers/worksheets.py` ~340). Not: quiz sahipliği doğrulanmış kimliğe bağlandı (#98);
   worksheet üretim uçlarında `USAGE_LEDGER.record(tenant_id=...)` hâlâ client-supplied tenant
   kullanıyorsa doğrulanmış kimliğe çevir. Billing açılmadan önce kapat.
-- [ ] **M — Admin key sabit-zamanlı değil** (`app/routers/admin.py:38`): `!=` timing yan-kanalı.
-  Fix: `hmac.compare_digest(x_admin_key or "", settings.admin_api_key)`.
-- [ ] **M — Sınıf/veli katılım kodları brute-force'lanabilir, throttle yok**
-  (`app/services/classroom_store.py` ~31, `app/routers/classrooms.py` join; `parent_link_store.py`):
-  Fix: `join` + `link-child` uçlarına per-IP/tenant rate-limit; kodu uzat / N denemede kilit.
 
 ## 🟡 Düşük / hijyen
 

@@ -15,6 +15,7 @@ Kullanım (curl):
 """
 from __future__ import annotations
 
+import hmac
 import json
 from typing import Any
 
@@ -35,7 +36,9 @@ async def require_admin_key(
 ) -> None:
     if not settings.admin_api_key:
         raise HTTPException(status_code=503, detail="Admin endpoints devre dışı (ADMIN_API_KEY set değil).")
-    if x_admin_key != settings.admin_api_key:
+    # Sabit-zamanlı karşılaştırma — düz `!=` ilk uyumsuz byte'ta kısa devre yapar
+    # ve admin key'i üzerinde timing yan-kanalı açar. compare_digest süreyi eşitler.
+    if not hmac.compare_digest(x_admin_key or "", settings.admin_api_key):
         raise HTTPException(status_code=401, detail="Geçersiz admin key.")
 
 
