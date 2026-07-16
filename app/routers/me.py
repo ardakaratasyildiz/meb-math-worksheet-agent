@@ -8,7 +8,7 @@ from __future__ import annotations
 import time
 from datetime import date, datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.models.schemas import (
     AttemptDetail,
@@ -35,7 +35,7 @@ from app.models.schemas import (
     StudyPlanResponse,
     SubmittedAnswer,
 )
-from app.security import require_api_key
+from app.security import limiter, require_api_key
 from app.services.clerk_auth import resolve_tenant_id, verified_tenant_id
 from app.services.attempt_review import build_attempt_detail
 from app.services.classroom_store import CLASSROOM_STORE
@@ -141,7 +141,11 @@ def get_parent_code(
 
 
 @router.post("/link-child")
+# Veli kodu brute-force koruması: kod uzayı 30^6, kimlik başına dakikada 10 /
+# saatte 60 deneme ile sınırlanır (kod tahminiyle çocuk ilerlemesine erişim yüzeyi).
+@limiter.limit("10/minute;60/hour")
 def link_child(
+    request: Request,
     req: LinkChildRequest,
     verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),

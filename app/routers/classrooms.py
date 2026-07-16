@@ -14,7 +14,7 @@ import json
 import logging
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.models.schemas import (
     AssignmentCreatedResponse,
@@ -29,7 +29,7 @@ from app.models.schemas import (
     JoinClassroomRequest,
     JoinClassroomResponse,
 )
-from app.security import require_api_key
+from app.security import limiter, require_api_key
 from app.services.classroom_store import CLASSROOM_STORE
 from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.quiz_store import QUIZ_STORE
@@ -76,7 +76,12 @@ def create_classroom(
 
 
 @router.post("/join", response_model=JoinClassroomResponse)
+# Katılma kodu brute-force koruması: kod uzayı 30^6, kimlik başına dakikada 10 /
+# saatte 60 deneme ile sınırlanır (LLM'siz ama enumerasyon yüzeyi). Kimlik
+# doğrulanmış tenant / IP (bkz. security._identifier).
+@limiter.limit("10/minute;60/hour")
 def join_classroom(
+    request: Request,
     req: JoinClassroomRequest,
     verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
