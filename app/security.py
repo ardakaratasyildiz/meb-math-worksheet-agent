@@ -10,20 +10,25 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 from app.config import settings
+from app.services.clerk_auth import verified_sub_from_header
 
 
 def _identifier(request: Request) -> str:
-    """Rate-limit anahtarı: oturum (tenant) varsa per-kullanıcı, yoksa per-IP.
+    """Rate-limit anahtarı: DOĞRULANMIŞ oturum varsa per-kullanıcı, yoksa per-IP.
 
     NOT: X-API-Key AUTH içindir ve prod'da tüm tarayıcı istekleri AYNI public
     key'i (NEXT_PUBLIC_API_KEY) gönderir → onunla key'lemek herkesi tek bucket'a
-    koyar (anonim üretim ölçeğinde global kilit). Bu yüzden rate-limit kimliği
-    için X-Tenant-Id (giriş yapan kullanıcı) / IP (anonim) kullanılır. Auth ile
-    rate-limit kimliği bilinçli olarak ayrıştırılmıştır.
+    koyar. Bu yüzden rate-limit kimliği auth'tan ayrıştırılmıştır.
+
+    GÜVENLİK: Kimlik, doğrulanmış Clerk oturumundan (`Authorization: Bearer`)
+    türetilir — spoof edilebilen `X-Tenant-Id` header'ından DEĞİL. Aksi halde
+    saldırgan her istekte rastgele bir X-Tenant-Id göndererek her seferinde yeni
+    bir bucket açar ve limiti tamamen aşar (LLM uçlarında maliyet-DoS). Doğrulanmış
+    kimlik yoksa (anonim /generate veya Clerk kapalıyken) IP'ye düşülür.
     """
-    tenant = request.headers.get("X-Tenant-Id")
-    if tenant:
-        return f"tenant:{tenant}"
+    verified = verified_sub_from_header(request.headers.get("Authorization"))
+    if verified:
+        return f"tenant:{verified}"
     return f"ip:{get_remote_address(request)}"
 
 
