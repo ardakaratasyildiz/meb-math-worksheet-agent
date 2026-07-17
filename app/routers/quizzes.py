@@ -39,10 +39,50 @@ from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.grading import grade_quiz
 from app.services.quiz_store import QUIZ_STORE
 from app.services.structured import derive_structured_fields, validate_structured
+from app.services.usage_ledger import USAGE_LEDGER
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+def _record_gen_cost(
+    traces: list,
+    *,
+    tenant_id: str | None,
+    grade: int,
+    topic: str,
+    question_count: int,
+) -> None:
+    """Quiz üretiminin Gemini maliyetini deftere yazar (worksheet akışıyla aynı kaynak).
+
+    quiz üretimi de (create + regenerate) gerçek Gemini token'ı yakar ama önceden
+    hiç kaydedilmiyordu → admin cost dashboard gerçek harcamayı olduğundan düşük
+    gösteriyordu. `traces` = agent.build_last_trace() çıktıları (tek mod: 1;
+    paralel zorluk bucket'ları: N). Best-effort — kayıt hatası akışı bozmaz.
+
+    question_count kotayı etkiler (entitlements.check_quota, cache_hit=0 satırların
+    question_count'unu sayar). Yeniden-üretim (regenerate) net-yeni üretim değil →
+    çağıran question_count=0 geçerek kotayı şişirmez, yalnız maliyeti kaydeder.
+    """
+    if not traces:
+        return
+    prompt_tokens = sum(getattr(t, "prompt_tokens", 0) for t in traces)
+    completion_tokens = sum(getattr(t, "completion_tokens", 0) for t in traces)
+    cost_usd = sum(getattr(t, "estimated_cost_usd", 0.0) for t in traces)
+    model = next((t.model_used for t in traces if getattr(t, "model_used", None)), "unknown")
+    cache_hit = all(getattr(t, "cache_hit", False) for t in traces)
+    USAGE_LEDGER.record(
+        tenant_id=tenant_id,
+        model=model,
+        prompt_tokens=prompt_tokens,
+        completion_tokens=completion_tokens,
+        cost_usd=cost_usd,
+        grade=grade,
+        topic=topic,
+        question_count=question_count,
+        cache_hit=cache_hit,
+    )
 
 # Adım 0'da desteklenen 4 çözülebilir tip — üretim dağıtımına allowed_types olarak
 # geçer. Eşleştirme/sıralama sonraki dilime bırakıldı.
@@ -89,9 +129,12 @@ def _split_buckets(total: int) -> dict[Difficulty, int]:
     return {Difficulty.KOLAY: kolay, Difficulty.ORTA: orta, Difficulty.ZOR: zor}
 
 
-def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
+def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str, list]:
     """Çözülebilir mod üretim: seçili tipler + zorluk modu; derive+validate'den
-    geçenler kalır. Dönüş: (geçerli sorular [1..n numaralı], görünen ad)."""
+    geçenler kalır. Dönüş: (geçerli sorular [1..n numaralı], görünen ad, trace'ler).
+
+    trace'ler = üretimde kullanılan agent'ların build_last_trace() çıktısı (Gemini
+    maliyet defterine yazmak için); tek modda 1, paralel zorluk bucket'larında N."""
     from app.models.enums import SubjectId
     from app.subjects import get_content_module, subject_enabled
     # ── Non-math ders (fen/ingilizce/…) — feature flag + ünite ────────────────
@@ -154,11 +197,14 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
         )
 
     raw: list[Question] = []
+    traces: list = []  # Gemini maliyet defteri için (build_last_trace çıktıları).
     if req.difficulty_mode == "single":
+        single_agent = _agent_for_model(_model)
         try:
-            raw = _gen(_agent_for_model(_model), req.difficulty, req.question_count)
+            raw = _gen(single_agent, req.difficulty, req.question_count)
         except AgentError as exc:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
+        traces.append(single_agent.build_last_trace())
     else:
         # Karışık/progresyon: kolay/orta/zor bucket'ları paralel üret (latency).
         buckets = _split_buckets(req.question_count)
@@ -166,17 +212,22 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
                if buckets.get(d, 0) > 0]
 
         def _gen_bucket(diff: Difficulty):
-            # İzole agent → paylaşılan trace/durum yarışı olmaz.
+            # İzole agent → paylaşılan trace/durum yarışı olmaz. Trace izole
+            # agent'tan okunur (maliyet toplanabilsin).
+            local_agent = GeminiAgent(model=_model)
             try:
-                return diff, _gen(GeminiAgent(model=_model), diff, buckets[diff]), None
+                qs = _gen(local_agent, diff, buckets[diff])
+                return diff, qs, local_agent.build_last_trace(), None
             except Exception as exc:  # noqa: BLE001
                 logger.warning("Quiz bucket başarısız (diff=%s): %s", diff.value, exc)
-                return diff, [], str(exc)
+                return diff, [], None, str(exc)
 
         results: dict[Difficulty, list[Question]] = {}
         with ThreadPoolExecutor(max_workers=len(seq)) as ex:
-            for diff, qs, _err in ex.map(_gen_bucket, seq):
+            for diff, qs, tr, _err in ex.map(_gen_bucket, seq):
                 results[diff] = qs
+                if tr is not None:
+                    traces.append(tr)
         # progressive: kolay→zor sırasında topla.
         for diff in seq:
             raw.extend(results.get(diff, []))
@@ -196,7 +247,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str]:
             )
     # Numaraları sıkı tut (eleme sonrası boşluk kalmasın).
     valid = [q.model_copy(update={"number": i + 1}) for i, q in enumerate(valid)]
-    return valid, display_name
+    return valid, display_name, traces
 
 
 def _to_public(
@@ -265,7 +316,16 @@ def create_quiz(
     entitlements.enforce_quota(verified, req.question_count)
     # Sahiplik client-supplied tenant'a DEĞİL, doğrulanmış kimliğe bağlanır (IDOR/spoof).
     req.tenant_id = require_tenant(verified, req.tenant_id)
-    questions, topic_name = _generate_solvable(req)
+    questions, topic_name, traces = _generate_solvable(req)
+    # Gemini maliyet defteri — quiz üretimi de gerçek token yakar (worksheet ile
+    # aynı kaynak). question_count teslim edilen soru = quota tüketimi.
+    _record_gen_cost(
+        traces,
+        tenant_id=req.tenant_id,
+        grade=req.grade,
+        topic=topic_name,
+        question_count=len(questions),
+    )
     if not questions:
         # Üretilenlerin hiçbiri yapısal doğrulamadan geçmedi (nadir) → tekrar deneyin.
         raise HTTPException(
@@ -402,6 +462,16 @@ def _regenerate_one_question(
         )
     except AgentError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
+    # Maliyet defteri: yeniden-üretim de token yakar. question_count=0 → net-yeni
+    # üretim değil (mevcut soruyu değiştirir), kotayı şişirmesin; ama gerçek maliyet
+    # (thinking token dahil) dashboard'a yansısın.
+    _record_gen_cost(
+        [agent.build_last_trace()],
+        tenant_id=tenant_id,
+        grade=grade,
+        topic="quiz-regenerate",
+        question_count=0,
+    )
     for q in raw:
         enriched = derive_structured_fields(q)
         ok, _issues = validate_structured(enriched)

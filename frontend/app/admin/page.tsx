@@ -127,7 +127,8 @@ export default function AdminDashboard() {
             <div>
               <CardTitle>Gemini maliyeti — kim ne kadar harcadı</CardTitle>
               <CardDescription>
-                Gerçek Gemini harcaması (üretim + retry + top-up + critic + embedding).
+                Tahmini Gemini harcaması — çalışma kağıdı + quiz üretimi (retry +
+                top-up + critic + embedding + düşünme/thinking token&apos;ları dahil).
                 Anonim üretimler dahil. Son {cost?.window_days ?? costDays} gün.
               </CardDescription>
             </div>
@@ -160,6 +161,13 @@ export default function AdminDashboard() {
                 />
                 <Stat label="Cache hit" value={cost.total?.cache_hits ?? 0} />
               </div>
+
+              <p className="mb-5 text-xs text-muted-foreground">
+                Tahmindir; Google faturasından sapabilir: başarısız/yarıda kesilen
+                çağrıların token&apos;ları, offline script&apos;ler (ingest/cache-warm)
+                ve context-cache indirimi burada sayılmaz. Kesin tutar için Google AI
+                Studio → Usage veya Cloud Billing raporu.
+              </p>
 
               <div className="grid gap-6 lg:grid-cols-2">
                 {/* Tenant kırılımı */}
