@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import {
   ArrowLeft,
@@ -12,9 +13,11 @@ import {
   Circle,
   Copy,
   Loader2,
+  LogOut,
   NotebookPen,
   Plus,
   Share2,
+  Trash2,
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -25,8 +28,10 @@ import { Input } from "@/components/ui/input";
 import {
   assignPdf,
   assignQuiz,
+  deleteClassroom,
   getAssignmentResults,
   getClassroom,
+  leaveClassroom,
   listMyQuizzes,
   listWorksheetHistory,
 } from "@/lib/api";
@@ -52,10 +57,43 @@ function formatDate(iso: string): string {
 
 export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
   const { userId, isLoaded } = useAuth();
+  const router = useRouter();
   const [data, setData] = React.useState<ClassroomDetail | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState(false);
+  const [leaving, setLeaving] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
+
+  async function onDelete() {
+    if (!userId || deleting) return;
+    if (!window.confirm("Bu sınıfı silmek istediğine emin misin? Üyeler ve ödevler de silinir. Bu işlem geri alınamaz.")) {
+      return;
+    }
+    setDeleting(true);
+    try {
+      await deleteClassroom(userId, classroomId);
+      toast.success("Sınıf silindi");
+      router.push("/practice/classes");
+    } catch (e: unknown) {
+      toast.error("Silinemedi", { description: e instanceof Error ? e.message : undefined });
+      setDeleting(false);
+    }
+  }
+
+  async function onLeave() {
+    if (!userId || leaving) return;
+    if (!window.confirm("Bu sınıftan ayrılmak istediğine emin misin?")) return;
+    setLeaving(true);
+    try {
+      await leaveClassroom(userId, classroomId);
+      toast.success("Sınıftan ayrıldın");
+      router.push("/practice/classes");
+    } catch (e: unknown) {
+      toast.error("Ayrılınamadı", { description: e instanceof Error ? e.message : undefined });
+      setLeaving(false);
+    }
+  }
 
   // Ödev atama paneli
   const [picking, setPicking] = React.useState(false);
@@ -225,12 +263,39 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
           <ArrowLeft className="h-4 w-4" />
           Sınıflarım
         </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">{data.name}</h1>
-        <p className="flex items-center gap-1 text-sm text-muted-foreground">
-          <Users className="h-4 w-4" />
-          {data.member_count} öğrenci
-          {data.is_owner ? " · öğretmenisin" : " · katıldığın sınıf"}
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">{data.name}</h1>
+            <p className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Users className="h-4 w-4" />
+              {data.member_count} öğrenci
+              {data.is_owner ? " · öğretmenisin" : " · katıldığın sınıf"}
+            </p>
+          </div>
+          {data.is_owner ? (
+            <Button
+              onClick={onDelete}
+              disabled={deleting}
+              variant="outline"
+              size="sm"
+              className="gap-1.5 text-destructive hover:bg-destructive/10 hover:text-destructive"
+            >
+              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              Sınıfı sil
+            </Button>
+          ) : (
+            <Button
+              onClick={onLeave}
+              disabled={leaving}
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+            >
+              {leaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
+              Sınıftan ayrıl
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Sahip: katılma kodu paylaşımı */}
