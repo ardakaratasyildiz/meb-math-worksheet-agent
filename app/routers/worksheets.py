@@ -24,7 +24,11 @@ from app.models.schemas import (
 )
 from app.security import limiter, rate_limit_string, require_api_key
 from app.services import entitlements
-from app.services.agent import AgentError, GeminiAgent, model_for_grade
+from app.services.agent import (
+    AgentError,
+    GeminiAgent,
+    model_and_thinking_for,
+)
 from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.pdf_renderer import render_worksheet_pdf
 from app.services.usage_ledger import USAGE_LEDGER
@@ -34,13 +38,14 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@lru_cache(maxsize=8)
-def _agent_for_model(model: str) -> GeminiAgent:
+@lru_cache(maxsize=16)
+def _agent_for_model(model: str, thinking_budget: int | None = None) -> GeminiAgent:
     """Model başına tekil (cache'li) agent. Model seçimi sınıfa göre yapılır
     (model_for_grade); premium/yeni_nesil model değil prompt+dağılımı etkiler.
+    thinking_budget sınıf bandına göre gelir (cache anahtarına dahil).
     DİKKAT: paralel bucket modunda paylaşılan agent kullanılamaz (trace state
     yarışı) — orada her bucket kendi izole GeminiAgent'ını oluşturur."""
-    return GeminiAgent(model=model)
+    return GeminiAgent(model=model, thinking_budget=thinking_budget)
 
 
 def _validate_request(req: GenerateWorksheetRequest) -> None:
@@ -197,12 +202,21 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
     # "Yeni nesil" gizli kalite kaldıracı: karar SUNUCUDA, premium yetkiye göre
     # verilir (client bir bayrak gönderemez). Ücretsiz → normal, premium → yeni nesil.
     _yeni_nesil = wants_yeni_nesil(req.tenant_id)
-    # Model seçimi SINIFA göre: 1-4 → flash 2.5 (ucuz), 5-8 → Gemini 3 flash.
-    # yeni_nesil (premium) yalnız prompt+dağılımı etkiler, modeli değil.
-    _model = model_for_grade(req.grade)
-    agent = _agent_for_model(_model)
+    # Model + thinking seçimi POLİTİKAYLA: grade + geometri teması + zorluk + GERÇEK
+    # premium (is_premium_for_model — premium_all dark-launch değil). Zorluğa bağlı
+    # olduğu için her bucket kendi (model, thinking)'ini alır (premium 5-7 zor→3.5).
+    _is_premium = entitlements.is_premium_for_model(req.tenant_id)
 
-    def _gen(diff: _Diff, count: int) -> list:
+    def _agent_for_diff(diff: _Diff, *, fresh: bool = False) -> GeminiAgent:
+        model, tb = model_and_thinking_for(
+            req.grade, subject=req.subject, topic_id=req.topic_id,
+            unit_id=req.unit_id, difficulty=diff, is_premium=_is_premium,
+        )
+        # Paralel bucket'larda paylaşılan (lru_cache) agent trace state yarışı
+        # yaratır → izole (fresh) instance. Tek modda cache'li yeterli.
+        return GeminiAgent(model=model, thinking_budget=tb) if fresh else _agent_for_model(model, tb)
+
+    def _gen(agent: GeminiAgent, diff: _Diff, count: int) -> list:
         return agent.generate(
             grade=req.grade,
             topic_id=req.topic_id,
@@ -217,8 +231,9 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         )
 
     if req.difficulty_mode == "single":
+        agent = _agent_for_diff(req.difficulty)
         try:
-            questions = _gen(req.difficulty, req.question_count)
+            questions = _gen(agent, req.difficulty, req.question_count)
         except AgentError as exc:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
         trace_for_meta = agent.build_last_trace()
@@ -240,24 +255,13 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
                       if buckets.get(d, 0) > 0]
 
         def _gen_bucket(diff: "_Diff"):
-            """Tek bucket üretir. Paralel modda izole agent kullanır."""
-            local_agent = (
-                GeminiAgent(model=_model)
-                if settings.parallel_difficulty_buckets else agent
+            """Tek bucket üretir; modeli/thinking'i KENDİ zorluğuna göre seçer
+            (premium 5-7 zor→3.5). Paralel modda izole (fresh) agent."""
+            local_agent = _agent_for_diff(
+                diff, fresh=settings.parallel_difficulty_buckets
             )
             try:
-                qs = local_agent.generate(
-                    grade=req.grade,
-                    topic_id=req.topic_id,
-                    kazanim_kod=req.kazanim_kod,
-                    difficulty=diff,
-                    question_count=buckets[diff],
-                    tenant_id=req.tenant_id,
-                    allowed_types=req.question_types,
-                    yeni_nesil=_yeni_nesil,
-                    unit_id=req.unit_id,
-                    subject=req.subject,
-                )
+                qs = _gen(local_agent, diff, buckets[diff])
                 return diff, qs, local_agent.build_last_trace(), None
             except Exception as exc:  # noqa: BLE001
                 # AgentError + paralelliğin getirdiği embedding/429 gibi hatalar:
