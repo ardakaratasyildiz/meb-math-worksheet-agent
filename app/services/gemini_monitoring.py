@@ -144,6 +144,7 @@ def _compute(days: int) -> dict:
         "embedding": {"tokens": embed_tok, "cost_usd": round(embed_cost, 6)},
         "generation_cost_usd": round(gen_cost, 6),
         "total_cost_usd": round(total, 6),
+        "usd_try_rate": settings.usd_try_rate,
     }
 
 
