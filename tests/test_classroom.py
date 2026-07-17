@@ -159,20 +159,10 @@ def test_app_imports() -> None:
     print("uygulama import — classrooms router kayıtlı")
     from app.main import app  # noqa: PLC0415
 
-    # Not: Starlette/FastAPI sürümüne göre app.routes içinde düz Route (.path olan) ile
-    # birlikte _IncludedRouter gibi .path'i olmayan, kendi .routes'unu taşıyan girdiler
-    # bulunabilir → path'leri özyinelemeli topla (aksi halde AttributeError / eksik path).
-    def _collect_paths(routes: object, acc: set[str]) -> None:
-        for r in routes:  # type: ignore[union-attr]
-            p = getattr(r, "path", None)
-            if isinstance(p, str):
-                acc.add(p)
-            sub = getattr(r, "routes", None)
-            if sub:
-                _collect_paths(sub, acc)
-
-    paths: set[str] = set()
-    _collect_paths(app.routes, paths)
+    # Not: app.routes taraması FastAPI/Starlette sürümüne bağımlı (include_router bazı
+    # sürümlerde route'ları düz app.routes'a prefix'li koymaz, iç router'da prefix'siz
+    # saklar). OpenAPI şeması her sürümde tam-nitelikli path verir → onu kullan.
+    paths = set(app.openapi()["paths"].keys())
     check("/api/classrooms" in paths, "POST/GET /api/classrooms kayıtlı")
     check("/api/classrooms/join" in paths, "POST /api/classrooms/join kayıtlı")
     check("/api/classrooms/{classroom_id}" in paths, "GET/DELETE /api/classrooms/{id} kayıtlı")
