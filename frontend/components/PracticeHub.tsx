@@ -149,7 +149,7 @@ function TeacherSection() {
         color="grape"
         icon={<Share2 className="h-6 w-6 text-grape" />}
         title="Paylaşımlarım"
-        desc="Paylaştığın quizleri ve onları çözenlerin sonuçlarını gör."
+        desc="Herkese açık link (/q/…) ile paylaştığın quizler ve çözenleri. Sınıf ödevleri burada değil — Sınıflarım'da."
         cta="Aç"
       />
     </div>
