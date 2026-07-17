@@ -3,6 +3,10 @@ uvicorn[standard]>=0.30.0
 pydantic>=2.0.0
 pydantic-settings>=2.0.0
 google-genai==1.66.0
+# Admin Cloud Monitoring maliyet mutabakatı: SA (service_account) ile Monitoring
+# REST'i çağırmak için token üretimi. google-genai zaten çekiyor ama artık DOĞRUDAN
+# bağımlı olduğumuzdan açıkça pinliyoruz.
+google-auth>=2.30.0
 python-dotenv>=1.0.0
 requests>=2.32.0
 chromadb>=1.5.0

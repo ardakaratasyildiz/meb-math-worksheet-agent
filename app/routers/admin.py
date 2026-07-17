@@ -93,6 +93,20 @@ def costs_recent(
     return {"count": len(items), "window_days": days, "items": items}
 
 
+@router.get("/costs/monitoring", dependencies=[Depends(require_admin_key)])
+def costs_monitoring(days: int = 7, actor: dict = Depends(get_admin_actor)) -> dict[str, Any]:
+    """Google GERÇEK maliyeti (Cloud Monitoring) — defter (tahmin) ile mutabakat için.
+
+    Google'ın kendi token sayaçları: tüm generate + embedding (offline/RAG dahil) +
+    başarısız çağrıların girdi token'ları. Defterin saymadığı 'ekstra' maliyeti gösterir.
+    SA yapılandırılmadıysa available=False (panel yalnız defteri gösterir).
+    """
+    ADMIN_AUDIT.record(action="costs_monitoring", clerk_user_id=actor["actor"], ip=actor["ip"])
+    from app.services.gemini_monitoring import get_cost_summary
+
+    return get_cost_summary(days=days)
+
+
 @router.get("/cache/stats", dependencies=[Depends(require_admin_key)])
 def cache_stats(actor: dict = Depends(get_admin_actor)) -> dict[str, Any]:
     """Cache özet istatistiği: toplam set, distinct key, runtime hit/miss sayacı."""
