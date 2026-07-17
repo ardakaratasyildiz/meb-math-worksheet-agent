@@ -222,6 +222,18 @@ export interface QuizPublic {
   answer_mode?: "quiz" | "worksheet";
 }
 
+/** Sahibe quiz önizleme — CEVAPLI tam sorular (öğretmen inceleme/yenileme). */
+export interface QuizReview {
+  id: string;
+  title: string;
+  grade: number;
+  topic_id: string;
+  difficulty: Difficulty;
+  question_count: number;
+  questions: Question[];
+  created_at: string;
+}
+
 export interface SubmittedAnswer {
   number: number;
   selected_index?: number | null;

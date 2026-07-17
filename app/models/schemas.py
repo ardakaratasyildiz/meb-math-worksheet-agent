@@ -695,6 +695,28 @@ class QuizPublic(BaseModel):
     answer_mode: str = "quiz"
 
 
+class QuizReviewResponse(BaseModel):
+    """Sahibe quiz önizlemesi — CEVAPLI tam sorular (öğretmen inceleme/yenileme için).
+
+    QuizPublic'in aksine answer/solution_steps/correct_index vb. AÇIKTIR; yalnız
+    quiz'in sahibine döndürülür (kopya önleme sahibe uygulanmaz — kendi içeriği)."""
+
+    id: str
+    title: str
+    grade: int
+    topic_id: str
+    difficulty: Difficulty
+    question_count: int
+    questions: list[Question]
+    created_at: str
+
+
+class RegeneratedQuestionResponse(BaseModel):
+    """Tek soru yeniden üretim sonucu (sahip görünümü — cevaplı)."""
+
+    question: Question
+
+
 # ── Çözüm denemesi + puanlama (Adım 2) ───────────────────────────────────────
 
 

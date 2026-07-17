@@ -19,7 +19,7 @@ from functools import lru_cache
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.data.curriculum import get_topic
-from app.data.units import get_unit, resolve_legacy_topic
+from app.data.units import find_unit_by_kazanim, get_unit, resolve_legacy_topic
 from app.models.enums import Difficulty, QuestionType
 from app.models.schemas import (
     AttemptResult,
@@ -28,6 +28,8 @@ from app.models.schemas import (
     Question,
     QuizPublic,
     QuizQuestionPublic,
+    QuizReviewResponse,
+    RegeneratedQuestionResponse,
     SubmitAttemptRequest,
 )
 from app.security import limiter, rate_limit_string, require_api_key
@@ -320,6 +322,142 @@ def get_quiz(
         created_at=record["created_at"],
         questions=questions,
     )
+
+
+@router.get("/{quiz_id}/review", response_model=QuizReviewResponse)
+def review_quiz(
+    quiz_id: str,
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> QuizReviewResponse:
+    """Quiz'i sahibine CEVAPLI getir — öğretmen atamadan önce soruları inceler.
+
+    Kopya önleme sahibe uygulanmaz (kendi ürettiği içerik). Yalnız quiz'in sahibi
+    (tenant_id) erişir; başkası 404 alır → başka öğretmenin/öğrencinin quiz'i sızmaz.
+    """
+    tenant_id = require_tenant(verified, tenant_id)
+    record = QUIZ_STORE.get(quiz_id, tenant_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Quiz bulunamadı.")
+    questions = [Question(**q) for q in record["questions"]]
+    return QuizReviewResponse(
+        id=record["id"],
+        title=record["title"],
+        grade=record["grade"],
+        topic_id=record["topic_id"],
+        difficulty=Difficulty(record["difficulty"]),
+        question_count=len(questions),
+        questions=questions,
+        created_at=record["created_at"],
+    )
+
+
+def _regenerate_one_question(
+    *, grade: int, kazanim_kod: str, question_type: QuestionType,
+    difficulty: Difficulty, fallback_topic_id: str, tenant_id: str,
+) -> Question | None:
+    """Tek soruyu aynı kazanım + tip + zorlukta yeniden üretir (LLM). Ders kazanım
+    kodundan çözülür; ünite bulunamazsa quiz'in kayıtlı topic_id'sine düşer. Yapısal
+    doğrulamadan geçen ilk soruyu döndürür; hiçbiri geçmezse None."""
+    from app.models.enums import SubjectId
+    from app.services.subject_resolve import resolve_kazanim
+    from app.subjects import get_content_module, subject_enabled
+
+    subject, _, _ = resolve_kazanim(kazanim_kod)
+    topic_id: str | None = None
+    unit_id: str | None = None
+    if subject != SubjectId.MATEMATIK:
+        if not subject_enabled(subject):
+            raise HTTPException(
+                status_code=403,
+                detail=f"'{subject.value}' dersi henüz yayında değil (kalite kapısı).",
+            )
+        content = get_content_module(subject)
+        found = content.find_unit_by_kazanim(kazanim_kod) if content else None
+        if found is None:
+            raise HTTPException(
+                status_code=400,
+                detail=f"'{kazanim_kod}' kodu '{subject.value}' müfredatında bulunamadı.",
+            )
+        unit_id = found[1]["unit_id"]
+    else:
+        found = find_unit_by_kazanim(kazanim_kod)
+        if found is not None:
+            unit_id = found[1]["unit_id"]
+        else:
+            topic_id = fallback_topic_id  # legacy M.* / topic-bazlı quiz
+    agent = _agent_for_model(model_for_grade(grade))
+    try:
+        raw = agent.generate(
+            grade=grade,
+            topic_id=topic_id,
+            kazanim_kod=kazanim_kod,
+            difficulty=difficulty,
+            question_count=1,
+            tenant_id=tenant_id,
+            allowed_types=[question_type],
+            unit_id=unit_id,
+            subject=subject,
+        )
+    except AgentError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    for q in raw:
+        enriched = derive_structured_fields(q)
+        ok, _issues = validate_structured(enriched)
+        if ok:
+            return enriched
+    return None
+
+
+@router.post(
+    "/{quiz_id}/questions/{number}/regenerate",
+    response_model=RegeneratedQuestionResponse,
+)
+@limiter.limit(rate_limit_string())
+def regenerate_quiz_question(
+    request: Request,
+    quiz_id: str,
+    number: int,
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> RegeneratedQuestionResponse:
+    """Sahibin quiz'inde `number` numaralı soruyu yeniden üretir + kalıcı kılar.
+
+    Öğretmen beğenmediği soruyu tek tık değiştirir. LLM çağrısı (rate limitli).
+    Yalnız quiz sahibi; sonuç CEVAPLI döner (sahip görünümü)."""
+    tenant_id = require_tenant(verified, tenant_id)
+    record = QUIZ_STORE.get(quiz_id, tenant_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Quiz bulunamadı.")
+    target = next(
+        (Question(**q) for q in record["questions"] if q.get("number") == number),
+        None,
+    )
+    if target is None:
+        raise HTTPException(status_code=404, detail="Soru bulunamadı.")
+    new_q = _regenerate_one_question(
+        grade=record["grade"],
+        kazanim_kod=target.kazanim_kod,
+        question_type=target.question_type,
+        difficulty=Difficulty(record["difficulty"]),
+        fallback_topic_id=record["topic_id"],
+        tenant_id=tenant_id,
+    )
+    if new_q is None:
+        raise HTTPException(
+            status_code=502, detail="Yeni soru üretilemedi; lütfen tekrar deneyin."
+        )
+    new_q = new_q.model_copy(update={"number": number})
+    if not QUIZ_STORE.replace_question(
+        quiz_id, tenant_id, number, new_q.model_dump()
+    ):
+        raise HTTPException(status_code=404, detail="Soru güncellenemedi.")
+    logger.info(
+        "quiz sorusu yenilendi: tenant=%s quiz=%s no=%d", tenant_id, quiz_id, number
+    )
+    return RegeneratedQuestionResponse(question=new_q)
 
 
 @router.post("/{quiz_id}/attempt", response_model=AttemptResult)

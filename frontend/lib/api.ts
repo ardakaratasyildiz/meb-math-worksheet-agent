@@ -29,6 +29,7 @@ import type {
   Question,
   QuestionType,
   QuizPublic,
+  QuizReview,
   ShareResultsResponse,
   ShareSummary,
   StudyPlanResponse,
@@ -488,6 +489,29 @@ export async function getQuiz(
   return request<QuizPublic>(
     `/api/quizzes/${encodeURIComponent(quizId)}?tenant_id=${encodeURIComponent(tenantId)}`,
   );
+}
+
+/** Quiz'i sahibine CEVAPLI getir — öğretmen atamadan önce soruları inceler (owner-only). */
+export async function getQuizReview(
+  quizId: string,
+  tenantId: string,
+): Promise<QuizReview> {
+  return request<QuizReview>(
+    `/api/quizzes/${encodeURIComponent(quizId)}/review?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Sahibin quiz'inde bir soruyu yeniden üret + kalıcı kıl → yeni soru (cevaplı) döner. */
+export async function regenerateQuizQuestion(
+  quizId: string,
+  number: number,
+  tenantId: string,
+): Promise<Question> {
+  const r = await request<{ question: Question }>(
+    `/api/quizzes/${encodeURIComponent(quizId)}/questions/${number}/regenerate?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "POST", headers: tenantHeader(tenantId) },
+  );
+  return r.question;
 }
 
 /** Cevapları gönder → sunucuda puanlanır → sonuç + kazanım kırılımı döner. */

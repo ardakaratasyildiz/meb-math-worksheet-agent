@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { TeacherQuizReview } from "@/components/TeacherQuizReview";
 import {
   assignPdf,
   assignQuiz,
@@ -438,26 +439,14 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
                 ) : (
                   <ul className="divide-y rounded-lg border">
                     {myQuizzes.map((q) => (
-                      <li
+                      <QuizPickerRow
                         key={q.id}
-                        className="flex items-center justify-between gap-2 px-4 py-2.5 text-sm"
-                      >
-                        <span className="min-w-0 truncate">{q.title}</span>
-                        <Button
-                          onClick={() => onAssign(q.id)}
-                          disabled={assigningId !== null}
-                          size="sm"
-                          variant="outline"
-                          className="shrink-0 gap-1"
-                        >
-                          {assigningId === q.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Plus className="h-4 w-4" />
-                          )}
-                          Ata
-                        </Button>
-                      </li>
+                        quizId={q.id}
+                        title={q.title}
+                        assigning={assigningId === q.id}
+                        disabled={assigningId !== null}
+                        onAssign={() => onAssign(q.id)}
+                      />
                     ))}
                   </ul>
                 )
@@ -559,6 +548,65 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
         </Card>
       )}
     </div>
+  );
+}
+
+/** Ödev picker'ında quiz satırı — başlık + "Önizle" (cevaplı, yenilenebilir) + "Ata". */
+function QuizPickerRow({
+  quizId,
+  title,
+  assigning,
+  disabled,
+  onAssign,
+}: {
+  quizId: string;
+  title: string;
+  assigning: boolean;
+  disabled: boolean;
+  onAssign: () => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <li className="text-sm">
+      <div className="flex items-center gap-2 px-4 py-2.5">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="flex min-w-0 flex-1 items-center gap-1.5 text-left hover:text-foreground"
+          aria-expanded={open}
+        >
+          {open ? (
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+          ) : (
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          )}
+          <span className="min-w-0 truncate">{title}</span>
+        </button>
+        <span className="hidden text-[11px] text-muted-foreground sm:inline">
+          {open ? "gizle" : "önizle"}
+        </span>
+        <Button
+          onClick={onAssign}
+          disabled={disabled}
+          size="sm"
+          variant="outline"
+          className="shrink-0 gap-1"
+        >
+          {assigning ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="h-4 w-4" />
+          )}
+          Ata
+        </Button>
+      </div>
+      {open ? (
+        <div className="border-t bg-muted/20 px-4 py-3">
+          {/* Sınıf içindeyiz → atama/paylaş kısayolları gizli; sadece incele + yenile. */}
+          <TeacherQuizReview quizId={quizId} showAssign={false} showShare={false} />
+        </div>
+      ) : null}
+    </li>
   );
 }
 

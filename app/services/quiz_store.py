@@ -221,6 +221,44 @@ class QuizStore:
             "questions": body.get("questions", []),
         }
 
+    def replace_question(
+        self, quiz_id: str, owner_tenant_id: str, number: int, question: dict
+    ) -> bool:
+        """Sahibin quiz'inde `number` numaralı soruyu `question` ile değiştirir.
+
+        Öğretmen ürettiği quiz'te beğenmediği soruyu yeniden ürettiğinde (regenerate)
+        kalıcı kılar. Sahip değilse / soru yoksa False. created_at + diğer sorular korunur.
+        """
+        if not quiz_id or not owner_tenant_id:
+            return False
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT questions_json FROM quizzes WHERE id = ? AND owner_tenant_id = ?",
+                (quiz_id, owner_tenant_id),
+            ).fetchone()
+            if not row:
+                return False
+            try:
+                body = json.loads(row[0])
+            except json.JSONDecodeError:
+                logger.error("quizzes kaydı bozuk JSON (replace): id=%s", quiz_id)
+                return False
+            questions = body.get("questions", [])
+            idx = next(
+                (i for i, q in enumerate(questions) if q.get("number") == number), None
+            )
+            if idx is None:
+                return False
+            questions[idx] = question
+            body["questions"] = questions
+            self._db.execute(
+                "UPDATE quizzes SET questions_json = ? WHERE id = ? AND owner_tenant_id = ?",
+                (json.dumps(body, ensure_ascii=False), quiz_id, owner_tenant_id),
+            )
+            self._db.commit()
+        return True
+
     def get_quiz_by_id(self, quiz_id: str) -> dict | None:
         """Quiz'i sahip filtresi OLMADAN getirir (CEVAPLI tam kayıt).
 

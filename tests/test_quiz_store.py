@@ -225,12 +225,59 @@ def test_attempt_history() -> None:
             store.close()
 
 
+def test_replace_question() -> None:
+    print("replace_question — öğretmen soru yenileme (owner-gate + izolasyon)")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        store = QuizStore(db_path=str(Path(tmp) / "t.sqlite3"))
+        try:
+            qs = _sample_questions()
+            rec = store.create(
+                owner_tenant_id="user-1", title="T", grade=5,
+                topic_id="dogal_sayilar", difficulty="orta",
+                questions=[q.model_dump() for q in qs],
+            )
+            qid = rec["id"]
+            new_q = {
+                "number": 2, "question": "YENİ SORU", "answer": "42",
+                "solution_steps": "", "kazanim_kod": "M.5.1.1",
+                "question_type": "salt_islem",
+            }
+            # Sahip 2. soruyu değiştirir
+            check(store.replace_question(qid, "user-1", 2, new_q) is True, "sahip soruyu değiştirdi")
+            got = store.get(qid, "user-1")["questions"]
+            by_no = {q["number"]: q for q in got}
+            check(by_no[2]["question"] == "YENİ SORU", "2. soru güncellendi")
+            check(by_no[2]["answer"] == "42", "yeni cevap saklandı")
+            check(by_no[1]["number"] == 1, "diğer sorular korundu")
+            check(len(got) == len(qs), "soru sayısı değişmedi")
+            # Yetkisiz / geçersiz
+            check(store.replace_question(qid, "user-2", 2, new_q) is False, "başka tenant değiştiremez")
+            check(store.replace_question(qid, "user-1", 99, new_q) is False, "olmayan numara False")
+            check(store.replace_question("yok", "user-1", 2, new_q) is False, "olmayan quiz False")
+        finally:
+            store.close()
+
+
+def test_review_regenerate_routes() -> None:
+    print("uygulama import — quiz review + regenerate route'ları kayıtlı")
+    from app.main import app  # noqa: PLC0415
+
+    paths = set(app.openapi()["paths"].keys())
+    check("/api/quizzes/{quiz_id}/review" in paths, "GET /api/quizzes/{id}/review kayıtlı")
+    check(
+        "/api/quizzes/{quiz_id}/questions/{number}/regenerate" in paths,
+        "POST /api/quizzes/{id}/questions/{no}/regenerate kayıtlı",
+    )
+
+
 def main() -> int:
     for fn in (
         test_store_crud,
         test_to_public_anti_copy,
         test_advanced_options_helpers,
         test_attempt_history,
+        test_replace_question,
+        test_review_regenerate_routes,
     ):
         fn()
     print()

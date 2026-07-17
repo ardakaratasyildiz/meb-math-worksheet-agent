@@ -58,7 +58,7 @@ function CopyLinkButton({ shareCode }: { shareCode: string }) {
   );
 }
 
-export function SharesList() {
+export function SharesList({ isTeacher = false }: { isTeacher?: boolean }) {
   const { userId, isLoaded } = useAuth();
   const [items, setItems] = React.useState<ShareSummary[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -114,11 +114,20 @@ export function SharesList() {
         <Share2 className="h-8 w-8 text-muted-foreground" />
         <h2 className="font-semibold">Henüz paylaşım yok</h2>
         <p className="max-w-sm text-sm text-muted-foreground">
-          Bir quiz çöz, sonuç ekranındaki <strong>Paylaş</strong> ile link oluştur;
-          paylaştığın kişilerin sonuçları burada birikir.
+          {isTeacher ? (
+            <>
+              Bir quiz üret; oluşturma ekranındaki <strong>Paylaş</strong> ile link
+              oluştur. Paylaştığın kişilerin sonuçları burada birikir.
+            </>
+          ) : (
+            <>
+              Bir quiz çöz, sonuç ekranındaki <strong>Paylaş</strong> ile link oluştur;
+              paylaştığın kişilerin sonuçları burada birikir.
+            </>
+          )}
         </p>
         <Button asChild className="mt-1">
-          <Link href="/practice/new">Yeni quiz çöz</Link>
+          <Link href="/practice/new">{isTeacher ? "Quiz üret" : "Yeni quiz çöz"}</Link>
         </Button>
       </Card>
     );

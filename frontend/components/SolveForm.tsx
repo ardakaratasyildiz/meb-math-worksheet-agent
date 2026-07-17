@@ -23,6 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import { QuotaExceededError, createQuiz, listKazanimlarByUnit, listUnits } from "@/lib/api";
 import type { QuotaInfo } from "@/lib/api";
 import { Paywall } from "@/components/Paywall";
+import { TeacherQuizReview } from "@/components/TeacherQuizReview";
 import { getGradesLocal } from "@/lib/curriculum";
 import { getKazanimlarByUnitLocal, getUnitsLocal } from "@/lib/units";
 import { factsForSubject } from "@/lib/subjectFacts";
@@ -311,6 +312,20 @@ export function SolveForm({ mode = "solve" }: { mode?: "solve" | "create" }) {
           <Button asChild variant="ghost" size="lg">
             <Link href={`/practice/quiz/${createdQuizId}`}>Önce ben çözeyim</Link>
           </Button>
+        </div>
+
+        {/* Üretilen sorular — cevaplı önizleme + beğenmediğini tek tık yenile +
+            doğrudan paylaş. (Atama kısayolu yukarıda olduğu için burada gizli.) */}
+        <div className="space-y-2 pt-2">
+          <p className="text-sm font-medium text-muted-foreground">
+            Üretilen sorular — inceleyip beğenmediğini yenileyebilir ya da
+            paylaşabilirsin:
+          </p>
+          <TeacherQuizReview
+            quizId={createdQuizId}
+            showAssign={false}
+            showShare
+          />
         </div>
       </div>
     );
