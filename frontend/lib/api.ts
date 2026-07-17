@@ -32,6 +32,7 @@ import type {
   QuizReview,
   ShareResultsResponse,
   ShareSummary,
+  TeachingOverviewItem,
   StudyPlanResponse,
   SubmittedAnswer,
   TopicInfo,
@@ -828,6 +829,16 @@ export async function getAssignmentResults(
   return request<AssignmentResultsResponse>(
     `/api/assignments/${encodeURIComponent(assignmentId)}/results?tenant_id=${encodeURIComponent(tenantId)}`,
   );
+}
+
+/** Öğretmenin tüm sınıflarındaki ödevler + çözülme özeti ('Ödev Sonuçları' panosu). */
+export async function getTeachingResults(
+  tenantId: string,
+): Promise<TeachingOverviewItem[]> {
+  const r = await request<{ items: TeachingOverviewItem[] }>(
+    `/api/me/teaching-results?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
 }
 
 /** Sınıfa PDF (çalışma kağıdı) ödevi ata — worksheet snapshot'ı gönderilir. */

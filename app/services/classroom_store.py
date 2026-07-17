@@ -548,6 +548,48 @@ class ClassroomStore:
             )
         return out
 
+    def owner_assignment_overview(self, owner_tenant_id: str) -> list[dict]:
+        """Öğretmenin TÜM sınıflarındaki ödevlerin özeti (sınıf + çözülme sayısı).
+
+        "Ödev Sonuçları" panosu için: sahibi olduğu her sınıftaki her ödev, sınıf adı +
+        üye sayısı + kaç öğrencinin çözdüğüyle. Detay (kim/kaç puan) getirilirken
+        assignment_results kullanılır. En yeni sınıf/ödev önce.
+        """
+        if not owner_tenant_id:
+            return []
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                """
+                SELECT c.id, c.name, a.id, a.title, a.assignment_type, a.due_at, a.created_at,
+                       (SELECT COUNT(*) FROM classroom_members m WHERE m.classroom_id = c.id),
+                       (SELECT COUNT(DISTINCT x.solver_tenant_id) FROM attempts x
+                          JOIN classroom_members m2
+                            ON m2.classroom_id = c.id
+                           AND m2.student_tenant_id = x.solver_tenant_id
+                          WHERE x.assignment_id = a.id)
+                FROM classrooms c
+                JOIN assignments a ON a.classroom_id = c.id
+                WHERE c.owner_tenant_id = ?
+                ORDER BY c.created_at DESC, a.created_at DESC
+                """,
+                (owner_tenant_id,),
+            ).fetchall()
+        return [
+            {
+                "classroom_id": r[0],
+                "classroom_name": r[1],
+                "assignment_id": r[2],
+                "title": r[3],
+                "assignment_type": r[4] or "quiz",
+                "due_at": _iso(r[5]) if r[5] is not None else None,
+                "created_at": _iso(r[6]),
+                "member_count": int(r[7] or 0),
+                "solved_count": int(r[8] or 0),
+            }
+            for r in rows
+        ]
+
     def assignment_results(
         self, assignment_id: str, owner_tenant_id: str
     ) -> dict | None:

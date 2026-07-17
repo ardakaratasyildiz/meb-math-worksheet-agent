@@ -2,10 +2,10 @@ import Link from "next/link";
 import {
   ArrowRight,
   CalendarDays,
+  ClipboardCheck,
   GraduationCap,
   History,
   NotebookPen,
-  Share2,
   Sparkles,
   TrendingUp,
 } from "lucide-react";
@@ -147,9 +147,9 @@ function TeacherSection() {
       <HubCard
         href="/practice/shares"
         color="grape"
-        icon={<Share2 className="h-6 w-6 text-grape" />}
-        title="Paylaşımlarım"
-        desc="Herkese açık link (/q/…) ile paylaştığın quizler ve çözenleri. Sınıf ödevleri burada değil — Sınıflarım'da."
+        icon={<ClipboardCheck className="h-6 w-6 text-grape" />}
+        title="Ödev Sonuçları"
+        desc="Tüm sınıflarındaki ödevler: hangi sınıfta kim çözdü, kaç puan aldı ve ne cevap verdi."
         cta="Aç"
       />
     </div>
