@@ -45,18 +45,88 @@ logger = logging.getLogger(__name__)
 
 
 def model_for_grade(grade: int) -> str:
-    """Sınıfa göre üretim modeli seçer.
-
-    1-4. sınıf → hafif/ucuz model (gemini-2.5-flash): sorular basit, güçlü
-    modele gerek yok → maliyet düşer. 5-8. sınıf → güçlü Gemini 3 flash:
-    bağlamsal/şekilli kalite için. Model stringleri config'ten okunur
-    (gemini_model_grade_1_4 / gemini_model_grade_5_8).
-    """
+    """Sınıfa göre KABA model (geriye-uyum + testler). Ayrıntılı politika için
+    model_for() kullanılır. 1-4 → ucuz (2.5-flash); 5-8 → güçlü (3.5-flash)."""
     return (
         settings.gemini_model_grade_1_4
         if grade <= 4
         else settings.gemini_model_grade_5_8
     )
+
+
+def is_geometry_theme(
+    subject: SubjectId, grade: int, topic_id: str | None, unit_id: str | None
+) -> bool:
+    """Üretim geometri temasında mı? (model_for: geometri → güçlü model.)
+
+    Yalnız matematik; non-math derste geometri teması yok → False. Ünite akışında
+    legacy topic'e köprülenir (resolve_legacy_topic). Fail-safe: hata → False.
+    """
+    if subject != SubjectId.MATEMATIK:
+        return False
+    if topic_id == "geometri":
+        return True
+    if unit_id:
+        try:
+            return resolve_legacy_topic(grade, unit_id, None) == "geometri"
+        except Exception:  # noqa: BLE001 — tespit hatası üretimi bozmasın
+            return False
+    return False
+
+
+def model_for(
+    grade: int,
+    *,
+    is_geometry: bool,
+    difficulty: "Difficulty | None",
+    is_premium: bool,
+) -> str:
+    """Model seçim politikası (bkz. config yorumu). Ucuz=2.5-flash, güçlü=3.5-flash.
+
+    1-4 → ucuz · geometri → güçlü · 8+premium → güçlü · 5-7+premium+ZOR → güçlü ·
+    diğer → ucuz. is_premium = GERÇEK abonelik (entitlements.is_premium_for_model),
+    premium_all dark-launch DEĞİL.
+    """
+    cheap = settings.gemini_model_grade_1_4
+    strong = settings.gemini_model_grade_5_8
+    if grade <= 4:
+        return cheap
+    if is_geometry:
+        return strong
+    if grade >= 8:
+        return strong if is_premium else cheap
+    # 5-7: premium'da yalnız ZOR bucket güçlü modele gider (kalan bucket'lar ucuz;
+    # ekstra çağrı yok — zorluk bucket'ları zaten ayrı üretiliyor).
+    if is_premium and difficulty == Difficulty.ZOR:
+        return strong
+    return cheap
+
+
+def thinking_for_model(grade: int, model: str) -> int:
+    """Sınıf+model'e göre thinking bütçesi. Güçlü model (3.5, geometri/premium) →
+    dinamik (kaliteyi koru). Ucuz model: 1-4→0, 5-7→512, 8→-1. Config'ten okunur."""
+    if model == settings.gemini_model_grade_5_8:
+        return settings.gemini_thinking_budget_strong
+    if grade <= 4:
+        return settings.gemini_thinking_budget_grade_1_4
+    if grade <= 7:
+        return settings.gemini_thinking_budget_grade_5_7
+    return settings.gemini_thinking_budget_grade_8
+
+
+def model_and_thinking_for(
+    grade: int,
+    *,
+    subject: SubjectId,
+    topic_id: str | None,
+    unit_id: str | None,
+    difficulty: "Difficulty | None",
+    is_premium: bool,
+) -> tuple[str, int]:
+    """(model, thinking_budget) — üretim çağrısı/bucket'ı için tek karar noktası."""
+    geo = is_geometry_theme(subject, grade, topic_id, unit_id)
+    model = model_for(grade, is_geometry=geo, difficulty=difficulty, is_premium=is_premium)
+    return model, thinking_for_model(grade, model)
 
 
 class GeneratedQuestion(BaseModel):
@@ -343,6 +413,7 @@ class GeminiAgent:
         api_key: str | None = None,
         model: str | None = None,
         fallback_models: list[str] | None = None,
+        thinking_budget: int | None = None,
     ) -> None:
         key = api_key or settings.gemini_api_key
         if not key:
@@ -352,10 +423,14 @@ class GeminiAgent:
         self.fallback_models = (
             fallback_models if fallback_models is not None else settings.fallback_model_list
         )
+        # None → thinking config'e dokunma (SDK varsayılanı). Sınıf-bazlı değer
+        # çağıran tarafından thinking_budget_for_grade ile geçilir.
+        self.thinking_budget = thinking_budget
         try:
             self._gemini_provider: GeminiProvider | None = GeminiProvider(
                 primary_model=self.model,
                 fallback_models=self.fallback_models,
+                thinking_budget=thinking_budget,
             )
         except ProviderError as exc:
             raise AgentError(str(exc)) from exc

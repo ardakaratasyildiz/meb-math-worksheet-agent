@@ -61,6 +61,22 @@ def is_premium(tenant_id: str | None) -> bool:
     return plan_of(tenant_id) != PLAN_FREE
 
 
+def is_premium_for_model(tenant_id: str | None) -> bool:
+    """MODEL-tier kararı için premium — `premium_all` dark-launch bayrağını YOK SAYAR.
+
+    is_premium() dark-launch'ta herkese True döner (premium_all) → pahalı 3.5 modeli
+    ödeyen olmadan herkese verirdi. Model seçimi bunun yerine GERÇEK abonelik/trial'a
+    (billing_store.get_active) veya dev allowlist'ine bakar. Ödeyen kullanıcı ~0 olduğu
+    sürece herkes ucuz model alır (maliyet). Ödeme canlı olunca premium ayrımı otomatik
+    devreye girer. Anonim → False.
+    """
+    if not tenant_id:
+        return False
+    if BILLING_STORE.get_active(tenant_id) is not None:
+        return True
+    return tenant_id in settings.premium_tenant_id_set
+
+
 def wants_yeni_nesil(tenant_id: str | None) -> bool:
     """'Yeni nesil / senaryo' üretim modu açılsın mı? (gizli kalite kaldıracı.)
 

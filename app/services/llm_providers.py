@@ -84,6 +84,7 @@ class GeminiProvider:
         self,
         primary_model: str | None = None,
         fallback_models: list[str] | None = None,
+        thinking_budget: int | None = None,
     ) -> None:
         from app.services.gemini_client import make_gemini_client
         if not settings.gemini_api_key:
@@ -94,6 +95,8 @@ class GeminiProvider:
             fallback_models if fallback_models is not None
             else settings.fallback_model_list
         )
+        # Thinking bütçesi (None → config'e hiç ekleme = SDK varsayılanı/dinamik).
+        self.thinking_budget = thinking_budget
 
     @property
     def models(self) -> list[str]:
@@ -112,12 +115,21 @@ class GeminiProvider:
         from google.genai import types
 
         model_name = model or self.primary
-        config = types.GenerateContentConfig(
+        config_kwargs = dict(
             system_instruction=system,
             temperature=temperature,
             response_mime_type="application/json",
             response_schema=schema,
         )
+        # Thinking bütçesi: yalnız açıkça set edildiyse uygula. gemini-2.5-pro
+        # düşünmeyi KAPATAMAZ (min 128) → 0 istenirse -1'e (dinamik) düşür ki
+        # provider hatası (fallback zincirinde pro'ya düşünce) çıkmasın.
+        tb = self.thinking_budget
+        if tb is not None:
+            if tb == 0 and "pro" in model_name:
+                tb = -1
+            config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=tb)
+        config = types.GenerateContentConfig(**config_kwargs)
         try:
             response = self.client.models.generate_content(
                 model=model_name,

@@ -25,6 +25,27 @@ class Settings(BaseSettings):
     gemini_model_grade_1_4: str = "gemini-2.5-flash"
     gemini_model_grade_5_8: str = "gemini-3.5-flash"
     gemini_fallback_models: str = "gemini-2.5-flash-lite,gemini-2.5-pro"
+    # ── Model seçimi = model_for(grade, geometri?, zorluk, premium?) ─────────────
+    # İki kutup: ucuz (grade_1_4=2.5-flash) ve güçlü (grade_5_8=3.5-flash). Politika
+    # (A/B + Cloud Monitoring 2026-07 ile kalibre — 3.5 maliyetin %86'sıydı):
+    #   1-4              → ucuz
+    #   geometri teması  → güçlü (A/B: 2.5 geometri SVG'de zorlanıyor)
+    #   8 + premium      → güçlü (komple)
+    #   5-7 + premium + ZOR bucket → güçlü (kalan bucket'lar ucuz; ekstra çağrı yok)
+    #   diğer her şey    → ucuz (ücretsiz 5-8 geometri-dışı dahil)
+    # Premium = GERÇEK abonelik/trial (billing_store), premium_all dark-launch DEĞİL
+    # → ödeyen yokken herkes ucuz model (max tasarruf). Bkz. entitlements.is_premium_for_model.
+    #
+    # Thinking (düşünme) token bütçesi — ÇIKTI fiyatından faturalanır (maliyet sürücüsü).
+    #   0 = kapalı · -1 = dinamik · N>0 = sabit bütçe.
+    # 1-4 → 0 (A/B: kalite korundu, ~%50-76 tasarruf). 5-7 → 512 (A/B: teslim 5/5,
+    # g7'de %41 tasarruf; kapalı riskliydi). 8 → -1 (en zor+LGS, dokunma). Güçlü model
+    # (3.5, geometri/premium) → -1 (kaliteyi koru). gemini-2.5-pro 0'ı kapatamaz →
+    # provider 0'ı pro'da dinamiğe çevirir.
+    gemini_thinking_budget_grade_1_4: int = 0
+    gemini_thinking_budget_grade_5_7: int = 512
+    gemini_thinking_budget_grade_8: int = -1
+    gemini_thinking_budget_strong: int = -1  # güçlü model (3.5) için dinamik
     gemini_embedding_model: str = "gemini-embedding-001"
     # Embedding boyutu: 3072 (varsayılan) yerine 768 → ChromaDB dosyaları GitHub
     # 100MB limitinin altında kalır (LFS gerekmez). Cosine retrieval kalitesi ~korunur.

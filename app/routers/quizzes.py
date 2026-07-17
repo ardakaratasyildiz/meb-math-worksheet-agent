@@ -34,7 +34,11 @@ from app.models.schemas import (
 )
 from app.security import limiter, rate_limit_string, require_api_key
 from app.services import entitlements
-from app.services.agent import AgentError, GeminiAgent, model_for_grade
+from app.services.agent import (
+    AgentError,
+    GeminiAgent,
+    model_and_thinking_for,
+)
 from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.grading import grade_quiz
 from app.services.quiz_store import QUIZ_STORE
@@ -97,12 +101,13 @@ _SOLVABLE_TYPES = [
 ]
 
 
-@lru_cache(maxsize=8)
-def _agent_for_model(model: str) -> GeminiAgent:
+@lru_cache(maxsize=16)
+def _agent_for_model(model: str, thinking_budget: int | None = None) -> GeminiAgent:
     """Model başına tekil (cache'li) agent. Model sınıfa göre seçilir
-    (model_for_grade): 1-4 → flash 2.5, 5-8 → Gemini 3 flash. Paralel bucket
-    modunda izole GeminiAgent kullanılır (trace state yarışını önlemek için)."""
-    return GeminiAgent(model=model)
+    (model_for_grade): 1-4 → flash 2.5, 5-8 → Gemini 3 flash. thinking_budget
+    sınıf bandına göre gelir (cache anahtarına dahil). Paralel bucket modunda izole
+    GeminiAgent kullanılır (trace state yarışını önlemek için)."""
+    return GeminiAgent(model=model, thinking_budget=thinking_budget)
 
 
 def _resolve_solvable_types(
@@ -180,8 +185,16 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str, lis
             detail="Seçilen tipler çözülebilir değil; en az bir çözülebilir tip seçin.",
         )
 
-    # Model seçimi SINIFA göre: 1-4 → flash 2.5 (ucuz), 5-8 → Gemini 3 flash.
-    _model = model_for_grade(req.grade)
+    # Model + thinking POLİTİKAYLA (grade + geometri + zorluk + gerçek premium);
+    # her bucket kendi zorluğuna göre model seçer (premium 5-7 zor→3.5).
+    _is_premium = entitlements.is_premium_for_model(req.tenant_id)
+
+    def _agent_for_diff(diff: Difficulty, *, fresh: bool = False) -> GeminiAgent:
+        model, tb = model_and_thinking_for(
+            req.grade, subject=req.subject, topic_id=req.topic_id,
+            unit_id=req.unit_id, difficulty=diff, is_premium=_is_premium,
+        )
+        return GeminiAgent(model=model, thinking_budget=tb) if fresh else _agent_for_model(model, tb)
 
     def _gen(agent: GeminiAgent, diff: Difficulty, count: int) -> list[Question]:
         return agent.generate(
@@ -199,7 +212,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str, lis
     raw: list[Question] = []
     traces: list = []  # Gemini maliyet defteri için (build_last_trace çıktıları).
     if req.difficulty_mode == "single":
-        single_agent = _agent_for_model(_model)
+        single_agent = _agent_for_diff(req.difficulty)
         try:
             raw = _gen(single_agent, req.difficulty, req.question_count)
         except AgentError as exc:
@@ -212,9 +225,9 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str, lis
                if buckets.get(d, 0) > 0]
 
         def _gen_bucket(diff: Difficulty):
-            # İzole agent → paylaşılan trace/durum yarışı olmaz. Trace izole
-            # agent'tan okunur (maliyet toplanabilsin).
-            local_agent = GeminiAgent(model=_model)
+            # İzole (fresh) agent → paylaşılan trace/durum yarışı olmaz; modeli
+            # kendi zorluğuna göre seçer (premium 5-7 zor→3.5).
+            local_agent = _agent_for_diff(diff, fresh=True)
             try:
                 qs = _gen(local_agent, diff, buckets[diff])
                 return diff, qs, local_agent.build_last_trace(), None
@@ -447,7 +460,11 @@ def _regenerate_one_question(
             unit_id = found[1]["unit_id"]
         else:
             topic_id = fallback_topic_id  # legacy M.* / topic-bazlı quiz
-    agent = _agent_for_model(model_for_grade(grade))
+    _model, _tb = model_and_thinking_for(
+        grade, subject=subject, topic_id=topic_id, unit_id=unit_id,
+        difficulty=difficulty, is_premium=entitlements.is_premium_for_model(tenant_id),
+    )
+    agent = _agent_for_model(_model, _tb)
     try:
         raw = agent.generate(
             grade=grade,
