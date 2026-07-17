@@ -730,6 +730,30 @@ export async function leaveClassroom(
   );
 }
 
+/** Öğretmen bir öğrenciyi sınıftan çıkarır (kick) — yalnız sahip. */
+export async function removeMember(
+  tenantId: string,
+  classroomId: string,
+  studentTenantId: string,
+): Promise<void> {
+  await request<{ ok: boolean }>(
+    `/api/classrooms/${encodeURIComponent(classroomId)}/members/${encodeURIComponent(studentTenantId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "DELETE" },
+  );
+}
+
+/** Öğretmen bir ödevi siler — yalnız sınıf sahibi. */
+export async function deleteAssignment(
+  tenantId: string,
+  classroomId: string,
+  assignmentId: string,
+): Promise<void> {
+  await request<{ ok: boolean }>(
+    `/api/classrooms/${encodeURIComponent(classroomId)}/assignments/${encodeURIComponent(assignmentId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "DELETE" },
+  );
+}
+
 // ---- Ödev (Faz 3.5 PR 2) -------------------------------------------------
 
 /** Öğretmenin ödev atamak için seçebileceği kendi quiz'leri. */

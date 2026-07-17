@@ -18,6 +18,7 @@ import {
   Plus,
   Share2,
   Trash2,
+  UserMinus,
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -28,18 +29,21 @@ import { Input } from "@/components/ui/input";
 import {
   assignPdf,
   assignQuiz,
+  deleteAssignment,
   deleteClassroom,
   getAssignmentResults,
   getClassroom,
   leaveClassroom,
   listMyQuizzes,
   listWorksheetHistory,
+  removeMember,
 } from "@/lib/api";
 import type { HistoryItem } from "@/lib/history";
 import type {
   AssignmentResultsResponse,
   AssignmentSummary,
   ClassroomDetail,
+  ClassroomMember,
   MyQuizItem,
 } from "@/lib/types";
 
@@ -512,6 +516,8 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
                   key={a.id}
                   assignment={a}
                   tenantId={userId as string}
+                  classroomId={classroomId}
+                  onChanged={reload}
                 />
               ))}
             </ul>
@@ -532,15 +538,13 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
           ) : (
             <ul className="divide-y">
               {data.members.map((m) => (
-                <li
+                <MemberRow
                   key={m.student_tenant_id}
-                  className="flex items-center justify-between px-5 py-3 text-sm"
-                >
-                  <span className="font-medium">{m.display_name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {formatDate(m.joined_at)}
-                  </span>
-                </li>
+                  member={m}
+                  classroomId={classroomId}
+                  tenantId={userId as string}
+                  onRemoved={reload}
+                />
               ))}
             </ul>
           )}
@@ -558,41 +562,88 @@ export function ClassroomDetailView({ classroomId }: { classroomId: string }) {
   );
 }
 
-/** Ödev satırı — tıklayınca sonuç panosunu (sınıf roster'ı) açar. */
+/** Öğrenci satırı (sahip görünümü) — ad + katılma tarihi + "çıkar" (kick). */
+function MemberRow({
+  member,
+  classroomId,
+  tenantId,
+  onRemoved,
+}: {
+  member: ClassroomMember;
+  classroomId: string;
+  tenantId: string;
+  onRemoved: () => Promise<void>;
+}) {
+  const [removing, setRemoving] = React.useState(false);
+
+  async function onRemove() {
+    if (removing) return;
+    if (
+      !window.confirm(
+        `${member.display_name} adlı öğrenciyi sınıftan çıkarmak istediğine emin misin?`,
+      )
+    ) {
+      return;
+    }
+    setRemoving(true);
+    try {
+      await removeMember(tenantId, classroomId, member.student_tenant_id);
+      toast.success(`${member.display_name} çıkarıldı`);
+      await onRemoved();
+    } catch (e: unknown) {
+      toast.error("Çıkarılamadı", {
+        description: e instanceof Error ? e.message : undefined,
+      });
+      setRemoving(false);
+    }
+  }
+
+  return (
+    <li className="flex items-center justify-between gap-2 px-5 py-3 text-sm">
+      <span className="min-w-0 truncate font-medium">{member.display_name}</span>
+      <div className="flex shrink-0 items-center gap-3">
+        <span className="text-xs text-muted-foreground">
+          {formatDate(member.joined_at)}
+        </span>
+        <button
+          type="button"
+          onClick={onRemove}
+          disabled={removing}
+          title="Sınıftan çıkar"
+          aria-label="Sınıftan çıkar"
+          className="flex items-center text-muted-foreground transition-colors hover:text-destructive disabled:opacity-50"
+        >
+          {removing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <UserMinus className="h-4 w-4" />
+          )}
+        </button>
+      </div>
+    </li>
+  );
+}
+
+/** Ödev satırı — tıklayınca sonuç panosunu (sınıf roster'ı) açar. Sahip ödevi silebilir.
+ *  Quiz + worksheet (pdf) ödevlerinin ikisi de sistem-içi çözülür → ikisinde de sonuç var. */
 function AssignmentRow({
   assignment,
   tenantId,
+  classroomId,
+  onChanged,
 }: {
   assignment: AssignmentSummary;
   tenantId: string;
+  classroomId: string;
+  onChanged: () => Promise<void>;
 }) {
   const [open, setOpen] = React.useState(false);
   const [results, setResults] = React.useState<AssignmentResultsResponse | null>(
     null,
   );
   const [loading, setLoading] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
   const isPdf = assignment.assignment_type === "pdf";
-
-  // PDF ödev: site içi çözüm/sonuç yok → genişlemeyen sade satır.
-  if (isPdf) {
-    return (
-      <li className="flex items-center gap-2 px-4 py-2.5 text-sm">
-        <NotebookPen className="h-4 w-4 shrink-0 text-rose-500" />
-        <span className="min-w-0 truncate font-medium">{assignment.title}</span>
-        <span className="shrink-0 rounded-full bg-rose-400/15 px-2 py-0.5 text-[11px] font-semibold text-rose-500">
-          PDF
-        </span>
-        {assignment.due_at ? (
-          <span className="shrink-0 text-[11px] text-muted-foreground">
-            son: {formatDate(assignment.due_at)}
-          </span>
-        ) : null}
-        <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-          indirilebilir · takip yok
-        </span>
-      </li>
-    );
-  }
 
   async function toggle() {
     const next = !open;
@@ -612,37 +663,82 @@ function AssignmentRow({
     }
   }
 
+  async function onDelete() {
+    if (deleting) return;
+    if (
+      !window.confirm(
+        `"${assignment.title}" ödevini silmek istediğine emin misin? Öğrencilerin bu ödevi artık göremez. (Çözüm geçmişleri kalır.)`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    try {
+      await deleteAssignment(tenantId, classroomId, assignment.id);
+      toast.success("Ödev silindi");
+      await onChanged();
+    } catch (e: unknown) {
+      toast.error("Silinemedi", {
+        description: e instanceof Error ? e.message : undefined,
+      });
+      setDeleting(false);
+    }
+  }
+
   return (
     <li className="text-sm">
-      <button
-        type="button"
-        onClick={toggle}
-        className="flex w-full items-center gap-2 px-4 py-2.5 text-left transition-colors hover:bg-accent/20"
-      >
-        {open ? (
-          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-        ) : (
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-        )}
-        <NotebookPen className="h-4 w-4 shrink-0 text-amber-500" />
-        <span className="min-w-0 truncate font-medium">{assignment.title}</span>
-        {assignment.due_at ? (
-          <span
-            className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-              new Date(assignment.due_at) < new Date()
-                ? "bg-rose-400/15 text-rose-500"
-                : "bg-amber-400/15 text-amber-600 dark:text-amber-400"
-            }`}
-          >
-            son: {formatDate(assignment.due_at)}
+      <div className="flex items-center">
+        <button
+          type="button"
+          onClick={toggle}
+          className="flex flex-1 items-center gap-2 px-4 py-2.5 text-left transition-colors hover:bg-accent/20"
+        >
+          {open ? (
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+          ) : (
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          )}
+          <NotebookPen
+            className={`h-4 w-4 shrink-0 ${isPdf ? "text-rose-500" : "text-amber-500"}`}
+          />
+          <span className="min-w-0 truncate font-medium">{assignment.title}</span>
+          {isPdf ? (
+            <span className="shrink-0 rounded-full bg-rose-400/15 px-2 py-0.5 text-[11px] font-semibold text-rose-500">
+              PDF
+            </span>
+          ) : null}
+          {assignment.due_at ? (
+            <span
+              className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                new Date(assignment.due_at) < new Date()
+                  ? "bg-rose-400/15 text-rose-500"
+                  : "bg-amber-400/15 text-amber-600 dark:text-amber-400"
+              }`}
+            >
+              son: {formatDate(assignment.due_at)}
+            </span>
+          ) : null}
+          <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+            {results
+              ? `${results.solved_count}/${results.member_count} çözdü`
+              : formatDate(assignment.created_at)}
           </span>
-        ) : null}
-        <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-          {results
-            ? `${results.solved_count}/${results.member_count} çözdü`
-            : formatDate(assignment.created_at)}
-        </span>
-      </button>
+        </button>
+        <button
+          type="button"
+          onClick={onDelete}
+          disabled={deleting}
+          title="Ödevi sil"
+          aria-label="Ödevi sil"
+          className="flex shrink-0 items-center px-3 py-2.5 text-muted-foreground transition-colors hover:text-destructive disabled:opacity-50"
+        >
+          {deleting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Trash2 className="h-4 w-4" />
+          )}
+        </button>
+      </div>
 
       {open ? (
         <div className="border-t bg-muted/30 px-4 py-3">

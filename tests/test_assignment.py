@@ -280,6 +280,45 @@ def test_pdf_assignment_solve_tracked() -> None:
             cs.close(); qs.close()
 
 
+def test_delete_assignment() -> None:
+    print("öğretmen ödev silme — yalnız sahip; denemeler tarihsel kalır")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        db = str(Path(tmp) / "t.sqlite3")
+        qs = QuizStore(db_path=db)
+        cs = ClassroomStore(db_path=db)
+        try:
+            quiz_id = _make_quiz(qs, "teacher-1")
+            c = cs.create_classroom(owner_tenant_id="teacher-1", name="5/A")
+            cs.join_classroom(code=c["join_code"], student_tenant_id="stu-1", display_name="Ali")
+            a = cs.create_assignment(
+                classroom_id=c["id"], owner_tenant_id="teacher-1",
+                quiz_id=quiz_id, title="Ödev 1",
+            )
+            qs.record_attempt(
+                quiz_id=quiz_id, solver_tenant_id="stu-1",
+                answers=[{"number": 1, "texts": ["4"]}],
+                score=1, total=1, duration_seconds=10,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 1, "total": 1}],
+                assignment_id=a["id"],
+            )
+            # Yetkisiz: üye/yabancı silemez
+            check(cs.delete_assignment(a["id"], "stu-1") is False, "üye ödevi silemez")
+            check(cs.delete_assignment(a["id"], "stranger") is False, "yabancı silemez")
+            check(len(cs.list_assignments(c["id"])) == 1, "yetkisiz denemeler ödevi silmedi")
+            # Sahip siler
+            check(cs.delete_assignment(a["id"], "teacher-1") is True, "sahip ödevi sildi")
+            check(cs.get_assignment(a["id"]) is None, "silinen ödev yok")
+            check(len(cs.list_assignments(c["id"])) == 0, "sınıf ödev listesi boş")
+            check(cs.list_my_assignments("stu-1") == [], "öğrencinin ödevi kalmadı")
+            # Deneme kaydı tarihsel olarak durur (quiz geçmişinde)
+            recent = qs.recent_attempts("stu-1")
+            check(len(recent) == 1, "çözüm denemesi tarihsel olarak korundu")
+            # Var olmayan ödev
+            check(cs.delete_assignment("yok", "teacher-1") is False, "olmayan ödev False")
+        finally:
+            cs.close(); qs.close()
+
+
 def test_app_imports() -> None:
     print("uygulama import — assignment endpoint'leri kayıtlı")
     from app.main import app  # noqa: PLC0415
@@ -305,6 +344,7 @@ def main() -> int:
         test_first_attempt_counts_not_max,
         test_pdf_assignment,
         test_pdf_assignment_solve_tracked,
+        test_delete_assignment,
         test_app_imports,
     ):
         fn()

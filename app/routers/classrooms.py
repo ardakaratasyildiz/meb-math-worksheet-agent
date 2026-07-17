@@ -177,6 +177,52 @@ def leave_classroom_endpoint(
     return {"ok": True}
 
 
+@router.delete("/{classroom_id}/members/{student_tenant_id}")
+def remove_member_endpoint(
+    classroom_id: str,
+    student_tenant_id: str,
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> dict:
+    """Öğretmen bir öğrenciyi sınıftan çıkarır (kick) — yalnız sınıf sahibi."""
+    tenant_id = require_tenant(verified, tenant_id)
+    enforce_role(tenant_id, {"teacher", "admin"})
+    ok = CLASSROOM_STORE.remove_member(classroom_id, student_tenant_id, tenant_id)
+    if not ok:
+        raise HTTPException(
+            status_code=404, detail="Öğrenci bulunamadı veya sınıfın sahibi değilsin."
+        )
+    logger.info(
+        "öğrenci çıkarıldı: owner=%s classroom=%s student=%s",
+        tenant_id, classroom_id, student_tenant_id,
+    )
+    return {"ok": True}
+
+
+@router.delete("/{classroom_id}/assignments/{assignment_id}")
+def delete_assignment_endpoint(
+    classroom_id: str,
+    assignment_id: str,
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> dict:
+    """Ödevi sil — yalnız sınıf sahibi (öğretmen/admin). Denemeler tarihsel olarak kalır."""
+    tenant_id = require_tenant(verified, tenant_id)
+    enforce_role(tenant_id, {"teacher", "admin"})
+    ok = CLASSROOM_STORE.delete_assignment(assignment_id, tenant_id)
+    if not ok:
+        raise HTTPException(
+            status_code=404, detail="Ödev bulunamadı veya sınıfın sahibi değilsin."
+        )
+    logger.info(
+        "ödev silindi: owner=%s classroom=%s assignment=%s",
+        tenant_id, classroom_id, assignment_id,
+    )
+    return {"ok": True}
+
+
 @router.post("/{classroom_id}/assignments", response_model=AssignmentCreatedResponse)
 def assign_quiz(
     classroom_id: str,

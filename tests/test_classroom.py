@@ -155,6 +155,31 @@ def test_delete_and_leave() -> None:
             store.close()
 
 
+def test_kick_member() -> None:
+    print("öğretmen öğrenci çıkarma (kick) — yalnız sahip")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        store = ClassroomStore(db_path=str(Path(tmp) / "t.sqlite3"))
+        try:
+            c = store.create_classroom(owner_tenant_id="teacher-1", name="Sınıf")
+            store.join_classroom(code=c["join_code"], student_tenant_id="stu-1", display_name="Ali")
+            store.join_classroom(code=c["join_code"], student_tenant_id="stu-2", display_name="Ece")
+
+            # Yetkisiz: üye/yabancı başkasını çıkaramaz
+            check(store.remove_member(c["id"], "stu-2", "stu-1") is False, "üye başkasını çıkaramaz")
+            check(store.remove_member(c["id"], "stu-2", "stranger") is False, "yabancı çıkaramaz")
+            check(store.get_classroom(c["id"], "teacher-1")["member_count"] == 2, "yetkisiz denemeler üyeyi silmedi")
+
+            # Sahip çıkarır
+            check(store.remove_member(c["id"], "stu-1", "teacher-1") is True, "sahip stu-1'i çıkardı")
+            check(store.get_classroom(c["id"], "stu-1") is None, "çıkarılan erişemez")
+            check(store.get_classroom(c["id"], "teacher-1")["member_count"] == 1, "üye sayısı 1'e düştü")
+            check(len(store.list_joined("stu-1")) == 0, "çıkarılan öğrencinin listesinden düştü")
+            # Üye olmayanı çıkarmak False
+            check(store.remove_member(c["id"], "stu-1", "teacher-1") is False, "zaten üye değil (False)")
+        finally:
+            store.close()
+
+
 def test_app_imports() -> None:
     print("uygulama import — classrooms router kayıtlı")
     from app.main import app  # noqa: PLC0415
@@ -167,6 +192,14 @@ def test_app_imports() -> None:
     check("/api/classrooms/join" in paths, "POST /api/classrooms/join kayıtlı")
     check("/api/classrooms/{classroom_id}" in paths, "GET/DELETE /api/classrooms/{id} kayıtlı")
     check("/api/classrooms/{classroom_id}/leave" in paths, "POST /api/classrooms/{id}/leave kayıtlı")
+    check(
+        "/api/classrooms/{classroom_id}/members/{student_tenant_id}" in paths,
+        "DELETE /api/classrooms/{id}/members/{student} (kick) kayıtlı",
+    )
+    check(
+        "/api/classrooms/{classroom_id}/assignments/{assignment_id}" in paths,
+        "DELETE /api/classrooms/{id}/assignments/{assignment} kayıtlı",
+    )
 
 
 def main() -> int:
@@ -176,6 +209,7 @@ def main() -> int:
         test_lists,
         test_access_control,
         test_delete_and_leave,
+        test_kick_member,
         test_app_imports,
     ):
         fn()
