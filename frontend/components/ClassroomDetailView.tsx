@@ -34,15 +34,19 @@ import {
   deleteClassroom,
   getAssignmentResults,
   getClassroom,
+  getStudentAttemptDetail,
   leaveClassroom,
   listMyQuizzes,
   listWorksheetHistory,
   removeMember,
 } from "@/lib/api";
+import { QuestionReview } from "@/components/QuestionReview";
 import type { HistoryItem } from "@/lib/history";
 import type {
+  AssignmentResultItem,
   AssignmentResultsResponse,
   AssignmentSummary,
+  AttemptDetail,
   ClassroomDetail,
   ClassroomMember,
   MyQuizItem,
@@ -796,41 +800,124 @@ function AssignmentRow({
               Sonuçlar yükleniyor…
             </div>
           ) : results && results.items.length > 0 ? (
-            <ul className="space-y-1.5">
-              {results.items.map((it) => {
-                const pct =
-                  it.solved && it.total
-                    ? Math.round(((it.score ?? 0) / it.total) * 100)
-                    : 0;
-                return (
-                  <li
-                    key={it.student_tenant_id}
-                    className="flex items-center gap-2"
-                  >
-                    {it.solved ? (
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
-                    ) : (
-                      <Circle className="h-4 w-4 shrink-0 text-muted-foreground/40" />
-                    )}
-                    <span className="min-w-0 truncate">{it.display_name}</span>
-                    <span className="ml-auto shrink-0 tabular-nums text-muted-foreground">
-                      {it.solved ? (
-                        <>
-                          {it.score}/{it.total} · %{pct}
-                        </>
-                      ) : (
-                        "çözmedi"
-                      )}
-                    </span>
-                  </li>
-                );
-              })}
+            <ul className="space-y-1">
+              {results.items.map((it) => (
+                <StudentResultRow
+                  key={it.student_tenant_id}
+                  item={it}
+                  assignmentId={assignment.id}
+                  tenantId={tenantId}
+                />
+              ))}
             </ul>
           ) : (
             <p className="text-sm text-muted-foreground">
               Sınıfta henüz öğrenci yok.
             </p>
           )}
+        </div>
+      ) : null}
+    </li>
+  );
+}
+
+/** Sonuç panosunda öğrenci satırı — çözdüyse tıklayınca cevaplarını (soru-soru) açar. */
+function StudentResultRow({
+  item,
+  assignmentId,
+  tenantId,
+}: {
+  item: AssignmentResultItem;
+  assignmentId: string;
+  tenantId: string;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const [detail, setDetail] = React.useState<AttemptDetail | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const pct =
+    item.solved && item.total
+      ? Math.round(((item.score ?? 0) / item.total) * 100)
+      : 0;
+
+  async function toggle() {
+    if (!item.solved) return; // çözmeyende açılacak cevap yok
+    const next = !open;
+    setOpen(next);
+    if (next && detail === null) {
+      setLoading(true);
+      try {
+        setDetail(
+          await getStudentAttemptDetail(assignmentId, item.student_tenant_id, tenantId),
+        );
+      } catch (e: unknown) {
+        toast.error("Cevaplar alınamadı", {
+          description: e instanceof Error ? e.message : undefined,
+        });
+        setOpen(false);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={toggle}
+        disabled={!item.solved}
+        className="flex w-full items-center gap-2 rounded-md px-1 py-1 text-left transition-colors enabled:hover:bg-accent/30 disabled:cursor-default"
+      >
+        {item.solved ? (
+          <ChevronRight
+            className={`h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`}
+          />
+        ) : (
+          <span className="w-3.5 shrink-0" />
+        )}
+        {item.solved ? (
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+        ) : (
+          <Circle className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+        )}
+        <span className="min-w-0 truncate">{item.display_name}</span>
+        <span className="ml-auto shrink-0 tabular-nums text-muted-foreground">
+          {item.solved ? (
+            <>
+              {item.score}/{item.total} · %{pct}
+            </>
+          ) : (
+            "çözmedi"
+          )}
+        </span>
+      </button>
+
+      {open ? (
+        <div className="mt-1 space-y-2 border-l-2 border-muted pl-3">
+          {loading ? (
+            <div className="flex items-center gap-2 py-2 text-xs text-muted-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Cevaplar yükleniyor…
+            </div>
+          ) : detail && detail.has_detail ? (
+            detail.review.map((r) => (
+              <Card key={r.number} className="p-3">
+                <QuestionReview
+                  number={r.number}
+                  question={r.question}
+                  questionType={r.question_type}
+                  options={r.options}
+                  isCorrect={r.is_correct}
+                  correctAnswer={r.correct_answer}
+                  solutionSteps={r.solution_steps}
+                  submitted={r.submitted}
+                />
+              </Card>
+            ))
+          ) : detail ? (
+            <p className="py-2 text-xs text-muted-foreground">
+              Bu deneme için soru detayı saklanmadı; yalnızca skor var.
+            </p>
+          ) : null}
         </div>
       ) : null}
     </li>

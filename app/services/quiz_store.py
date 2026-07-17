@@ -619,6 +619,50 @@ class QuizStore:
             "snapshot": snapshot,
         }
 
+    def get_assignment_attempt(
+        self, assignment_id: str, solver_tenant_id: str
+    ) -> dict | None:
+        """Bir öğrencinin bir ödevdeki İLK denemesini getirir (cevaplar + snapshot).
+
+        Öğretmenin öğrenci cevaplarını görmesi için (owner-gate ÇAĞIRANDA yapılır —
+        bu metot güvenlik uygulamaz, yalnız veriyi getirir). İLK deneme seçilir
+        (assignment_results puanının kaynağıyla tutarlı: 'ilk-deneme sayılır').
+        Dönüş get_attempt ile aynı şekil; yoksa None.
+        """
+        if not assignment_id or not solver_tenant_id:
+            return None
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT id, quiz_id, score, total, duration_seconds, completed_at, "
+                "answers_json, quiz_snapshot_json FROM attempts "
+                "WHERE assignment_id = ? AND solver_tenant_id = ? "
+                "ORDER BY completed_at ASC LIMIT 1",
+                (assignment_id, solver_tenant_id),
+            ).fetchone()
+        if not row:
+            return None
+        try:
+            answers = json.loads(row[6]) if row[6] else []
+        except json.JSONDecodeError:
+            answers = []
+        snapshot = None
+        if row[7]:
+            try:
+                snapshot = json.loads(row[7])
+            except json.JSONDecodeError:
+                snapshot = None
+        return {
+            "attempt_id": row[0],
+            "quiz_id": row[1],
+            "score": row[2],
+            "total": row[3],
+            "duration_seconds": row[4],
+            "completed_at": datetime.fromtimestamp(row[5], tz=timezone.utc).isoformat(),
+            "answers": answers,
+            "snapshot": snapshot,
+        }
+
     def update_mastery(self, tenant_id: str, per_kazanim: list[dict]) -> None:
         """Kazanım-bazlı doğru/toplam sayaçlarını kümülatif günceller (UPSERT)."""
         if not tenant_id or not per_kazanim:

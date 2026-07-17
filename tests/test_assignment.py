@@ -319,6 +319,51 @@ def test_delete_assignment() -> None:
             cs.close(); qs.close()
 
 
+def test_teacher_view_student_attempt() -> None:
+    """Öğretmen öğrencinin ödevdeki İLK denemesini (cevaplar) görebilmeli."""
+    print("get_assignment_attempt — öğretmen öğrenci cevaplarını görür")
+    import time as _t
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        db = str(Path(tmp) / "t.sqlite3")
+        qs = QuizStore(db_path=db)
+        cs = ClassroomStore(db_path=db)
+        try:
+            quiz_id = _make_quiz(qs, "teacher-1")
+            c = cs.create_classroom(owner_tenant_id="teacher-1", name="5/A")
+            cs.join_classroom(code=c["join_code"], student_tenant_id="stu-1", display_name="Ali")
+            a = cs.create_assignment(
+                classroom_id=c["id"], owner_tenant_id="teacher-1",
+                quiz_id=quiz_id, title="Ödev 1",
+            )
+            # Çözmemişken None
+            check(qs.get_assignment_attempt(a["id"], "stu-1") is None, "çözmeden None")
+            # İki deneme — İLK'i dönmeli
+            qs.record_attempt(
+                quiz_id=quiz_id, solver_tenant_id="stu-1",
+                answers=[{"number": 1, "texts": ["3"]}],  # yanlış
+                score=0, total=1, duration_seconds=9,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 0, "total": 1}],
+                assignment_id=a["id"],
+                quiz_snapshot={"title": "Ödev 1", "grade": 5, "topic_id": "dogal_sayilar",
+                               "difficulty": "orta", "questions": qs.get(quiz_id, "teacher-1")["questions"]},
+            )
+            _t.sleep(0.05)
+            qs.record_attempt(
+                quiz_id=quiz_id, solver_tenant_id="stu-1",
+                answers=[{"number": 1, "texts": ["4"]}],  # doğru (2. deneme)
+                score=1, total=1, duration_seconds=4,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 1, "total": 1}],
+                assignment_id=a["id"],
+            )
+            rec = qs.get_assignment_attempt(a["id"], "stu-1")
+            check(rec is not None, "deneme getirildi")
+            check(rec["score"] == 0, f"İLK deneme (0), MAX değil → {rec['score']}")
+            check(rec["answers"][0]["texts"] == ["3"], "öğrencinin verdiği cevap görünür")
+            check(rec["snapshot"] is not None, "snapshot var (soru detayı)")
+        finally:
+            cs.close(); qs.close()
+
+
 def test_app_imports() -> None:
     print("uygulama import — assignment endpoint'leri kayıtlı")
     from app.main import app  # noqa: PLC0415
@@ -334,6 +379,10 @@ def test_app_imports() -> None:
     check("/api/classrooms/{classroom_id}/assignments/pdf" in paths, "POST pdf assignment")
     check("/api/me/quizzes" in paths, "GET /api/me/quizzes")
     check("/api/me/assignments" in paths, "GET /api/me/assignments")
+    check(
+        "/api/assignments/{assignment_id}/attempts/{student_tenant_id}" in paths,
+        "GET .../attempts/{student} (öğretmen öğrenci cevapları)",
+    )
 
 
 def main() -> int:
@@ -345,6 +394,7 @@ def main() -> int:
         test_pdf_assignment,
         test_pdf_assignment_solve_tracked,
         test_delete_assignment,
+        test_teacher_view_student_attempt,
         test_app_imports,
     ):
         fn()

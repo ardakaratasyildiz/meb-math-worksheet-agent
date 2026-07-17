@@ -27,13 +27,20 @@ def build_attempt_detail(
     submitted: list[SubmittedAnswer],
     duration_seconds: int | None,
     completed_at: str,
+    open_ended_text_match: bool = False,
 ) -> AttemptDetail:
     """Deneme + quiz snapshot → tam gözden geçirme.
 
     meta: {title, grade, topic_id, difficulty}. questions: snapshot'taki cevaplı
     Question listesi. submitted: kullanıcının SubmittedAnswer listesi.
+
+    open_ended_text_match: worksheet ödevi denemesinde True — açık uçlu/yapılandırılmamış
+    tipler metin-eşleştirmeyle puanlanır (çözümdeki puanlamayla tutarlı olsun). Quiz/öğrenci
+    geçmişinde False (varsayılan davranış korunur).
     """
-    results, score, total, per_kazanim = grade_quiz(questions, submitted)
+    results, score, total, per_kazanim = grade_quiz(
+        questions, submitted, open_ended_text_match=open_ended_text_match
+    )
     by_number = {a.number: a for a in submitted}
 
     review: list[AttemptReviewItem] = []
