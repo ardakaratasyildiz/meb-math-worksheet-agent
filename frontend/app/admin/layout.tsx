@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Activity, Database, ScrollText, Users } from "lucide-react";
+import { Activity, Coins, Database, ScrollText, Users } from "lucide-react";
 
 import { isAdminUser } from "@/lib/admin-proxy";
 
@@ -35,6 +35,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </div>
       <nav className="mb-8 flex flex-wrap gap-2 border-b pb-4">
         <AdminNavLink href="/admin" icon={<Activity className="h-4 w-4" />} label="Dashboard" />
+        <AdminNavLink href="/admin/costs" icon={<Coins className="h-4 w-4" />} label="Maliyet" />
         <AdminNavLink href="/admin/tenants" icon={<Users className="h-4 w-4" />} label="Kullanıcılar" />
         <AdminNavLink href="/admin/cache" icon={<Database className="h-4 w-4" />} label="Cache" />
         <AdminNavLink href="/admin/audit" icon={<ScrollText className="h-4 w-4" />} label="Audit log" />

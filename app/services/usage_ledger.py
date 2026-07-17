@@ -118,6 +118,48 @@ class UsageLedger:
             logger.warning("usage_ledger kota sayımı başarısız (yutuldu): %s", exc)
             return 0
 
+    def recent(self, limit: int = 100, since_ts: float | None = None) -> list[dict]:
+        """Son N üretim — HER SATIR ayrı (agregasyon değil): kağıt-bazında maliyet
+        detayı. "Hangi üretim (sınıf/konu) hangi modelle ne kadar harcadı" için.
+
+        Not: karışık-zorluk kağıtta buckets farklı model kullanabilir; `model` alanı
+        birincil (ilk) bucket'ı gösterir, `cost_usd` ise TÜM bucket'ların toplamıdır.
+        """
+        limit = max(1, min(500, limit))
+        where = ""
+        params: list = []
+        if since_ts is not None:
+            where = "WHERE created_at >= ?"
+            params.append(since_ts)
+        params.append(limit)
+        try:
+            with self._lock:
+                rows = self._db.execute(
+                    f"SELECT id, tenant_id, model, prompt_tokens, completion_tokens, "
+                    f"cost_usd, grade, topic, question_count, cache_hit, created_at "
+                    f"FROM usage_ledger {where} ORDER BY created_at DESC LIMIT ?",
+                    tuple(params),
+                ).fetchall()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("usage_ledger recent başarısız: %s", exc)
+            return []
+        return [
+            {
+                "id": r[0],
+                "tenant_id": r[1],
+                "model": r[2],
+                "prompt_tokens": int(r[3] or 0),
+                "completion_tokens": int(r[4] or 0),
+                "cost_usd": round(float(r[5] or 0.0), 6),
+                "grade": r[6],
+                "topic": r[7],
+                "question_count": int(r[8] or 0),
+                "cache_hit": bool(r[9]),
+                "created_at": r[10],
+            }
+            for r in rows
+        ]
+
     def summary(self, since_ts: float | None = None, until_ts: float | None = None) -> dict:
         """Dönem için agregasyon: toplam + tenant/model/gün kırılımı.
 
