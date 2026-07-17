@@ -79,6 +79,27 @@ def test_model_and_thinking_together():
     assert (m, tb) == (CHEAP, 0)
 
 
+def test_yeni_nesil_teaser_free(monkeypatch):
+    """premium_all=False (billing canlı) + ücretsiz → yalnız teaser bucket'ta yeni_nesil."""
+    from app.services import entitlements
+    from app.config import settings as s
+    monkeypatch.setattr(s, "premium_all", False)
+    monkeypatch.setattr(s, "free_yeni_nesil_enabled", True)
+    monkeypatch.setattr(s, "free_yeni_nesil_bucket", "orta")
+    assert entitlements.yeni_nesil_for_bucket(None, Difficulty.ORTA) is True
+    assert entitlements.yeni_nesil_for_bucket(None, Difficulty.KOLAY) is False
+    assert entitlements.yeni_nesil_for_bucket(None, Difficulty.ZOR) is False
+
+
+def test_yeni_nesil_full_when_premium(monkeypatch):
+    """Dark-launch (premium_all=True) → herkes full yeni_nesil (her bucket)."""
+    from app.services import entitlements
+    from app.config import settings as s
+    monkeypatch.setattr(s, "premium_all", True)
+    for diff in Difficulty:
+        assert entitlements.yeni_nesil_for_bucket("anyone", diff) is True
+
+
 if __name__ == "__main__":
     import sys
     sys.exit(pytest.main([__file__, "-q"]))

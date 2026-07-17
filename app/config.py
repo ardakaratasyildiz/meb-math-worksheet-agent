@@ -146,6 +146,13 @@ class Settings(BaseSettings):
     premium_yeni_nesil: bool = True
     premium_all: bool = True
     premium_tenant_ids: str = ""
+    # yeni_nesil TEASER (ücretsiz): premium full yeni_nesil alır; ücretsiz yalnız
+    # BİR zorluk bucket'ında yeni_nesil görür (tadımlık, fiyatlandırma kaldıracı).
+    # Soru-başına bölme YOK → mevcut zorluk bucket'ına biner (ekstra çağrı yok).
+    # Dark-launch'ta premium_all herkesi premium yapar → teaser dormant; billing
+    # canlı olunca (premium_all=False) ücretsiz kullanıcılarda otomatik devreye girer.
+    free_yeni_nesil_enabled: bool = True
+    free_yeni_nesil_bucket: str = "orta"
 
     # --- Abonelik / kota (billing) — MONETIZATION_PLAN §2 (2026-07-16 modeli) ---
     # Kademeler: free (100 soru/ay) · pro (1000 soru/ay) · pro-plus (fair-use sınırsız)
