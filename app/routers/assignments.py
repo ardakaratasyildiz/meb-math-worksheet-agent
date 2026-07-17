@@ -44,10 +44,12 @@ router = APIRouter()
 def _load_solvable(assignment_id: str, tenant_id: str) -> dict:
     """Ödevi çöz + erişim kontrolü (sınıf üyesi/sahibi) + çözülebilir içeriği getir.
 
-    İki ödev tipini de destekler:
-      - quiz  → QUIZ_STORE'daki quiz'in soruları; açık uçlu ÖZ-DEĞERLENDİRME (answer_mode=quiz).
-      - pdf   → worksheet_json'daki sorular; açık uçlu/yapılandırılmamış tipler METİN-EŞLEŞTİRME
-                (answer_mode=worksheet, quiz_id="" → attempt yalnız assignment_id'ye bağlanır).
+    Her iki ödev tipinde de açık uçlu/yapılandırılmamış tipler METİN-EŞLEŞTİRMEYLE
+    puanlanır (answer_mode=worksheet): öğrenci cevabı metin kutusuna yazar, sunucu cevap
+    anahtarına normalize eşleştirir. Self-eval ("doğru bildim") YOK — ödevde öğrenci
+    kendini işaretlemez, sistem kontrol eder.
+      - quiz  → QUIZ_STORE'daki quiz'in soruları.
+      - pdf   → worksheet_json'daki sorular (quiz_id="" → attempt yalnız assignment_id'ye bağlanır).
 
     Dönüş: assignment, questions (list[Question]), meta (title/grade/topic_id/difficulty/
     created_at), answer_mode, quiz_id (attempt kaydı için).
@@ -94,7 +96,9 @@ def _load_solvable(assignment_id: str, tenant_id: str) -> dict:
             "difficulty": quiz["difficulty"],
             "created_at": quiz["created_at"],
         },
-        "answer_mode": "quiz",
+        # Ödevde açık uçlu = metin girişi + sunucu eşleştirmesi (self-eval yok) — quiz
+        # ödevi de worksheet gibi puanlanır. (Çöz&Geliş kişisel pratik hâlâ self-eval.)
+        "answer_mode": "worksheet",
         "quiz_id": quiz["id"],
     }
 
@@ -131,8 +135,8 @@ def submit_assignment_attempt(
 ) -> AttemptResult:
     """Ödev cevaplarını gönder → sunucuda puanla → öğrencinin tenant'ına + ödeve kaydet.
 
-    Worksheet ödevinde açık uçlu/yapılandırılmamış tipler cevap anahtarına metin-eşleştirmeyle
-    puanlanır (open_ended_text_match); quiz ödevinde açık uçlu öz-değerlendirmeyle.
+    Tüm ödevlerde (quiz + worksheet) açık uçlu/yapılandırılmamış tipler cevap anahtarına
+    metin-eşleştirmeyle puanlanır (open_ended_text_match) — self-eval yok, sistem kontrol eder.
     """
     req.tenant_id = require_tenant(verified, req.tenant_id)
     resolved = _load_solvable(assignment_id, req.tenant_id)
@@ -280,6 +284,7 @@ def get_student_attempt_detail(
         submitted=submitted,
         duration_seconds=rec.get("duration_seconds"),
         completed_at=rec["completed_at"],
-        # Worksheet ödevi çözümü metin-eşleştirmeyle puanlanmıştı → review de öyle olsun.
-        open_ended_text_match=assignment.get("assignment_type") == "pdf",
+        # Tüm ödevler (quiz + worksheet) açık uçluyu metin-eşleştirmeyle puanlar →
+        # öğretmen review'ı da aynı olsun (çözümdeki puanla tutarlı).
+        open_ended_text_match=True,
     )
