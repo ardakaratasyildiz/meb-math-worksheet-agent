@@ -48,6 +48,21 @@ interface CostSummary {
   by_day?: Array<{ day: string; generations: number; cost_usd: number }>;
 }
 
+interface MonitoringSummary {
+  available: boolean;
+  reason?: string;
+  window_days?: number;
+  by_model?: Array<{
+    model: string;
+    prompt_tokens: number;
+    completion_tokens: number;
+    cost_usd: number;
+  }>;
+  embedding?: { tokens: number; cost_usd: number };
+  generation_cost_usd?: number;
+  total_cost_usd?: number;
+}
+
 const usd = (n: number | undefined) =>
   `$${(n ?? 0).toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
 
@@ -57,6 +72,7 @@ export default function AdminDashboard() {
   const [health, setHealth] = useState<HealthCheck | null>(null);
   const [cache, setCache] = useState<CacheStats | null>(null);
   const [cost, setCost] = useState<CostSummary | null>(null);
+  const [mon, setMon] = useState<MonitoringSummary | null>(null);
   const [costDays, setCostDays] = useState(30);
   const [users, setUsers] = useState<Record<string, TenantUser>>({});
   const [usersLoaded, setUsersLoaded] = useState(false);
@@ -67,16 +83,20 @@ export default function AdminDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const [h, c, cs] = await Promise.all([
+      const [h, c, cs, m] = await Promise.all([
         fetch("/api/admin/health", { cache: "no-store" }).then((r) => r.json()),
         fetch("/api/admin/cache/stats", { cache: "no-store" }).then((r) => r.json()),
         fetch(`/api/admin/costs/summary?days=${costDays}`, { cache: "no-store" }).then((r) =>
           r.json(),
         ),
+        fetch(`/api/admin/costs/monitoring?days=${costDays}`, { cache: "no-store" })
+          .then((r) => r.json())
+          .catch(() => ({ available: false, reason: "istek başarısız" })),
       ]);
       setHealth(h);
       setCache(c);
       setCost(cs);
+      setMon(m);
       // by_tenant kimliklerini ad/e-posta'ya çöz (isim öncelikli).
       const ids: string[] = (cs?.by_tenant ?? []).map(
         (t: { tenant_id: string }) => t.tenant_id,
@@ -252,6 +272,80 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* ── Google gerçek maliyet (Cloud Monitoring mutabakatı) ── */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Google gerçek maliyet — Cloud Monitoring (mutabakat)</CardTitle>
+          <CardDescription>
+            Google&apos;ın KENDİ token sayaçları: tüm generate + embedding (offline/RAG)
+            + başarısız çağrılar dahil. Defter bir TAHMİN&apos;dir ve bunları saymaz →
+            aradaki fark &quot;ekstra&quot; maliyettir. Son {cost?.window_days ?? costDays} gün.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading && <Skeleton className="h-32 w-full" />}
+          {!loading && mon && !mon.available && (
+            <p className="text-sm text-muted-foreground">
+              Cloud Monitoring mutabakatı kapalı ({mon.reason || "SA yok"}). Aktifleştirmek
+              için <code>gemini-cost-reader</code> SA anahtarını Render&apos;a{" "}
+              <code>GEMINI_MONITORING_SA_JSON</code> env&apos;i olarak ekleyin.
+            </p>
+          )}
+          {!loading && mon && mon.available && (
+            <>
+              <div className="mb-5 grid grid-cols-2 gap-4 sm:grid-cols-4 text-sm">
+                <Stat
+                  label="Google gerçek (toplam)"
+                  value={`${usd(mon.total_cost_usd)}  ~${Math.round((mon.total_cost_usd ?? 0) * 35)}₺`}
+                />
+                <Stat label="Defter (tahmin)" value={usd(cost?.total?.cost_usd)} />
+                <Stat
+                  label="Fark (defterde YOK)"
+                  value={usd((mon.total_cost_usd ?? 0) - (cost?.total?.cost_usd ?? 0))}
+                />
+                <Stat
+                  label="Embedding (offline)"
+                  value={`${usd(mon.embedding?.cost_usd)} · ${(mon.embedding?.tokens ?? 0).toLocaleString("tr-TR")} tok`}
+                />
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b text-left text-muted-foreground">
+                      <th className="py-2 font-medium">Model</th>
+                      <th className="py-2 text-right font-medium">Girdi tok</th>
+                      <th className="py-2 text-right font-medium">Çıktı tok</th>
+                      <th className="py-2 text-right font-medium">Maliyet</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {mon.by_model?.map((m) => (
+                      <tr key={m.model} className="border-b last:border-0">
+                        <td className="py-2 font-mono text-xs">{m.model}</td>
+                        <td className="py-2 text-right tabular-nums text-muted-foreground">
+                          {m.prompt_tokens.toLocaleString("tr-TR")}
+                        </td>
+                        <td className="py-2 text-right tabular-nums text-muted-foreground">
+                          {m.completion_tokens.toLocaleString("tr-TR")}
+                        </td>
+                        <td className="py-2 text-right font-medium tabular-nums">
+                          {usd(m.cost_usd)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-4 text-xs text-muted-foreground">
+                &quot;Fark&quot; ≈ embedding (offline/RAG) + başarısız çağrı token&apos;ları +
+                token×fiyat sapması. Yine de bu bir tahmindir; nihai fatura $&apos;ı Google
+                Cloud Billing konsolundadır. Değerler ~10 dk cache&apos;li.
+              </p>
             </>
           )}
         </CardContent>

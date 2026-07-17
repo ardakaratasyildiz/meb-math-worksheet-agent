@@ -47,6 +47,13 @@ class Settings(BaseSettings):
     gemini_thinking_budget_grade_8: int = -1
     gemini_thinking_budget_strong: int = -1  # güçlü model (3.5) için dinamik
     gemini_embedding_model: str = "gemini-embedding-001"
+    # Cloud Monitoring maliyet MUTABAKATI (admin panel): SA ile Google'ın KENDİ token
+    # sayaçlarını okur → gerçek maliyet (tüm generate + embedding + başarısız çağrılar)
+    # vs defter (tahmin). Render'da SA key JSON'ı _sa_json env'ine yapıştırılır; lokalde
+    # _sa_file dosya yolu. İkisi de boşsa özellik kapalı (endpoint available=False döner).
+    # SA yalnız roles/monitoring.viewer ister (salt-okunur).
+    gemini_monitoring_sa_json: str = ""
+    gemini_monitoring_sa_file: str = ""
     # Embedding boyutu: 3072 (varsayılan) yerine 768 → ChromaDB dosyaları GitHub
     # 100MB limitinin altında kalır (LFS gerekmez). Cosine retrieval kalitesi ~korunur.
     # DİKKAT: ingest ve query aynı boyutu kullanmalı (ikisi de GeminiEmbedder).
