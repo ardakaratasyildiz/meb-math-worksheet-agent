@@ -3,6 +3,7 @@ import {
   ArrowRight,
   CalendarDays,
   ClipboardCheck,
+  FileText,
   GraduationCap,
   History,
   NotebookPen,
@@ -143,6 +144,14 @@ function TeacherSection() {
         title="Quiz üret"
         desc="Ödev olarak atayacağın çözülebilir quizleri üret."
         cta="Üret"
+      />
+      <HubCard
+        href="/practice/quizzes"
+        color="sky"
+        icon={<FileText className="h-6 w-6 text-sky-500" />}
+        title="Ürettiğim Quizler"
+        desc="Ürettiğin quizleri incele, beğenmediğin soruyu yeniden üret (düzenle)."
+        cta="Aç"
       />
       <HubCard
         href="/practice/shares"

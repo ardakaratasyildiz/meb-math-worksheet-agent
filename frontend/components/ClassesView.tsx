@@ -4,24 +4,15 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth, useUser } from "@clerk/nextjs";
-import {
-  ChevronDown,
-  ChevronRight,
-  GraduationCap,
-  Loader2,
-  Plus,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { ChevronRight, GraduationCap, Loader2, Plus, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { TeacherQuizReview } from "@/components/TeacherQuizReview";
-import { createClassroom, joinClassroom, listClassrooms, listMyQuizzes } from "@/lib/api";
+import { createClassroom, joinClassroom, listClassrooms } from "@/lib/api";
 import { effectiveRole } from "@/lib/roles";
-import type { ClassroomSummary, MyQuizItem } from "@/lib/types";
+import type { ClassroomSummary } from "@/lib/types";
 
 export function ClassesView({
   initialJoinCode = "",
@@ -194,7 +185,6 @@ export function ClassesView({
               showCode
             />
           )}
-          {canCreate && userId ? <MyQuizzesSection tenantId={userId} /> : null}
           {canJoin && (
             <ClassroomGroup
               title="Katıldığın sınıflar"
@@ -216,92 +206,6 @@ export function ClassesView({
         </>
       )}
     </div>
-  );
-}
-
-/** Öğretmenin ürettiği quizler — Sınıflarım altında; her biri açılıp incelenir +
- *  beğenilmeyen soru yeniden üretilir (düzenleme). Atama sınıf detayındaki picker'da. */
-function MyQuizzesSection({ tenantId }: { tenantId: string }) {
-  const [quizzes, setQuizzes] = React.useState<MyQuizItem[] | null>(null);
-  const [error, setError] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    let active = true;
-    listMyQuizzes(tenantId)
-      .then((d) => active && setQuizzes(d))
-      .catch((e: unknown) => {
-        if (!active) return;
-        setError(e instanceof Error ? e.message : "Quizler alınamadı.");
-      });
-    return () => {
-      active = false;
-    };
-  }, [tenantId]);
-
-  return (
-    <section className="space-y-3">
-      <div className="flex items-center gap-2">
-        <h2 className="font-display text-lg font-bold">Ürettiğim quizler</h2>
-        <Button asChild size="sm" variant="outline" className="ml-auto gap-1.5">
-          <Link href="/practice/new">
-            <Sparkles className="h-4 w-4" />
-            Yeni quiz üret
-          </Link>
-        </Button>
-      </div>
-
-      {error ? (
-        <p className="text-sm text-destructive">{error}</p>
-      ) : quizzes === null ? (
-        <p className="flex items-center gap-2 py-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" /> Quizler yükleniyor…
-        </p>
-      ) : quizzes.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          Henüz quiz üretmedin. &quot;Yeni quiz üret&quot; ile başla; ürettiklerin
-          burada listelenir, inceleyip düzenleyebilir ve sınıflarına ödev olarak
-          atayabilirsin.
-        </p>
-      ) : (
-        <ul className="divide-y rounded-lg border">
-          {quizzes.map((q) => (
-            <MyQuizRow key={q.id} quiz={q} />
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-/** Quiz satırı — tıklayınca cevaplı önizleme + soru yenileme (düzenleme) açılır. */
-function MyQuizRow({ quiz }: { quiz: MyQuizItem }) {
-  const [open, setOpen] = React.useState(false);
-  return (
-    <li className="text-sm">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex w-full items-center gap-2 px-4 py-2.5 text-left transition-colors hover:bg-accent/20"
-      >
-        {open ? (
-          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-        ) : (
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-        )}
-        <span className="min-w-0 truncate font-medium">{quiz.title}</span>
-        <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-          {quiz.grade ? `${quiz.grade}. sınıf · ` : ""}
-          {quiz.difficulty}
-        </span>
-      </button>
-      {open ? (
-        <div className="border-t bg-muted/20 px-4 py-3">
-          {/* Düzenleme = soru yenileme. Atama sınıf detayındaki picker'da yapılır. */}
-          <TeacherQuizReview quizId={quiz.id} showAssign={false} showShare={false} />
-        </div>
-      ) : null}
-    </li>
   );
 }
 
