@@ -77,6 +77,22 @@ def costs_summary(days: int = 30, actor: dict = Depends(get_admin_actor)) -> dic
     return data
 
 
+@router.get("/costs/recent", dependencies=[Depends(require_admin_key)])
+def costs_recent(
+    limit: int = 100, days: int = 30, actor: dict = Depends(get_admin_actor)
+) -> dict[str, Any]:
+    """Son üretimlerin KAĞIT-BAZINDA maliyet detayı (agregasyon değil).
+
+    Her satır bir üretim: sınıf/konu/model/token/maliyet/cache. "Hangi çalışma kağıdı
+    hangi modelle ne kadar harcadı" görünürlüğü. Kaynak: usage_ledger.
+    """
+    import time as _t
+    ADMIN_AUDIT.record(action="costs_recent", clerk_user_id=actor["actor"], ip=actor["ip"])
+    since = (_t.time() - max(1, days) * 86400) if days and days > 0 else None
+    items = USAGE_LEDGER.recent(limit=limit, since_ts=since)
+    return {"count": len(items), "window_days": days, "items": items}
+
+
 @router.get("/cache/stats", dependencies=[Depends(require_admin_key)])
 def cache_stats(actor: dict = Depends(get_admin_actor)) -> dict[str, Any]:
     """Cache özet istatistiği: toplam set, distinct key, runtime hit/miss sayacı."""
