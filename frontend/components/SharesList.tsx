@@ -3,7 +3,15 @@
 import * as React from "react";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
-import { Check, ChevronRight, Copy, Loader2, Share2, Users } from "lucide-react";
+import {
+  Check,
+  ChevronRight,
+  Copy,
+  GraduationCap,
+  Loader2,
+  Share2,
+  Users,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -110,22 +118,33 @@ export function SharesList({ isTeacher = false }: { isTeacher?: boolean }) {
 
   if (items.length === 0) {
     return (
-      <Card className="flex flex-col items-center gap-3 p-10 text-center">
+      <Card className="flex flex-col items-center gap-3 p-8 text-center">
         <Share2 className="h-8 w-8 text-muted-foreground" />
         <h2 className="font-semibold">Henüz paylaşım yok</h2>
-        <p className="max-w-sm text-sm text-muted-foreground">
-          {isTeacher ? (
-            <>
-              Bir quiz üret; oluşturma ekranındaki <strong>Paylaş</strong> ile link
-              oluştur. Paylaştığın kişilerin sonuçları burada birikir.
-            </>
-          ) : (
-            <>
-              Bir quiz çöz, sonuç ekranındaki <strong>Paylaş</strong> ile link oluştur;
-              paylaştığın kişilerin sonuçları burada birikir.
-            </>
-          )}
+        <p className="max-w-md text-sm text-muted-foreground">
+          Bu sayfa yalnızca <strong>herkese açık paylaşım linklerini</strong> gösterir:
+          bir quiz&apos;in <strong>Paylaş</strong> düğmesiyle oluşturduğun{" "}
+          <code className="rounded bg-muted px-1">/q/…</code> linkleri ve onları
+          çözenlerin sonuçları burada birikir.
         </p>
+
+        {/* Ödev ↔ paylaşım karışıklığını netleştir: atanan ödevler burada DEĞİL. */}
+        <div className="mt-1 w-full max-w-md rounded-lg border border-amber-300/50 bg-amber-50 p-3 text-left text-sm dark:border-amber-400/20 dark:bg-amber-950/30">
+          <p className="font-medium text-amber-800 dark:text-amber-300">
+            Sınıfına ödev mi attın?
+          </p>
+          <p className="mt-0.5 text-amber-700/90 dark:text-amber-300/80">
+            Atadığın ödevler ve <strong>kimin ne cevap verdiği</strong> burada değil —{" "}
+            <strong>Sınıflarım</strong> → ilgili sınıf → <em>Ödevler</em> altında görünür.
+          </p>
+          <Button asChild size="sm" variant="outline" className="mt-2 gap-1.5">
+            <Link href="/practice/classes">
+              <GraduationCap className="h-4 w-4" />
+              Sınıflarıma git
+            </Link>
+          </Button>
+        </div>
+
         <Button asChild className="mt-1">
           <Link href="/practice/new">{isTeacher ? "Quiz üret" : "Yeni quiz çöz"}</Link>
         </Button>

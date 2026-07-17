@@ -617,6 +617,17 @@ export async function getMyAttempt(
   );
 }
 
+/** Öğretmen: bir öğrencinin ödevdeki denemesini soru-soru getir (owner-only). */
+export async function getStudentAttemptDetail(
+  assignmentId: string,
+  studentTenantId: string,
+  tenantId: string,
+): Promise<AttemptDetail> {
+  return request<AttemptDetail>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}/attempts/${encodeURIComponent(studentTenantId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
 /** Oyunlaştırma — XP / seviye / seri. */
 export async function getGamification(
   tenantId: string,

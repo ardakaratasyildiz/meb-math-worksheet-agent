@@ -20,14 +20,17 @@ from app.models.schemas import (
     AssignmentResultItem,
     AssignmentResultsResponse,
     AssignmentWorksheetResponse,
+    AttemptDetail,
     AttemptResult,
     Question,
     QuizPublic,
+    SubmittedAnswer,
     SubmitAttemptRequest,
     Worksheet,
 )
 from app.routers.quizzes import _to_public
 from app.security import require_api_key
+from app.services.attempt_review import build_attempt_detail
 from app.services.classroom_store import CLASSROOM_STORE
 from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.grading import grade_quiz
@@ -225,4 +228,58 @@ def get_assignment_results(
         member_count=data["member_count"],
         solved_count=data["solved_count"],
         items=[AssignmentResultItem(**i) for i in data["items"]],
+    )
+
+
+@router.get(
+    "/{assignment_id}/attempts/{student_tenant_id}", response_model=AttemptDetail
+)
+def get_student_attempt_detail(
+    assignment_id: str,
+    student_tenant_id: str,
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> AttemptDetail:
+    """Öğretmen: bir öğrencinin ödevdeki İLK denemesini soru-soru görür (verdiği
+    cevap + doğru cevap + doğru/yanlış). Yalnız ödevin bulunduğu sınıfın SAHİBİ."""
+    tenant_id = require_tenant(verified, tenant_id)
+    assignment = CLASSROOM_STORE.get_assignment(assignment_id)
+    if assignment is None:
+        raise HTTPException(status_code=404, detail="Ödev bulunamadı.")
+    detail = CLASSROOM_STORE.get_classroom(assignment["classroom_id"], tenant_id)
+    if detail is None or not detail.get("is_owner"):
+        raise HTTPException(
+            status_code=403, detail="Bu ödevin sonuçlarını görme yetkin yok."
+        )
+    rec = QUIZ_STORE.get_assignment_attempt(assignment_id, student_tenant_id)
+    if rec is None:
+        raise HTTPException(status_code=404, detail="Öğrenci bu ödevi henüz çözmedi.")
+    snapshot = rec.get("snapshot")
+    if not snapshot:
+        return AttemptDetail(
+            attempt_id=rec["attempt_id"],
+            quiz_id=rec["quiz_id"],
+            title=assignment["title"] or "Ödev",
+            grade=None,
+            topic_id="",
+            difficulty="orta",
+            score=rec["score"],
+            total=rec["total"],
+            duration_seconds=rec.get("duration_seconds"),
+            completed_at=rec["completed_at"],
+            has_detail=False,
+        )
+    questions = [Question(**q) for q in snapshot.get("questions", [])]
+    submitted = [SubmittedAnswer(**a) for a in rec.get("answers", [])]
+    return build_attempt_detail(
+        attempt_id=rec["attempt_id"],
+        quiz_id=rec["quiz_id"],
+        meta=snapshot,
+        questions=questions,
+        submitted=submitted,
+        duration_seconds=rec.get("duration_seconds"),
+        completed_at=rec["completed_at"],
+        # Worksheet ödevi çözümü metin-eşleştirmeyle puanlanmıştı → review de öyle olsun.
+        open_ended_text_match=assignment.get("assignment_type") == "pdf",
     )
