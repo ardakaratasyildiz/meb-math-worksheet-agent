@@ -368,6 +368,53 @@ class ClassroomStore:
             self._db.commit()
             return cur.rowcount > 0
 
+    def remove_member(
+        self, classroom_id: str, student_tenant_id: str, owner_tenant_id: str
+    ) -> bool:
+        """Sınıf sahibi bir öğrenciyi sınıftan çıkarır (kick). Üyeliği siler.
+
+        YALNIZ sahibi çıkarabilir (owner_tenant_id sınıfın sahibi olmalı). Sahip değilse /
+        öğrenci üye değilse False (dokunmaz). Öğrencinin çözüm geçmişi quiz_store'da kalır
+        (assignment_id bazlı; tarihsel kayıt korunur — 'ayrıl'la aynı politika).
+        """
+        if not classroom_id or not student_tenant_id or not owner_tenant_id:
+            return False
+        with self._lock:
+            assert self._db is not None
+            owns = self._db.execute(
+                "SELECT 1 FROM classrooms WHERE id = ? AND owner_tenant_id = ?",
+                (classroom_id, owner_tenant_id),
+            ).fetchone()
+            if not owns:
+                return False
+            cur = self._db.execute(
+                "DELETE FROM classroom_members "
+                "WHERE classroom_id = ? AND student_tenant_id = ?",
+                (classroom_id, student_tenant_id),
+            )
+            self._db.commit()
+            return cur.rowcount > 0
+
+    def delete_assignment(self, assignment_id: str, owner_tenant_id: str) -> bool:
+        """Ödevi siler — YALNIZ ödevin bulunduğu sınıfın sahibi. Sahip değilse / ödev
+        yoksa False. Öğrenci çözüm denemeleri (attempts) quiz_store'da kalır (tarihsel);
+        ödev satırı gidince 'Ödevlerim'/panoda görünmezler.
+        """
+        if not assignment_id or not owner_tenant_id:
+            return False
+        with self._lock:
+            assert self._db is not None
+            row = self._db.execute(
+                "SELECT c.owner_tenant_id FROM assignments a "
+                "JOIN classrooms c ON c.id = a.classroom_id WHERE a.id = ?",
+                (assignment_id,),
+            ).fetchone()
+            if not row or row[0] != owner_tenant_id:
+                return False
+            self._db.execute("DELETE FROM assignments WHERE id = ?", (assignment_id,))
+            self._db.commit()
+        return True
+
     def create_assignment(
         self,
         *,
