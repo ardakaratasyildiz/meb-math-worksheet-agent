@@ -348,6 +348,62 @@ def process_pattern_directives(text: str) -> str:
     return _PATTERN_DIRECTIVE_RE.sub(_repl, text)
 
 
+# ─── Deterministik TABLO üretimi (LLM ham markdown yazmasın) ─────────────────
+# tablo_sorusu markdown tabloyu ELLE yazdırıyordu → 2.5-flash bozuk üretiyor
+# (hizasız pipe, eksik ayraç satırı, düzensiz sütun); 3.5 temiz yapabiliyordu.
+# grafik/örüntü deseni: LLM yalnız veri direktifi verir, sistem KUSURSUZ GFM markdown
+# üretir → mevcut PDF/_parse_table + frontend render yolu aynen çalışır (model-bağımsız).
+# Format:  {{table: Baş1 | Baş2 ;; s1h1 | s1h2 ;; s2h1 | s2h2}}
+#   ;; = satır ayracı · | = hücre ayracı · İLK satır = başlık.
+
+_TABLE_DIRECTIVE_RE = re.compile(r"\{\{table:([^{}]+)\}\}", flags=re.IGNORECASE)
+
+
+def _md_cell(s: str) -> str:
+    """Hücreyi GFM-güvenli yap: pipe kaçışla, newline'ı boşluğa çevir."""
+    return s.strip().replace("|", "\\|").replace("\n", " ").replace("\r", " ")
+
+
+def render_markdown_table(rows: list[list[str]]) -> str:
+    """Satır listesinden hizalı, ayraç-satırlı GFM markdown tablosu. İlk satır başlık.
+
+    Tüm satırlar başlığın sütun sayısına EŞİTLENİR (eksik→boş, fazla→kırp) → asla
+    bozuk/düzensiz tablo çıkmaz.
+    """
+    ncol = len(rows[0])
+    norm: list[list[str]] = []
+    for r in rows:
+        cells = [_md_cell(c) for c in r]
+        if len(cells) < ncol:
+            cells += [""] * (ncol - len(cells))
+        norm.append(cells[:ncol])
+    header, body = norm[0], norm[1:]
+    lines = ["| " + " | ".join(header) + " |", "|" + "|".join(["---"] * ncol) + "|"]
+    lines += ["| " + " | ".join(r) + " |" for r in body]
+    return "\n".join(lines)
+
+
+def process_table_directives(text: str) -> str:
+    """{{table:...}} direktiflerini temiz GFM markdown tablosuna çevirir. Bozuk → no-op.
+
+    Tablo blok-seviye parse edilsin diye önü/arkası boş satırla sarılır.
+    """
+    def _repl(m: "re.Match[str]") -> str:
+        spec = m.group(1).strip()
+        rows = [
+            [c for c in row.split("|")]
+            for row in spec.split(";;")
+            if row.strip()
+        ]
+        rows = [r for r in rows if any(c.strip() for c in r)]
+        # En az başlık + 1 veri satırı ve ≥2 sütun.
+        if len(rows) < 2 or len(rows[0]) < 2:
+            return m.group(0)
+        return "\n\n" + render_markdown_table(rows) + "\n\n"
+
+    return _TABLE_DIRECTIVE_RE.sub(_repl, text)
+
+
 def is_dangerous(svg: str) -> bool:
     """Tehlikeli SVG patterni (script, on* handler, javascript: vs.) var mı?"""
     return any(p.search(svg) for p in _DANGEROUS_PATTERNS)
