@@ -86,6 +86,24 @@ def wants_yeni_nesil(tenant_id: str | None) -> bool:
     return settings.premium_yeni_nesil and is_premium(tenant_id)
 
 
+def yeni_nesil_for_bucket(tenant_id: str | None, difficulty) -> bool:
+    """Bir üretim bucket'ı (zorluk) için yeni_nesil açık mı — teaser mantığı.
+
+    Premium (wants_yeni_nesil) → full: HER bucket yeni_nesil. Ücretsiz → TEASER:
+    yalnız `free_yeni_nesil_bucket` zorluğundaki bucket. Böylece ücretsiz kullanıcı
+    her kağıtta bir tadımlık yeni_nesil görür, soru-başına bölme/ekstra çağrı olmadan
+    (mevcut zorluk bucket'ına biner). Dark-launch'ta premium_all herkesi premium
+    yaptığı için teaser dormant; premium_all=False olunca ücretsizde devreye girer.
+    difficulty: Difficulty enum ya da str ("kolay"/"orta"/"zor").
+    """
+    if wants_yeni_nesil(tenant_id):
+        return True
+    if not settings.free_yeni_nesil_enabled:
+        return False
+    dv = getattr(difficulty, "value", difficulty)
+    return dv == settings.free_yeni_nesil_bucket
+
+
 def quota_limit(plan: str) -> int:
     """Plana göre aylık soru kotası. pro-plus/trial = fair-use tavanı ('sınırsız')."""
     if plan == PLAN_FREE:

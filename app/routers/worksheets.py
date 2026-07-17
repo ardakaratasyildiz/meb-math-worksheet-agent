@@ -181,7 +181,6 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
         question_types verilirse agent.generate'e allowed_types geçer.
     """
     from app.models.enums import Difficulty as _Diff
-    from app.services.entitlements import wants_yeni_nesil
     from app.models.enums import SubjectId
     from app.subjects import get_content_module
     _validate_request(req)
@@ -201,7 +200,6 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
 
     # "Yeni nesil" gizli kalite kaldıracı: karar SUNUCUDA, premium yetkiye göre
     # verilir (client bir bayrak gönderemez). Ücretsiz → normal, premium → yeni nesil.
-    _yeni_nesil = wants_yeni_nesil(req.tenant_id)
     # Model + thinking seçimi POLİTİKAYLA: grade + geometri teması + zorluk + GERÇEK
     # premium (is_premium_for_model — premium_all dark-launch değil). Zorluğa bağlı
     # olduğu için her bucket kendi (model, thinking)'ini alır (premium 5-7 zor→3.5).
@@ -225,7 +223,8 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             question_count=count,
             tenant_id=req.tenant_id,
             allowed_types=req.question_types,
-            yeni_nesil=_yeni_nesil,
+            # yeni_nesil bucket-bazlı: premium full, ücretsiz teaser (tek bucket).
+            yeni_nesil=entitlements.yeni_nesil_for_bucket(req.tenant_id, diff),
             unit_id=req.unit_id,
             subject=req.subject,
         )

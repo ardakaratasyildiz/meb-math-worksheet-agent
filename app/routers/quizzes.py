@@ -205,6 +205,8 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str, lis
             question_count=count,
             tenant_id=req.tenant_id,
             allowed_types=allowed,
+            # yeni_nesil quiz'e de bağlandı: premium full, ücretsiz teaser (tek bucket).
+            yeni_nesil=entitlements.yeni_nesil_for_bucket(req.tenant_id, diff),
             unit_id=req.unit_id,
             subject=req.subject,
         )
@@ -474,6 +476,7 @@ def _regenerate_one_question(
             question_count=1,
             tenant_id=tenant_id,
             allowed_types=[question_type],
+            yeni_nesil=entitlements.yeni_nesil_for_bucket(tenant_id, difficulty),
             unit_id=unit_id,
             subject=subject,
         )
