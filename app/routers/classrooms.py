@@ -143,6 +143,40 @@ def get_classroom(
     )
 
 
+@router.delete("/{classroom_id}")
+def delete_classroom(
+    classroom_id: str,
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> dict:
+    """Sınıfı sil — yalnız sahibi (öğretmen/admin). Üyeler + ödevler cascade silinir."""
+    tenant_id = require_tenant(verified, tenant_id)
+    enforce_role(tenant_id, {"teacher", "admin"})
+    ok = CLASSROOM_STORE.delete_classroom(classroom_id, tenant_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Sınıf bulunamadı veya sahibi değilsin.")
+    logger.info("sınıf silindi: owner=%s id=%s", tenant_id, classroom_id)
+    return {"ok": True}
+
+
+@router.post("/{classroom_id}/leave")
+def leave_classroom_endpoint(
+    classroom_id: str,
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> dict:
+    """Öğrenci sınıftan ayrılır (üyeliğini siler). Sahip ayrılamaz (sınıfı silmeli)."""
+    tenant_id = require_tenant(verified, tenant_id)
+    enforce_role(tenant_id, {"student", "admin"})
+    ok = CLASSROOM_STORE.leave_classroom(classroom_id, tenant_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Bu sınıfın üyesi değilsin.")
+    logger.info("sınıftan ayrıldı: student=%s classroom=%s", tenant_id, classroom_id)
+    return {"ok": True}
+
+
 @router.post("/{classroom_id}/assignments", response_model=AssignmentCreatedResponse)
 def assign_quiz(
     classroom_id: str,

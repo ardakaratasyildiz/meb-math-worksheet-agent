@@ -125,6 +125,36 @@ def test_access_control() -> None:
             store.close()
 
 
+def test_delete_and_leave() -> None:
+    print("sınıf silme (sahip, cascade) + sınıftan ayrılma (üye)")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        store = ClassroomStore(db_path=str(Path(tmp) / "t.sqlite3"))
+        try:
+            c = store.create_classroom(owner_tenant_id="teacher-1", name="Sınıf")
+            store.join_classroom(code=c["join_code"], student_tenant_id="stu-1", display_name="Ali")
+            store.join_classroom(code=c["join_code"], student_tenant_id="stu-2", display_name="Ece")
+
+            # --- Ayrılma ---
+            check(store.leave_classroom(c["id"], "stu-1") is True, "stu-1 ayrıldı")
+            check(store.get_classroom(c["id"], "stu-1") is None, "ayrılan artık erişemez")
+            check(store.get_classroom(c["id"], "teacher-1")["member_count"] == 1, "üye sayısı 1'e düştü")
+            check(store.leave_classroom(c["id"], "stu-1") is False, "üye olmayan ayrılamaz (False)")
+
+            # --- Silme yetkisi ---
+            check(store.delete_classroom(c["id"], "stu-2") is False, "üye sınıfı silemez")
+            check(store.delete_classroom(c["id"], "stranger") is False, "yabancı silemez")
+            check(store.get_classroom(c["id"], "teacher-1") is not None, "yetkisiz denemeler sınıfı silmedi")
+
+            # --- Sahip siler (cascade) ---
+            check(store.delete_classroom(c["id"], "teacher-1") is True, "sahip sildi")
+            check(store.get_classroom(c["id"], "teacher-1") is None, "silinen sınıf yok")
+            check(store.get_classroom(c["id"], "stu-2") is None, "üye de erişemez (cascade)")
+            check(len(store.list_owned("teacher-1")) == 0, "öğretmen listesinden düştü")
+            check(len(store.list_joined("stu-2")) == 0, "öğrenci listesinden düştü (üyelik cascade)")
+        finally:
+            store.close()
+
+
 def test_app_imports() -> None:
     print("uygulama import — classrooms router kayıtlı")
     from app.main import app  # noqa: PLC0415
@@ -132,7 +162,8 @@ def test_app_imports() -> None:
     paths = {r.path for r in app.routes}
     check("/api/classrooms" in paths, "POST/GET /api/classrooms kayıtlı")
     check("/api/classrooms/join" in paths, "POST /api/classrooms/join kayıtlı")
-    check("/api/classrooms/{classroom_id}" in paths, "GET /api/classrooms/{id} kayıtlı")
+    check("/api/classrooms/{classroom_id}" in paths, "GET/DELETE /api/classrooms/{id} kayıtlı")
+    check("/api/classrooms/{classroom_id}/leave" in paths, "POST /api/classrooms/{id}/leave kayıtlı")
 
 
 def main() -> int:
@@ -141,6 +172,7 @@ def main() -> int:
         test_join,
         test_lists,
         test_access_control,
+        test_delete_and_leave,
         test_app_imports,
     ):
         fn()

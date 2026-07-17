@@ -325,6 +325,49 @@ class ClassroomStore:
             ).fetchone()
         return member is not None
 
+    def delete_classroom(self, classroom_id: str, owner_tenant_id: str) -> bool:
+        """Sınıfı siler — YALNIZ sahibi. Üyeler + ödevler cascade silinir.
+
+        Sahip değilse / sınıf yoksa False (dokunmaz). Attempt geçmişi quiz_store'da
+        kalır (quiz_id bazlı; sınıfa bağlı değil → tarihsel kayıt korunur).
+        """
+        if not classroom_id or not owner_tenant_id:
+            return False
+        with self._lock:
+            assert self._db is not None
+            owned = self._db.execute(
+                "SELECT 1 FROM classrooms WHERE id = ? AND owner_tenant_id = ?",
+                (classroom_id, owner_tenant_id),
+            ).fetchone()
+            if not owned:
+                return False
+            self._db.execute(
+                "DELETE FROM assignments WHERE classroom_id = ?", (classroom_id,)
+            )
+            self._db.execute(
+                "DELETE FROM classroom_members WHERE classroom_id = ?", (classroom_id,)
+            )
+            self._db.execute("DELETE FROM classrooms WHERE id = ?", (classroom_id,))
+            self._db.commit()
+        return True
+
+    def leave_classroom(self, classroom_id: str, student_tenant_id: str) -> bool:
+        """Öğrenci sınıftan ayrılır (üyeliğini siler). Üye değilse False.
+
+        Sahip 'ayrılamaz' (sınıfını silmeli) — sahip üyelik satırı tutmaz zaten.
+        """
+        if not classroom_id or not student_tenant_id:
+            return False
+        with self._lock:
+            assert self._db is not None
+            cur = self._db.execute(
+                "DELETE FROM classroom_members "
+                "WHERE classroom_id = ? AND student_tenant_id = ?",
+                (classroom_id, student_tenant_id),
+            )
+            self._db.commit()
+            return cur.rowcount > 0
+
     def create_assignment(
         self,
         *,

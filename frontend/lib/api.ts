@@ -708,6 +708,28 @@ export async function getClassroom(
   );
 }
 
+/** Sınıfı sil — yalnız sahibi (öğretmen). Üyeler + ödevler cascade silinir. */
+export async function deleteClassroom(
+  tenantId: string,
+  classroomId: string,
+): Promise<void> {
+  await request<{ ok: boolean }>(
+    `/api/classrooms/${encodeURIComponent(classroomId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "DELETE" },
+  );
+}
+
+/** Öğrenci sınıftan ayrılır (üyeliğini siler). */
+export async function leaveClassroom(
+  tenantId: string,
+  classroomId: string,
+): Promise<void> {
+  await request<{ ok: boolean }>(
+    `/api/classrooms/${encodeURIComponent(classroomId)}/leave?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "POST" },
+  );
+}
+
 // ---- Ödev (Faz 3.5 PR 2) -------------------------------------------------
 
 /** Öğretmenin ödev atamak için seçebileceği kendi quiz'leri. */
