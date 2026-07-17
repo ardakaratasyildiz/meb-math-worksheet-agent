@@ -54,6 +54,8 @@ class Settings(BaseSettings):
     # SA yalnız roles/monitoring.viewer ister (salt-okunur).
     gemini_monitoring_sa_json: str = ""
     gemini_monitoring_sa_file: str = ""
+    # Panelde $ yanında ~TL göstermek için kur (yaklaşık, redeploy'suz tune edilebilir).
+    usd_try_rate: float = 38.0
     # Embedding boyutu: 3072 (varsayılan) yerine 768 → ChromaDB dosyaları GitHub
     # 100MB limitinin altında kalır (LFS gerekmez). Cosine retrieval kalitesi ~korunur.
     # DİKKAT: ingest ve query aynı boyutu kullanmalı (ikisi de GeminiEmbedder).

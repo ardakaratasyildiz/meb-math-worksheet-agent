@@ -61,7 +61,16 @@ interface MonitoringSummary {
   embedding?: { tokens: number; cost_usd: number };
   generation_cost_usd?: number;
   total_cost_usd?: number;
+  usd_try_rate?: number;
 }
+
+// Model → ne için kullanıldığı (kartta "kullanım" etiketi).
+const MODEL_USE: Record<string, string> = {
+  "gemini-3.5-flash": "5-8 premium/geometri",
+  "gemini-2.5-flash": "1-7 genel",
+  "gemini-2.5-flash-lite": "fallback",
+  "gemini-2.5-pro": "fallback (pro)",
+};
 
 const usd = (n: number | undefined) =>
   `$${(n ?? 0).toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
@@ -297,56 +306,7 @@ export default function AdminDashboard() {
             </p>
           )}
           {!loading && mon && mon.available && (
-            <>
-              <div className="mb-5 grid grid-cols-2 gap-4 sm:grid-cols-4 text-sm">
-                <Stat
-                  label="Google gerçek (toplam)"
-                  value={`${usd(mon.total_cost_usd)}  ~${Math.round((mon.total_cost_usd ?? 0) * 35)}₺`}
-                />
-                <Stat label="Defter (tahmin)" value={usd(cost?.total?.cost_usd)} />
-                <Stat
-                  label="Fark (defterde YOK)"
-                  value={usd((mon.total_cost_usd ?? 0) - (cost?.total?.cost_usd ?? 0))}
-                />
-                <Stat
-                  label="Embedding (offline)"
-                  value={`${usd(mon.embedding?.cost_usd)} · ${(mon.embedding?.tokens ?? 0).toLocaleString("tr-TR")} tok`}
-                />
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b text-left text-muted-foreground">
-                      <th className="py-2 font-medium">Model</th>
-                      <th className="py-2 text-right font-medium">Girdi tok</th>
-                      <th className="py-2 text-right font-medium">Çıktı tok</th>
-                      <th className="py-2 text-right font-medium">Maliyet</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {mon.by_model?.map((m) => (
-                      <tr key={m.model} className="border-b last:border-0">
-                        <td className="py-2 font-mono text-xs">{m.model}</td>
-                        <td className="py-2 text-right tabular-nums text-muted-foreground">
-                          {m.prompt_tokens.toLocaleString("tr-TR")}
-                        </td>
-                        <td className="py-2 text-right tabular-nums text-muted-foreground">
-                          {m.completion_tokens.toLocaleString("tr-TR")}
-                        </td>
-                        <td className="py-2 text-right font-medium tabular-nums">
-                          {usd(m.cost_usd)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="mt-4 text-xs text-muted-foreground">
-                &quot;Fark&quot; ≈ embedding (offline/RAG) + başarısız çağrı token&apos;ları +
-                token×fiyat sapması. Yine de bu bir tahmindir; nihai fatura $&apos;ı Google
-                Cloud Billing konsolundadır. Değerler ~10 dk cache&apos;li.
-              </p>
-            </>
+            <MonitoringBreakdown mon={mon} ledgerCost={cost?.total?.cost_usd ?? 0} />
           )}
         </CardContent>
       </Card>
@@ -491,6 +451,85 @@ function Stat({ label, value }: { label: string; value: number | string }) {
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="text-lg font-semibold">{value}</div>
     </div>
+  );
+}
+
+function MonitoringBreakdown({
+  mon,
+  ledgerCost,
+}: {
+  mon: MonitoringSummary;
+  ledgerCost: number;
+}) {
+  const rate = mon.usd_try_rate ?? 38;
+  const total = mon.total_cost_usd ?? 0;
+  const gap = total - ledgerCost;
+  const tl = (n: number) => `${Math.round((n ?? 0) * rate).toLocaleString("tr-TR")}₺`;
+
+  const rows = [
+    ...(mon.by_model ?? []).map((m) => ({
+      key: m.model,
+      label: m.model.replace("gemini-", ""),
+      use: MODEL_USE[m.model] ?? "",
+      cost: m.cost_usd,
+    })),
+  ];
+  if (mon.embedding && mon.embedding.cost_usd > 0) {
+    rows.push({
+      key: "embedding",
+      label: "embedding",
+      use: "RAG/arama · offline",
+      cost: mon.embedding.cost_usd,
+    });
+  }
+  rows.sort((a, b) => b.cost - a.cost);
+
+  return (
+    <>
+      <div className="mb-1 flex flex-wrap items-baseline gap-x-2">
+        <span className="text-sm text-muted-foreground">Bu dönem GERÇEK maliyet:</span>
+        <span className="text-xl font-semibold">{usd(total)}</span>
+        <span className="text-muted-foreground">(~{tl(total)})</span>
+      </div>
+      <p className="mb-5 text-sm text-muted-foreground">
+        Defter tahmini <span className="font-medium text-foreground">{usd(ledgerCost)}</span> ·
+        Fark <span className="font-medium text-foreground">{usd(gap)} (~{tl(gap)})</span> = offline
+        embedding + başarısız çağrılar + fiyat sapması
+      </p>
+      <div className="space-y-3">
+        {rows.map((r) => {
+          const pct = total > 0 ? (r.cost / total) * 100 : 0;
+          return (
+            <div key={r.key}>
+              <div className="flex items-baseline justify-between gap-2 text-sm">
+                <span className="truncate">
+                  <span className="font-mono text-xs font-medium">{r.label}</span>
+                  {r.use && (
+                    <span className="ml-1.5 text-xs text-muted-foreground">({r.use})</span>
+                  )}
+                </span>
+                <span className="whitespace-nowrap tabular-nums">
+                  {usd(r.cost)}{" "}
+                  <span className="text-muted-foreground">
+                    · {tl(r.cost)} · %{pct.toFixed(0)}
+                  </span>
+                </span>
+              </div>
+              <div className="mt-1 h-2 w-full overflow-hidden rounded bg-muted">
+                <div
+                  className="h-full rounded bg-primary"
+                  style={{ width: `${Math.max(pct, 1)}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-5 text-xs text-muted-foreground">
+        Kaynak: Google Cloud Monitoring (gerçek token). Bar/%=toplam içindeki pay. Nihai fatura
+        $&apos;ı Cloud Billing konsolundadır; değerler ~10 dk cache&apos;li. Kur 1$≈{rate}₺ (config).
+      </p>
+    </>
   );
 }
 
