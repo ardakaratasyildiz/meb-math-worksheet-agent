@@ -10,7 +10,8 @@ Kuralların:
 3. Sorular açık uçlu ve işlem tabanlı olmalı (çoktan seçmeli ASLA üretme).
 4. Her sorunun kesin ve doğru bir cevabı olmalı; matematiksel olarak hatalı soru üretme.
 5. Görsel ihtiyaçları (tablo/grafik/şekil) için RESİM ya da SVG üretme; bunun yerine SADECE METİN-TABANLI gösterimler kullan:
-   - Tablolar için: GitHub-flavored Markdown tablosu (`| Başlık | ... |` ve `|---|---|`).
+   - Tablolar için: markdown ELLE YAZMA → `{{table: Baş1 | Baş2 ;; s1h1 | s1h2 ;; s2h1 | s2h2}}`
+     direktifini kullan (`;;` satır, `|` hücre, ilk satır başlık); sistem kusursuz tablo üretir.
    - Sütun/çubuk grafikleri için: kod bloğu içinde `█` veya `▇` karakterleriyle yatay/dikey çubuklar (her çubuğa etiket ve değer).
    - Geometrik şekiller için: kod bloğu içinde Unicode geometri karakterleri (△ □ ○ ◇ ▲ ●) + kenar/açı ölçüleri metin etiketi olarak.
    - Örüntüler için: Unicode sembol dizisi (♥ ♦ ♠ ★ ▲ ●) ya da emoji (🔴 🔵 🟢) — düzenli aralıklı.
@@ -29,7 +30,10 @@ Kuralların:
          - "$$\\sqrt{144} + 5^2 = ?$$"
          - "$$2x + 7 = 15 \\Rightarrow x = ?$$"
        UYARI: Kullanılan tüm semboller mathtext destekli olmalı (LaTeX standart subset). `\\begin{cases}`, `\\text{}` gibi karmaşık yapıları KULLANMA.
-   - `tablo_sorusu`: Soru metni + Markdown tablo + tabloya dayalı bir hesap/yorum sorusu.
+   - `tablo_sorusu`: Soru metni + tablo + tabloya dayalı hesap/yorum sorusu. Tabloyu
+       **`{{table:...}}` DİREKTİFİYLE** ver (ham markdown `|---|` YAZMA):
+       `{{table: Şehir | Nüfus (Okunuşu) ;; Şehir A | Sekiz milyon kırk bin iki yüz beş ;; Şehir B | Seksen milyon dört yüz bin yirmi beş ;; Şehir C | Sekiz yüz milyon kırk bin yirmi beş}}`
+       En fazla ~6 satır / 5 sütun. `answer` tablodaki verilerle TUTARLI olmalı.
    - `gorsel_geometri`: Soru metni + INLINE SVG bloğu (kod bloğu DEĞİL!) ile geometri şekli + ölçü etiketleri. Aşağıdaki kuralları MUTLAKA UY:
        (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` formatında olmalı (genişlik ≤ 250, yükseklik ≤ 200).
        (b) Sadece şu elementleri kullan: `line`, `polyline`, `polygon`, `rect`, `circle`, `ellipse`, `path`, `text`, `g`. Asla `script`, `foreignObject`, `image`, `use href="http..."` KULLANMA.
@@ -71,7 +75,7 @@ Kuralların:
    - `coktan_secmeli`: Soru metni + boş satır + 4 şık her biri ayrı satırda "A) ...", "B) ...", "C) ...", "D) ..." formatında. Şıklardan SADECE BİRİ doğru olmalı; çeldiriciler makul yanlışlar (yaygın hatalar) olsun. `answer` alanı SADECE doğru şıkkın harfi ("A", "B", "C" veya "D"). Çözüm hangi şıkkın neden doğru olduğunu ve diğerlerinin neden yanlış olduğunu açıklar.
    - `bosluk_doldurma`: Soru cümlesi içinde bir veya birden fazla "_____" (en az 3 alt çizgi) boşluğu olsun. `answer` alanı boşluğa giren ifadeler — birden fazla boşluk varsa "; " ile ayrılır (örn. "12; 5"). Sıralama soldan sağa.
    - `dogru_yanlis`: Soru yerine TEK bir iddia/önerme cümlesi yaz (örn. "Bir karenin tüm kenarları eşittir."). Soru işareti olmasın. `answer` SADECE "Doğru" veya "Yanlış" olsun. Çözüm önermenin neden doğru/yanlış olduğunu kazanım çerçevesinde açıklar.
-   - `eslestirme`: Soru metni (yönerge) + boş satır + 2 kolonlu GFM tablo. Sol kolon "Numara/Öğe", sağ kolon "Harf/Karşılık" karıştırılmış sıralı. Tipik 3-4 satır. `answer` alanı eşleşmeler "1-c, 2-a, 3-b, 4-d" formatında. Çözüm her eşleşmenin neden olduğunu satır satır açıklar.
+   - `eslestirme`: Soru metni (yönerge) + boş satır + 2 kolonlu tablo (`{{table:...}}` direktifiyle; ham markdown yazma). Sol kolon "Numara/Öğe", sağ kolon "Harf/Karşılık" karıştırılmış sıralı. Tipik 3-4 satır. `answer` alanı eşleşmeler "1-c, 2-a, 3-b, 4-d" formatında. Çözüm her eşleşmenin neden olduğunu satır satır açıklar.
    - `siralama`: Soru metni (yönerge — örn. "Aşağıdaki sayıları küçükten büyüğe doğru sıralayınız") + karıştırılmış öğe listesi (madde işaretli liste veya virgülle ayrılmış). `answer` alanı doğru sıralı öğeler " → " (boşluklu ok) ile ayrılır. Çözüm sıralama kriterini ve adımları açıklar.
    - Diğer tipler (islem, sozel_problem, vs.): mevcut sözel/işlem formatında devam.
 10. Verilen örnek soruların stilini ve seviyesini referans al, AMA aynı sayıları/bağlamları KOPYALAMA. GÖRSELLİ örneklerde (SVG/grafik/tablo): şekli OLDUĞU GİBİ KOPYALAMA — örnekteki görselin MANTIĞINI çöz (görsel neyi temsil ediyor, hangi veri şekilden okunuyor, soru şekil üzerinden neyi soruyor) ve bu mantığı KENDİ sorununa uygun FARKLI TASARIMDA yeni bir görselle uygula: farklı şekil türü, farklı düzen/yerleşim, farklı sayılar ve farklı gerçek yaşam bağlamı kullan. Örneğin bir "sayı doğrusu" örneğinden hareketle bir "kesir modeli", "geometrik şekil", "grafik" veya "tablo" da tasarlayabilirsin — yeter ki görsel soruyla matematiksel olarak TUTARLI olsun. Amaç örnekleri çoğaltmak değil, görsel kurma mantığını yeni ve özgün şekillerde üretebilmektir. Uygun olan HER konuda (sadece geometri değil; sayılar, kesir, cebir, veri, olasılık) görselli soru üretmekten çekinme.
