@@ -143,9 +143,15 @@ class GeminiProvider:
             raise ProviderError(f"Gemini istemci hatası: {exc}") from exc
 
         usage_meta = getattr(response, "usage_metadata", None)
+        # Gemini 2.5/3 "thinking" modelleri: FATURALANAN çıktı = candidates +
+        # thoughts_token_count. candidates_token_count düşünme token'ını İÇERMEZ →
+        # yalnız onu saymak maliyeti ciddi biçimde (çoğu zaman birkaç kat) DÜŞÜK
+        # raporlar. thoughts çıktı fiyatından ücretlendirilir → output'a ekle.
+        _candidates = getattr(usage_meta, "candidates_token_count", 0) or 0
+        _thoughts = getattr(usage_meta, "thoughts_token_count", 0) or 0
         usage = TokenUsage(
             input_tokens=getattr(usage_meta, "prompt_token_count", 0) or 0,
-            output_tokens=getattr(usage_meta, "candidates_token_count", 0) or 0,
+            output_tokens=_candidates + _thoughts,
             model_name=model_name,
         )
 
