@@ -228,6 +228,16 @@ export function QuizSolver({
     );
   }).length;
 
+  // Worksheet ödevi modu: yapılandırılmamış/açık uçlu tipler self-eval yerine metin
+  // kutusuyla çözülür (sunucu cevap anahtarına eşleştirir). Yapısal 4 tip her modda aynı.
+  const worksheetMode = quiz.answer_mode === "worksheet";
+  const STRUCTURED_TYPES = [
+    "coktan_secmeli",
+    "dogru_yanlis",
+    "bosluk_doldurma",
+    "salt_islem",
+  ];
+
   return (
     <div className="space-y-5">
       {/* Paylaşılan + misafir: opsiyonel isim (sahip sonuç panosunda görünür). */}
@@ -349,8 +359,9 @@ export function QuizSolver({
                 </div>
               ) : null}
 
-              {/* Açık uçlu — öz-değerlendirme: kâğıda çöz → cevabı gör → kendini işaretle */}
-              {q.question_type === "sozel_problem" ? (
+              {/* Açık uçlu — öz-değerlendirme (yalnız Çöz&Geliş): kâğıda çöz → cevabı gör → işaretle.
+                  Worksheet ödevinde bu blok gizli; aşağıdaki metin kutusu kullanılır. */}
+              {q.question_type === "sozel_problem" && !worksheetMode ? (
                 <div className="space-y-2 pl-8">
                   <p className="text-xs text-muted-foreground">
                     Soruyu kâğıda çöz; sonra cevabı görüp kendini değerlendir.
@@ -392,6 +403,21 @@ export function QuizSolver({
                       </div>
                     </div>
                   )}
+                </div>
+              ) : null}
+
+              {/* Worksheet ödevi — yapılandırılmamış/açık uçlu tipler: cevabı metin
+                  kutusuna yaz. Sunucu cevap anahtarına normalize eşleştirir (self-eval yok). */}
+              {worksheetMode && !STRUCTURED_TYPES.includes(q.question_type) ? (
+                <div className="pl-8">
+                  <textarea
+                    className="flex min-h-[72px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    placeholder="Cevabını buraya yaz"
+                    value={a.texts?.[0] ?? ""}
+                    onChange={(e) =>
+                      setAnswer(q.number, { texts: [e.target.value] })
+                    }
+                  />
                 </div>
               ) : null}
             </Card>

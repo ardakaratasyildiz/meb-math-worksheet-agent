@@ -131,7 +131,7 @@ export function AssignmentsList() {
   );
 }
 
-/** PDF ödev satırı — çözme yok; worksheet'i indir (öğrenci sürümü, cevapsız). */
+/** PDF (worksheet) ödev satırı — sistem-içi çöz (deterministik puanlama) VEYA PDF indir. */
 function PdfAssignmentRow({
   a,
   tenantId,
@@ -140,6 +140,8 @@ function PdfAssignmentRow({
   tenantId: string;
 }) {
   const [downloading, setDownloading] = React.useState(false);
+  const pct =
+    a.solved && a.total ? Math.round(((a.score ?? 0) / a.total) * 100) : 0;
 
   async function onDownload() {
     setDownloading(true);
@@ -161,7 +163,7 @@ function PdfAssignmentRow({
   }
 
   return (
-    <Card className="flex items-center justify-between gap-3 p-4">
+    <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">{a.title}</p>
         <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
@@ -169,22 +171,37 @@ function PdfAssignmentRow({
           <span className="rounded-full bg-rose-400/15 px-2 py-0.5 font-semibold text-rose-500">
             PDF
           </span>
-          {a.due_at ? <DueChip dueAt={a.due_at} /> : null}
+          {a.due_at && !a.solved ? <DueChip dueAt={a.due_at} /> : null}
         </p>
       </div>
-      <Button
-        onClick={onDownload}
-        disabled={downloading}
-        size="sm"
-        className="shrink-0 gap-1.5"
-      >
-        {downloading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Download className="h-4 w-4" />
-        )}
-        İndir
-      </Button>
+      <div className="flex shrink-0 items-center gap-2">
+        {a.solved ? (
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+            <CheckCircle2 className="h-4 w-4" />
+            {a.score}/{a.total}
+            <span className="font-normal text-muted-foreground">· %{pct}</span>
+          </span>
+        ) : null}
+        <Button asChild size="sm" className="gap-1.5">
+          <Link href={`/practice/assignments/${a.assignment_id}`}>
+            {a.solved ? "Tekrar çöz" : "Çöz"}
+          </Link>
+        </Button>
+        <Button
+          onClick={onDownload}
+          disabled={downloading}
+          size="sm"
+          variant="outline"
+          className="gap-1.5"
+        >
+          {downloading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4" />
+          )}
+          İndir
+        </Button>
+      </div>
     </Card>
   );
 }

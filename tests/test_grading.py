@@ -132,10 +132,63 @@ def test_attempt_and_mastery_persistence() -> None:
             store.close()
 
 
+def test_open_ended_text_match() -> None:
+    """Worksheet ödevi modu: açık uçlu/yapılandırılmamış tipler metin-eşleştirmeyle
+    puanlanır (self-eval yok). Çöz&Geliş (open_ended_text_match=False) davranışı korunur."""
+    print("open_ended_text_match — worksheet metin-eşleştirme")
+
+    # Açık uçlu (sozel_problem)
+    open_q = _q(1, QuestionType.SOZEL_PROBLEM, "12 elma")
+    # Worksheet modu: metin normalize eşleşir
+    check(
+        grade_question(open_q, _a(1, texts=["12 Elma"]), open_ended_text_match=True) is True,
+        "worksheet: açık uçlu normalize metin doğru",
+    )
+    check(
+        grade_question(open_q, _a(1, texts=["5 elma"]), open_ended_text_match=True) is False,
+        "worksheet: açık uçlu yanlış metin",
+    )
+    check(
+        grade_question(open_q, _a(1, texts=["   "]), open_ended_text_match=True) is False,
+        "worksheet: boş metin yanlış",
+    )
+    # Çöz&Geliş (varsayılan): açık uçlu ÖZ-DEĞERLENDİRME (bool_answer), metin sayılmaz
+    check(
+        grade_question(open_q, _a(1, bool_answer=True)) is True,
+        "quiz: açık uçlu self-eval doğru bildim",
+    )
+    check(
+        grade_question(open_q, _a(1, texts=["12 elma"])) is False,
+        "quiz: açık uçlu metin self-eval'siz sayılmaz (Çöz&Geliş korunur)",
+    )
+
+    # Yapılandırılmamış tip (tablo) — quiz modunda hep yanlış, worksheet'te metin-eşleşir
+    tbl = _q(2, QuestionType.TABLO_SORUSU, "45")
+    check(grade_question(tbl, _a(2, texts=["45"])) is False, "quiz: tablo tipi puanlanmaz (yanlış)")
+    check(
+        grade_question(tbl, _a(2, texts=["45"]), open_ended_text_match=True) is True,
+        "worksheet: tablo sayısal eşleşir",
+    )
+
+    # Yapısal 4 tip her iki modda da aynı deterministik kuralla puanlanır
+    mcq = _q(3, QuestionType.COKTAN_SECMELI, "B", options=["x", "y"], correct_index=1)
+    check(
+        grade_question(mcq, _a(3, selected_index=1), open_ended_text_match=True) is True,
+        "worksheet: çoktan seçmeli yine yapısal puanlanır",
+    )
+
+    # Agregasyon: worksheet quiz (1 açık uçlu doğru + 1 MCQ doğru + 1 tablo yanlış)
+    qs = [open_q, mcq, tbl]
+    subs = [_a(1, texts=["12 elma"]), _a(3, selected_index=1), _a(2, texts=["99"])]
+    _, score, total, _ = grade_quiz(qs, subs, open_ended_text_match=True)
+    check(score == 2 and total == 3, f"worksheet agregasyon 2/3: {score}/{total}")
+
+
 def main() -> int:
     for fn in (
         test_grade_question_per_type,
         test_grade_quiz_aggregate,
+        test_open_ended_text_match,
         test_attempt_and_mastery_persistence,
     ):
         fn()

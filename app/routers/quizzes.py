@@ -206,11 +206,17 @@ def _to_public(
     difficulty: Difficulty,
     created_at: str,
     questions: list[Question],
+    answer_mode: str = "quiz",
 ) -> QuizPublic:
     """Cevaplı Question listesini CEVAPSIZ QuizPublic'e dönüştürür (anti-kopya).
 
     Çoktan seçmelide `options` (şıklar — cevap değil) gönderilir; boşluk
     doldurmada yalnız `blank_count` (kaç giriş). Diğer her şey soyulur.
+
+    answer_mode="worksheet" (sınıf worksheet ödevi): açık uçlu/yapılandırılmamış tipler
+    self-eval yerine metin-eşleştirmeyle puanlanır → cevap HİÇ açığa çıkarılmaz
+    (reveal_answer=None); frontend metin kutusu gösterir. "quiz" (varsayılan, Çöz&Geliş)
+    açık uçluda cevabı öz-değerlendirme için açar.
     """
     pub: list[QuizQuestionPublic] = []
     for q in questions:
@@ -218,7 +224,9 @@ def _to_public(
         is_blank = q.question_type == QuestionType.BOSLUK_DOLDURMA
         # Açık uçlu (öz-değerlendirme): otomatik puanlanamaz → cevap istemciye AÇILIR
         # (öğrenci "cevabı gör" deyip kendini işaretler). Diğer tiplerde cevap gizli.
+        # worksheet modunda self-eval yok → hiçbir cevap açılmaz (kopya önleme korunur).
         is_open = q.question_type == QuestionType.SOZEL_PROBLEM
+        reveal = q.answer if (is_open and answer_mode == "quiz") else None
         pub.append(
             QuizQuestionPublic(
                 number=q.number,
@@ -227,7 +235,7 @@ def _to_public(
                 kazanim_kod=q.kazanim_kod,
                 options=q.options if is_mcq else None,
                 blank_count=(len(q.blanks) if (is_blank and q.blanks) else None),
-                reveal_answer=q.answer if is_open else None,
+                reveal_answer=reveal,
             )
         )
     return QuizPublic(
@@ -239,6 +247,7 @@ def _to_public(
         question_count=len(pub),
         questions=pub,
         created_at=created_at,
+        answer_mode=answer_mode,
     )
 
 

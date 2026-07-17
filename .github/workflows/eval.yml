@@ -90,6 +90,7 @@ jobs:
           python tests/test_billing_store.py
           python tests/test_clerk_roles.py
           python tests/test_classroom.py
+          python tests/test_assignment.py
 
   # 2. PR gate: hızlı eval (~1-2 dk) — sadece PR'lar ve manual dispatch'te
   quick-eval:

@@ -241,7 +241,41 @@ def test_pdf_assignment() -> None:
             check(la["assignment_type"] == "pdf", "list_assignments tip pdf")
             mine = cs.list_my_assignments("stu-1")[0]
             check(mine["assignment_type"] == "pdf", "öğrenci ödevinde tip pdf")
-            check(mine["solved"] is False, "pdf ödev solved değil (takip yok)")
+            check(mine["solved"] is False, "çözülmeden pdf ödev solved False")
+        finally:
+            cs.close(); qs.close()
+
+
+def test_pdf_assignment_solve_tracked() -> None:
+    """PR2: worksheet (pdf) ödevi sistem-içi çözülür → attempt quiz_id="" + assignment_id
+    ile kaydedilir → Ödevlerim + öğretmen panosu skoru gösterir (quiz ödeviyle aynı yol)."""
+    print("PDF worksheet ödevi — sistem-içi çöz + skor takibi")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        db = str(Path(tmp) / "t.sqlite3")
+        qs = QuizStore(db_path=db)
+        cs = ClassroomStore(db_path=db)
+        try:
+            c = cs.create_classroom(owner_tenant_id="teacher-1", name="5/A")
+            cs.join_classroom(code=c["join_code"], student_tenant_id="stu-1", display_name="Ali")
+            ws = '{"title":"Kesirler","grade":5,"topic":"kesirler"}'
+            a = cs.create_assignment(
+                classroom_id=c["id"], owner_tenant_id="teacher-1",
+                quiz_id="", title="Kesirler", assignment_type="pdf", worksheet_json=ws,
+            )
+            # Worksheet ödevi çözümü: quiz kaydı yok → quiz_id="" + assignment_id
+            qs.record_attempt(
+                quiz_id="", solver_tenant_id="stu-1",
+                answers=[{"number": 1, "texts": ["yarım"]}],
+                score=2, total=3, duration_seconds=40,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 2, "total": 3}],
+                assignment_id=a["id"],
+            )
+            mine = cs.list_my_assignments("stu-1")[0]
+            check(mine["solved"] is True, "worksheet ödevi çözülünce solved True")
+            check(mine["score"] == 2 and mine["total"] == 3, "worksheet skoru 2/3")
+            res = cs.assignment_results(a["id"], "teacher-1")
+            ali = next(i for i in res["items"] if i["display_name"] == "Ali")
+            check(ali["solved"] is True and ali["score"] == 2, "pano: Ali worksheet 2/3 çözdü")
         finally:
             cs.close(); qs.close()
 
@@ -250,7 +284,9 @@ def test_app_imports() -> None:
     print("uygulama import — assignment endpoint'leri kayıtlı")
     from app.main import app  # noqa: PLC0415
 
-    paths = {r.path for r in app.routes}
+    # OpenAPI şeması sürümden bağımsız tam-nitelikli path verir (app.routes taraması
+    # Starlette sürümüne göre iç router'ları farklı sarar → openapi güvenli).
+    paths = set(app.openapi()["paths"].keys())
     check("/api/assignments/{assignment_id}" in paths, "GET /api/assignments/{id}")
     check("/api/assignments/{assignment_id}/attempt" in paths, "POST .../attempt")
     check("/api/assignments/{assignment_id}/results" in paths, "GET .../results")
@@ -268,6 +304,7 @@ def main() -> int:
         test_assignment_results,
         test_first_attempt_counts_not_max,
         test_pdf_assignment,
+        test_pdf_assignment_solve_tracked,
         test_app_imports,
     ):
         fn()

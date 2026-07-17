@@ -52,8 +52,36 @@ def _match_blank(submitted: str, expected: str) -> bool:
     return _normalize_text(submitted) == _normalize_text(expected)
 
 
-def grade_question(stored: Question, submitted: SubmittedAnswer | None) -> bool:
-    """Tek soruyu puanla. Cevap yoksa/eksikse yanlış sayılır (fail-closed)."""
+def _match_free_text(submitted: SubmittedAnswer | None, expected: str) -> bool:
+    """Serbest-metin cevabı → cevap anahtarına normalize/sayısal eşleştir.
+
+    Worksheet ödevlerinin sistem-içi çözümünde (open_ended_text_match=True) yapılandırılmamış
+    tipler için kullanılır: öğrenci cevabını metin kutusuna yazar, sunucu _match_blank ile
+    (sayısal denklik VEYA aksan/boşluk/büyük-küçük toleranslı string) cevap anahtarıyla
+    karşılaştırır. Self-eval YOK, LLM YOK. Kısa/kesin cevaplarda güvenilir; uzun serbest
+    metinde farklı ifade haksız 'yanlış' verebilir (bilinen sınır).
+    """
+    if not submitted or not submitted.texts:
+        return False
+    guess = submitted.texts[0]
+    if not guess or not guess.strip():
+        return False
+    return _match_blank(guess, expected)
+
+
+def grade_question(
+    stored: Question,
+    submitted: SubmittedAnswer | None,
+    *,
+    open_ended_text_match: bool = False,
+) -> bool:
+    """Tek soruyu puanla. Cevap yoksa/eksikse yanlış sayılır (fail-closed).
+
+    open_ended_text_match=True (worksheet ödevi sistem-içi çözümü): yapılandırılmamış /
+    açık uçlu tipler ÖZ-DEĞERLENDİRME yerine cevap anahtarına normalize metin-eşleştirmeyle
+    puanlanır. Yapısal 4 tip (çoktan seçmeli, doğru-yanlış, boşluk, salt işlem) her iki modda
+    da aynı deterministik kuralla puanlanır. Varsayılan (False) = Çöz&Geliş davranışı korunur.
+    """
     if submitted is None:
         return False
     t = stored.question_type
@@ -82,23 +110,35 @@ def grade_question(stored: Question, submitted: SubmittedAnswer | None) -> bool:
             return False
         return numeric_equivalent(submitted.texts[0], stored.answer) is True
 
-    # Açık uçlu (sozel_problem) — OTOMATİK puanlanamaz; ÖZ-DEĞERLENDİRME: öğrenci
-    # cevabı gördükten sonra "doğru bildim" (bool_answer=True) derse doğru sayılır.
+    # Açık uçlu (sozel_problem) — Çöz&Geliş'te ÖZ-DEĞERLENDİRME (öğrenci cevabı görüp
+    # "doğru bildim" = bool_answer=True der). Worksheet ödevinde ise self-eval yerine
+    # cevap anahtarına metin-eşleştirme (open_ended_text_match).
     if t == QuestionType.SOZEL_PROBLEM:
+        if open_ended_text_match:
+            return _match_free_text(submitted, stored.answer)
         return submitted.bool_answer is True
 
-    # Çözülebilir olmayan tip puanlanamaz → yanlış (bu havuza hiç girmemeli).
+    # Diğer yapılandırılmamış tipler (tablo, okuma pasajı, eşleştirme, sıralama, görsel
+    # geometri…): Çöz&Geliş'te bu havuza girmezler (yanlış). Worksheet ödevinde öğrenci
+    # cevabını metin kutusuna yazar → cevap anahtarına eşleştirilir.
+    if open_ended_text_match:
+        return _match_free_text(submitted, stored.answer)
     return False
 
 
 def grade_quiz(
     stored_questions: list[Question],
     submitted: list[SubmittedAnswer],
+    *,
+    open_ended_text_match: bool = False,
 ) -> tuple[list[QuestionResult], int, int, list[KazanimBreakdown]]:
     """Tüm quiz'i puanla.
 
     Dönüş: (soru sonuçları, doğru sayısı, toplam, kazanım kırılımı).
     Çözüm sonrası geri bildirim: her sonuçta doğru cevap + çözüm açığa çıkar.
+
+    open_ended_text_match: worksheet ödevi sistem-içi çözümünde True — açık uçlu/
+    yapılandırılmamış tipler self-eval yerine metin-eşleştirmeyle puanlanır (bkz. grade_question).
     """
     by_number = {a.number: a for a in submitted}
     results: list[QuestionResult] = []
@@ -107,7 +147,9 @@ def grade_quiz(
     per_k: dict[str, list[int]] = {}
 
     for q in stored_questions:
-        is_correct = grade_question(q, by_number.get(q.number))
+        is_correct = grade_question(
+            q, by_number.get(q.number), open_ended_text_match=open_ended_text_match
+        )
         if is_correct:
             score += 1
         bucket = per_k.setdefault(q.kazanim_kod, [0, 0])
