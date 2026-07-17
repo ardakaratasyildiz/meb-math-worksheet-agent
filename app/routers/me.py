@@ -34,6 +34,8 @@ from app.models.schemas import (
     ShareSummary,
     StudyPlanResponse,
     SubmittedAnswer,
+    TeachingOverviewItem,
+    TeachingOverviewResponse,
 )
 from app.security import limiter, require_api_key
 from app.services.clerk_auth import resolve_tenant_id, verified_tenant_id
@@ -328,6 +330,21 @@ def list_my_assignments(
     tenant_id = _require_tenant(verified, tenant_id)
     rows = CLASSROOM_STORE.list_my_assignments(tenant_id)
     return MyAssignmentsResponse(items=[MyAssignmentItem(**r) for r in rows])
+
+
+@router.get("/teaching-results", response_model=TeachingOverviewResponse)
+def teaching_results(
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> TeachingOverviewResponse:
+    """Öğretmenin TÜM sınıflarındaki ödevler + çözülme özeti ('Ödev Sonuçları' panosu).
+
+    Yalnız çağıranın SAHİBİ olduğu sınıfların ödevlerini döndürür (owner-scoped by
+    query). Detay (kim/kaç puan) /api/assignments/{id}/results ile çekilir."""
+    tenant_id = _require_tenant(verified, tenant_id)
+    rows = CLASSROOM_STORE.owner_assignment_overview(tenant_id)
+    return TeachingOverviewResponse(items=[TeachingOverviewItem(**r) for r in rows])
 
 
 # ── E-posta tercihleri (KVKK opt-in — Track 2) ───────────────────────────────

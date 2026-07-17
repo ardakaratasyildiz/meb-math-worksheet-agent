@@ -822,7 +822,7 @@ function AssignmentRow({
 }
 
 /** Sonuç panosunda öğrenci satırı — çözdüyse tıklayınca cevaplarını (soru-soru) açar. */
-function StudentResultRow({
+export function StudentResultRow({
   item,
   assignmentId,
   tenantId,

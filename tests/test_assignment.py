@@ -364,6 +364,47 @@ def test_teacher_view_student_attempt() -> None:
             cs.close(); qs.close()
 
 
+def test_owner_assignment_overview() -> None:
+    """Öğretmenin tüm sınıflarındaki ödevler + çözülme sayısı ('Ödev Sonuçları')."""
+    print("owner_assignment_overview — öğretmen pano özeti")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        db = str(Path(tmp) / "t.sqlite3")
+        qs = QuizStore(db_path=db)
+        cs = ClassroomStore(db_path=db)
+        try:
+            quiz_id = _make_quiz(qs, "teacher-1")
+            c1 = cs.create_classroom(owner_tenant_id="teacher-1", name="5/A")
+            c2 = cs.create_classroom(owner_tenant_id="teacher-1", name="5/B")
+            cs.join_classroom(code=c1["join_code"], student_tenant_id="s1", display_name="Ali")
+            cs.join_classroom(code=c1["join_code"], student_tenant_id="s2", display_name="Ece")
+            a1 = cs.create_assignment(classroom_id=c1["id"], owner_tenant_id="teacher-1", quiz_id=quiz_id, title="Öd-A")
+            cs.create_assignment(classroom_id=c2["id"], owner_tenant_id="teacher-1", quiz_id=quiz_id, title="Öd-B")
+            # başka öğretmenin sınıfı — sızmamalı
+            cx = cs.create_classroom(owner_tenant_id="teacher-2", name="Yabancı")
+            cs.create_assignment(classroom_id=cx["id"], owner_tenant_id="teacher-2", quiz_id=quiz_id, title="Öd-X")
+            # s1 çözer
+            qs.record_attempt(
+                quiz_id=quiz_id, solver_tenant_id="s1",
+                answers=[{"number": 1, "texts": ["4"]}], score=1, total=1, duration_seconds=5,
+                per_kazanim=[{"kazanim_kod": "M.5.1.1", "correct": 1, "total": 1}],
+                assignment_id=a1["id"],
+            )
+            ov = cs.owner_assignment_overview("teacher-1")
+            check(len(ov) == 2, f"öğretmen-1'in 2 ödevi: {len(ov)}")
+            titles = {o["title"] for o in ov}
+            check("Öd-X" not in titles, "başka öğretmenin ödevi sızmadı")
+            oa = next(o for o in ov if o["title"] == "Öd-A")
+            check(oa["classroom_name"] == "5/A", "sınıf adı geliyor")
+            check(oa["member_count"] == 2, f"5/A üye 2: {oa['member_count']}")
+            check(oa["solved_count"] == 1, f"5/A çözen 1: {oa['solved_count']}")
+            ob = next(o for o in ov if o["title"] == "Öd-B")
+            check(ob["solved_count"] == 0 and ob["member_count"] == 0, "5/B 0/0")
+            check(cs.owner_assignment_overview("teacher-2") and
+                  cs.owner_assignment_overview("teacher-2")[0]["title"] == "Öd-X", "öğretmen-2 yalnız kendi ödevini görür")
+        finally:
+            cs.close(); qs.close()
+
+
 def test_app_imports() -> None:
     print("uygulama import — assignment endpoint'leri kayıtlı")
     from app.main import app  # noqa: PLC0415
@@ -379,6 +420,7 @@ def test_app_imports() -> None:
     check("/api/classrooms/{classroom_id}/assignments/pdf" in paths, "POST pdf assignment")
     check("/api/me/quizzes" in paths, "GET /api/me/quizzes")
     check("/api/me/assignments" in paths, "GET /api/me/assignments")
+    check("/api/me/teaching-results" in paths, "GET /api/me/teaching-results (Ödev Sonuçları)")
     check(
         "/api/assignments/{assignment_id}/attempts/{student_tenant_id}" in paths,
         "GET .../attempts/{student} (öğretmen öğrenci cevapları)",
@@ -395,6 +437,7 @@ def main() -> int:
         test_pdf_assignment_solve_tracked,
         test_delete_assignment,
         test_teacher_view_student_attempt,
+        test_owner_assignment_overview,
         test_app_imports,
     ):
         fn()

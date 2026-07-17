@@ -1104,6 +1104,24 @@ class AssignmentResultsResponse(BaseModel):
     items: list[AssignmentResultItem]
 
 
+class TeachingOverviewItem(BaseModel):
+    """Öğretmenin bir ödevi (hangi sınıf + çözülme özeti) — 'Ödev Sonuçları' panosu."""
+
+    classroom_id: str
+    classroom_name: str
+    assignment_id: str
+    title: str
+    assignment_type: str = "quiz"  # 'quiz' | 'pdf'
+    due_at: str | None = None
+    created_at: str
+    member_count: int
+    solved_count: int
+
+
+class TeachingOverviewResponse(BaseModel):
+    items: list[TeachingOverviewItem]
+
+
 # ── E-posta tercihleri (KVKK opt-in — Track 2) ───────────────────────────────
 
 

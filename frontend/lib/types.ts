@@ -412,6 +412,18 @@ export interface AssignmentResultItem {
   completed_at?: string | null;
 }
 
+export interface TeachingOverviewItem {
+  classroom_id: string;
+  classroom_name: string;
+  assignment_id: string;
+  title: string;
+  assignment_type?: "quiz" | "pdf";
+  due_at?: string | null;
+  created_at: string;
+  member_count: number;
+  solved_count: number;
+}
+
 export interface AssignmentResultsResponse {
   title: string;
   question_count: number;
