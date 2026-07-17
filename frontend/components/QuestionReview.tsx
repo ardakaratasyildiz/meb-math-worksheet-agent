@@ -77,8 +77,11 @@ export function formatSubmittedAnswer(
     return submitted.bool_answer ? "Doğru" : "Yanlış";
   }
   if (questionType === "sozel_problem") {
-    // Açık uçlu — öz-değerlendirme (bool_answer = "doğru bildim").
-    if (submitted.bool_answer == null) return "Değerlendirilmedi";
+    // Worksheet ödevi: öğrenci cevabını metin kutusuna yazar → onu göster.
+    const t = (submitted.texts ?? []).map((x) => x.trim()).filter(Boolean);
+    if (t.length) return t.join(", ");
+    // Çöz&Geliş: açık uçlu öz-değerlendirme (bool_answer = "doğru bildim").
+    if (submitted.bool_answer == null) return "Boş bırakıldı";
     return submitted.bool_answer
       ? "Öz-değerlendirme: doğru bildim"
       : "Öz-değerlendirme: yanlış / eksik";

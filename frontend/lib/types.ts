@@ -217,6 +217,9 @@ export interface QuizPublic {
   question_count: number;
   questions: QuizQuestionPublic[];
   created_at: string;
+  // "quiz" (Çöz&Geliş — açık uçlu öz-değerlendirme) | "worksheet" (sınıf worksheet
+  // ödevi — yapılandırılmamış tipler metin kutusuyla çözülür, sunucu eşleştirir).
+  answer_mode?: "quiz" | "worksheet";
 }
 
 export interface SubmittedAnswer {

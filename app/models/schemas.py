@@ -688,6 +688,11 @@ class QuizPublic(BaseModel):
     question_count: int
     questions: list[QuizQuestionPublic]
     created_at: str
+    # Cevap giriş modu: "quiz" (Çöz&Geliş — açık uçlu öz-değerlendirme) veya
+    # "worksheet" (sınıf worksheet ödevi — yapılandırılmamış tipler metin kutusuyla
+    # çözülür, sunucu cevap anahtarına eşleştirir; öz-değerlendirme yok). Frontend
+    # solver bu bayrağa göre açık uçlu/diğer tipleri metin kutusu olarak render eder.
+    answer_mode: str = "quiz"
 
 
 # ── Çözüm denemesi + puanlama (Adım 2) ───────────────────────────────────────
