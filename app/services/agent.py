@@ -38,7 +38,10 @@ from app.services.llm_providers import (
 from app.services.math_verifier import verify_batch as verify_math_batch
 from app.services.history import DEFAULT_TENANT, GENERATION_HISTORY, HistoryKey
 from app.services.retriever import ExampleRetriever, get_retriever
-from app.services.svg_utils import process_chart_directives
+from app.services.svg_utils import (
+    process_chart_directives,
+    process_pattern_directives,
+)
 from app.subjects import get_content_module
 
 logger = logging.getLogger(__name__)
@@ -1146,8 +1149,10 @@ class GeminiAgent:
         for raw in batch.questions:
             if dedup.is_duplicate(raw.question):
                 continue
-            q_text = process_chart_directives(
-                repair_latex_control_chars(raw.question).strip()
+            q_text = process_pattern_directives(
+                process_chart_directives(
+                    repair_latex_control_chars(raw.question).strip()
+                )
             )
             if raw.question_type in _figure_types and "<svg" not in q_text:
                 logger.info(

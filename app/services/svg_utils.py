@@ -191,6 +191,163 @@ def process_chart_directives(text: str) -> str:
     return _CHART_DIRECTIVE_RE.sub(_repl, text)
 
 
+# ─── Deterministik ÖRÜNTÜ üretimi (LLM ham SVG çizmesin) ─────────────────────
+# grafik gibi: LLM yalnız direktif verir, sistem güvenilir SVG üretir. oruntu_sekil
+# ham <svg> ile güvenilmezdi (A/B: 2.5 & 3.5 ikisi de düşük-yield). İki biçim:
+#   Dizi:    {{pattern:daire#kirmizi, kare#mavi, ucgen#yesil, daire#kirmizi, ?}}
+#   Büyüyen: {{pattern:grow|1,3,5,?}}   (her hücrede o kadar nokta; ? = eksik)
+# 'seq|' öneki opsiyonel (çıplak hücre dizisi = seq). ? = eksik slot.
+
+_PATTERN_DIRECTIVE_RE = re.compile(r"\{\{pattern:([^{}]+)\}\}", flags=re.IGNORECASE)
+
+_COLOR_NAMES = {
+    "kirmizi": "#ef4444", "kırmızı": "#ef4444", "red": "#ef4444",
+    "mavi": "#3b82f6", "blue": "#3b82f6",
+    "yesil": "#10b981", "yeşil": "#10b981", "green": "#10b981",
+    "sari": "#f59e0b", "sarı": "#f59e0b", "yellow": "#f59e0b",
+    "mor": "#8b5cf6", "purple": "#8b5cf6",
+    "turuncu": "#f97316", "orange": "#f97316",
+    "pembe": "#ec4899", "pink": "#ec4899",
+    "siyah": "#334155", "black": "#334155",
+}
+_SHAPE_ALIASES = {
+    "daire": "circle", "circle": "circle",
+    "kare": "square", "square": "square",
+    "ucgen": "triangle", "üçgen": "triangle", "triangle": "triangle",
+    "yildiz": "star", "yıldız": "star", "star": "star",
+    "elmas": "diamond", "diamond": "diamond",
+}
+
+
+def _resolve_color(raw: str, idx: int) -> str:
+    """Renk adı/hex → hex. Boş/bilinmeyen → palet döngüsü."""
+    raw = (raw or "").strip().lower()
+    if raw.startswith("#") and 4 <= len(raw) <= 7:
+        return raw
+    if raw in _COLOR_NAMES:
+        return _COLOR_NAMES[raw]
+    return _CHART_COLORS[idx % len(_CHART_COLORS)]
+
+
+def _star_points(cx: float, cy: float, r: float) -> str:
+    pts = []
+    for k in range(10):
+        ang = -math.pi / 2 + k * math.pi / 5
+        rr = r if k % 2 == 0 else r * 0.45
+        pts.append(f"{cx + rr * math.cos(ang):.1f},{cy + rr * math.sin(ang):.1f}")
+    return " ".join(pts)
+
+
+def _shape_svg(shape: str, cx: float, cy: float, s: float, color: str) -> str:
+    if shape == "circle":
+        return f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{s:.1f}" fill="{color}"/>'
+    if shape == "square":
+        return f'<rect x="{cx - s:.1f}" y="{cy - s:.1f}" width="{2 * s:.1f}" height="{2 * s:.1f}" fill="{color}"/>'
+    if shape == "triangle":
+        return f'<polygon points="{cx:.1f},{cy - s:.1f} {cx - s:.1f},{cy + s:.1f} {cx + s:.1f},{cy + s:.1f}" fill="{color}"/>'
+    if shape == "diamond":
+        return f'<polygon points="{cx:.1f},{cy - s:.1f} {cx + s:.1f},{cy:.1f} {cx:.1f},{cy + s:.1f} {cx - s:.1f},{cy:.1f}" fill="{color}"/>'
+    if shape == "star":
+        return f'<polygon points="{_star_points(cx, cy, s)}" fill="{color}"/>'
+    # bilinmeyen → daire fallback
+    return f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{s:.1f}" fill="{color}"/>'
+
+
+def _q_cell(cx: float) -> str:
+    return f'<text x="{cx:.1f}" y="40" font-size="34" text-anchor="middle" dominant-baseline="middle">?</text>'
+
+
+def _parse_pattern_cells(spec: str) -> list[tuple[str, str] | None]:
+    """'daire#kirmizi, kare#mavi, ?' → [('circle','#ef4444'), ('square','#3b82f6'), None]."""
+    cells: list[tuple[str, str] | None] = []
+    for i, part in enumerate(spec.split(",")):
+        tok = part.strip()
+        if not tok:
+            continue
+        if tok == "?":
+            cells.append(None)
+            continue
+        name, _, color = tok.partition("#")
+        shape = _SHAPE_ALIASES.get(name.strip().lower())
+        if shape is None:
+            continue  # bilinmeyen şekil → atla
+        cells.append((shape, _resolve_color(color, i)))
+    return cells[:10]
+
+
+def _parse_counts(spec: str) -> list[int | None]:
+    """'1,3,5,?' → [1,3,5,None]. Bozuk öğe atlanır; 0..12 arası."""
+    out: list[int | None] = []
+    for part in spec.split(","):
+        tok = part.strip()
+        if tok == "?":
+            out.append(None)
+            continue
+        try:
+            n = int(tok)
+        except ValueError:
+            continue
+        if 0 <= n <= 12:
+            out.append(n)
+    return out[:8]
+
+
+def render_pattern_svg(cells: list[tuple[str, str] | None]) -> str:
+    """Yatay şekil dizisi + ? slotu. Güvenilir, çakışmasız."""
+    cell_w, pad, h, cy, s = 54, 10, 60, 30, 18
+    width = len(cells) * cell_w + 2 * pad
+    parts = []
+    for i, c in enumerate(cells):
+        cx = pad + i * cell_w + cell_w / 2
+        parts.append(_q_cell(cx) if c is None else _shape_svg(c[0], cx, cy, s, c[1]))
+    return (
+        f'<svg viewBox="0 0 {width} {h}" xmlns="http://www.w3.org/2000/svg">'
+        + "".join(parts) + "</svg>"
+    )
+
+
+def render_growing_svg(counts: list[int | None]) -> str:
+    """Her hücrede `n` nokta (büyüyen örüntü); ? = eksik hücre. Noktalar ≤3/satır."""
+    cell_w, pad, h = 60, 10, 74
+    width = len(counts) * cell_w + 2 * pad
+    color = _CHART_COLORS[0]
+    parts = []
+    for i, n in enumerate(counts):
+        cx0 = pad + i * cell_w
+        cxc = cx0 + cell_w / 2
+        if n is None:
+            parts.append(_q_cell(cxc))
+            continue
+        for j in range(n):
+            col, row = j % 3, j // 3
+            dx = cxc + (col - 1) * 14
+            dy = 22 + row * 14
+            parts.append(f'<circle cx="{dx:.1f}" cy="{dy:.1f}" r="5" fill="{color}"/>')
+        # hücre altına sayıyı yazma (örüntü görsel kalsın); ayraç çizgisi opsiyonel
+    return (
+        f'<svg viewBox="0 0 {width} {h}" xmlns="http://www.w3.org/2000/svg">'
+        + "".join(parts) + "</svg>"
+    )
+
+
+def process_pattern_directives(text: str) -> str:
+    """{{pattern:...}} direktiflerini deterministik SVG ile değiştirir. Bozuk → no-op."""
+    def _repl(m: "re.Match[str]") -> str:
+        spec = m.group(1).strip()
+        low = spec.lower()
+        if low.startswith("grow|"):
+            counts = _parse_counts(spec[5:])
+            return render_growing_svg(counts) if counts else m.group(0)
+        if low.startswith("seq|"):
+            spec = spec[4:]
+        cells = _parse_pattern_cells(spec)
+        if not cells or all(c is None for c in cells):
+            return m.group(0)
+        return render_pattern_svg(cells)
+
+    return _PATTERN_DIRECTIVE_RE.sub(_repl, text)
+
+
 def is_dangerous(svg: str) -> bool:
     """Tehlikeli SVG patterni (script, on* handler, javascript: vs.) var mı?"""
     return any(p.search(svg) for p in _DANGEROUS_PATTERNS)

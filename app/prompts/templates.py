@@ -55,14 +55,19 @@ Kuralların:
        (c) Direktifi soru metninin içine, ilgili cümleden hemen sonra koy. En fazla 8 kategori.
        (d) `answer` ve çözüm, direktifteki değerlerle TUTARLI olmalı (ör. basketbol oranı soruluyorsa cevap o değerin yüzdesi).
        (e) Direktif dışında ASLA `<svg>`, `<path>`, `<rect>` vb. YAZMA.
-   - `oruntu_sekil`: Soru metni + INLINE SVG bloğu ile renkli geometrik şekiller örüntüsü + "?" ile eksik konum. Kurallar:
-       (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` (W ≤ 360, H ≤ 80).
-       (b) 4-7 şekil yan yana eşit aralıkla (x: 30, 80, 130, 180, ...).
-       (c) Her şekil ayrı SVG primitive: `<circle>`, `<rect>`, `<polygon>` (üçgen için). Yarıçap/genişlik ≈ 20-25.
-       (d) Renkler kontrastlı kategoriler: `#ef4444` (kırmızı), `#3b82f6` (mavi), `#10b981` (yeşil), `#f59e0b` (turuncu).
-       (e) Eksik konuma `<text font-size="32" text-anchor="middle">?</text>` veya boş `<rect fill="none" stroke-dasharray="4"/>`.
-       (f) Örüntü kuralı (renk/şekil/sayı) MATEMATİKSEL OLARAK tutarlı — cevap kuralı uygulayarak bulunmalı.
-       Örnek: `<svg viewBox="0 0 320 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="20" fill="#ef4444"/><rect x="60" y="10" width="40" height="40" fill="#3b82f6"/><polygon points="160,10 140,50 180,50" fill="#10b981"/><circle cx="220" cy="30" r="20" fill="#ef4444"/><rect x="250" y="10" width="40" height="40" fill="#3b82f6"/><text x="310" y="40" font-size="32" text-anchor="middle">?</text></svg>`
+   - `oruntu_sekil`: Soru metni + örüntü. **SVG ÇİZME!** Örüntüyü yalnızca aşağıdaki
+       VERİ DİREKTİFİ ile belirt; sistem şekilleri doğru, çakışmasız SVG olarak üretir
+       (LLM'in elle çizdiği örüntüler bozuk çıkıyordu):
+       (a) Şekil dizisi:  `{{pattern:şekil#renk, şekil#renk, ..., ?}}`
+           Şekiller: `daire`, `kare`, `ucgen`, `yildiz`, `elmas`. Renkler: `kirmizi`,
+           `mavi`, `yesil`, `sari`, `mor`, `turuncu`, `pembe` (veya `#ef4444` gibi hex).
+           Eksik konum `?`. Örn: `{{pattern:daire#kirmizi, kare#mavi, ucgen#yesil, daire#kirmizi, kare#mavi, ?}}`
+       (b) Büyüyen (sayısal) örüntü:  `{{pattern:grow|sayı1,sayı2,...,?}}` — her hücreye
+           o kadar nokta çizilir. Örn: `{{pattern:grow|1,3,5,?}}` (cevap: 7).
+       (c) Direktifi soru metninin içine, ilgili cümleden hemen sonra koy. En fazla ~8-10 öğe.
+       (d) Örüntü kuralı (renk/şekil/sayı) MATEMATİKSEL tutarlı olmalı; `answer` kuralı
+           uygulayarak bulunur (ör. yukarıda cevap "yeşil üçgen" veya "7").
+       (e) Direktif dışında ASLA `<svg>`, `<circle>`, `<rect>` vb. YAZMA.
    - `coktan_secmeli`: Soru metni + boş satır + 4 şık her biri ayrı satırda "A) ...", "B) ...", "C) ...", "D) ..." formatında. Şıklardan SADECE BİRİ doğru olmalı; çeldiriciler makul yanlışlar (yaygın hatalar) olsun. `answer` alanı SADECE doğru şıkkın harfi ("A", "B", "C" veya "D"). Çözüm hangi şıkkın neden doğru olduğunu ve diğerlerinin neden yanlış olduğunu açıklar.
    - `bosluk_doldurma`: Soru cümlesi içinde bir veya birden fazla "_____" (en az 3 alt çizgi) boşluğu olsun. `answer` alanı boşluğa giren ifadeler — birden fazla boşluk varsa "; " ile ayrılır (örn. "12; 5"). Sıralama soldan sağa.
    - `dogru_yanlis`: Soru yerine TEK bir iddia/önerme cümlesi yaz (örn. "Bir karenin tüm kenarları eşittir."). Soru işareti olmasın. `answer` SADECE "Doğru" veya "Yanlış" olsun. Çözüm önermenin neden doğru/yanlış olduğunu kazanım çerçevesinde açıklar.
@@ -236,7 +241,7 @@ _YENI_NESIL_BLOCK = """YENİ NESİL (HARMAN) MOD — bu kağıtta sorular KARIŞ
 - `gunluk_hayat`, `sozel_problem`, `modelleme`, `akil_yurutme` tipindeki soruları YENİ NESİL yaz: 2-4 cümlelik GERÇEK YAŞAM SENARYOSU/bağlam (alışveriş, spor, tarif, yolculuk, okul, doğa, üretim vb.); öğrenci gerekli veriyi metinden/görselden KENDİSİ ayıklasın; mümkünse İŞE YARAMAYAN bir bilgi (çeldirici veri) ekle; çözüm ÇOK ADIMLI (en az 2 adım) olsun.
 - `islem`, `salt_islem`, `kavram_sorusu` gibi tipler KISA ve doğrudan kalabilir (hızlı pratik) — hepsini senaryoya çevirme.
 - `gorsel_geometri`, `grafik_okuma`, `tablo_sorusu`, `oruntu_sekil` (ŞEKİLLİ) tiplerinde şekli/tabloyu/grafiği MUTLAKA gerçek yaşam bağlamına yerleştir: çıplak "aşağıdaki şekilde..." DEĞİL; örn. bir bahçenin krokisi, bir mağazanın aylık satış grafiği, bir tarifin malzeme tablosu, bir parkın oturma düzeni. ŞEKİL + SENARYO birlikte olsun (şekilli bağlamsal soru).
-- ⚠️ KRİTİK: Şekilli tipte şekli GERÇEKTEN ÜRET. `gorsel_geometri`/`oruntu_sekil` → soru metninin içinde geçerli bir `<svg>...</svg>` bloğu OLMAK ZORUNDA; `grafik_okuma` → `{{chart:...}}` direktifi OLMAK ZORUNDA. Ölçüler/veriler şekilde görünmeli. "Görseldeki ölçüye göre" deyip şekil/direktif ÜRETMEMEK KESİNLİKLE YASAK (cevaplanamaz soru olur). Şekli üretemeyeceksen o soruyu bağlamsal SÖZEL soru (`gunluk_hayat`/`sozel_problem`) olarak yaz ve tüm ölçüleri metinde ver.
+- ⚠️ KRİTİK: Şekilli tipte şekli GERÇEKTEN ÜRET. `gorsel_geometri` → soru metninin içinde geçerli bir `<svg>...</svg>` bloğu OLMAK ZORUNDA; `grafik_okuma` → `{{chart:...}}` direktifi, `oruntu_sekil` → `{{pattern:...}}` direktifi OLMAK ZORUNDA. Ölçüler/veriler şekilde görünmeli. "Görseldeki ölçüye göre" deyip şekil/direktif ÜRETMEMEK KESİNLİKLE YASAK (cevaplanamaz soru olur). Şekli üretemeyeceksen o soruyu bağlamsal SÖZEL soru (`gunluk_hayat`/`sozel_problem`) olarak yaz ve tüm ölçüleri metinde ver.
 - `coktan_secmeli` tiplerinde çeldiriciler yaygın HATA TİPLERİNDEN doğsun (işlem sırası, birim karışması, eksik adım, sık kavram yanılgısı) — rastgele yakın sayı DEĞİL.
 - Bağlam gerçekçi ve tutarlı olsun (fiyat, ölçü, miktar makul; birimler doğru). Aritmetik zorluğu yine "Zorluk Kalibrasyonu" belirler."""
 
