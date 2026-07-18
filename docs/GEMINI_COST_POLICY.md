@@ -121,6 +121,39 @@ ham `<svg>`'yi ELLE yazmasını istiyor** → tutturamıyor, eleniyor, top-up ya
 Dark-launch (ödeyen ~0): herkes ücretsiz-model → 5-8 geometri-dışı 3.5→2.5. Toplam Gemini
 maliyeti tahmini **~%55-70 ↓** (~$51/ay → ~$15-23/ay). Kalite A/B'lerle korundu.
 
+## 9. Non-math kalite regresyonu + few-shot fix (2026-07-18)
+
+**Belirti:** #117 (3.5→2.5 kaydırma) sonrası fen/sosyal/türkçe/ingilizce'de ciddi kalite
+düşüşü ("karman çorman", yanlış sorular).
+
+**Kök neden (3 katman):**
+1. `model_for()` ders eksenine bakmaz; tek kalite kaldıracı `is_geometry` matematik-özel
+   (`agent.py:69` → non-math'te daima False). Billing canlı olmadığından TÜM sözel dersler
+   2.5-flash'a düştü. #117'nin A/B'leri (§3) yalnız matematikti → sözel hiç test edilmemişti.
+2. Thinking non-math'te de kısıldı (1-4→0, 5-7→512).
+3. **Asıl kırılma:** türkçe/sosyal/ingilizce'nin hem RAG hem static few-shot havuzu BOŞtu
+   (fen'in 1652 chunk + few-shot'ı vardı → "en az bozuk" oydu). Eski 3.5+dinamik-thinking
+   bu boşluğu güçlü akıl yürütmeyle örtüyordu; 2.5 örtemedi.
+
+**Mimari ayrım (kritik):** non-math'te RAG korpusu yalnız **critic**'i besler
+(`_collect_critic_context`, agent.py:367); **üreteci** yalnız static few-shot besler
+(agent.py:631-636 → `content.collect_few_shot` → `build_user_prompt` → `_format_few_shot`).
+→ Üretim kalitesini few-shot düzeltir, RAG değil.
+
+**Yapılan fix (Kanal B — maliyet-nötr, model/thinking değişmedi):** `app/subjects/<ders>/
+few_shot.py` gerçek MEB sorularıyla dolduruldu (5-8):
+- türkçe 42 (ÖDSGM beceri `sorular/*_ca.pdf` + g8 LGS kazanım testi)
+- sosyal 53 (g8 İnkılap resmî cevap anahtarıyla ✓; 5-7 anahtarsız → yalnız metince-zorunlu)
+- ingilizce 38 (g8 `ing_ca.pdf` ✓; 5-7 anahtarsız → yalnız metince-zorunlu)
+- TOPLAM 133; hepsi görselsiz (tam metin); cevaplar resmî anahtar veya metin-zorunluluğuyla
+  doğrulandı; kazanım kodları curriculum'la eşleşir; testler 147/147. Canlı üretim (2.5-flash)
+  üç derste de tutarlı+doğru soru üretti (`few_shot_source=static`).
+- 1-4: EBA kazanım testleri 5'ten başladığından gerçek soru yok → atlandı (sentetik yapılmadı).
+
+**Kanal A (ertelendi):** ders kitaplarını critic bağlamı için ingest eden
+`scripts/ingest_subject_textbook.py` hazır (dry-run: tr 1298/sos 1303/ing 1152 chunk). Blokör:
+`chroma.sqlite3` 85→~135MB, GitHub 100MB/dosya limitini aşar (LFS/artifact kararı bekliyor).
+
 ## İlgili PR'lar
 - #115 — defter doğruluğu (thinking sayımı + quiz kaydı)
 - #117 — model + thinking politikası
