@@ -80,7 +80,17 @@ Kuralların:
    - Diğer tipler (islem, sozel_problem, vs.): mevcut sözel/işlem formatında devam.
 10. Verilen örnek soruların stilini ve seviyesini referans al, AMA aynı sayıları/bağlamları KOPYALAMA. GÖRSELLİ örneklerde (SVG/grafik/tablo): şekli OLDUĞU GİBİ KOPYALAMA — örnekteki görselin MANTIĞINI çöz (görsel neyi temsil ediyor, hangi veri şekilden okunuyor, soru şekil üzerinden neyi soruyor) ve bu mantığı KENDİ sorununa uygun FARKLI TASARIMDA yeni bir görselle uygula: farklı şekil türü, farklı düzen/yerleşim, farklı sayılar ve farklı gerçek yaşam bağlamı kullan. Örneğin bir "sayı doğrusu" örneğinden hareketle bir "kesir modeli", "geometrik şekil", "grafik" veya "tablo" da tasarlayabilirsin — yeter ki görsel soruyla matematiksel olarak TUTARLI olsun. Amaç örnekleri çoğaltmak değil, görsel kurma mantığını yeni ve özgün şekillerde üretebilmektir. Uygun olan HER konuda (sadece geometri değil; sayılar, kesir, cebir, veri, olasılık) görselli soru üretmekten çekinme.
 11. Verilen örnekler hedef zorluğa yakın seçilmiştir; üretimlerini aynı zorlukta tut.
-12. Çıktıyı MUTLAKA istenen JSON formatında üret; ek metin/açıklama EKLEME. `question` alanı Markdown içerebilir — newline (\\n), tablo, kod bloğu (```...```) serbesttir."""
+12. AÇILIŞ/KALIP ÇEŞİTLİLİĞİ (aynı kağıttaki sorular arası — ÖNEMLİ): soruların cümle
+    İSKELETİNİ çeşitlendir; hepsi "Bir ..." ile BAŞLAMASIN. Farklı isim/bağlam seçmek
+    YETMEZ (çiçekçi→otobüs→öğretmen hâlâ aynı kalıptır) — açılış YAPISINI değiştir. Karışık aç:
+      • doğrudan soruyla ("Kaç ... eder?", "... kaçtır?")
+      • birinci/ikinci kişi ("Elimde ... var", "... alışverişe çıktın")
+      • diyalog/konuşma ("Ali, kardeşine ... dedi.")
+      • zaman/durum kurgusu ("... yaparken", "Hafta sonu ...")
+      • veri/tablo/görselle başlayan
+      • soru-önce, bağlam-sonra
+    Aynı açılış kalıbı bir kağıtta EN FAZLA 1-2 kez tekrarlansın; 5 soruda 5 farklı iskelet hedefle.
+13. Çıktıyı MUTLAKA istenen JSON formatında üret; ek metin/açıklama EKLEME. `question` alanı Markdown içerebilir — newline (\\n), tablo, kod bloğu (```...```) serbesttir."""
 
 
 # MEB TYMM ünite kazanımları kazanım-bazlı difficulty_hints taşımaz (yalnız kod+metin).
@@ -283,5 +293,16 @@ def build_user_prompt(
         f"Yukarıdaki kriterlere göre tam {question_count} adet soru üret. "
         "Her sorunun kazanım koduyla ve soru tipiyle etiketli olduğundan emin ol. "
         "Sorular yukarıdaki Zorluk Kalibrasyonuna UYMALIDIR.",
+        # Açılış/kalıp çeşitliliği — few-shot örneklerin çoğu "Bir ..." ile başlar;
+        # model bunu taklit edip tüm seti monotonlaştırıyor. Sayısal tavan + salient
+        # konum (final talimat) ile bu anchor'ı kır (bkz. sistem kuralı 12).
+        (
+            f"ÇEŞİTLİLİK (ZORUNLU): Bu {question_count} sorunun cümle AÇILIŞLARINI "
+            "birbirinden FARKLI kur. Örnek sorular 'Bir ...' ile başlasa bile SEN taklit etme; "
+            f"bu sette EN FAZLA {max(1, round(question_count / 3))} soru 'Bir' ile başlayabilir. "
+            "Kalanları farklı iskeletle aç: doğrudan soruyla, birinci/ikinci kişi ('Elimde ... var'), "
+            "isim/diyalogla ('Ayşe ... dedi'), zaman/durum kurgusuyla ('Hafta sonu ...'), "
+            "veri/tabloyla. Farklı isim seçmek YETMEZ; cümle iskeletini değiştir."
+        ),
     ]
     return "\n".join(p for p in parts if p is not None)
