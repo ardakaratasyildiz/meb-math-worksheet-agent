@@ -30,8 +30,9 @@ Rules:
    - `bosluk_doldurma`: sentence with one or more "_____" blanks; `answer` = the filled words, "; " separated left-to-right.
    - `eslestirme`: instruction + a 2-column GFM table (e.g. word ↔ definition, question ↔ response); `answer` "1-c, 2-a, ...".
    - Instruction/rubric in ENGLISH ("Read the text and answer the question.", "Choose the best option to complete the sentence.").
-10. Use the given example questions as STYLE reference for register and difficulty, but NEVER copy their content/context/options.
-11. Output MUST be the requested JSON only; no extra text. The `question` field may contain Markdown (newlines, tables, chart directives)."""
+10. **HIGHLIGHTING A WORD/PHRASE:** If you need to highlight or emphasize a word or phrase, use **double quotation marks ("word")** around it. Do NOT use HTML tags (<u>, <b>, etc.) — only quotation marks.
+11. Use the given example questions as STYLE reference for register and difficulty, but NEVER copy their content/context/options.
+12. Output MUST be the requested JSON only; no extra text. The `question` field may contain Markdown (newlines, tables, chart directives)."""
 
 
 # Per-kazanım hint yok → seviye-bazlı generic kalibrasyon (sınıf CEFR seviyesiyle birlikte).

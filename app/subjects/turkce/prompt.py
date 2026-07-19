@@ -26,8 +26,9 @@ Kuralların:
    - `siralama`: karışık cümleleri/olayları anlamlı/mantıklı sıraya koyma; `answer` doğru sıra " → " ile.
    - `eslestirme`: 2 kolonlu GFM tablo (ör. sözcük↔anlam, deyim↔açıklama); `answer` "1-c, 2-a, ...".
    - `bosluk_doldurma`: cümlede "_____"; `answer` sırayla "; " ayrımlı.
-9. Verilen örneklerin stilini referans al, metni/soruyu KOPYALAMA.
-10. Çıktı yalnız istenen JSON; `question` Markdown içerebilir (pasaj + şıklar)."""
+9. **SÖZCÜK BELİRTME:** Bir sözcüğü/ifadeyi belirtmen/vurgulamam gerekiyorsa **çift tırnak ("sözcük")** kullan. HTML tag'leri (< u>, <b>, vb.) KULLANMA — sadece tırnak.
+10. Verilen örneklerin stilini referans al, metni/soruyu KOPYALAMA.
+11. Çıktı yalnız istenen JSON; `question` Markdown içerebilir (pasaj + şıklar)."""
 
 
 GENERIC_DIFFICULTY_HINT: dict[str, str] = {
