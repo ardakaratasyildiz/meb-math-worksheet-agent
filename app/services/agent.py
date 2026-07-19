@@ -39,6 +39,7 @@ from app.services.math_verifier import verify_batch as verify_math_batch
 from app.services.history import DEFAULT_TENANT, GENERATION_HISTORY, HistoryKey
 from app.services.retriever import ExampleRetriever, get_retriever
 from app.services.svg_utils import (
+    is_valid_svg,
     process_chart_directives,
     process_pattern_directives,
     process_table_directives,
@@ -1163,6 +1164,15 @@ class GeminiAgent:
                     raw.question_type.value, raw.question[:70],
                 )
                 continue
+            # SVG geçerlilik: şekilli tipte SVG varsa hatalı olmamalı → ele.
+            if raw.question_type in _figure_types and "<svg" in q_text:
+                ok, reason = is_valid_svg(q_text)
+                if not ok:
+                    logger.info(
+                        "Bozuk SVG atıldı (%s, %s): %s",
+                        raw.question_type.value, reason, raw.question[:70],
+                    )
+                    continue
             # Çoktan seçmeli ZORUNLU: A) B) C) D) şıkları soru metnine gömülü olmalı;
             # aksi halde soru CEVAPLANAMAZ → ele (top-up doldurur). Tüm dersleri korur.
             if raw.question_type == QuestionType.COKTAN_SECMELI:
