@@ -1197,6 +1197,15 @@ class GeminiAgent:
                     "Atıf bütünlüğü ihlali (%s): %s", ref_issue, raw.question[:70]
                 )
                 continue
+            # Dangling HTML tag: "altı çizili" yazılı ama <u> tag'i var, tırnak yok → ele.
+            # Model prompt'ta tırnak kullansın dedirtilse de fallback kontrol.
+            has_underline_markup = "<u>" in q_text or "<b>" in q_text or "<i>" in q_text
+            has_quoted_markup = '"' in q_text
+            if has_underline_markup and not has_quoted_markup:
+                logger.info(
+                    "Dangling HTML tag (tırnak yok): %s", raw.question[:70]
+                )
+                continue
             kod = raw.kazanim_kod if raw.kazanim_kod in valid_kazanim_codes else fallback_kazanim
             dedup.add(raw.question)
             steps = raw.solution_steps
