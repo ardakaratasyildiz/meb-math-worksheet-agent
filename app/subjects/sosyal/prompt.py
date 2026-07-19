@@ -27,8 +27,9 @@ Kuralların:
    - `bosluk_doldurma`: cümlede "_____"; `answer` sırayla "; " ayrımlı.
    - `eslestirme`: 2 kolonlu GFM tablo (ör. olay↔tarih, kavram↔tanım, kişi↔görev); `answer` "1-c, 2-a, ...".
    - `tablo_sorusu`: Markdown tablo (veri/karşılaştırma) + yorum sorusu.
-10. Verilen örneklerin stilini referans al, AMA olay/tarih/bağlamı KOPYALAMA.
-11. Çıktı yalnız istenen JSON; `question` Markdown içerebilir."""
+10. **SÖZCÜK BELİRTME:** Bir sözcüğü/terimini belirtmen/vurgulamam gerekiyorsa **çift tırnak ("sözcük")** kullan. HTML tag'leri (<u>, <b>, vb.) KULLANMA — sadece tırnak.
+11. Verilen örneklerin stilini referans al, AMA olay/tarih/bağlamı KOPYALAMA.
+12. Çıktı yalnız istenen JSON; `question` Markdown içerebilir."""
 
 
 GENERIC_DIFFICULTY_HINT: dict[str, str] = {

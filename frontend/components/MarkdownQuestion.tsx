@@ -53,8 +53,78 @@ const MD_COMPONENTS: Components = {
   ),
 };
 
+// Çoktan seçmeli şıklar "... soru? A) x B) y C) z D) w" formatında gömülü gelir.
+// Markdown boşluk olarak işlediği için şıklar soruyla aynı satıra akıyor.
+// Bu fonksiyon stemden şıkları ayırır; her şık kendi satırında render edilir.
+function splitInlineOptions(
+  text: string,
+): { stem: string; options: string[] } | null {
+  const re = /(^|[^A-Za-z0-9])([A-D])[)\.]/g;
+  const idxs: number[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    idxs.push(m.index + m[1].length);
+    if (m.index === re.lastIndex) re.lastIndex++;
+  }
+  if (idxs.length < 2) return null;
+  const stem = text.slice(0, idxs[0]).trim();
+  if (!stem) return null;
+  const options: string[] = [];
+  for (let i = 0; i < idxs.length; i++) {
+    const to = i + 1 < idxs.length ? idxs[i + 1] : text.length;
+    options.push(text.slice(idxs[i], to).trim());
+  }
+  return { stem, options };
+}
+
 export function MarkdownQuestion({ text }: { text: string }) {
   const segments = React.useMemo(() => splitBySvg(text), [text]);
+  const parsed = React.useMemo(() => splitInlineOptions(text), [text]);
+
+  // Gömülü A) B) C) D) şıkları varsa ayrı satırlara böl.
+  if (parsed) {
+    return (
+      <div className="space-y-1">
+        <div className="text-sm">
+          {splitBySvg(parsed.stem).map((seg, i) =>
+            seg.kind === "svg" ? (
+              <SafeSvg key={i} content={seg.content} />
+            ) : (
+              <ReactMarkdown
+                key={i}
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                components={MD_COMPONENTS}
+              >
+                {seg.content}
+              </ReactMarkdown>
+            ),
+          )}
+        </div>
+        <div className="space-y-0.5 pl-2 text-sm">
+          {parsed.options.map((opt, i) => (
+            <div key={i}>
+              {splitBySvg(opt).map((seg, j) =>
+                seg.kind === "svg" ? (
+                  <SafeSvg key={j} content={seg.content} />
+                ) : (
+                  <ReactMarkdown
+                    key={j}
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={MD_COMPONENTS}
+                  >
+                    {seg.content}
+                  </ReactMarkdown>
+                ),
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="text-sm">
       {segments.map((seg, i) =>

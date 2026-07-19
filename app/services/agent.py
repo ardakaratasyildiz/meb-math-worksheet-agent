@@ -39,6 +39,7 @@ from app.services.math_verifier import verify_batch as verify_math_batch
 from app.services.history import DEFAULT_TENANT, GENERATION_HISTORY, HistoryKey
 from app.services.retriever import ExampleRetriever, get_retriever
 from app.services.svg_utils import (
+    is_valid_svg,
     process_chart_directives,
     process_pattern_directives,
     process_table_directives,
@@ -1163,6 +1164,15 @@ class GeminiAgent:
                     raw.question_type.value, raw.question[:70],
                 )
                 continue
+            # SVG geçerlilik: şekilli tipte SVG varsa hatalı olmamalı → ele.
+            if raw.question_type in _figure_types and "<svg" in q_text:
+                ok, reason = is_valid_svg(q_text)
+                if not ok:
+                    logger.info(
+                        "Bozuk SVG atıldı (%s, %s): %s",
+                        raw.question_type.value, reason, raw.question[:70],
+                    )
+                    continue
             # Çoktan seçmeli ZORUNLU: A) B) C) D) şıkları soru metnine gömülü olmalı;
             # aksi halde soru CEVAPLANAMAZ → ele (top-up doldurur). Tüm dersleri korur.
             if raw.question_type == QuestionType.COKTAN_SECMELI:
@@ -1185,6 +1195,15 @@ class GeminiAgent:
             if ref_issue:
                 logger.info(
                     "Atıf bütünlüğü ihlali (%s): %s", ref_issue, raw.question[:70]
+                )
+                continue
+            # Dangling HTML tag: "altı çizili" yazılı ama <u> tag'i var, tırnak yok → ele.
+            # Model prompt'ta tırnak kullansın dedirtilse de fallback kontrol.
+            has_underline_markup = "<u>" in q_text or "<b>" in q_text or "<i>" in q_text
+            has_quoted_markup = '"' in q_text
+            if has_underline_markup and not has_quoted_markup:
+                logger.info(
+                    "Dangling HTML tag (tırnak yok): %s", raw.question[:70]
                 )
                 continue
             kod = raw.kazanim_kod if raw.kazanim_kod in valid_kazanim_codes else fallback_kazanim
