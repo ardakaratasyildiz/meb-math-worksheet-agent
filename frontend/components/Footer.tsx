@@ -40,6 +40,9 @@ export function Footer() {
               { label: "KVKK Aydınlatma Metni", href: "/legal/kvkk" },
               { label: "Kullanım Koşulları", href: "/legal/terms" },
               { label: "Gizlilik Politikası", href: "/legal/privacy" },
+              { label: "Mesafeli Satış Sözleşmesi", href: "/legal/mesafeli-satis" },
+              { label: "Ön Bilgilendirme Formu", href: "/legal/on-bilgilendirme" },
+              { label: "İptal & İade Koşulları", href: "/legal/iptal-iade" },
             ]}
           />
           <FooterColumn

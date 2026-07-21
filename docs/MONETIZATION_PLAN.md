@@ -60,18 +60,25 @@
 
 ## 2. Önerilen model: Freemium + Reverse-trial + fair-use kota
 
-### Değer çiti (KESİNLEŞTİ — 2026-07-10)
-Tek Pro planı, persona-farkında mesajlaşma. Hibrit: öğretmen **ve** veli ana persona.
+### Değer çiti (REVİZE — 2026-07-16; 2026-07-10 "tek Pro" kararını GÜNCELLER)
+**İki Pro kademesi** (kota + analitik derinliğiyle ayrışır) + **kalıcı ücretsiz kademe**
++ **7 gün kartsız reverse trial**. Hibrit persona: öğretmen **ve** veli.
 
-| Özellik | 🆓 Ücretsiz | ⭐ Pro |
-|---|---|---|
-| Anonim önizleme üretimi (girişsiz) | ✅ (SEO motoru) | ✅ |
-| Giriş yapınca üretim | **aylık ~10-15 kağıt/quiz** (kota) | **fair-use sınırsız** |
-| Kalite | standart | **yeni nesil** |
-| PDF indirme | ✅ **alt bilgide "Soru Atölyesi ile üretildi"** | ✅ **markasız + kendi logo (white-label)** |
-| Quiz çözme (kendi + paylaşılan) | ✅ | ✅ |
-| İlerleme panosu + oyunlaştırma | ✅ | ✅ (daha derin analitik) |
-| Sınıf / ödev atama | **temel: 1 sınıf** (viral döngü) | **çoklu sınıf + sonuç panosu + kazanım analitiği** |
+| Özellik | 🆓 Ücretsiz (kalıcı) | 🎁 7g Deneme | ⭐ Pro ₺189/ay | ⭐⭐ Pro+ ₺249/ay |
+|---|---|---|---|---|
+| Anonim önizleme üretimi (girişsiz) | ✅ (SEO motoru) | — | ✅ | ✅ |
+| Giriş sonrası üretim kotası | **100 soru/ay** (tüm ders ortak havuz) | 100 soru / 7 gün, **tam-Pro** | **1000 soru/ay** | **fair-use sınırsız** (arka planda makul tavan) |
+| Kalite | standart | **yeni nesil** | **yeni nesil** | **yeni nesil** |
+| PDF indirme | ✅ footer "Soru Atölyesi ile üretildi" | ✅ white-label | ✅ **white-label** | ✅ **white-label** |
+| Quiz çözme (kendi + paylaşılan) | ✅ | ✅ | ✅ | ✅ |
+| İlerleme + oyunlaştırma | ✅ | ✅ | ✅ | ✅ |
+| Temel sınıf/ödev + veli bağı | ✅ (viral döngü) | ✅ | ✅ | ✅ |
+| **Derin** veli/öğretmen analitiği (sonuç panosu, kazanım kırılımı, çoklu sınıf) | — | ✅ | temel | ✅ **tam** |
+
+**Kota birimi = soru/ay** (USAGE_LEDGER üretim başına soru sayar), **aylık reset**,
+**cache-hit üretimler kotadan düşmez** (fiyat sayfasındaki söz korunur). Anonim üretim
+kotasızdır (SEO motoru). Pro/Pro+ ayrımı: **kota (1000 vs sınırsız) + analitik derinliği**;
+white-label ve temel takip her iki Pro'da da var.
 
 **Tasarım prensipleri (neden böyle):**
 1. **Ücretsiz PDF footer'ı = dağıtım kaldıracı.** Her ücretsiz PDF "Soru Atölyesi ile
@@ -90,12 +97,14 @@ Tek Pro planı, persona-farkında mesajlaşma. Hibrit: öğretmen **ve** veli an
 - **Veli:** sınırsız pratik + yeni nesil kalite + çocuğun derin ilerleme takibi.
   (Kasual veli ücretsiz kalır → ağızdan ağıza yayar, sorun değil.)
 
-### ⭐ Pro fiyat & trial
-- **Aylık-öncelikli** fiyat + yıllık "aylık ₺X gibi" çerçeveli.
-- **7 gün kartsız reverse trial.**
-- Fiyat hipotezi (DOĞRULANACAK): MEA ~%50 × NA education aylık →
-  **~₺149-199/ay**, yıllık **~₺990-1290** (≈2 ay bedava, "≈₺99/ay" gösterimi).
-  Lansmanda %50 intro indirim.
+### ⭐ Pro fiyat & trial (KESİNLEŞTİ — 2026-07-16)
+- İki kademe: **Pro ₺189/ay** (1000 soru/ay), **Pro+ ₺249/ay** (fair-use sınırsız +
+  tam veli/öğretmen analitiği). Fiyatlar **KDV DAHİL** gösterilir (B2C).
+- **7 gün kartsız reverse trial** (tam-Pro deneyim).
+- Lansmanda **yalnız aylık** (2 SKU: `pro-aylik`, `pro-plus-aylik`). Yıllık plan
+  ("aylık ₺X gibi" çerçeveyle) sonra eklenebilir — MEA aylık-ağırlıklı profiline uygun.
+- Fiyatlar başlangıç çıpası; iyzico pricing plan'de kolay ayarlanır (WTP verisiyle iterasyon).
+- (Ref: rapor hipotezi ~₺149-199/ay idi; ₺189/₺249 bu aralığın üstünde, değer ürünü için savunulabilir.)
 
 ### 🏫 Kurum/Zümre (B2B) — Faz 2
 - Koltuk/okul lisansı, faturalı. Yüksek ARPU, GROWTH_ROADMAP'e uygun. Bireysel motor
@@ -141,19 +150,26 @@ mevcut `entitlements` ilkesi korunur).
 
 ## 6. Kararlar
 **✅ Kapandı (2026-07-10):**
-- **Persona:** hibrit — öğretmen **ve** veli ana persona (tek Pro plan, persona-farkında mesaj).
-- **Değer çiti:** bölüm 2'deki tablo. Fence = hacim (kota) + profesyonellik (white-label) +
-  yönetim (çoklu sınıf/analitik). Alışkanlık döngüsü (çözme/ilerleme/oyunlaştırma) ücretsiz.
+- **Persona:** hibrit — öğretmen **ve** veli ana persona.
 - **Karar A:** ücretsiz PDF'te "Soru Atölyesi ile üretildi" footer AÇIK (dağıtım + upgrade tetiği).
-- **Karar B:** sınıf/ödev viral kısmı ücretsiz (1 sınıf + öğrenci çözme), ölçek+analitik Pro.
+- **Karar B:** sınıf/ödev viral kısmı ücretsiz (temel sınıf/ödev + veli bağı), ölçek+analitik Pro.
 
-**⏳ Açık (TARTIŞILACAK):**
-1. **Ücretsiz kota seviyesi** — öneri: cömert (~10-15/ay), organik erişim darboğazı nedeniyle.
-   Kota birimi: kağıt mı, quiz mi, ikisi ortak havuz mu? Aylık mı haftalık mı reset?
-2. **Ödeme + tüzel kişilik** — iyzico mı PayTR mı; şirket/şahıs işletme hazır mı?
-3. **Fiyat çıpası** — ₺149-199/ay hipotezi kabul mü, yoksa WTP ölçümüyle mi netleştirelim?
-4. **Trial uzunluğu** — 7 gün (öneri) vs daha uzun (rapor: uzun trial %70 daha iyi çevirir
-   ama piyasa kısaltıyor).
+**✅ Kapandı (2026-07-16 — model netleşti, "tek Pro" → iki kademe):**
+- **Plan yapısı:** **iki Pro kademesi** (bölüm 2 tablosu). ~~Tek Pro~~ (2026-07-10) GÜNCELLENDİ.
+  Gerekçe: veli ve öğretmen ödeme istekliliği/ihtiyacı farklı → kota + analitik derinliğiyle ayır.
+- **Fiyat:** Pro **₺189/ay** (1000 soru/ay), Pro+ **₺249/ay** (sınırsız + tam takip). KDV **dahil**.
+  Lansmanda yalnız aylık (2 SKU). Yıllık sonra.
+- **Ücretsiz kota:** **kalıcı 100 soru/ay** (tüm ders ortak havuz, aylık reset, cache-hit sayılmaz).
+  Kalıcı ücretsiz kademe KORUNUR (erişim darboğazı → footer motoru + alışkanlık döngüsü yaşasın).
+- **Trial:** **7 gün kartsız** tam-Pro (reverse trial).
+- **Kurumsal/B2B:** Faz 2 — manuel/teklif (self-serve değil).
+- **Ödeme sağlayıcı:** **iyzico** (Abonelik API; docs/IYZICO_ENTEGRASYON_PLANI.md).
+- **KDV gösterimi:** KDV dahil (B2C). **e-Arşiv fatura:** başta manuel (GİB/SMMM), hacimle otomatikleşir.
+
+**⏳ Açık (kod dışı — SMMM/gerçek dünya):**
+- Tüzel kişilik kuruluşu (şahıs şirketi) — docs/SIRKET_KURULUS_CHECKLIST.md.
+- Genç girişimci istisnası uygunluğu (SMMM'ye).
+- WTP (ödeme istekliliği) verisiyle fiyat iterasyonu (lansman sonrası ölç).
 
 ---
 
