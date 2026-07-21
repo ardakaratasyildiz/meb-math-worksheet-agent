@@ -1,27 +1,23 @@
 import { ClerkProvider } from '@clerk/expo';
 import { tokenCache } from '@clerk/expo/token-cache';
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { StyleSheet, Text, View, useColorScheme } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
 import { AuthTokenBridge } from '@/components/auth-token-bridge';
 import { ENV } from '@/lib/env';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const hasKey = !!ENV.clerkPublishableKey;
-
   useEffect(() => {
-    if (!hasKey) SplashScreen.hideAsync().catch(() => {});
-  }, [hasKey]);
+    SplashScreen.hideAsync().catch(() => {});
+  }, []);
 
   // Anahtar yoksa ClerkProvider patlar → yardımcı yapılandırma ekranı göster.
-  if (!hasKey) {
+  if (!ENV.clerkPublishableKey) {
     return (
       <View style={styles.configScreen}>
         <Text style={styles.configTitle}>Yapılandırma eksik</Text>
@@ -36,10 +32,9 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={ENV.clerkPublishableKey} tokenCache={tokenCache}>
       <AuthTokenBridge />
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <AnimatedSplashOverlay />
-        <AppTabs />
-      </ThemeProvider>
+      <SafeAreaProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </SafeAreaProvider>
     </ClerkProvider>
   );
 }
