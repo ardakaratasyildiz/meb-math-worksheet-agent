@@ -33,3 +33,17 @@ knowledge_base/eval/run_*.log
 secrets/
 gen-lang-client-*.json
 *-sa.json
+
+# ── Node / monorepo (Turborepo + Expo + Next) ────────────────────────────────
+node_modules/
+**/node_modules/
+.turbo/
+**/.turbo/
+**/.expo/
+**/dist/
+**/.next/
+**/web-build/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
