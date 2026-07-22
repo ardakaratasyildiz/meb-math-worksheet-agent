@@ -73,6 +73,10 @@ function AuthedHome() {
           <Text style={styles.navSecondaryText}>✏️ Alıştırma Çöz</Text>
         </Pressable>
 
+        <Pressable style={styles.navSecondary} onPress={() => router.push('/progress' as Href)}>
+          <Text style={styles.navSecondaryText}>📊 İlerlemem</Text>
+        </Pressable>
+
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Backend · /api/me/gamification</Text>
           {loading ? (
