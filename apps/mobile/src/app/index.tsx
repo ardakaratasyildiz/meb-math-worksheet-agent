@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SignInForm } from '@/components/sign-in-form';
 import { getGamification, pingHealth, type GamificationResponse } from '@/lib/api';
+import { colors, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
 
 export default function HomeScreen() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -100,37 +101,38 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  safe: { flex: 1 },
-  content: { padding: 20, gap: 12 },
-  hello: { fontSize: 24, fontWeight: '800', marginTop: 8 },
-  email: { fontSize: 14, opacity: 0.6 },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
+  safe: { flex: 1, backgroundColor: colors.bg },
+  content: { padding: spacing.xl, gap: spacing.md },
+  hello: { fontSize: fontSize.xl, fontWeight: fontWeight.heavy, marginTop: spacing.sm, color: colors.text },
+  email: { fontSize: fontSize.sm, color: colors.textMuted },
   card: {
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderRadius: 16,
-    padding: 16,
-    gap: 12,
-    marginTop: 8,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    gap: spacing.md,
+    marginTop: spacing.sm,
+    backgroundColor: colors.surface,
   },
-  cardTitle: { fontSize: 13, fontWeight: '600', opacity: 0.7 },
-  stats: { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
+  cardTitle: { fontSize: fontSize.xs, fontWeight: fontWeight.medium, color: colors.textMuted },
+  stats: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.lg },
   stat: { minWidth: 64 },
-  statValue: { fontSize: 22, fontWeight: '800' },
-  statLabel: { fontSize: 12, opacity: 0.6 },
-  error: { color: '#ef4444', fontSize: 14 },
+  statValue: { fontSize: fontSize.xl, fontWeight: fontWeight.heavy, color: colors.text },
+  statLabel: { fontSize: fontSize.xs, color: colors.textMuted },
+  error: { color: colors.danger, fontSize: fontSize.sm },
   secondary: {
     borderWidth: 1,
-    borderColor: '#208AEF',
-    borderRadius: 10,
-    paddingVertical: 10,
+    borderColor: colors.brand,
+    borderRadius: radius.sm,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
-  secondaryText: { color: '#208AEF', fontWeight: '700' },
+  secondaryText: { color: colors.brand, fontWeight: fontWeight.bold },
   signout: {
-    paddingVertical: 12,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
-  signoutText: { color: '#ef4444', fontWeight: '600' },
+  signoutText: { color: colors.danger, fontWeight: fontWeight.medium },
 });
