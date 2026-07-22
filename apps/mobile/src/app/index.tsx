@@ -69,6 +69,10 @@ function AuthedHome() {
           <Text style={styles.primaryBtnText}>📄 Çalışma Kağıdı Oluştur</Text>
         </Pressable>
 
+        <Pressable style={styles.navSecondary} onPress={() => router.push('/practice' as Href)}>
+          <Text style={styles.navSecondaryText}>✏️ Alıştırma Çöz</Text>
+        </Pressable>
+
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Backend · /api/me/gamification</Text>
           {loading ? (
@@ -118,6 +122,14 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontWeight: fontWeight.bold },
+  navSecondary: {
+    borderWidth: 2,
+    borderColor: colors.brand,
+    borderRadius: radius.md,
+    paddingVertical: spacing.lg,
+    alignItems: 'center',
+  },
+  navSecondaryText: { color: colors.brand, fontSize: fontSize.md, fontWeight: fontWeight.bold },
   hello: { fontSize: fontSize.xl, fontWeight: fontWeight.heavy, marginTop: spacing.sm, color: colors.text },
   email: { fontSize: fontSize.sm, color: colors.textMuted },
   card: {

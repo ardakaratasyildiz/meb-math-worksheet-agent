@@ -6,3 +6,4 @@
  */
 export * from "./subjects";
 export * from "./worksheet";
+export * from "./quiz";

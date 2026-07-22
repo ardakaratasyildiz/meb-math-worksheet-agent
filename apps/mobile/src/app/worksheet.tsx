@@ -21,6 +21,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Chip, Section } from '@/components/pickers';
 import { generateWorksheet, listUnits } from '@/lib/api';
 import { shareWorksheetPdf } from '@/lib/pdf';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
@@ -32,42 +33,6 @@ const DIFFICULTIES: { value: Difficulty; label: string }[] = [
   { value: 'zor', label: 'Zor' },
 ];
 const COUNTS = [5, 10, 15, 20];
-
-function Chip({
-  label,
-  selected,
-  onPress,
-  color,
-}: {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-  color?: string;
-}) {
-  const accent = color ?? colors.brand;
-  return (
-    <Pressable
-      onPress={onPress}
-      style={[
-        styles.chip,
-        selected && { backgroundColor: accent, borderColor: accent },
-      ]}
-    >
-      <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={styles.chipRow}>{children}</View>
-    </View>
-  );
-}
 
 export default function WorksheetScreen() {
   const { userId } = useAuth();
@@ -283,17 +248,6 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.bold,
     color: colors.textMuted,
   },
-  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  chip: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    backgroundColor: colors.bg,
-  },
-  chipText: { color: colors.text, fontSize: fontSize.sm, fontWeight: fontWeight.medium },
-  chipTextSelected: { color: colors.onBrand },
   unitRow: {
     borderWidth: 1,
     borderColor: colors.border,
