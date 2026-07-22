@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { clearClerkStateAndReload } from "@/lib/clerk-reset";
 import { colors, fontSize, fontWeight, radius, spacing } from "@/theme/tokens";
 
 type ClerkErrLike = {
@@ -107,6 +108,12 @@ export function SignInForm() {
             <Text style={styles.buttonText}>Giriş Yap</Text>
           )}
         </Pressable>
+
+        <Pressable onPress={() => void clearClerkStateAndReload()} disabled={busy}>
+          <Text style={styles.resetLink}>
+            Giriş takıldıysa: durumu sıfırla
+          </Text>
+        </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -155,4 +162,11 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.bold,
   },
   error: { color: colors.danger, fontSize: fontSize.sm, textAlign: "center" },
+  resetLink: {
+    color: colors.textMuted,
+    fontSize: fontSize.xs,
+    textAlign: "center",
+    marginTop: spacing.md,
+    textDecorationLine: "underline",
+  },
 });
