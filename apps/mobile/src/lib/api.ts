@@ -69,6 +69,21 @@ export function getGamification(tenantId: string): Promise<GamificationResponse>
   );
 }
 
+// ── Rol onboarding (RoleGate — publicMetadata.role sunucu-set) ───────────────
+/**
+ * Kullanıcının rolünü backend'e kaydeder (Clerk publicMetadata.role TEK SEFER).
+ * Doğrulanmış oturum ŞART; tenant_id token'dan alınır (body'de gönderilmez).
+ * Dev/Expo Go'da pk_test → 401 olabilir; çağıran best-effort ele almalı
+ * (RoleGate ayrıca client-side unsafeMetadata'ya yazar). Dönen: kalıcılaşan rol.
+ */
+export async function setRole(role: "student" | "teacher" | "parent"): Promise<string> {
+  const r = await apiRequest<{ role: string }>("/api/me/role", {
+    method: "POST",
+    body: JSON.stringify({ role }),
+  });
+  return r.role;
+}
+
 // ── Curriculum (ders → sınıf → ünite → kazanım) ──────────────────────────────
 function subjectQuery(subject?: SubjectSlug): string {
   return subject && subject !== "matematik" ? `?subject=${subject}` : "";
