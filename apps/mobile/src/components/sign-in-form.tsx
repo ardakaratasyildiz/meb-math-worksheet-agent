@@ -29,6 +29,9 @@ export function SignInForm() {
     setBusy(true);
     setError(null);
     try {
+      // Önceki yarım denemenin (ör. MFA) state'ini temizle → "identifier is
+      // invalid" (bayat signIn) hatasını önler. reset() API çağrısı yapmaz.
+      await signIn.reset();
       const { error: pwErr } = await signIn.password({
         identifier: email.trim(),
         password,
@@ -41,7 +44,9 @@ export function SignInForm() {
         const { error: finErr } = await signIn.finalize();
         if (finErr) setError(finErr.message ?? "Oturum başlatılamadı.");
       } else {
-        setError("Ek doğrulama gerekli (bu ekran şimdilik e-posta + şifre).");
+        // Teşhis: Clerk hangi ek adımı istiyor? (status'ü göster + logla)
+        console.log("[signIn] status:", signIn.status);
+        setError(`Giriş tamamlanamadı — Clerk status: ${signIn.status ?? "?"}`);
       }
     } catch (e: unknown) {
       setError((e as { message?: string })?.message ?? "Giriş başarısız.");
