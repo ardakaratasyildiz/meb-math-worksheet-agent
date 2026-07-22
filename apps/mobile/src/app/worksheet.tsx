@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GeneratorSetup, type GeneratorParams } from '@/components/generator-setup';
 import { QuestionText } from '@/components/question-text';
+import { SkeletonList } from '@/components/skeleton';
 import { generateWorksheet } from '@/lib/api';
 import { shareWorksheetPdf } from '@/lib/pdf';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
@@ -73,7 +74,10 @@ export default function WorksheetScreen() {
             {error ? <Text style={styles.error}>{error}</Text> : null}
             <GeneratorSetup submitLabel="Oluştur" busy={generating} onSubmit={onGenerate} />
             {generating ? (
-              <Text style={styles.muted}>Sorular üretiliyor — 30-90 saniye sürebilir…</Text>
+              <>
+                <Text style={styles.muted}>Sorular üretiliyor — 30-90 saniye sürebilir…</Text>
+                <SkeletonList count={3} />
+              </>
             ) : null}
           </>
         ) : (
