@@ -54,11 +54,21 @@ export function SignInForm() {
         showError(error);
         return;
       }
-      if (signIn.status === "complete") {
-        const { error: finErr } = await signIn.finalize();
-        if (finErr) showError(finErr);
-      } else {
-        setError(`Giriş tamamlanamadı — durum: ${signIn.status ?? "?"}`);
+      // @clerk/expo v3 signals API'de `signIn.status` closure'da BAYAT okunabiliyor
+      // (MFA kapalı olsa bile needs_second_factor gösteriyor — kanıtlandı). Bu yüzden
+      // status'e güvenMİYORUZ; finalize()'i doğrudan çağırıyoruz. finalize gerçek
+      // (server) sign-in durumuna bakar → tamamlandıysa oturumu aktive eder, aksi
+      // halde anlamlı bir hata döner.
+      console.log(
+        "[signIn] after create → status:",
+        signIn.status,
+        "sessionId:",
+        signIn.createdSessionId,
+      );
+      const { error: finErr } = await signIn.finalize();
+      if (finErr) {
+        console.log("[signIn] finalize error:", JSON.stringify(finErr, null, 2));
+        showError(finErr);
       }
     } catch (e) {
       showError(e);
