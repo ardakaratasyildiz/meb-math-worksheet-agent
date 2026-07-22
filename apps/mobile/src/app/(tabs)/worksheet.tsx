@@ -1,6 +1,5 @@
 import { useAuth } from '@clerk/expo';
 import type { Worksheet } from '@soruatolyesi/shared';
-import { Stack } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
@@ -67,7 +66,6 @@ export default function WorksheetScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <Stack.Screen options={{ title: 'Çalışma Kağıdı' }} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {!worksheet ? (
           <>

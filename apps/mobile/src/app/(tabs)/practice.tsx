@@ -5,7 +5,6 @@ import type {
   QuizQuestionPublic,
   SubmittedAnswer,
 } from '@soruatolyesi/shared';
-import { Stack } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -100,7 +99,6 @@ export default function PracticeScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <Stack.Screen options={{ title: 'Alıştırma' }} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {step === 'setup' && (
           <>

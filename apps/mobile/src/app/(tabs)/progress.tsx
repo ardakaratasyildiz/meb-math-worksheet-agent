@@ -4,7 +4,7 @@ import {
   type KazanimProgress,
   type ProgressResponse,
 } from '@soruatolyesi/shared';
-import { Stack, useRouter, type Href } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -72,8 +72,7 @@ export default function ProgressScreen() {
   const empty = summary && summary.total_answered === 0;
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <Stack.Screen options={{ title: 'İlerlemem' }} />
+    <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.heading}>İlerlemem</Text>
 

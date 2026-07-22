@@ -16,7 +16,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthTokenBridge } from '@/components/auth-token-bridge';
 import { ENV } from '@/lib/env';
-import { colors, fonts } from '@/theme/tokens';
+import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,14 +54,9 @@ export default function RootLayout() {
     <ClerkProvider publishableKey={ENV.clerkPublishableKey} tokenCache={tokenCache}>
       <AuthTokenBridge />
       <SafeAreaProvider>
-        <Stack
-          screenOptions={{
-            headerTitleStyle: { fontFamily: fonts.headingSemi, color: colors.text },
-            headerTintColor: colors.brand,
-            headerShadowVisible: false,
-            contentStyle: { backgroundColor: colors.bg },
-          }}
-        />
+        {/* Kök Stack yalnız (tabs) grubunu barındırır; header/sekme chrome'u
+            (tabs)/_layout içindeki gate + Tabs navigatöründe yönetilir. */}
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }} />
       </SafeAreaProvider>
     </ClerkProvider>
   );

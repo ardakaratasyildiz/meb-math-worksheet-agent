@@ -1,8 +1,7 @@
 import { useAuth, useUser } from '@clerk/expo';
-import { Stack, useRouter, type Href } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,29 +10,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { SignInForm } from '@/components/sign-in-form';
 import { getGamification, pingHealth, type GamificationResponse } from '@/lib/api';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
+// Auth + rol kapısı (tabs)/_layout'ta → bu ekran yalnız girişli + rollü kullanıcıya render olur.
 export default function HomeScreen() {
-  const { isLoaded, isSignedIn } = useAuth();
-  return (
-    <>
-      <Stack.Screen options={{ headerShown: false }} />
-      {!isLoaded ? (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.brand} />
-        </View>
-      ) : !isSignedIn ? (
-        <SignInForm />
-      ) : (
-        <AuthedHome />
-      )}
-    </>
-  );
-}
-
-function AuthedHome() {
   const { userId, signOut } = useAuth();
   const { user } = useUser();
   const router = useRouter();
@@ -87,13 +68,6 @@ function AuthedHome() {
           onPress={() => router.push('/practice' as Href)}
         />
 
-        <Pressable
-          style={styles.link}
-          onPress={() => router.push('/progress' as Href)}
-        >
-          <Text style={styles.linkText}>📈 Gelişimini gör</Text>
-        </Pressable>
-
         <Pressable style={styles.signout} onPress={() => void signOut()}>
           <Text style={styles.signoutText}>Çıkış Yap</Text>
         </Pressable>
@@ -127,12 +101,6 @@ function BigTile({
 }
 
 const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.bg,
-  },
   safe: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.xl, gap: spacing.lg },
   hello: {
@@ -175,12 +143,6 @@ const styles = StyleSheet.create({
     color: colors.onBrand,
     opacity: 0.9,
     marginTop: 2,
-  },
-  link: { alignItems: 'center', paddingVertical: spacing.md },
-  linkText: {
-    color: colors.brand,
-    fontSize: fontSize.md,
-    fontFamily: fonts.bodyBold,
   },
   signout: { alignItems: 'center', paddingVertical: spacing.md },
   signoutText: {
