@@ -72,6 +72,27 @@ export function getGamification(tenantId: string): Promise<GamificationResponse>
   );
 }
 
+// ── Matematik render (LaTeX → SVG segmentleri; QuestionText tüketir) ─────────
+export interface MathSegment {
+  kind: "text" | "math";
+  text: string; // düz metin içeriği veya matematik Unicode fallback'i
+  svg: string | null; // math + render başarılıysa SVG; aksi halde null
+  display: boolean; // $$...$$ (blok) mu
+}
+
+/**
+ * Soru metnindeki $...$ / $$...$$ bloklarını sunucuda SVG'ye render eder →
+ * segment listesi. Tenant-korumalı DEĞİL (yalnız X-API-Key) → Expo Go'da da çalışır.
+ * QuestionText progressive enhancement için kullanır (başarısızsa Unicode fallback).
+ */
+export async function renderMath(text: string, fontSize = 16): Promise<MathSegment[]> {
+  const r = await apiRequest<{ segments: MathSegment[] }>("/api/render/math", {
+    method: "POST",
+    body: JSON.stringify({ text, font_size: fontSize }),
+  });
+  return r.segments;
+}
+
 // ── Rol onboarding (RoleGate — publicMetadata.role sunucu-set) ───────────────
 /**
  * Kullanıcının rolünü backend'e kaydeder (Clerk publicMetadata.role TEK SEFER).
