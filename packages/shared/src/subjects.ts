@@ -26,6 +26,28 @@ export const SUBJECT_LABELS: Record<SubjectSlug, string> = {
   ingilizce: "İngilizce",
 };
 
+/** Ders ana rengi (hex) — web frontend/lib/subjects.ts SUBJECT_STYLE ile birebir. */
+export const SUBJECT_COLORS: Record<SubjectSlug, string> = {
+  matematik: "#2563eb", // mavi
+  fen: "#059669", // yeşil
+  turkce: "#e11d48", // mercan
+  sosyal: "#d97706", // amber
+  ingilizce: "#7c3aed", // mor
+};
+
+/** Ders emojisi — web ile ortak. */
+export const SUBJECT_EMOJI: Record<SubjectSlug, string> = {
+  matematik: "➗",
+  fen: "🔬",
+  turkce: "📖",
+  sosyal: "🌍",
+  ingilizce: "🔤",
+};
+
 export function subjectLabel(slug: SubjectSlug): string {
   return SUBJECT_LABELS[slug];
+}
+
+export function subjectColor(slug: SubjectSlug): string {
+  return SUBJECT_COLORS[slug];
 }

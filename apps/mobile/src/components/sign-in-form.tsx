@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { colors, fontSize, fontWeight, radius, spacing } from "@/theme/tokens";
+
 /**
  * E-posta + şifre ile giriş (Clerk klasik API: signIn.create → setActive).
  * İlk temel; e-posta kodu / OAuth / kayıt akışları sonraki iterasyonda.
@@ -102,36 +104,46 @@ export function SignInForm() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1 },
+  safe: { flex: 1, backgroundColor: colors.bg },
   container: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 24,
-    gap: 12,
+    paddingHorizontal: spacing.xl,
+    gap: spacing.md,
   },
-  title: { fontSize: 28, fontWeight: "800", textAlign: "center" },
-  subtitle: {
-    fontSize: 15,
+  title: {
+    fontSize: fontSize.xxl,
+    fontWeight: fontWeight.heavy,
     textAlign: "center",
-    opacity: 0.6,
-    marginBottom: 12,
+    color: colors.text,
+  },
+  subtitle: {
+    fontSize: fontSize.sm,
+    textAlign: "center",
+    color: colors.textMuted,
+    marginBottom: spacing.md,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#d1d5db",
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.lg,
     paddingVertical: 14,
-    fontSize: 16,
+    fontSize: fontSize.md,
+    color: colors.text,
   },
   button: {
-    backgroundColor: "#208AEF",
-    borderRadius: 12,
-    paddingVertical: 16,
+    backgroundColor: colors.brand,
+    borderRadius: radius.md,
+    paddingVertical: spacing.lg,
     alignItems: "center",
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   buttonDisabled: { opacity: 0.5 },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  error: { color: "#ef4444", fontSize: 14, textAlign: "center" },
+  buttonText: {
+    color: colors.onBrand,
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold,
+  },
+  error: { color: colors.danger, fontSize: fontSize.sm, textAlign: "center" },
 });
