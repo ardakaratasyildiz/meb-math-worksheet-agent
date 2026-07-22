@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Mascot } from "@/components/mascot";
 import { setRole as setRoleOnServer } from "@/lib/api";
 import { ROLE_META, type SelectableRole } from "@/lib/roles";
 import { colors, fonts, fontSize, radius, spacing } from "@/theme/tokens";
@@ -50,7 +51,7 @@ export function RoleGate() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.wave}>👋</Text>
+        <Mascot variant="wave" size={132} style={styles.mascot} />
         <Text style={styles.title}>Hoş geldin! Kimsin?</Text>
         <Text style={styles.subtitle}>
           Sana doğru ekranları göstermemiz için profilini seç.
@@ -95,7 +96,7 @@ export function RoleGate() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.xl, gap: spacing.sm, flexGrow: 1, justifyContent: "center" },
-  wave: { fontSize: 44, textAlign: "center" },
+  mascot: { alignSelf: "center" },
   title: {
     fontSize: fontSize.xl,
     fontFamily: fonts.heading,

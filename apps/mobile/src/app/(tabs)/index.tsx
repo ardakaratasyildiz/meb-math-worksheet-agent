@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Mascot } from '@/components/mascot';
 import { getGamification, pingHealth, type GamificationResponse } from '@/lib/api';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
@@ -39,17 +40,21 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.hello}>Merhaba{firstName ? `, ${firstName}` : ''} 👋</Text>
-
-        {game ? (
-          <View style={styles.rewardStrip}>
-            <Text style={styles.reward}>🔥 {game.streak_current} günlük seri</Text>
-            <Text style={styles.rewardDot}>·</Text>
-            <Text style={styles.reward}>Seviye {game.level}</Text>
-            <Text style={styles.rewardDot}>·</Text>
-            <Text style={styles.reward}>{game.xp} XP</Text>
+        <View style={styles.header}>
+          <View style={styles.headerText}>
+            <Text style={styles.hello}>Merhaba{firstName ? `, ${firstName}` : ''} 👋</Text>
+            {game ? (
+              <View style={styles.rewardStrip}>
+                <Text style={styles.reward}>🔥 {game.streak_current} günlük seri</Text>
+                <Text style={styles.rewardDot}>·</Text>
+                <Text style={styles.reward}>Seviye {game.level}</Text>
+                <Text style={styles.rewardDot}>·</Text>
+                <Text style={styles.reward}>{game.xp} XP</Text>
+              </View>
+            ) : null}
           </View>
-        ) : null}
+          <Mascot size={92} />
+        </View>
 
         <Text style={styles.question}>Bugün ne çalışacaksın?</Text>
 
@@ -103,17 +108,22 @@ function BigTile({
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.xl, gap: spacing.lg },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  headerText: { flex: 1, gap: spacing.sm },
   hello: {
     fontSize: fontSize.xxl,
     fontFamily: fonts.heading,
-    marginTop: spacing.sm,
     color: colors.text,
   },
   rewardStrip: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
     gap: spacing.sm,
-    marginTop: -spacing.sm,
   },
   reward: { fontSize: fontSize.sm, fontFamily: fonts.bodyMedium, color: colors.textMuted },
   rewardDot: { color: colors.border },

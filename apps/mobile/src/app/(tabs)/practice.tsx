@@ -18,6 +18,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GeneratorSetup, type GeneratorParams } from '@/components/generator-setup';
+import { Mascot } from '@/components/mascot';
 import { QuestionText } from '@/components/question-text';
 import { SkeletonList } from '@/components/skeleton';
 import { createQuiz, submitAttempt } from '@/lib/api';
@@ -111,7 +112,10 @@ export default function PracticeScreen() {
             />
             {busy ? (
               <>
-                <Text style={styles.muted}>Alıştırma hazırlanıyor (30-90 sn)…</Text>
+                <View style={styles.loadingWrap}>
+                  <Mascot variant="thinking" size={72} />
+                  <Text style={styles.muted}>Alıştırma hazırlanıyor (30-90 sn)…</Text>
+                </View>
                 <SkeletonList count={3} />
               </>
             ) : null}
@@ -147,6 +151,12 @@ export default function PracticeScreen() {
         {step === 'result' && result && (
           <>
             <Text style={styles.heading}>Sonuç</Text>
+            <View style={styles.resultMascotWrap}>
+              <Mascot
+                variant={result.score / Math.max(result.total, 1) >= 0.5 ? 'happy' : 'thinking'}
+                size={104}
+              />
+            </View>
             <View style={styles.scoreCard}>
               <Text style={styles.scoreBig}>
                 {result.score}/{result.total}
@@ -261,6 +271,8 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: fontSize.sm, fontFamily: fonts.bodyBold, color: colors.textMuted },
   muted: { color: colors.textMuted, fontSize: fontSize.sm },
   error: { color: colors.danger, fontSize: fontSize.sm },
+  loadingWrap: { alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.md },
+  resultMascotWrap: { alignItems: 'center' },
   primaryBtn: {
     backgroundColor: colors.brand,
     borderRadius: radius.md,
