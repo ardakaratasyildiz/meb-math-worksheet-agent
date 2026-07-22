@@ -45,30 +45,29 @@ export function SignInForm() {
     setBusy(true);
     setError(null);
     try {
-      const { error } = await signIn.create({
-        identifier: email.trim(),
+      // Kanonik akış (Clerk docs): password() e-posta+şifreyi DOĞRUDAN submit eder.
+      // (create() sadece başlatır, şifreyi doğrulamaz → giriş yarım kalıyordu.)
+      // emailAddress param'ı kullanılıyor (identifier değil).
+      const { error } = await signIn.password({
+        emailAddress: email.trim(),
         password,
       });
       if (error) {
-        console.log("[signIn] create error:", JSON.stringify(error, null, 2));
+        console.log("[signIn] password error:", JSON.stringify(error, null, 2));
         showError(error);
         return;
       }
-      // @clerk/expo v3 signals API'de `signIn.status` closure'da BAYAT okunabiliyor
-      // (MFA kapalı olsa bile needs_second_factor gösteriyor — kanıtlandı). Bu yüzden
-      // status'e güvenMİYORUZ; finalize()'i doğrudan çağırıyoruz. finalize gerçek
-      // (server) sign-in durumuna bakar → tamamlandıysa oturumu aktive eder, aksi
-      // halde anlamlı bir hata döner.
       console.log(
-        "[signIn] after create → status:",
+        "[signIn] status after password:",
         signIn.status,
         "sessionId:",
         signIn.createdSessionId,
       );
-      const { error: finErr } = await signIn.finalize();
-      if (finErr) {
-        console.log("[signIn] finalize error:", JSON.stringify(finErr, null, 2));
-        showError(finErr);
+      if (signIn.status === "complete") {
+        const { error: finErr } = await signIn.finalize();
+        if (finErr) showError(finErr);
+      } else {
+        setError(`Beklenmedik durum: ${signIn.status ?? "?"}`);
       }
     } catch (e) {
       showError(e);
