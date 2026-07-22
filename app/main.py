@@ -15,6 +15,7 @@ from app.routers import (
     health,
     me,
     quizzes,
+    render,
     shared,
     worksheets,
 )
@@ -97,6 +98,7 @@ app.include_router(classrooms.router, prefix="/api/classrooms", tags=["classroom
 app.include_router(assignments.router, prefix="/api/assignments", tags=["assignments"])
 app.include_router(me.router, prefix="/api/me", tags=["me"])
 app.include_router(billing.router, prefix="/api/billing", tags=["billing"])
+app.include_router(render.router, prefix="/api/render", tags=["render"])
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
 app.include_router(health.router, tags=["system"])
 
