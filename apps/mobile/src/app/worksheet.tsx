@@ -22,6 +22,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { generateWorksheet, listUnits } from '@/lib/api';
+import { shareWorksheetPdf } from '@/lib/pdf';
 import { colors, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
 
 const GRADES = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -78,6 +79,7 @@ export default function WorksheetScreen() {
   const [difficulty, setDifficulty] = useState<Difficulty>('orta');
   const [count, setCount] = useState(10);
   const [generating, setGenerating] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
 
@@ -126,6 +128,19 @@ export default function WorksheetScreen() {
       setGenerating(false);
     }
   }, [unitId, generating, grade, subject, difficulty, count, userId]);
+
+  const onSharePdf = useCallback(async () => {
+    if (!worksheet || sharing) return;
+    setSharing(true);
+    setError(null);
+    try {
+      await shareWorksheetPdf(worksheet);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSharing(false);
+    }
+  }, [worksheet, sharing]);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
@@ -236,9 +251,17 @@ export default function WorksheetScreen() {
                 <Text style={styles.questionText}>{q.question}</Text>
               </View>
             ))}
-            <Text style={styles.muted}>
-              PDF + WhatsApp paylaşımı sonraki adımda eklenecek.
-            </Text>
+            <Pressable
+              style={[styles.generateBtn, sharing && styles.btnDisabled]}
+              onPress={onSharePdf}
+              disabled={sharing}
+            >
+              {sharing ? (
+                <ActivityIndicator color={colors.onBrand} />
+              ) : (
+                <Text style={styles.generateBtnText}>📄 PDF oluştur & paylaş</Text>
+              )}
+            </Pressable>
           </View>
         ) : null}
       </ScrollView>
