@@ -17,9 +17,11 @@
   "devDependencies": {
     "turbo": "^2.5.0"
   },
-  "comment_overrides": "Monorepo'da TEK React kopyası (Invalid hook call önlemi). Sürüm mobil Expo SDK'sına göre; SDK yükseltilince güncellenir.",
+  "comment_overrides": "Monorepo'da TEK React + @types/react kopyası. react/react-dom: Invalid hook call önlemi (mobil Expo SDK'sına göre pinli). @types/react + @types/react-dom TEK sürüm ve AYNI 19.2 hattı: web+mobil farklı kopyaya çözülürse tsc 'two different types' hatası verir. SDK yükseltilince güncellenir.",
   "overrides": {
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3"
   }
 }

@@ -1,0 +1,36 @@
+name: mobile-ci
+
+# Mobil (apps/mobile) tip kontrolü + Metro bundle doğrulaması. Elle yaptığımız
+# `tsc --noEmit` + `expo export` adımlarını MERGE'DEN ÖNCE otomatik yakalar
+# (tip hataları + modül/asset resolver kırılmaları). Env var gerektirmez —
+# EXPO_PUBLIC_* yoksa env.ts varsayılanlara düşer, bundle yine derlenir.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/mobile/**"
+      - "packages/shared/**"
+      - ".github/workflows/mobile-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/mobile/**"
+      - "packages/shared/**"
+
+jobs:
+  typecheck-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install (npm workspaces — shared dahil)
+        run: npm install
+      - name: TypeScript typecheck (mobile)
+        working-directory: apps/mobile
+        run: npx tsc --noEmit
+      - name: Metro bundle (android) — resolver + asset doğrulama
+        working-directory: apps/mobile
+        run: npx expo export -p android --output-dir dist-ci

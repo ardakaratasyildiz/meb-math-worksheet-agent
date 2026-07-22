@@ -1,35 +1,39 @@
 name: frontend-ci
 
-# Frontend lint + tip kontrolü. Vercel deploy'unu kıran hata sınıflarını
+# Web (apps/web) lint + tip kontrolü. Vercel deploy'unu kıran hata sınıflarını
 # (react/no-unescaped-entities = lint, TS strict tip hataları = typecheck)
 # MERGE'DEN ÖNCE yakalar. Tam `next build` yerine lint+typecheck: env var
 # (Clerk key vb.) gerektirmez, hızlıdır ve bu hataları zaten yakalar.
+# Monorepo: kurulum kökte (npm workspaces), lint/typecheck apps/web'de.
 
 on:
   pull_request:
     branches: [main]
     paths:
-      - "frontend/**"
+      - "apps/web/**"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/frontend-ci.yml"
   push:
     branches: [main]
     paths:
-      - "frontend/**"
+      - "apps/web/**"
+      - "package.json"
+      - "package-lock.json"
 
 jobs:
   lint-typecheck:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install deps
+      - name: Install deps (npm workspaces)
         run: npm install
       - name: ESLint (next lint)
+        working-directory: apps/web
         run: npm run lint
       - name: TypeScript typecheck
+        working-directory: apps/web
         run: npm run typecheck
