@@ -15,12 +15,14 @@ from app.models.schemas import (
     AttemptHistoryItem,
     AttemptHistoryResponse,
     EmailPrefsResponse,
+    EntitlementsResponse,
     GamificationResponse,
     MyAssignmentItem,
     MyAssignmentsResponse,
     MyQuizItem,
     MyQuizzesResponse,
     ProgressResponse,
+    QuotaInfo,
     SetEmailPrefsRequest,
     Question,
     ShareResultItem,
@@ -40,7 +42,8 @@ from app.models.schemas import (
 from pydantic import BaseModel
 
 from app.security import limiter, require_api_key
-from app.services import clerk_roles
+from app.services import clerk_roles, entitlements
+from app.services.billing_store import BILLING_STORE
 from app.services.clerk_auth import (
     require_verified_tenant_id,
     resolve_tenant_id,
@@ -98,6 +101,35 @@ def set_my_role(
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc))
     return {"role": role}
+
+
+# ── Entitlements (mobil paywall + özellik kapıları) ──────────────────────────
+
+@router.get("/entitlements", response_model=EntitlementsResponse)
+def get_my_entitlements(
+    tenant_id: str,
+    verified: str | None = Depends(verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> EntitlementsResponse:
+    """Kullanıcının efektif planı + kotası + abonelik durumu.
+
+    Kaynak-of-truth billing_store (iyzico + RevenueCat ortak); karar entitlements'ta.
+    Mobil bunu GÖSTERİM için okur (gating yine sunucuda enforce edilir). Doğrulanmış
+    oturum gerekir (client-supplied tenant'a güvenilmez).
+    """
+    tid = _require_tenant(verified, tenant_id)
+    plan = entitlements.plan_of(tid)
+    q = entitlements.check_quota(tid)
+    sub = BILLING_STORE.get(tid)
+    return EntitlementsResponse(
+        plan=plan,
+        is_premium=(plan != entitlements.PLAN_FREE),
+        status=sub["status"] if sub else None,
+        trial_end=sub.get("trial_end") if sub else None,
+        current_period_end=sub.get("current_period_end") if sub else None,
+        cancel_at_period_end=bool(sub["cancel_at_period_end"]) if sub else False,
+        quota=QuotaInfo(limit=q["limit"], used=q["used"], remaining=q["remaining"]),
+    )
 
 
 @router.get("/progress", response_model=ProgressResponse)

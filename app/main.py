@@ -9,6 +9,7 @@ from app.config import settings
 from app.routers import (
     admin,
     assignments,
+    billing,
     classrooms,
     curriculum,
     health,
@@ -95,6 +96,7 @@ app.include_router(shared.router, prefix="/api/shared", tags=["shared"])
 app.include_router(classrooms.router, prefix="/api/classrooms", tags=["classrooms"])
 app.include_router(assignments.router, prefix="/api/assignments", tags=["assignments"])
 app.include_router(me.router, prefix="/api/me", tags=["me"])
+app.include_router(billing.router, prefix="/api/billing", tags=["billing"])
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
 app.include_router(health.router, tags=["system"])
 
