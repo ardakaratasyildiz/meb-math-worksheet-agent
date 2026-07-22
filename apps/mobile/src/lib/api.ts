@@ -28,10 +28,16 @@ function baseHeaders(extra: Record<string, string> = {}): Record<string, string>
 
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const auth = await authHeader();
-  const res = await fetch(`${ENV.apiUrl}${path}`, {
-    ...init,
-    headers: { ...baseHeaders(), ...auth, ...(init?.headers ?? {}) },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${ENV.apiUrl}${path}`, {
+      ...init,
+      headers: { ...baseHeaders(), ...auth, ...(init?.headers ?? {}) },
+    });
+  } catch {
+    // fetch reddi = ağ hatası (bağlantı yok / sunucuya ulaşılamadı).
+    throw new Error("İnternet bağlantısı yok. Bağlantını kontrol edip tekrar dene.");
+  }
   if (!res.ok) {
     let detail = `${res.status} ${res.statusText}`;
     try {

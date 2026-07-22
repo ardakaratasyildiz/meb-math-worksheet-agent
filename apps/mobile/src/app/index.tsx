@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SignInForm } from '@/components/sign-in-form';
 import { getGamification, pingHealth, type GamificationResponse } from '@/lib/api';
-import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
+import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
 export default function HomeScreen() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -22,7 +22,7 @@ export default function HomeScreen() {
       <Stack.Screen options={{ headerShown: false }} />
       {!isLoaded ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="large" color={colors.brand} />
         </View>
       ) : !isSignedIn ? (
         <SignInForm />
@@ -37,20 +37,14 @@ function AuthedHome() {
   const { userId, signOut } = useAuth();
   const { user } = useUser();
   const router = useRouter();
-  const [data, setData] = useState<GamificationResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [game, setGame] = useState<GamificationResponse | null>(null);
 
   const load = useCallback(async () => {
     if (!userId) return;
-    setLoading(true);
-    setError(null);
     try {
-      setData(await getGamification(userId));
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
+      setGame(await getGamification(userId));
+    } catch {
+      setGame(null); // dev'de 401 olabilir → ödül şeridini sessizce gizle
     }
   }, [userId]);
 
@@ -59,47 +53,46 @@ function AuthedHome() {
     void load();
   }, [load]);
 
+  const firstName = user?.firstName;
+
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.hello}>
-          Merhaba{user?.firstName ? `, ${user.firstName}` : ''} 👋
-        </Text>
-        <Text style={styles.email}>
-          {user?.primaryEmailAddress?.emailAddress ?? userId}
-        </Text>
+        <Text style={styles.hello}>Merhaba{firstName ? `, ${firstName}` : ''} 👋</Text>
 
-        <Pressable style={styles.primaryBtn} onPress={() => router.push('/worksheet' as Href)}>
-          <Text style={styles.primaryBtnText}>📄 Çalışma Kağıdı Oluştur</Text>
+        {game ? (
+          <View style={styles.rewardStrip}>
+            <Text style={styles.reward}>🔥 {game.streak_current} günlük seri</Text>
+            <Text style={styles.rewardDot}>·</Text>
+            <Text style={styles.reward}>Seviye {game.level}</Text>
+            <Text style={styles.rewardDot}>·</Text>
+            <Text style={styles.reward}>{game.xp} XP</Text>
+          </View>
+        ) : null}
+
+        <Text style={styles.question}>Bugün ne çalışacaksın?</Text>
+
+        <BigTile
+          emoji="📄"
+          title="Çalışma Kağıdı"
+          subtitle="Üret · PDF · WhatsApp'tan paylaş"
+          accent={colors.brand}
+          onPress={() => router.push('/worksheet' as Href)}
+        />
+        <BigTile
+          emoji="✏️"
+          title="Alıştırma Çöz"
+          subtitle="Çöz · puanla · eksiğini gör"
+          accent={colors.success}
+          onPress={() => router.push('/practice' as Href)}
+        />
+
+        <Pressable
+          style={styles.link}
+          onPress={() => router.push('/progress' as Href)}
+        >
+          <Text style={styles.linkText}>📈 Gelişimini gör</Text>
         </Pressable>
-
-        <Pressable style={styles.navSecondary} onPress={() => router.push('/practice' as Href)}>
-          <Text style={styles.navSecondaryText}>✏️ Alıştırma Çöz</Text>
-        </Pressable>
-
-        <Pressable style={styles.navSecondary} onPress={() => router.push('/progress' as Href)}>
-          <Text style={styles.navSecondaryText}>📊 İlerlemem</Text>
-        </Pressable>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Backend · /api/me/gamification</Text>
-          {loading ? (
-            <ActivityIndicator />
-          ) : error ? (
-            <Text style={styles.error}>{error}</Text>
-          ) : data ? (
-            <View style={styles.stats}>
-              <Stat label="XP" value={data.xp} />
-              <Stat label="Seviye" value={data.level} />
-              <Stat label="Seri" value={data.streak_current} />
-              <Stat label="En uzun" value={data.streak_longest} />
-              <Stat label="Aktif gün" value={data.total_active_days} />
-            </View>
-          ) : null}
-          <Pressable style={styles.secondary} onPress={() => void load()}>
-            <Text style={styles.secondaryText}>Yenile</Text>
-          </Pressable>
-        </View>
 
         <Pressable style={styles.signout} onPress={() => void signOut()}>
           <Text style={styles.signoutText}>Çıkış Yap</Text>
@@ -109,64 +102,89 @@ function AuthedHome() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function BigTile({
+  emoji,
+  title,
+  subtitle,
+  accent,
+  onPress,
+}: {
+  emoji: string;
+  title: string;
+  subtitle: string;
+  accent: string;
+  onPress: () => void;
+}) {
   return (
-    <View style={styles.stat}>
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
-    </View>
+    <Pressable style={[styles.tile, { backgroundColor: accent }]} onPress={onPress}>
+      <Text style={styles.tileEmoji}>{emoji}</Text>
+      <View style={styles.tileTextWrap}>
+        <Text style={styles.tileTitle}>{title}</Text>
+        <Text style={styles.tileSub}>{subtitle}</Text>
+      </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.bg,
+  },
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: spacing.xl, gap: spacing.md },
-  primaryBtn: {
-    backgroundColor: colors.brand,
-    borderRadius: radius.md,
-    paddingVertical: spacing.lg,
+  content: { padding: spacing.xl, gap: spacing.lg },
+  hello: {
+    fontSize: fontSize.xxl,
+    fontFamily: fonts.heading,
+    marginTop: spacing.sm,
+    color: colors.text,
+  },
+  rewardStrip: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: -spacing.sm,
+  },
+  reward: { fontSize: fontSize.sm, fontFamily: fonts.bodyMedium, color: colors.textMuted },
+  rewardDot: { color: colors.border },
+  question: {
+    fontSize: fontSize.lg,
+    fontFamily: fonts.headingSemi,
+    color: colors.text,
     marginTop: spacing.sm,
   },
-  primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontFamily: fonts.bodyBold },
-  navSecondary: {
-    borderWidth: 2,
-    borderColor: colors.brand,
-    borderRadius: radius.md,
-    paddingVertical: spacing.lg,
+  tile: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: spacing.lg,
+    borderRadius: radius.xl,
+    padding: spacing.xl,
   },
-  navSecondaryText: { color: colors.brand, fontSize: fontSize.md, fontFamily: fonts.bodyBold },
-  hello: { fontSize: fontSize.xxl, fontFamily: fonts.heading, marginTop: spacing.sm, color: colors.text },
-  email: { fontSize: fontSize.sm, color: colors.textMuted },
-  card: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    gap: spacing.md,
-    marginTop: spacing.sm,
-    backgroundColor: colors.surface,
+  tileEmoji: { fontSize: 34 },
+  tileTextWrap: { flex: 1 },
+  tileTitle: {
+    fontSize: fontSize.lg,
+    fontFamily: fonts.heading,
+    color: colors.onBrand,
   },
-  cardTitle: { fontSize: fontSize.xs, fontWeight: fontWeight.medium, color: colors.textMuted },
-  stats: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.lg },
-  stat: { minWidth: 64 },
-  statValue: { fontSize: fontSize.xl, fontFamily: fonts.heading, color: colors.text },
-  statLabel: { fontSize: fontSize.xs, color: colors.textMuted },
-  error: { color: colors.danger, fontSize: fontSize.sm },
-  secondary: {
-    borderWidth: 1,
-    borderColor: colors.brand,
-    borderRadius: radius.sm,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
+  tileSub: {
+    fontSize: fontSize.sm,
+    fontFamily: fonts.body,
+    color: colors.onBrand,
+    opacity: 0.9,
+    marginTop: 2,
   },
-  secondaryText: { color: colors.brand, fontWeight: fontWeight.bold },
-  signout: {
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-    marginTop: spacing.sm,
+  link: { alignItems: 'center', paddingVertical: spacing.md },
+  linkText: {
+    color: colors.brand,
+    fontSize: fontSize.md,
+    fontFamily: fonts.bodyBold,
   },
-  signoutText: { color: colors.danger, fontWeight: fontWeight.medium },
+  signout: { alignItems: 'center', paddingVertical: spacing.md },
+  signoutText: {
+    color: colors.textMuted,
+    fontFamily: fonts.bodyMedium,
+  },
 });
