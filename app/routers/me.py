@@ -37,8 +37,15 @@ from app.models.schemas import (
     TeachingOverviewItem,
     TeachingOverviewResponse,
 )
+from pydantic import BaseModel
+
 from app.security import limiter, require_api_key
-from app.services.clerk_auth import resolve_tenant_id, verified_tenant_id
+from app.services import clerk_roles
+from app.services.clerk_auth import (
+    require_verified_tenant_id,
+    resolve_tenant_id,
+    verified_tenant_id,
+)
 from app.services.attempt_review import build_attempt_detail
 from app.services.classroom_store import CLASSROOM_STORE
 from app.services.email_prefs_store import EMAIL_PREFS
@@ -65,6 +72,32 @@ def _require_tenant(verified: str | None, supplied: str | None) -> str:
     if not tid:
         raise HTTPException(status_code=401, detail="Kimlik doğrulanamadı.")
     return tid
+
+
+# ── Rol onboarding (mobil RoleGate — publicMetadata.role TEK SEFER set eder) ──
+
+class SetRoleRequest(BaseModel):
+    role: str  # "student" | "teacher" | "parent"
+
+
+@router.post("/role")
+def set_my_role(
+    req: SetRoleRequest,
+    tenant_id: str = Depends(require_verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> dict:
+    """Onboarding'de kullanıcının rolünü Clerk publicMetadata'ya TEK SEFER yazar.
+
+    Doğrulanmış oturum ŞART (kendi rolünü set eder; spoof yok). Zaten rol atanmışsa
+    değiştirmez, mevcut rolü döner. Frontend `/api/role` deseninin mobil karşılığı.
+    """
+    try:
+        role = clerk_roles.set_user_role(tenant_id, req.role)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Geçersiz rol.")
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    return {"role": role}
 
 
 @router.get("/progress", response_model=ProgressResponse)
