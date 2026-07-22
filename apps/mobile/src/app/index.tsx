@@ -1,5 +1,5 @@
 import { useAuth, useUser } from '@clerk/expo';
-import { useRouter, type Href } from 'expo-router';
+import { Stack, useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -13,20 +13,24 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SignInForm } from '@/components/sign-in-form';
 import { getGamification, pingHealth, type GamificationResponse } from '@/lib/api';
-import { colors, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
+import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
 
 export default function HomeScreen() {
   const { isLoaded, isSignedIn } = useAuth();
-
-  if (!isLoaded) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-  if (!isSignedIn) return <SignInForm />;
-  return <AuthedHome />;
+  return (
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      {!isLoaded ? (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      ) : !isSignedIn ? (
+        <SignInForm />
+      ) : (
+        <AuthedHome />
+      )}
+    </>
+  );
 }
 
 function AuthedHome() {
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: spacing.sm,
   },
-  primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontWeight: fontWeight.bold },
+  primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontFamily: fonts.bodyBold },
   navSecondary: {
     borderWidth: 2,
     borderColor: colors.brand,
@@ -133,8 +137,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.lg,
     alignItems: 'center',
   },
-  navSecondaryText: { color: colors.brand, fontSize: fontSize.md, fontWeight: fontWeight.bold },
-  hello: { fontSize: fontSize.xl, fontWeight: fontWeight.heavy, marginTop: spacing.sm, color: colors.text },
+  navSecondaryText: { color: colors.brand, fontSize: fontSize.md, fontFamily: fonts.bodyBold },
+  hello: { fontSize: fontSize.xxl, fontFamily: fonts.heading, marginTop: spacing.sm, color: colors.text },
   email: { fontSize: fontSize.sm, color: colors.textMuted },
   card: {
     borderWidth: 1,
@@ -148,7 +152,7 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: fontSize.xs, fontWeight: fontWeight.medium, color: colors.textMuted },
   stats: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.lg },
   stat: { minWidth: 64 },
-  statValue: { fontSize: fontSize.xl, fontWeight: fontWeight.heavy, color: colors.text },
+  statValue: { fontSize: fontSize.xl, fontFamily: fonts.heading, color: colors.text },
   statLabel: { fontSize: fontSize.xs, color: colors.textMuted },
   error: { color: colors.danger, fontSize: fontSize.sm },
   secondary: {

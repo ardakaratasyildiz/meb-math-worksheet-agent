@@ -27,7 +27,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Chip, Section } from '@/components/pickers';
 import { createQuiz, submitAttempt } from '@/lib/api';
 import { useUnits } from '@/hooks/useUnits';
-import { colors, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
+import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
 
 const GRADES = [1, 2, 3, 4, 5, 6, 7, 8];
 const DIFFICULTIES: { value: Difficulty; label: string }[] = [
@@ -365,7 +365,7 @@ function QuestionCard({
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
-  heading: { fontSize: fontSize.xl, fontWeight: fontWeight.heavy, color: colors.text },
+  heading: { fontSize: fontSize.xl, fontFamily: fonts.heading, color: colors.text },
   section: { gap: spacing.sm },
   sectionTitle: { fontSize: fontSize.sm, fontWeight: fontWeight.bold, color: colors.textMuted },
   muted: { color: colors.textMuted, fontSize: fontSize.sm },
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnDisabled: { opacity: 0.4 },
-  primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontWeight: fontWeight.bold },
+  primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontFamily: fonts.bodyBold },
   qCard: {
     borderWidth: 1,
     borderColor: colors.border,
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  scoreBig: { fontSize: 44, fontWeight: fontWeight.heavy, color: colors.brand },
+  scoreBig: { fontSize: 44, fontFamily: fonts.heading, color: colors.brand },
   kazanimRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

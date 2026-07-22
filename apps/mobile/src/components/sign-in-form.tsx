@@ -13,7 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { clearClerkStateAndReload } from "@/lib/clerk-reset";
-import { colors, fontSize, fontWeight, radius, spacing } from "@/theme/tokens";
+import { colors, fonts, fontSize, fontWeight, radius, spacing } from "@/theme/tokens";
 
 type ClerkErrLike = {
   code?: string;
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.heavy,
+    fontFamily: fonts.heading,
     textAlign: "center",
     color: colors.text,
   },
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.onBrand,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: fonts.bodyBold,
   },
   error: { color: colors.danger, fontSize: fontSize.sm, textAlign: "center" },
   resetLink: {

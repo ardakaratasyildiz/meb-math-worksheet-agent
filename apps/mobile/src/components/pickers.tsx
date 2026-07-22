@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { colors, fontSize, fontWeight, radius, spacing } from "@/theme/tokens";
+import { colors, fonts, fontSize, radius, spacing } from "@/theme/tokens";
 
 /** Seçilebilir yuvarlak etiket (ders/sınıf/zorluk seçicileri). */
 export function Chip({
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   section: { gap: spacing.sm },
   sectionTitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: fonts.bodyBold,
     color: colors.textMuted,
   },
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   chipText: {
     color: colors.text,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: fonts.bodyMedium,
   },
   chipTextSelected: { color: colors.onBrand },
 });
