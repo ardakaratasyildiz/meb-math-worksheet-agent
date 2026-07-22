@@ -22,15 +22,13 @@ type ClerkErrLike = {
 };
 
 /**
- * E-posta kodu ile giriş (Clerk @clerk/expo v3 Future API).
- * İki adım: e-posta → sendCode → kod → verifyCode → finalize.
- * (Şifre akışı bu dev instance'ta identifier'ı reddettiği için e-posta kodu.)
+ * E-posta + şifre ile giriş (Clerk @clerk/expo v3 Future API).
+ * create({ identifier, password }) tek adım → status complete → finalize().
  */
 export function SignInForm() {
   const { signIn } = useSignIn();
-  const [phase, setPhase] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,34 +39,17 @@ export function SignInForm() {
     setError(`${c}${first.longMessage ?? first.message ?? "Bir hata oluştu."}`);
   }
 
-  async function onSendCode() {
+  async function onSubmit() {
     if (busy || !email.trim()) return;
     setBusy(true);
     setError(null);
     try {
-      const { error } = await signIn.emailCode.sendCode({
-        emailAddress: email.trim(),
+      const { error } = await signIn.create({
+        identifier: email.trim(),
+        password,
       });
       if (error) {
-        console.log("[signIn] sendCode error:", JSON.stringify(error, null, 2));
-        showError(error);
-        return;
-      }
-      setPhase("code");
-    } catch (e) {
-      showError(e);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function onVerify() {
-    if (busy || !code.trim()) return;
-    setBusy(true);
-    setError(null);
-    try {
-      const { error } = await signIn.emailCode.verifyCode({ code: code.trim() });
-      if (error) {
+        console.log("[signIn] create error:", JSON.stringify(error, null, 2));
         showError(error);
         return;
       }
@@ -92,71 +73,40 @@ export function SignInForm() {
         style={styles.container}
       >
         <Text style={styles.title}>Soru Atölyesi</Text>
+        <Text style={styles.subtitle}>Devam etmek için giriş yap</Text>
 
-        {phase === "email" ? (
-          <>
-            <Text style={styles.subtitle}>Giriş için e-postanı gir</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="E-posta"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              autoComplete="email"
-              value={email}
-              onChangeText={setEmail}
-              editable={!busy}
-            />
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-            <Pressable
-              style={[styles.button, busy && styles.buttonDisabled]}
-              onPress={onSendCode}
-              disabled={busy}
-            >
-              {busy ? (
-                <ActivityIndicator color={colors.onBrand} />
-              ) : (
-                <Text style={styles.buttonText}>Kod Gönder</Text>
-              )}
-            </Pressable>
-          </>
-        ) : (
-          <>
-            <Text style={styles.subtitle}>
-              {email} adresine gönderilen 6 haneli kodu gir
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Doğrulama kodu"
-              keyboardType="number-pad"
-              value={code}
-              onChangeText={setCode}
-              editable={!busy}
-              maxLength={6}
-            />
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-            <Pressable
-              style={[styles.button, busy && styles.buttonDisabled]}
-              onPress={onVerify}
-              disabled={busy}
-            >
-              {busy ? (
-                <ActivityIndicator color={colors.onBrand} />
-              ) : (
-                <Text style={styles.buttonText}>Doğrula & Giriş</Text>
-              )}
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                setPhase("email");
-                setCode("");
-                setError(null);
-              }}
-              disabled={busy}
-            >
-              <Text style={styles.link}>E-postayı değiştir</Text>
-            </Pressable>
-          </>
-        )}
+        <TextInput
+          style={styles.input}
+          placeholder="E-posta"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          autoComplete="email"
+          value={email}
+          onChangeText={setEmail}
+          editable={!busy}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Şifre"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          editable={!busy}
+        />
+
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        <Pressable
+          style={[styles.button, busy && styles.buttonDisabled]}
+          onPress={onSubmit}
+          disabled={busy}
+        >
+          {busy ? (
+            <ActivityIndicator color={colors.onBrand} />
+          ) : (
+            <Text style={styles.buttonText}>Giriş Yap</Text>
+          )}
+        </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -205,11 +155,4 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.bold,
   },
   error: { color: colors.danger, fontSize: fontSize.sm, textAlign: "center" },
-  link: {
-    color: colors.brand,
-    fontSize: fontSize.sm,
-    textAlign: "center",
-    marginTop: spacing.sm,
-    fontWeight: fontWeight.medium,
-  },
 });
