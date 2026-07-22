@@ -903,6 +903,33 @@ class AttemptDetail(BaseModel):
     has_detail: bool = True
 
 
+# ── Entitlements / abonelik (mobil paywall + gating) ─────────────────────────
+
+
+class QuotaInfo(BaseModel):
+    """Aylık soru kotası durumu. limit/remaining None = kotasız (anonim/fair-use)."""
+
+    limit: int | None = None
+    used: int = 0
+    remaining: int | None = None
+
+
+class EntitlementsResponse(BaseModel):
+    """Kullanıcının efektif erişim durumu — mobil özellik kapıları + paywall için.
+
+    Karar sunucuda (billing_store + entitlements); client bu yanıtı yalnız GÖSTERİM
+    için kullanır (gating yine sunucuda enforce edilir).
+    """
+
+    plan: str  # free | trial | pro | pro-plus
+    is_premium: bool
+    status: str | None = None  # trialing | active | past_due | canceled | expired
+    trial_end: str | None = None
+    current_period_end: str | None = None
+    cancel_at_period_end: bool = False
+    quota: QuotaInfo
+
+
 # ── Sınıf / Ödev (Faz 3.5 — Sınıf modeli) ────────────────────────────────────
 
 

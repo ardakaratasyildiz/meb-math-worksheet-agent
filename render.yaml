@@ -59,6 +59,15 @@ services:
       - key: CLERK_SECRET_KEY
         sync: false
 
+      # RevenueCat webhook (mobil IAP → abonelik senkronu). RevenueCat panosundaki
+      # webhook Authorization header değeriyle BİREBİR aynı olmalı (paylaşımlı sır).
+      # BOŞ → doğrulama atlanır (yalnız sandbox); prod'da MUTLAKA set et.
+      # REVENUECAT_PRODUCT_MAP opsiyonel: "product_id:plan_code" çiftleri (virgülle).
+      - key: REVENUECAT_WEBHOOK_AUTH
+        sync: false
+      - key: REVENUECAT_PRODUCT_MAP
+        sync: false
+
       # Rate limit — production
       - key: RATE_LIMIT_PER_HOUR
         value: "60"

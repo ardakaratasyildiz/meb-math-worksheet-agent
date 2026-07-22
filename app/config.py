@@ -196,6 +196,18 @@ class Settings(BaseSettings):
     # TOP_UP_STORE'a bu haritadan kredi eklenir (ürünler 28 Tem sonrası mağazada tanımlanır).
     topup_products: str = "topup-25:25,topup-75:75"
 
+    # --- RevenueCat (mobil IAP webhook → subscriptions senkronu) ---
+    # Mobil uygulama IAP'yi RevenueCat üzerinden yapar; RevenueCat bize webhook
+    # gönderir → billing_store.subscriptions güncellenir (iyzico ile ORTAK depo).
+    # app_user_id = Clerk userId (mobil RevenueCat'i böyle konfigüre eder) = tenant_id.
+    #   revenuecat_webhook_auth: RevenueCat panosunda ayarlanan Authorization header
+    #     değeri (paylaşımlı sır). SET ise header birebir eşleşmeli (aksi 401). BOŞ ise
+    #     doğrulama atlanır + uyarı loglanır (yalnız sandbox/dev; PROD'da MUTLAKA set et).
+    #   revenuecat_product_map: "product_id:plan_code" çiftleri (virgülle). Eşleşme
+    #     yoksa ürün/entitlement adında "plus" geçerse pro-plus, aksi halde pro (fallback).
+    revenuecat_webhook_auth: str = ""
+    revenuecat_product_map: str = ""
+
     # Ders (subject) ekseni — çok-ders geçişi (docs/FEN_BILIMLERI_PLAN.md).
     # KALİTE KAPISI feature-flag'leri. Kalite paritesi doğrulandıktan sonra
     # (2026-07-10 go-live) hepsi VARSAYILAN AÇIK: env ile (FEN_ENABLED=false vb.)
@@ -209,6 +221,18 @@ class Settings(BaseSettings):
     @property
     def premium_tenant_id_set(self) -> set[str]:
         return {t.strip() for t in self.premium_tenant_ids.split(",") if t.strip()}
+
+    @property
+    def revenuecat_product_dict(self) -> dict[str, str]:
+        """product_id → plan_code eşlemesi (revenuecat_product_map'ten parse)."""
+        out: dict[str, str] = {}
+        for pair in self.revenuecat_product_map.split(","):
+            pair = pair.strip()
+            if ":" in pair:
+                k, v = pair.split(":", 1)
+                if k.strip() and v.strip():
+                    out[k.strip()] = v.strip()
+        return out
 
     @property
     def api_key_list(self) -> list[str]:
