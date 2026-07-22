@@ -3,11 +3,15 @@
  * mobil karşılığı. Aynı sözleşme: X-API-Key + (giriş varsa) Authorization Bearer.
  */
 import type {
+  AttemptResult,
+  CreateQuizRequest,
   GenerateWorksheetRequest,
   GenerateWorksheetResponse,
   GradeInfo,
   KazanimInfo,
+  QuizPublic,
   SubjectSlug,
+  SubmittedAnswer,
   UnitInfo,
   Worksheet,
 } from "@soruatolyesi/shared";
@@ -141,6 +145,27 @@ export async function fetchWorksheetPdfBase64(
   if (!res.ok) throw new Error(`PDF oluşturulamadı: ${res.status}`);
   const blob = await res.blob();
   return blobToBase64(blob);
+}
+
+// ── Çözülebilir quiz (öğrenme döngüsü) ───────────────────────────────────────
+/** Çözülebilir quiz üret + kaydet (cevapsız QuizPublic döner). Giriş şart. */
+export function createQuiz(body: CreateQuizRequest): Promise<QuizPublic> {
+  return apiRequest<QuizPublic>("/api/quizzes", {
+    method: "POST",
+    headers: body.tenant_id ? { "X-Tenant-Id": body.tenant_id } : {},
+    body: JSON.stringify(body),
+  });
+}
+
+/** Cevapları gönder → sunucuda puanlanır → sonuç + kazanım kırılımı. */
+export function submitAttempt(
+  quizId: string,
+  body: { tenant_id: string; answers: SubmittedAnswer[]; duration_seconds?: number },
+): Promise<AttemptResult> {
+  return apiRequest<AttemptResult>(
+    `/api/quizzes/${encodeURIComponent(quizId)}/attempt`,
+    { method: "POST", body: JSON.stringify(body) },
+  );
 }
 
 /** Backend uyandırma ping'i (Render free-tier cold start). Hata yutulur. */
