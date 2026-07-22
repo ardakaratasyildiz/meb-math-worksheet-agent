@@ -14,44 +14,72 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { colors, fontSize, fontWeight, radius, spacing } from "@/theme/tokens";
 
+type ClerkErrLike = {
+  code?: string;
+  message?: string;
+  longMessage?: string;
+  errors?: { code?: string; message?: string; longMessage?: string }[];
+};
+
 /**
- * E-posta + şifre ile giriş (Clerk klasik API: signIn.create → setActive).
- * İlk temel; e-posta kodu / OAuth / kayıt akışları sonraki iterasyonda.
+ * E-posta kodu ile giriş (Clerk @clerk/expo v3 Future API).
+ * İki adım: e-posta → sendCode → kod → verifyCode → finalize.
+ * (Şifre akışı bu dev instance'ta identifier'ı reddettiği için e-posta kodu.)
  */
 export function SignInForm() {
-  // @clerk/expo v3 "Future" signals API: signIn.password() → finalize().
   const { signIn } = useSignIn();
+  const [phase, setPhase] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function onSubmit() {
-    if (busy) return;
+  function showError(e: unknown) {
+    const x = (e ?? {}) as ClerkErrLike;
+    const first = x.errors?.[0] ?? x;
+    const c = first.code ? `[${first.code}] ` : "";
+    setError(`${c}${first.longMessage ?? first.message ?? "Bir hata oluştu."}`);
+  }
+
+  async function onSendCode() {
+    if (busy || !email.trim()) return;
     setBusy(true);
     setError(null);
     try {
-      // Önceki yarım denemenin (ör. MFA) state'ini temizle → "identifier is
-      // invalid" (bayat signIn) hatasını önler. reset() API çağrısı yapmaz.
-      await signIn.reset();
-      const { error: pwErr } = await signIn.password({
-        identifier: email.trim(),
-        password,
+      const { error } = await signIn.emailCode.sendCode({
+        emailAddress: email.trim(),
       });
-      if (pwErr) {
-        setError(pwErr.message ?? "Giriş başarısız.");
+      if (error) {
+        console.log("[signIn] sendCode error:", JSON.stringify(error, null, 2));
+        showError(error);
+        return;
+      }
+      setPhase("code");
+    } catch (e) {
+      showError(e);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onVerify() {
+    if (busy || !code.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const { error } = await signIn.emailCode.verifyCode({ code: code.trim() });
+      if (error) {
+        showError(error);
         return;
       }
       if (signIn.status === "complete") {
         const { error: finErr } = await signIn.finalize();
-        if (finErr) setError(finErr.message ?? "Oturum başlatılamadı.");
+        if (finErr) showError(finErr);
       } else {
-        // Teşhis: Clerk hangi ek adımı istiyor? (status'ü göster + logla)
-        console.log("[signIn] status:", signIn.status);
-        setError(`Giriş tamamlanamadı — Clerk status: ${signIn.status ?? "?"}`);
+        setError(`Giriş tamamlanamadı — durum: ${signIn.status ?? "?"}`);
       }
-    } catch (e: unknown) {
-      setError((e as { message?: string })?.message ?? "Giriş başarısız.");
+    } catch (e) {
+      showError(e);
     } finally {
       setBusy(false);
     }
@@ -64,40 +92,71 @@ export function SignInForm() {
         style={styles.container}
       >
         <Text style={styles.title}>Soru Atölyesi</Text>
-        <Text style={styles.subtitle}>Devam etmek için giriş yap</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="E-posta"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-          value={email}
-          onChangeText={setEmail}
-          editable={!busy}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Şifre"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          editable={!busy}
-        />
-
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-
-        <Pressable
-          style={[styles.button, busy && styles.buttonDisabled]}
-          onPress={onSubmit}
-          disabled={busy}
-        >
-          {busy ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Giriş Yap</Text>
-          )}
-        </Pressable>
+        {phase === "email" ? (
+          <>
+            <Text style={styles.subtitle}>Giriş için e-postanı gir</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="E-posta"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+              value={email}
+              onChangeText={setEmail}
+              editable={!busy}
+            />
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+            <Pressable
+              style={[styles.button, busy && styles.buttonDisabled]}
+              onPress={onSendCode}
+              disabled={busy}
+            >
+              {busy ? (
+                <ActivityIndicator color={colors.onBrand} />
+              ) : (
+                <Text style={styles.buttonText}>Kod Gönder</Text>
+              )}
+            </Pressable>
+          </>
+        ) : (
+          <>
+            <Text style={styles.subtitle}>
+              {email} adresine gönderilen 6 haneli kodu gir
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Doğrulama kodu"
+              keyboardType="number-pad"
+              value={code}
+              onChangeText={setCode}
+              editable={!busy}
+              maxLength={6}
+            />
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+            <Pressable
+              style={[styles.button, busy && styles.buttonDisabled]}
+              onPress={onVerify}
+              disabled={busy}
+            >
+              {busy ? (
+                <ActivityIndicator color={colors.onBrand} />
+              ) : (
+                <Text style={styles.buttonText}>Doğrula & Giriş</Text>
+              )}
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setPhase("email");
+                setCode("");
+                setError(null);
+              }}
+              disabled={busy}
+            >
+              <Text style={styles.link}>E-postayı değiştir</Text>
+            </Pressable>
+          </>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -146,4 +205,11 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.bold,
   },
   error: { color: colors.danger, fontSize: fontSize.sm, textAlign: "center" },
+  link: {
+    color: colors.brand,
+    fontSize: fontSize.sm,
+    textAlign: "center",
+    marginTop: spacing.sm,
+    fontWeight: fontWeight.medium,
+  },
 });
