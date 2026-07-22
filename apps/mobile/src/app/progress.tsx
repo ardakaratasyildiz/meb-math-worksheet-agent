@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { SkeletonList } from '@/components/skeleton';
 import { getProgress } from '@/lib/api';
 import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
 
@@ -77,7 +78,7 @@ export default function ProgressScreen() {
         <Text style={styles.heading}>İlerlemem</Text>
 
         {loading ? (
-          <ActivityIndicator size="large" style={{ marginTop: spacing.xl }} />
+          <SkeletonList count={4} />
         ) : error ? (
           <Text style={styles.error}>{error}</Text>
         ) : empty ? (

@@ -20,6 +20,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GeneratorSetup, type GeneratorParams } from '@/components/generator-setup';
 import { QuestionText } from '@/components/question-text';
+import { SkeletonList } from '@/components/skeleton';
 import { createQuiz, submitAttempt } from '@/lib/api';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
@@ -110,7 +111,12 @@ export default function PracticeScreen() {
               counts={[5, 10, 15]}
               onSubmit={onStart}
             />
-            {busy ? <Text style={styles.muted}>Alıştırma hazırlanıyor (30-90 sn)…</Text> : null}
+            {busy ? (
+              <>
+                <Text style={styles.muted}>Alıştırma hazırlanıyor (30-90 sn)…</Text>
+                <SkeletonList count={3} />
+              </>
+            ) : null}
           </>
         )}
 
