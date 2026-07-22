@@ -202,19 +202,30 @@ function QuestionCard({
       <QuestionText text={`${q.number}. ${q.question}`} />
       {q.question_type === 'coktan_secmeli' && q.options ? (
         <View style={{ gap: spacing.sm }}>
-          {q.options.map((opt, i) => (
-            <Pressable
-              key={i}
-              onPress={() => onChange({ selected_index: i })}
-              style={[styles.option, answer?.selected_index === i && styles.optionSelected]}
-            >
-              <Text
-                style={[styles.optionText, answer?.selected_index === i && styles.optionTextSelected]}
+          {q.options.map((opt, i) => {
+            const sel = answer?.selected_index === i;
+            const letter = String.fromCharCode(65 + i);
+            return (
+              <Pressable
+                key={i}
+                onPress={() => onChange({ selected_index: i })}
+                style={[styles.option, sel && styles.optionSelected]}
               >
-                {String.fromCharCode(65 + i)}) {opt}
-              </Text>
-            </Pressable>
-          ))}
+                {opt.includes('$') ? (
+                  <View style={styles.optionRow}>
+                    <Text style={[styles.optionText, sel && styles.optionTextSelected]}>
+                      {letter})
+                    </Text>
+                    <QuestionText text={opt} color={sel ? colors.brand : colors.text} width={240} />
+                  </View>
+                ) : (
+                  <Text style={[styles.optionText, sel && styles.optionTextSelected]}>
+                    {letter}) {opt}
+                  </Text>
+                )}
+              </Pressable>
+            );
+          })}
         </View>
       ) : q.question_type === 'dogru_yanlis' ? (
         <View style={styles.trueFalseRow}>
@@ -299,6 +310,7 @@ const styles = StyleSheet.create({
   optionSelected: { borderColor: colors.brand, backgroundColor: '#eff6ff', borderWidth: 2 },
   optionText: { color: colors.text, fontSize: fontSize.sm, fontFamily: fonts.body },
   optionTextSelected: { color: colors.brand, fontFamily: fonts.bodyBold },
+  optionRow: { flexDirection: 'row', alignItems: 'center', gap: 4, flexWrap: 'wrap' },
   trueFalseRow: { flexDirection: 'row', gap: spacing.sm },
   tfBtn: {
     flex: 1,

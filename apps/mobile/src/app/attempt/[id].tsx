@@ -141,14 +141,12 @@ function ReviewCard({ item }: { item: AttemptReviewItem }) {
 
       <View style={styles.answerRow}>
         <Text style={styles.answerLabel}>Senin cevabın</Text>
-        <Text style={[styles.answerVal, !item.is_correct && styles.answerWrong]}>
-          {yours}
-        </Text>
+        <AnswerVal value={yours} tone={item.is_correct ? 'plain' : 'wrong'} />
       </View>
       {!item.is_correct && (
         <View style={styles.answerRow}>
           <Text style={styles.answerLabel}>Doğru cevap</Text>
-          <Text style={[styles.answerVal, styles.answerOk]}>{item.correct_answer}</Text>
+          <AnswerVal value={item.correct_answer} tone="ok" />
         </View>
       )}
 
@@ -159,6 +157,26 @@ function ReviewCard({ item }: { item: AttemptReviewItem }) {
         </View>
       ) : null}
     </View>
+  );
+}
+
+/** Cevap değeri — math ($) içeriyorsa keskin SVG (QuestionText), yoksa düz Text. */
+function AnswerVal({ value, tone }: { value: string; tone: 'wrong' | 'ok' | 'plain' }) {
+  const color =
+    tone === 'wrong' ? colors.danger : tone === 'ok' ? colors.success : colors.text;
+  if (value.includes('$')) {
+    return <QuestionText text={value} color={color} width={260} />;
+  }
+  return (
+    <Text
+      style={[
+        styles.answerVal,
+        tone === 'wrong' && styles.answerWrong,
+        tone === 'ok' && styles.answerOk,
+      ]}
+    >
+      {value}
+    </Text>
   );
 }
 
