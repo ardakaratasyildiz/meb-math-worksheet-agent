@@ -9,6 +9,7 @@ import type {
   GenerateWorksheetResponse,
   GradeInfo,
   KazanimInfo,
+  ProgressResponse,
   QuizPublic,
   SubjectSlug,
   SubmittedAnswer,
@@ -155,6 +156,13 @@ export function createQuiz(body: CreateQuizRequest): Promise<QuizPublic> {
     headers: body.tenant_id ? { "X-Tenant-Id": body.tenant_id } : {},
     body: JSON.stringify(body),
   });
+}
+
+/** Kullanıcının kazanım-bazlı ilerlemesi + zayıf konular + genel özet. */
+export function getProgress(tenantId: string): Promise<ProgressResponse> {
+  return apiRequest<ProgressResponse>(
+    `/api/me/progress?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
 }
 
 /** Cevapları gönder → sunucuda puanlanır → sonuç + kazanım kırılımı. */
