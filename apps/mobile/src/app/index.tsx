@@ -1,4 +1,5 @@
 import { useAuth, useUser } from '@clerk/expo';
+import { useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -31,6 +32,7 @@ export default function HomeScreen() {
 function AuthedHome() {
   const { userId, signOut } = useAuth();
   const { user } = useUser();
+  const router = useRouter();
   const [data, setData] = useState<GamificationResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,6 +64,10 @@ function AuthedHome() {
         <Text style={styles.email}>
           {user?.primaryEmailAddress?.emailAddress ?? userId}
         </Text>
+
+        <Pressable style={styles.primaryBtn} onPress={() => router.push('/worksheet' as Href)}>
+          <Text style={styles.primaryBtnText}>📄 Çalışma Kağıdı Oluştur</Text>
+        </Pressable>
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Backend · /api/me/gamification</Text>
@@ -104,6 +110,14 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
   safe: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.xl, gap: spacing.md },
+  primaryBtn: {
+    backgroundColor: colors.brand,
+    borderRadius: radius.md,
+    paddingVertical: spacing.lg,
+    alignItems: 'center',
+    marginTop: spacing.sm,
+  },
+  primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontWeight: fontWeight.bold },
   hello: { fontSize: fontSize.xl, fontWeight: fontWeight.heavy, marginTop: spacing.sm, color: colors.text },
   email: { fontSize: fontSize.sm, color: colors.textMuted },
   card: {
