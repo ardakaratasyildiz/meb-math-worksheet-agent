@@ -72,6 +72,52 @@ def get_user_role(tenant_id: str | None) -> str | None:
     return role
 
 
+_SELECTABLE_ROLES = {"student", "teacher", "parent"}
+
+
+def set_user_role(tenant_id: str, role: str) -> str:
+    """Kullanıcının publicMetadata.role'ünü Clerk Backend API ile set eder (TEK SEFERLİK).
+
+    - role selectable olmalı (student|teacher|parent); admin buradan verilemez.
+    - Zaten bir rol atanmışsa DEĞİŞTİRMEZ → mevcut rolü döner (onboarding tek seferlik;
+      frontend /api/role deseniyle aynı). Böylece kullanıcı rolünü sonradan değiştiremez.
+    - clerk_secret_key yoksa RuntimeError (çağıran 503 döndürebilir).
+
+    Dönen: efektif rol (yeni set edilen ya da zaten var olan).
+    """
+    if role not in _SELECTABLE_ROLES:
+        raise ValueError("Geçersiz rol.")
+    secret = settings.clerk_secret_key.strip()
+    if not secret:
+        raise RuntimeError("Clerk secret yapılandırılmamış.")
+
+    # Tek seferlik: zaten bir rol (selectable ya da admin) varsa dokunma.
+    existing = _fetch_role(tenant_id)
+    if existing:
+        with _lock:
+            _cache[tenant_id] = (time.time(), existing)
+        return existing
+
+    try:
+        r = requests.patch(
+            f"{_CLERK_API}/users/{tenant_id}/metadata",
+            headers={
+                "Authorization": f"Bearer {secret}",
+                "Content-Type": "application/json",
+            },
+            json={"public_metadata": {"role": role}},
+            timeout=6,
+        )
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(f"Clerk rol yazılamadı: {exc}") from exc
+    if r.status_code not in (200, 201):
+        raise RuntimeError(f"Clerk rol yazma başarısız (HTTP {r.status_code}).")
+
+    with _lock:
+        _cache[tenant_id] = (time.time(), role)
+    return role
+
+
 def enforce_role(tenant_id: str | None, allowed: set[str]) -> None:
     """Rol `allowed` içinde değilse HTTP 403. Rol belirlenemezse fail-open (bloklamaz).
 

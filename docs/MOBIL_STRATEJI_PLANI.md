@@ -396,5 +396,35 @@ problemi/akışı çöz, ekranı değil.*
 
 ---
 
+## 13. Kullanıcı rolleri (2026-07-22 eklendi)
+
+Web ile aynı rol modeli (`frontend/lib/roles.ts`): **student 🎒 · teacher 🎓 · parent
+👨‍👩‍👧 · admin**.
+
+- **Depolama:** Clerk **`publicMetadata.role`** (yalnız sunucu yazabilir; kalıcı).
+  Legacy fallback `unsafeMetadata.role`. Etkin rol = public > legacy.
+- **Mobil OKUMA:** aynı Clerk hesabı → `useUser().user`'dan `effectiveRole`. Web'de
+  onboard olan kullanıcının rolü mobilde hazır.
+- **Mobil YAZMA (yeni kayıtlar):** publicMetadata client'tan yazılamaz →
+  **`POST /api/me/role`** (backend; `clerk_roles.set_user_role` → Clerk Backend API
+  PATCH, TEK SEFERLİK; doğrulanmış tenant şart). Frontend `/api/role`'ün mobil karşılığı.
+  **YAPILDI (backend).**
+
+**Fazlama (onaylı):**
+- **Öğrenci** → çekirdek (çöz/kağıt/ilerleme) — **v1, hazır.**
+- **Veli** → çocuğu kodla ekle + ilerleme (backend hazır: parent-code/link-child/children) — **v1.5.**
+- **Öğretmen** → "Sınıfım" (sınıf/ödev) — **v2.** (Kağıt üretimini rol-bağımsız zaten kullanır.)
+- **Admin** → web'de kalır, mobilde yok.
+
+**Sıradaki (mobil):** RoleGate onboarding (rol yoksa seçtir → `POST /api/me/role`) +
+**role-duyarlı navigasyon** (öğrenci: Çöz/Kağıt/Gelişim · veli: Çocuğum/Kağıt · öğretmen:
+Kağıt + Sınıfım-yakında). Nav pass'iyle birlikte.
+
+> **Dev/prod not:** role-set + rol/tenant-korumalı uçlar, mobil ve backend'in **aynı
+> Clerk instance**'ını kullanmasını gerektirir (şu an mobil dev pk_test, backend prod →
+> 401). Prod hizalamasında (pk_live) çalışır.
+
+---
+
 *Bu belge birlikte alınan kararların kaynağıdır; kapsam/karar değişirse burası
 güncellenir.*
