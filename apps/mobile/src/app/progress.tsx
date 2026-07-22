@@ -17,7 +17,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { getProgress } from '@/lib/api';
-import { colors, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
+import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
 
 function pct(v: number): number {
   return Math.round((v <= 1 ? v : v / 100) * 100);
@@ -135,7 +135,7 @@ function Stat({ label, value }: { label: string; value: number | string }) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
-  heading: { fontSize: fontSize.xl, fontWeight: fontWeight.heavy, color: colors.text },
+  heading: { fontSize: fontSize.xl, fontFamily: fonts.heading, color: colors.text },
   muted: { color: colors.textMuted, fontSize: fontSize.sm },
   error: { color: colors.danger, fontSize: fontSize.sm },
   section: { gap: spacing.sm },
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     backgroundColor: colors.surface,
   },
-  statValue: { fontSize: fontSize.xxl, fontWeight: fontWeight.heavy, color: colors.brand },
+  statValue: { fontSize: fontSize.xxl, fontFamily: fonts.heading, color: colors.brand },
   statLabel: { fontSize: fontSize.xs, color: colors.textMuted },
   kRow: { gap: spacing.xs, paddingVertical: spacing.xs },
   kHead: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm },
@@ -173,5 +173,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     alignItems: 'center',
   },
-  primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontWeight: fontWeight.bold },
+  primaryBtnText: { color: colors.onBrand, fontSize: fontSize.md, fontFamily: fonts.bodyBold },
 });

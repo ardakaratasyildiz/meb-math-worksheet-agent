@@ -24,7 +24,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Chip, Section } from '@/components/pickers';
 import { generateWorksheet, listUnits } from '@/lib/api';
 import { shareWorksheetPdf } from '@/lib/pdf';
-import { colors, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
+import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
 
 const GRADES = [1, 2, 3, 4, 5, 6, 7, 8];
 const DIFFICULTIES: { value: Difficulty; label: string }[] = [
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
   heading: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.heavy,
+    fontFamily: fonts.heading,
     color: colors.text,
   },
   section: { gap: spacing.sm },
@@ -269,12 +269,12 @@ const styles = StyleSheet.create({
   generateBtnText: {
     color: colors.onBrand,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: fonts.bodyBold,
   },
   result: { gap: spacing.md, marginTop: spacing.sm },
   resultTitle: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.heavy,
+    fontFamily: fonts.heading,
     color: colors.text,
   },
   questionCard: {

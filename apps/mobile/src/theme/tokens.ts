@@ -53,3 +53,16 @@ export const fontWeight = {
   bold: "700",
   heavy: "800",
 } as const;
+
+/**
+ * Marka fontları — başlık Fredoka (oyunsu), gövde Nunito (okunur). Aileler
+ * _layout'ta useFonts ile yüklenir. Özel fontta fontWeight yerine aile adı belirler.
+ */
+export const fonts = {
+  heading: "Fredoka_700Bold",
+  headingSemi: "Fredoka_600SemiBold",
+  body: "Nunito_400Regular",
+  bodyMedium: "Nunito_600SemiBold",
+  bodyBold: "Nunito_700Bold",
+  bodyHeavy: "Nunito_800ExtraBold",
+} as const;
