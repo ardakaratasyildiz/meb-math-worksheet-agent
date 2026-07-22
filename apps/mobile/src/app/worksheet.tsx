@@ -22,6 +22,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Chip, Section } from '@/components/pickers';
+import { QuestionText } from '@/components/question-text';
 import { generateWorksheet, listUnits } from '@/lib/api';
 import { shareWorksheetPdf } from '@/lib/pdf';
 import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
@@ -213,7 +214,9 @@ export default function WorksheetScreen() {
             {worksheet.questions.map((q) => (
               <View key={q.number} style={styles.questionCard}>
                 <Text style={styles.questionNo}>{q.number}.</Text>
-                <Text style={styles.questionText}>{q.question}</Text>
+                <View style={styles.questionBody}>
+                  <QuestionText text={q.question} />
+                </View>
               </View>
             ))}
             <Pressable
@@ -287,5 +290,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   questionNo: { color: colors.brand, fontWeight: fontWeight.bold },
-  questionText: { color: colors.text, flex: 1, fontSize: fontSize.sm, lineHeight: 20 },
+  questionBody: { flex: 1 },
 });

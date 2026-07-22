@@ -25,6 +25,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Chip, Section } from '@/components/pickers';
+import { QuestionText } from '@/components/question-text';
 import { createQuiz, submitAttempt } from '@/lib/api';
 import { useUnits } from '@/hooks/useUnits';
 import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
@@ -290,9 +291,8 @@ function QuestionCard({
 }) {
   return (
     <View style={styles.qCard}>
-      <Text style={styles.qText}>
-        {q.number}. {q.question}
-      </Text>
+      <QuestionText text={`${q.number}. ${q.question}`} />
+
       {q.question_type === 'coktan_secmeli' && q.options ? (
         <View style={{ gap: spacing.sm }}>
           {q.options.map((opt, i) => (
