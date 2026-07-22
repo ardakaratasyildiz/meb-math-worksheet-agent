@@ -9,6 +9,7 @@ import type {
   KazanimInfo,
   SubjectSlug,
   UnitInfo,
+  Worksheet,
 } from "@soruatolyesi/shared";
 
 import { ENV } from "./env";
@@ -105,6 +106,41 @@ export function generateWorksheet(
     headers: body.tenant_id ? { "X-Tenant-Id": body.tenant_id } : {},
     body: JSON.stringify(body),
   });
+}
+
+// ── PDF render ───────────────────────────────────────────────────────────────
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("PDF verisi okunamadı."));
+    reader.onloadend = () => {
+      const dataUrl = String(reader.result); // "data:application/pdf;base64,XXXX"
+      resolve(dataUrl.split(",")[1] ?? "");
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * Worksheet'i backend'de PDF'e render eder → base64 döner (dosyaya yazmak için).
+ * Cevap anahtarı + çözümler dahil. JSON dönmediği için apiRequest yerine ham fetch.
+ */
+export async function fetchWorksheetPdfBase64(
+  worksheet: Worksheet,
+): Promise<string> {
+  const auth = await authHeader();
+  const res = await fetch(`${ENV.apiUrl}/api/worksheets/render.pdf`, {
+    method: "POST",
+    headers: { ...baseHeaders(), ...auth },
+    body: JSON.stringify({
+      worksheet,
+      include_answer_key: true,
+      include_solutions: true,
+    }),
+  });
+  if (!res.ok) throw new Error(`PDF oluşturulamadı: ${res.status}`);
+  const blob = await res.blob();
+  return blobToBase64(blob);
 }
 
 /** Backend uyandırma ping'i (Render free-tier cold start). Hata yutulur. */
