@@ -8,9 +8,12 @@ import type {
   GenerateWorksheetRequest,
   GenerateWorksheetResponse,
   GradeInfo,
+  KazanimBreakdown,
   KazanimInfo,
   ProgressResponse,
+  QuestionType,
   QuizPublic,
+  SolutionStep,
   SubjectSlug,
   SubmittedAnswer,
   UnitInfo,
@@ -183,6 +186,73 @@ export function createQuiz(body: CreateQuizRequest): Promise<QuizPublic> {
 export function getProgress(tenantId: string): Promise<ProgressResponse> {
   return apiRequest<ProgressResponse>(
     `/api/me/progress?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+// ── Deneme geçmişi (/api/me/attempts) ────────────────────────────────────────
+/** Geçmiş listesi satırı (hafif — sorular yok). Backend AttemptHistoryItem aynası. */
+export interface AttemptHistoryItem {
+  attempt_id: string;
+  quiz_id: string;
+  title: string;
+  grade?: number | null;
+  topic_id: string;
+  difficulty: string;
+  score: number;
+  total: number;
+  completed_at: string;
+  has_detail: boolean;
+}
+
+/** Geçmiş detayında tek soru: doğru cevap + çözüm + kullanıcının cevabı. */
+export interface AttemptReviewItem {
+  number: number;
+  question: string;
+  question_type: QuestionType;
+  kazanim_kod: string;
+  options?: string[] | null;
+  is_correct: boolean;
+  correct_answer: string;
+  correct_index?: number | null;
+  solution_steps: string | SolutionStep[];
+  submitted?: SubmittedAnswer | null;
+}
+
+/** Geçmiş bir denemenin tam gözden geçirmesi. Backend AttemptDetail aynası. */
+export interface AttemptDetail {
+  attempt_id: string;
+  quiz_id: string;
+  title: string;
+  grade?: number | null;
+  topic_id: string;
+  difficulty: string;
+  score: number;
+  total: number;
+  duration_seconds?: number | null;
+  completed_at: string;
+  per_kazanim: KazanimBreakdown[];
+  review: AttemptReviewItem[];
+  has_detail: boolean;
+}
+
+/** Kullanıcının geçmiş çözüm denemeleri — en yeni önce. */
+export async function listAttempts(
+  tenantId: string,
+  limit = 50,
+): Promise<AttemptHistoryItem[]> {
+  const r = await apiRequest<{ items: AttemptHistoryItem[] }>(
+    `/api/me/attempts?tenant_id=${encodeURIComponent(tenantId)}&limit=${limit}`,
+  );
+  return r.items;
+}
+
+/** Bir denemenin tam gözden geçirmesi (soru + doğru cevap + senin cevabın). */
+export function getAttemptDetail(
+  attemptId: string,
+  tenantId: string,
+): Promise<AttemptDetail> {
+  return apiRequest<AttemptDetail>(
+    `/api/me/attempts/${encodeURIComponent(attemptId)}?tenant_id=${encodeURIComponent(tenantId)}`,
   );
 }
 
