@@ -99,6 +99,14 @@ export default function ProgressScreen() {
               <Stat label="Kazanım" value={summary.kazanim_count} />
             </View>
 
+            <Pressable
+              style={({ pressed }) => [styles.historyBtn, pressed && styles.historyBtnPressed]}
+              onPress={() => router.push('/history' as Href)}
+            >
+              <Text style={styles.historyBtnText}>📜 Deneme geçmişini gör</Text>
+              <Text style={styles.historyChevron}>›</Text>
+            </Pressable>
+
             {data.weak.length > 0 && (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Geliştirilecek kazanımlar</Text>
@@ -152,6 +160,20 @@ const styles = StyleSheet.create({
   },
   statValue: { fontSize: fontSize.xxl, fontFamily: fonts.heading, color: colors.brand },
   statLabel: { fontSize: fontSize.xs, color: colors.textMuted },
+  historyBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+  },
+  historyBtnPressed: { borderColor: colors.brand, backgroundColor: '#eff6ff' },
+  historyBtnText: { fontSize: fontSize.md, fontFamily: fonts.bodyBold, color: colors.text },
+  historyChevron: { fontSize: fontSize.xl, color: colors.textMuted },
   kRow: { gap: spacing.xs, paddingVertical: spacing.xs },
   kHead: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm },
   kName: { flex: 1, color: colors.text, fontSize: fontSize.sm },
