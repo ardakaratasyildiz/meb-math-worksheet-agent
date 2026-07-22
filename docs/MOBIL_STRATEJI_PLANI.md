@@ -361,5 +361,40 @@ Asıl maliyet nakit değil, geliştirme zamanı ve öğrenme eğrisi.
 
 ---
 
+## 12. UX & Tasarım İlkeleri (2026-07-22 eklendi)
+
+Dış bir öneri listesinden, uygulamamıza uyanlar süzülerek alındı. İlke: *önce
+problemi/akışı çöz, ekranı değil.*
+
+### Bağlayıcı karar
+- **İki ayrı birinci-sınıf akış korunur — teke DÜŞÜRÜLMEZ:**
+  1. **Çalışma Kağıdı Üret** (üret → PDF → WhatsApp paylaş) — yazdır/paylaş senaryosu.
+  2. **Çöz / Geliş döngüsü** (alıştırma çöz → puanla → eksik kazanım → eksiğe özel yeni test).
+  Rehberli huni bunları BİRLEŞTİRMEZ; her biri kendi sekmesi/akışı.
+
+### Uygulanacak ilkeler
+- **Tek ekran = tek amaç, az seçenek.** Mevcut worksheet/practice ekranları tüm
+  seçicileri (ders/sınıf/ünite/zorluk/adet) aynı anda gösteriyor → **adımlı huniye**
+  çevrilecek: "Bugün ne çalışacaksın?" → ders → sınıf → konu → (üret | çöz) → sonuç →
+  (döngüde) eksiğe özel yeni test.
+- **Alt sekme navigasyonu** (başparmak ergonomisi), her iki akış ayrı:
+  🏠 Ana · 📄 Kağıt · ✏️ Çöz · 📈 Gelişim · 👤 Profil.
+- **Karanlık mod baştan** — token'lar tema-duyarlı (ışık/koyu) kurulacak (sonradan
+  eklemek pahalı).
+- **Skeleton yükleyiciler** (spinner yerine) — çalışıyor hissi.
+- **Yardımcı/aksiyonlu hata mesajları** ("İnternet yok — tekrar dene").
+- **Dokunma hedefi** ≥ 44×44pt (iOS) / 48×48dp (Android); **8px grid** disiplini.
+- **Ödül/geri bildirim** yüzeyde (XP/seri/kazanım kartı — mevcut, öne çıkarılacak).
+- **Kısa giriş** — e-posta+kod (mevcut); ilerde Google/Apple OAuth.
+- **AI görünmez yardımcı** — kullanıcı "modeli" değil "sonucu" ister (mevcut yaklaşım).
+
+### Öncelik
+- **Ucuz/hemen:** karanlık mod token'ları · skeleton · hata mesajları · dokunma hedefi.
+- **Odaklı pass:** rehberli huni + alt sekme navigasyonu (mevcut ekranların akış/nav
+  yeniden düzeni; mantık/API aynı kalır).
+- **Sonra:** performans (TanStack Query cache, lazy load), erişilebilirlik cilası.
+
+---
+
 *Bu belge birlikte alınan kararların kaynağıdır; kapsam/karar değişirse burası
 güncellenir.*
