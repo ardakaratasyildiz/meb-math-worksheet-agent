@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GeneratorSetup, type GeneratorParams } from '@/components/generator-setup';
+import { Mascot } from '@/components/mascot';
 import { QuestionText } from '@/components/question-text';
 import { SkeletonList } from '@/components/skeleton';
 import { generateWorksheet } from '@/lib/api';
@@ -73,7 +74,10 @@ export default function WorksheetScreen() {
             <GeneratorSetup submitLabel="Oluştur" busy={generating} onSubmit={onGenerate} />
             {generating ? (
               <>
-                <Text style={styles.muted}>Sorular üretiliyor — 30-90 saniye sürebilir…</Text>
+                <View style={styles.loadingWrap}>
+                  <Mascot variant="thinking" size={72} />
+                  <Text style={styles.muted}>Sorular üretiliyor — 30-90 saniye sürebilir…</Text>
+                </View>
                 <SkeletonList count={3} />
               </>
             ) : null}
@@ -123,7 +127,8 @@ export default function WorksheetScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
-  muted: { color: colors.textMuted, fontSize: fontSize.sm },
+  muted: { color: colors.textMuted, fontSize: fontSize.sm, textAlign: 'center' },
+  loadingWrap: { alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.md },
   error: { color: colors.danger, fontSize: fontSize.sm },
   result: { gap: spacing.md },
   resultTitle: { fontSize: fontSize.lg, fontFamily: fonts.heading, color: colors.text },

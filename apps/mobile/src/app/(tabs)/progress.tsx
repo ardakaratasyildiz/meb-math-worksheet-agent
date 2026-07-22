@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Mascot } from '@/components/mascot';
 import { SkeletonList } from '@/components/skeleton';
 import { getProgress } from '@/lib/api';
 import { colors, fonts, fontSize, fontWeight, radius, spacing } from '@/theme/tokens';
@@ -82,6 +83,7 @@ export default function ProgressScreen() {
           <Text style={styles.error}>{error}</Text>
         ) : empty ? (
           <View style={styles.emptyCard}>
+            <Mascot variant="wave" size={104} />
             <Text style={styles.muted}>Henüz çözülmüş alıştırma yok.</Text>
             <Pressable
               style={styles.primaryBtn}

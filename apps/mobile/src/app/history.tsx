@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Mascot } from '@/components/mascot';
 import { SkeletonList } from '@/components/skeleton';
 import { listAttempts, type AttemptHistoryItem } from '@/lib/api';
 import { formatDate, scorePct, scoreTone } from '@/lib/format';
@@ -46,7 +47,7 @@ export default function HistoryScreen() {
           <Text style={styles.error}>{error}</Text>
         ) : items.length === 0 ? (
           <View style={styles.empty}>
-            <Text style={styles.emptyEmoji}>📭</Text>
+            <Mascot variant="reading" size={128} />
             <Text style={styles.emptyTitle}>Henüz çözülmüş deneme yok</Text>
             <Text style={styles.emptyText}>
               Bir alıştırma çözünce buraya düşer; geçmişini tek tek gözden geçirebilirsin.
@@ -120,7 +121,6 @@ const styles = StyleSheet.create({
   scoreNum: { fontSize: fontSize.md, fontFamily: fonts.bodyHeavy },
   scorePct: { fontSize: fontSize.xs, fontFamily: fonts.bodyMedium },
   empty: { alignItems: 'center', gap: spacing.sm, paddingTop: spacing.xxl },
-  emptyEmoji: { fontSize: 44 },
   emptyTitle: { fontSize: fontSize.lg, fontFamily: fonts.heading, color: colors.text },
   emptyText: {
     fontSize: fontSize.sm,
