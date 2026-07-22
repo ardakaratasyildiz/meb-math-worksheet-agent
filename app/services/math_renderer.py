@@ -124,6 +124,76 @@ def render_latex_to_png(
         return None
 
 
+def render_latex_to_svg(
+    latex: str,
+    *,
+    display: bool = False,
+    font_size: int = 16,
+) -> str | None:
+    """LaTeX string → SVG metni (vektör; mobilde react-native-svg ile keskin).
+
+    matplotlib mathtext + savefig(format='svg'). Şeffaf zemin (kart/tema üstünde
+    blend olsun). Render başarısızsa None → caller Unicode fallback gösterir.
+    Dönen: yalnız `<svg ...>...</svg>` (XML/DOCTYPE başlığı kırpılır).
+    """
+    try:
+        from matplotlib.figure import Figure
+        from matplotlib.backends.backend_agg import FigureCanvasAgg
+    except ImportError:
+        logger.warning("matplotlib yüklü değil — LaTeX→SVG render atlanıyor.")
+        return None
+
+    fs = max(8, min(int(font_size), 40))
+    expr = f"${latex}$"
+    fig = Figure(figsize=(0.1, 0.1))
+    FigureCanvasAgg(fig)  # backend bağlama
+    try:
+        fig.text(0, 0, expr, fontsize=fs, usetex=False)
+        buf = io.BytesIO()
+        fig.savefig(
+            buf, format="svg", bbox_inches="tight", pad_inches=0.02, transparent=True
+        )
+        raw = buf.getvalue().decode("utf-8", errors="replace")
+        start = raw.find("<svg")
+        end = raw.rfind("</svg>")
+        if start == -1 or end == -1:
+            return None
+        return raw[start : end + len("</svg>")]
+    except Exception as exc:  # noqa: BLE001 — desteklenmeyen LaTeX → fallback
+        logger.warning("LaTeX→SVG başarısız (%s): %s", exc, latex[:80])
+        return None
+
+
+# Tek istekte render edilecek azami LaTeX bloğu (DoS/aşırı yük koruması).
+_MAX_MATH_BLOCKS = 40
+
+
+def render_text_math_segments(text: str, *, font_size: int = 16) -> list[dict]:
+    """Soru metnini segmentlere böler; matematik bloklarını SVG'ye render eder.
+
+    Mobil `QuestionText` bunu tek çağrıda alır → düz metni yazar, matematik
+    segmentlerini SVG (varsa) yoksa Unicode fallback ile gösterir. Segment:
+      {"kind": "text", "text": "..."}
+      {"kind": "math", "svg": "<svg>..."|None, "text": "<unicode fallback>", "display": bool}
+    """
+    out: list[dict] = []
+    rendered = 0
+    for kind, content, is_display in split_by_latex(text or ""):
+        if kind == "text":
+            if content:
+                out.append({"kind": "text", "text": content})
+            continue
+        fallback = latex_to_inline_text(content)
+        svg = None
+        if rendered < _MAX_MATH_BLOCKS:
+            svg = render_latex_to_svg(content, display=is_display, font_size=font_size)
+            rendered += 1
+        out.append(
+            {"kind": "math", "svg": svg, "text": fallback, "display": is_display}
+        )
+    return out
+
+
 # ─── Inline LaTeX → düz/Unicode metin ────────────────────────────────────────
 # PDF'te satır içi $...$ ifadeleri görüntü olarak basılınca cümleyi parçalıyordu.
 # Inline math artık akan metne çevrilir; display $$...$$ görüntü olarak kalır.
