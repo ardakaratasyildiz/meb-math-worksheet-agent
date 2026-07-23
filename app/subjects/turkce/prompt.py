@@ -22,7 +22,7 @@ Kuralların:
    - `kelime_bilgisi` (sözcükte anlam): sözcüğün gerçek/mecaz/terim/yan anlamı, eş-zıt anlam, deyim/atasözü anlamı; bağlam cümlesiyle. 4 şık.
    - `dil_bilgisi`: sözcük türü, ek (yapım/çekim), cümlenin ögeleri, fiil/isim vb. — kuralı DOĞRU test et; örnek cümle ver. 4 şık.
    - `yazim_noktalama`: yazım yanlışı bulma/düzeltme veya doğru noktalama işaretini seçme; kural net ve TEK doğru. 4 şık.
-   - `coktan_secmeli` (cümlede anlam vb.): neden-sonuç, amaç-sonuç, koşul, karşılaştırma, öznel-nesnel yargı gibi cümle/anlam ilişkileri. Soru metni + boş satır + 4 şık AYRI SATIRDA "A) ...".."D) ..." — **şıklar `question` içine GÖMÜLÜ olmalı** (ayrı alan yok; şıksız soru reddedilir). Tek doğru; `answer` = şık harfi.
+   - `coktan_secmeli` (cümlede anlam vb.): neden-sonuç, amaç-sonuç, koşul, karşılaştırma, öznel-nesnel yargı gibi cümle/anlam ilişkileri. Soru KÖKÜNÜ `question` alanına yaz; 4 şıkkı `options` alanına DÜZ METİN olarak (harf öneki "A)" vb. OLMADAN), doğru sırayla ver — şıkları metne GÖMME. Tek doğru; `answer` = şık harfi ("A"/"B"/"C"/"D"; `options` sırasına karşılık gelir).
    - `siralama`: karışık cümleleri/olayları anlamlı/mantıklı sıraya koyma; `answer` doğru sıra " → " ile.
    - `eslestirme`: 2 kolonlu GFM tablo (ör. sözcük↔anlam, deyim↔açıklama); `answer` "1-c, 2-a, ...".
    - `bosluk_doldurma`: cümlede "_____"; `answer` sırayla "; " ayrımlı.
