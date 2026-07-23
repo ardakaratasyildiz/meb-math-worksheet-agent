@@ -348,6 +348,133 @@ def process_pattern_directives(text: str) -> str:
     return _PATTERN_DIRECTIVE_RE.sub(_repl, text)
 
 
+# ─── Deterministik GEOMETRİ figürü (D2b — LLM ham SVG çizmesin) ──────────────
+# gorsel_geometri ham <svg> ile güvenilmezdi (figür drop'larının ~%84'ü buradaydı:
+# 88 şekilsiz + 194 bozuk SVG). grafik/örüntü deseni: LLM kompakt {{geo:...}} direktifi
+# verir, sistem NOT-TO-SCALE (ölçekli değil) ŞEMATİK SVG üretir; etiketler verilen değeri
+# gösterir. Değerler sayı ya da '?' (bilinmeyen — ör. Pisagor'da hipotenüs). Biçimler:
+#   {{geo:right_triangle|a=3|b=4|c=?}}  dik üçgen (a taban, b dik kenar, c hipotenüs)
+#   {{geo:triangle|base=10|height=6}}   üçgen (taban + kesikli yükseklik çizgisi; alan)
+#   {{geo:triangle|a=5|b=6|c=7}}        genel üçgen (a sol kenar, b sağ kenar, c taban)
+#   {{geo:rectangle|w=8|h=5}}           dikdörtgen · {{geo:square|s=6}} kare
+#   {{geo:circle|r=7}}                  çember (yarıçap çizgisi + etiket)
+_GEO_DIRECTIVE_RE = re.compile(r"\{\{geo:([^{}]+)\}\}", flags=re.IGNORECASE)
+_GEO_STROKE = "#1f2937"
+
+
+def _geo_text(x: float, y: float, label: str, anchor: str = "middle") -> str:
+    return (
+        f'<text x="{x:.1f}" y="{y:.1f}" font-size="13" fill="{_GEO_STROKE}" '
+        f'text-anchor="{anchor}">{_xml_escape(label)}</text>'
+    )
+
+
+def _geo_wrap(w: int, h: int, body: str) -> str:
+    return f'<svg viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg">{body}</svg>'
+
+
+def _geo_poly(points: str) -> str:
+    return f'<polygon points="{points}" fill="none" stroke="{_GEO_STROKE}" stroke-width="2"/>'
+
+
+def _render_right_triangle(p: dict[str, str]) -> str:
+    a, b, c = p.get("a", "?"), p.get("b", "?"), p.get("c", "?")
+    body = (
+        _geo_poly("40,130 170,130 40,40")
+        # dik açı işaretçisi (sol-alt köşe)
+        + f'<polyline points="40,115 55,115 55,130" fill="none" stroke="{_GEO_STROKE}" stroke-width="1.5"/>'
+        + _geo_text(105, 148, a, "middle")   # taban a
+        + _geo_text(32, 88, b, "end")        # dik kenar b
+        + _geo_text(112, 82, c, "start")     # hipotenüs c
+    )
+    return _geo_wrap(200, 165, body)
+
+
+def _render_triangle(p: dict[str, str]) -> str:
+    base = p.get("base") or p.get("taban")
+    height = p.get("height") or p.get("yukseklik") or p.get("h")
+    if base or height:
+        body = (
+            _geo_poly("110,40 40,140 180,140")
+            + f'<line x1="110" y1="40" x2="110" y2="140" stroke="{_GEO_STROKE}" '
+            f'stroke-width="1.3" stroke-dasharray="5 4"/>'
+            + f'<polyline points="110,128 122,128 122,140" fill="none" stroke="{_GEO_STROKE}" stroke-width="1.2"/>'
+            + _geo_text(110, 158, base or "?", "middle")   # taban
+            + _geo_text(118, 92, height or "?", "start")   # yükseklik
+        )
+        return _geo_wrap(220, 175, body)
+    a, b, c = p.get("a", "?"), p.get("b", "?"), p.get("c", "?")
+    body = (
+        _geo_poly("95,40 40,140 180,140")
+        + _geo_text(58, 88, a, "end")        # sol kenar
+        + _geo_text(148, 88, b, "start")     # sağ kenar
+        + _geo_text(110, 158, c, "middle")   # taban
+    )
+    return _geo_wrap(220, 175, body)
+
+
+def _render_rectangle(p: dict[str, str]) -> str:
+    w = p.get("w") or p.get("width") or p.get("uzun") or "?"
+    h = p.get("h") or p.get("height") or p.get("kisa") or "?"
+    body = (
+        f'<rect x="40" y="30" width="140" height="90" fill="none" stroke="{_GEO_STROKE}" stroke-width="2"/>'
+        + _geo_text(110, 138, w, "middle")   # taban
+        + _geo_text(32, 80, h, "end")        # sol kenar
+    )
+    return _geo_wrap(210, 155, body)
+
+
+def _render_square(p: dict[str, str]) -> str:
+    s = p.get("s") or p.get("a") or p.get("kenar") or "?"
+    body = (
+        f'<rect x="45" y="30" width="100" height="100" fill="none" stroke="{_GEO_STROKE}" stroke-width="2"/>'
+        + _geo_text(95, 148, s, "middle")
+    )
+    return _geo_wrap(190, 165, body)
+
+
+def _render_geo_circle(p: dict[str, str]) -> str:
+    r = p.get("r") or p.get("radius") or p.get("yaricap") or "?"
+    body = (
+        f'<circle cx="100" cy="90" r="60" fill="none" stroke="{_GEO_STROKE}" stroke-width="2"/>'
+        + f'<line x1="100" y1="90" x2="160" y2="90" stroke="{_GEO_STROKE}" stroke-width="1.5"/>'
+        + f'<circle cx="100" cy="90" r="2.5" fill="{_GEO_STROKE}"/>'
+        + _geo_text(130, 82, r, "middle")
+    )
+    return _geo_wrap(200, 180, body)
+
+
+_GEO_RENDERERS = {
+    "right_triangle": _render_right_triangle, "dik_ucgen": _render_right_triangle,
+    "triangle": _render_triangle, "ucgen": _render_triangle, "üçgen": _render_triangle,
+    "rectangle": _render_rectangle, "dikdortgen": _render_rectangle, "dikdörtgen": _render_rectangle,
+    "square": _render_square, "kare": _render_square,
+    "circle": _render_geo_circle, "cember": _render_geo_circle, "çember": _render_geo_circle,
+    "daire": _render_geo_circle,
+}
+
+
+def render_geo_svg(shape: str, params: dict[str, str]) -> str | None:
+    fn = _GEO_RENDERERS.get((shape or "").strip().lower())
+    return fn(params) if fn else None
+
+
+def process_geo_directives(text: str) -> str:
+    """{{geo:...}} direktiflerini deterministik geometri SVG'sine çevirir. Bozuk → no-op."""
+    def _repl(m: "re.Match[str]") -> str:
+        segs = [s.strip() for s in m.group(1).split("|")]
+        shape = segs[0]
+        params: dict[str, str] = {}
+        for seg in segs[1:]:
+            if "=" in seg:
+                k, _, v = seg.partition("=")
+                params[k.strip().lower()] = v.strip()
+        svg = render_geo_svg(shape, params)
+        return svg if svg else m.group(0)
+
+    return _GEO_DIRECTIVE_RE.sub(_repl, text)
+
+
 # ─── Deterministik TABLO üretimi (LLM ham markdown yazmasın) ─────────────────
 # tablo_sorusu markdown tabloyu ELLE yazdırıyordu → 2.5-flash bozuk üretiyor
 # (hizasız pipe, eksik ayraç satırı, düzensiz sütun); 3.5 temiz yapabiliyordu.
