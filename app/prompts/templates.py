@@ -1,6 +1,13 @@
 """Gemini prompt şablonları: system + few-shot + user katmanları."""
+import re
+
 from app.data.curriculum import Kazanim
 from app.models.enums import Difficulty, QuestionType
+
+# Few-shot örneklerindeki ham <svg> bloğu — model raw SVG çizmeyi TAKLİT ediyordu
+# (D2b: gorsel_geometri drop'larının kaynağı). Örnekte nötrlenir → model görsel tipleri
+# {{geo}}/{{chart}}/{{pattern}} direktifiyle üretmeye (system prompt yönergesine) döner.
+_FEWSHOT_SVG_RE = re.compile(r"<svg\b.*?</svg>", flags=re.DOTALL | re.IGNORECASE)
 
 SYSTEM_PROMPT = """Sen MEB (Milli Eğitim Bakanlığı) müfredatına uygun matematik soruları üreten bir eğitim asistanısın. Türkiye'deki ilkokul ve ortaokul matematik ders kitaplarını referans alıyorsun.
 
@@ -34,21 +41,23 @@ Kuralların:
        **`{{table:...}}` DİREKTİFİYLE** ver (ham markdown `|---|` YAZMA):
        `{{table: Şehir | Nüfus (Okunuşu) ;; Şehir A | Sekiz milyon kırk bin iki yüz beş ;; Şehir B | Seksen milyon dört yüz bin yirmi beş ;; Şehir C | Sekiz yüz milyon kırk bin yirmi beş}}`
        En fazla ~6 satır / 5 sütun. `answer` tablodaki verilerle TUTARLI olmalı.
-   - `gorsel_geometri`: Soru metni + INLINE SVG bloğu (kod bloğu DEĞİL!) ile geometri şekli + ölçü etiketleri. Aşağıdaki kuralları MUTLAKA UY:
-       (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` formatında olmalı (genişlik ≤ 250, yükseklik ≤ 200).
-       (b) Sadece şu elementleri kullan: `line`, `polyline`, `polygon`, `rect`, `circle`, `ellipse`, `path`, `text`, `g`. Asla `script`, `foreignObject`, `image`, `use href="http..."` KULLANMA.
-       (c) Stroke koyu siyah `#1f2937` veya `black`, stroke-width 1.5-2. Fill `none` (sadece kontur) ya da çok açık renk.
-       (d) **ETİKET KONUMLANDIRMA — KRİTİK:** Ölçü etiketleri (kenar uzunluğu / açı / yarıçap) ŞEKLİN ÇİZGİLERİNE / KENARINA / KÖŞELERİNE BİNMEMELİ. Etiketleri kenardan en az **12-15 piksel UZAĞA** yerleştir. Kurallar:
-            - Yatay kenar (en alt kenar) etiketi: kenar y koordinatından **+14** aşağıya (örn. üçgen tabanı y=130 ise label y=146)
-            - Eğik kenar etiketi: kenar dış normaline doğru ofset; yatayda **±15-20 piksel** kaydırarak konumlandır. ASLA kenar çizgisi üzerine koyma.
-            - Açı etiketi: köşeden kenar boyunca içeride **15-20 piksel** içeride; köşe noktasının dışına konulmaz.
-            - Yarıçap etiketi: yarıçap çizgisinin **yanına** (üst veya alt), çizgi üstüne BİNMESİN.
-            - `text-anchor="middle"` ile yatay merkezleme tercih edilir.
-            - Font-size 12-14.
-       (e) Şekilde gösterilen ölçüler ile sorulan soru ve cevap MUTLAKA TUTARLI olmalı (örn. üçgenin görseldeki kenarı 6 cm ise sorudaki çevre hesabında da 6 cm kullanılmalı).
-       (f) Dik açı işaretçisi gerekirse köşeye küçük kare çiz (≈ 8x8). Eşit kenar işaretçisi için tek/çift küçük çizgi.
-       (g) "answer" alanı sade sayı + birim (örn. "32 cm" veya "42"); LaTeX delimeter ($, $$) KULLANMA — sadece düz metin.
-       Örnek (etiket kenardan ÇOK UZAK — 14px aşağıda): `<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg"><polygon points="100,20 30,130 170,130" fill="none" stroke="black" stroke-width="2"/><text x="100" y="148" font-size="13" text-anchor="middle">14 cm</text></svg>`
+   - `gorsel_geometri`: Soru metni + GEOMETRİ DİREKTİFİ. **INLINE `<svg>` ÇİZME!** Şekli yalnızca
+       aşağıdaki `{{geo:...}}` direktifiyle ver; sistem doğru orantılı, etiketleri çakışmayan,
+       temiz SVG üretir (LLM'in elle çizdiği geometri şekilleri bozuk/etiketi kayık çıkıyordu).
+       Değerler sayı veya `?` (bilinmeyen — ör. Pisagor'da hipotenüs); değere birim eklenebilir (`a=6 cm`):
+       (a) Dik üçgen (Pisagor):  `{{geo:right_triangle|a=6|b=8|c=?}}`  (a taban, b dik kenar, c hipotenüs — dik açı işaretlenir)
+       (b) Üçgen alan:  `{{geo:triangle|base=12|height=5}}`  (taban + kesikli yükseklik çizgisi)
+           Genel üçgen:  `{{geo:triangle|a=5|b=6|c=7}}`  (a sol kenar, b sağ kenar, c taban)
+       (c) Dikdörtgen:  `{{geo:rectangle|w=8|h=5}}`  ·  Kare:  `{{geo:square|s=6}}`
+       (d) Çember:  `{{geo:circle|r=7}}`  (yarıçap çizgisi + etiket)
+       (e) Direktifi soru metninin içine ilgili cümleden hemen sonra koy. Direktifteki ölçüler soru
+           ve cevapla TUTARLI olmalı. `answer` sade sayı + birim (ör. "32 cm"); LaTeX ($) KULLANMA.
+       (f) Bu 5 şekle (dik üçgen / üçgen / dikdörtgen / kare / çember) UYMAYAN özel bir figür
+           gerekiyorsa o soruyu ÜRETME → metin-tabanlı başka bir tip seç. Direktif DIŞINDA ASLA
+           `<svg>`, `<path>`, `<polygon>`, `<circle>` vb. YAZMA.
+       TAM ÖRNEK (formatı öğren, sayıları kopyalama): question = "Bir dik üçgenin dik kenarları
+       6 cm ve 8 cm uzunluğundadır. {{geo:right_triangle|a=6 cm|b=8 cm|c=?}} Bu üçgenin hipotenüs
+       uzunluğu kaç cm'dir?" · answer = "10 cm" — DİKKAT: `<svg>` YOK, sadece `{{geo:...}}` direktifi.
    - `grafik_okuma`: Soru metni + grafiğe dayalı soru. **SVG ÇİZME!** Grafiği yalnızca
        aşağıdaki VERİ DİREKTİFİ ile belirt; sistem doğru orantılı, etiketleri çakışmayan
        grafiği otomatik üretir (LLM'in elle çizdiği grafikler bozuk çıkıyordu):
@@ -160,7 +169,10 @@ def _format_few_shot(
         ex_src = ex.get("source")
         src_suffix = f" | Kaynak: {ex_src}" if ex_src else ""
         lines.append(f"\n[Örnek {i} — Tip: {qt_value} | Zorluk: {ex_diff}{src_suffix}]")
-        lines.append(f"Soru: {ex['question']}")
+        ex_q = _FEWSHOT_SVG_RE.sub(
+            "[görsel — SEN {{geo:...}} / {{chart:...}} direktifiyle üret]", ex["question"]
+        )
+        lines.append(f"Soru: {ex_q}")
         lines.append(f"Cevap: {ex['answer']}")
         lines.append(f"Çözüm: {ex['solution']}")
     return "\n".join(lines)
@@ -255,7 +267,7 @@ _YENI_NESIL_BLOCK = """YENİ NESİL (HARMAN) MOD — bu kağıtta sorular KARIŞ
 - `gunluk_hayat`, `sozel_problem`, `modelleme`, `akil_yurutme` tipindeki soruları YENİ NESİL yaz: 2-4 cümlelik GERÇEK YAŞAM SENARYOSU/bağlam (alışveriş, spor, tarif, yolculuk, okul, doğa, üretim vb.); öğrenci gerekli veriyi metinden/görselden KENDİSİ ayıklasın; mümkünse İŞE YARAMAYAN bir bilgi (çeldirici veri) ekle; çözüm ÇOK ADIMLI (en az 2 adım) olsun.
 - `islem`, `salt_islem`, `kavram_sorusu` gibi tipler KISA ve doğrudan kalabilir (hızlı pratik) — hepsini senaryoya çevirme.
 - `gorsel_geometri`, `grafik_okuma`, `tablo_sorusu`, `oruntu_sekil` (ŞEKİLLİ) tiplerinde şekli/tabloyu/grafiği MUTLAKA gerçek yaşam bağlamına yerleştir: çıplak "aşağıdaki şekilde..." DEĞİL; örn. bir bahçenin krokisi, bir mağazanın aylık satış grafiği, bir tarifin malzeme tablosu, bir parkın oturma düzeni. ŞEKİL + SENARYO birlikte olsun (şekilli bağlamsal soru).
-- ⚠️ KRİTİK: Şekilli tipte şekli GERÇEKTEN ÜRET. `gorsel_geometri` → soru metninin içinde geçerli bir `<svg>...</svg>` bloğu OLMAK ZORUNDA; `grafik_okuma` → `{{chart:...}}` direktifi, `oruntu_sekil` → `{{pattern:...}}` direktifi OLMAK ZORUNDA. Ölçüler/veriler şekilde görünmeli. "Görseldeki ölçüye göre" deyip şekil/direktif ÜRETMEMEK KESİNLİKLE YASAK (cevaplanamaz soru olur). Şekli üretemeyeceksen o soruyu bağlamsal SÖZEL soru (`gunluk_hayat`/`sozel_problem`) olarak yaz ve tüm ölçüleri metinde ver.
+- ⚠️ KRİTİK: Şekilli tipte şekli GERÇEKTEN ÜRET — hepsi DİREKTİFLE, ASLA ham `<svg>` YAZMA: `gorsel_geometri` → `{{geo:...}}` direktifi (dik üçgen/üçgen/dikdörtgen/kare/çember), `grafik_okuma` → `{{chart:...}}` direktifi, `oruntu_sekil` → `{{pattern:...}}` direktifi OLMAK ZORUNDA. Ölçüler/veriler direktifte/metinde görünmeli. "Görseldeki ölçüye göre" deyip direktif ÜRETMEMEK KESİNLİKLE YASAK (cevaplanamaz soru olur). Şekli direktifle üretemeyeceksen o soruyu bağlamsal SÖZEL soru (`gunluk_hayat`/`sozel_problem`) olarak yaz ve tüm ölçüleri metinde ver.
 - `coktan_secmeli` tiplerinde çeldiriciler yaygın HATA TİPLERİNDEN doğsun (işlem sırası, birim karışması, eksik adım, sık kavram yanılgısı) — rastgele yakın sayı DEĞİL.
 - Bağlam gerçekçi ve tutarlı olsun (fiyat, ölçü, miktar makul; birimler doğru). Aritmetik zorluğu yine "Zorluk Kalibrasyonu" belirler."""
 

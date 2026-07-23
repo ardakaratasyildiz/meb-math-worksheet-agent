@@ -39,8 +39,10 @@ from app.services.math_verifier import verify_batch as verify_math_batch
 from app.services.history import DEFAULT_TENANT, GENERATION_HISTORY, HistoryKey
 from app.services.retriever import ExampleRetriever, get_retriever
 from app.services.svg_utils import (
+    extract_svg_blocks,
     is_valid_svg,
     process_chart_directives,
+    process_geo_directives,
     process_pattern_directives,
     process_table_directives,
 )
@@ -1156,10 +1158,12 @@ class GeminiAgent:
         for raw in batch.questions:
             if dedup.is_duplicate(raw.question):
                 continue
-            q_text = process_table_directives(
-                process_pattern_directives(
-                    process_chart_directives(
-                        repair_latex_control_chars(raw.question).strip()
+            q_text = process_geo_directives(
+                process_table_directives(
+                    process_pattern_directives(
+                        process_chart_directives(
+                            repair_latex_control_chars(raw.question).strip()
+                        )
                     )
                 )
             )
@@ -1169,13 +1173,21 @@ class GeminiAgent:
                     raw.question_type.value, raw.question[:70],
                 )
                 continue
-            # SVG geçerlilik: şekilli tipte SVG varsa hatalı olmamalı → ele.
+            # SVG geçerlilik: şekilli tipte gömülü SVG bloğu/bloklarının HER BİRİ geçerli
+            # olmalı. q_text "metin + <svg>" biçiminde olduğundan TÜM metni DEĞİL, ÇIKARILAN
+            # <svg> bloğunu doğrula (is_valid_svg girdinin <svg ile başlamasını şart koşar →
+            # tüm metin verilirse geçerli figür de yanlışlıkla elenirdi). {{geo}}/{{chart}}/
+            # {{pattern}} direktifleri bu aşamada zaten deterministik SVG'ye dönüşmüş olur.
             if raw.question_type in _figure_types and "<svg" in q_text:
-                ok, reason = is_valid_svg(q_text)
-                if not ok:
+                _blocks = extract_svg_blocks(q_text)
+                _bad = next(
+                    (is_valid_svg(s)[1] for _, _, s in _blocks if not is_valid_svg(s)[0]),
+                    None,
+                )
+                if not _blocks or _bad:
                     logger.info(
                         "Bozuk SVG atıldı (%s, %s): %s",
-                        raw.question_type.value, reason, raw.question[:70],
+                        raw.question_type.value, _bad or "svg bloğu yok", raw.question[:70],
                     )
                     continue
             # Çoktan seçmeli — YAPISAL şıklar (D1). Model `options` alanına 4 şık yazar
