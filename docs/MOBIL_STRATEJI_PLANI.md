@@ -120,8 +120,11 @@ koordinasyon para akmadan önce tamam olmalı.
 - **Abonelik duvarı** (RevenueCat IAP; aylık + yıllık).
 
 ### Dışarıda (v2 kuyruğu)
-- Öğretmen **"Sınıfım"** (sınıf yönetimi, ödev atama, sınıf istatistikleri) — web'de
-  kalır; mobil aboneliği web'de bu özelliği açar.
+- ~~Öğretmen "Sınıfım" web'de kalır~~ → **GÜNCELLENDİ 2026-07-23:** backend zaten
+  hazır olduğundan öğretmen **"Sınıfım"** (sınıf oluştur/kod/üye, quiz ödev atama,
+  sonuç panosu, öğrenci soru-detayı), veli **çocuk-takibi** (takip kodu + ilerleme)
+  ve öğrenci **sınıfa katıl + ödev çöz** akışları **mobilde native inşa edildi**.
+  Cihaz doğrulaması 28 Tem dev build (pk_live) sonrası (korumalı uçlar).
 - Fiyat kademesi (öğrenci vs öğretmen paketi).
 - Offline mod (libSQL yerel replika — mimari buna açık kurulur).
 - Push kampanyaları.
@@ -281,6 +284,28 @@ geri bildirim → Claude düzeltir. Görsel cila döngüsü kullanıcının göz
 
 > **Erken kullanıcı = TestFlight** (review/IAP gerektirmez). Faz 2 sonunda sıcak
 > lead'lere verilir → erken geri bildirim + beklenti, mağaza tabanına takılmadan.
+
+### 8.1 Güncel durum (2026-07-23)
+
+Faz 0–4 esasen tamam; kapsam v1'in ötesine geçti (teacher/parent v2 öne alındı).
+Ayrıntılı handoff: local memory `mobil-strateji.md`. Dal: `feat/mobile-foundation`.
+
+**Bu oturumda tamamlandı (commit'lendi — 44e1383 + e89474e):**
+- **Tasarım sistemi** ("Neşeli Kağıt") tüm ekranlara yayıldı; **B "sihirbaz kart"**
+  üretim akışı (kullanıcı onaylı, mockup turlarıyla).
+- **Birleşik "Oluştur"**: Çöz + Kağıt tek akış, çıktı başta seçilir; gelişmiş üretim
+  ayarları (kazanım/zorluk modu/soru tipleri/PDF içeriği). practice+worksheet silindi.
+- **Profil sekmesi**; nav = Ana / Oluştur / Gelişim / Profil + maskot FAB.
+- **Rol tonu**: öğretmen/veli sade "yetişkin" ekranlar (oyunlaşma yok), öğrenci oyunsu.
+  Rol **sabit** (RoleGate'te bir kez; web gibi, değiştirici yok). Öğretmen/veli
+  Oluştur'da yalnız PDF.
+- **Öğretmen/veli/öğrenci sınıf-ödev döngüsü** mobilde uçtan uca (yukarıda §4).
+
+**Sıradaki (öncelik):**
+1. **28 Tem: EAS dev build (pk_live)** → korumalı uçlar açılır → tüm bu özelliklerin
+   ilk gerçek cihaz doğrulaması. Hazırlık: `docs/MOBIL_28TEM_HAZIRLIK.md`.
+2. Faz 5 ödeme mobil ucu (react-native-purchases + paywall) — backend hazır.
+3. Faz 6 cila (boş/hata durumları, erişilebilirlik, Sentry) + koyu tema.
 
 ---
 
