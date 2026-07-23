@@ -28,7 +28,7 @@ from app.services.diversity import (
 from app.services.embedder import EmbedderError, GeminiEmbedder
 from app.services.examples import get_examples_for_kazanim, select_diverse
 from app.services.llm_cache import GENERATION_CACHE
-from app.services.structured import reference_integrity_issue
+from app.services.structured import _answer_letter, _parse_mcq, reference_integrity_issue
 from app.services.llm_providers import (
     AnthropicProvider,
     GeminiProvider,
@@ -145,6 +145,11 @@ class GeneratedQuestion(BaseModel):
     solution_steps: str
     kazanim_kod: str
     question_type: QuestionType
+    # Çoktan seçmeli şıkları — YAPISAL alan (D1). Model şıkları (harf öneki YOK) buraya
+    # yazar; structured output zorunlu kıldığından "şıksız MC" drop'u biter. `question`
+    # yalnız soru kökünü taşır; backend şıkları metne DETERMİNİSTİK gömer (eski render'lar
+    # geriye-uyumlu okur). MC dışı tiplerde None.
+    options: list[str] | None = None
 
 
 class GeneratedBatch(BaseModel):
@@ -1173,22 +1178,34 @@ class GeminiAgent:
                         raw.question_type.value, reason, raw.question[:70],
                     )
                     continue
-            # Çoktan seçmeli ZORUNLU: A) B) C) D) şıkları soru metnine gömülü olmalı;
-            # aksi halde soru CEVAPLANAMAZ → ele (top-up doldurur). Tüm dersleri korur.
+            # Çoktan seçmeli — YAPISAL şıklar (D1). Model `options` alanına 4 şık yazar
+            # (structured output → şıksız drop biter); backend cevap harfini doğrular,
+            # correct_index'i türetir ve şıkları metne DETERMİNİSTİK gömer (eski render'lar
+            # geriye-uyumlu). Alan boşsa (eski-format model) gömülü metinden parse edilir.
+            mc_options: list[str] | None = None
+            mc_correct_index: int | None = None
             if raw.question_type == QuestionType.COKTAN_SECMELI:
-                if not all(f"{opt})" in q_text for opt in ("A", "B", "C", "D")):
-                    logger.info(
-                        "Şıksız çoktan seçmeli soru atıldı: %s", raw.question[:70]
-                    )
+                opts = [o.strip() for o in (raw.options or []) if o and o.strip()]
+                if len(opts) < 4:
+                    parsed, _ = _parse_mcq(q_text, raw.answer)  # geriye-uyum: gömülü metin
+                    if parsed and len(parsed) >= 4:
+                        opts = [o.strip() for o in parsed[:4] if o.strip()]
+                if len(opts) != 4:
+                    logger.info("Yapısal şıksız/eksik MC atıldı (%d şık): %s",
+                                len(opts), raw.question[:70])
                     continue
-                # MEB ortaokul = TAM 4 şık (A-D). 5. şık (E) üretilirse ele — 5 şık
-                # yanlış (özellikle İngilizce'de model bazen E ekliyordu).
-                if re.search(r"(?<![A-Za-z0-9])[Ee]\s*[\)\.]", q_text):
-                    logger.info(
-                        "5 şıklı (E) çoktan seçmeli atıldı — 4 şık zorunlu: %s",
-                        raw.question[:70],
-                    )
+                letter = _answer_letter(raw.answer)
+                if not letter or letter not in ("A", "B", "C", "D"):
+                    logger.info("MC cevap harfi çözülemedi (%r): %s",
+                                (raw.answer or "")[:30], raw.question[:70])
                     continue
+                mc_options = opts
+                mc_correct_index = ("A", "B", "C", "D").index(letter)
+                # Şıklar metinde henüz yoksa deterministik göm (eski PDF/web/mobil metni okur).
+                if not all(f"{L})" in q_text for L in ("A", "B", "C", "D")):
+                    q_text = q_text.rstrip() + "\n\n" + "\n".join(
+                        f"{L}) {o}" for L, o in zip(("A", "B", "C", "D"), opts)
+                    )
             # Atıf bütünlüğü: "öncüllere/görsele/tabloya göre" deyip o öğeyi İÇERMEYEN
             # soru cevaplanamaz → ele (top-up doldurur). WS-5.27.
             ref_issue = reference_integrity_issue(q_text)
@@ -1221,6 +1238,8 @@ class GeminiAgent:
                     solution_steps=steps,
                     kazanim_kod=kod,
                     question_type=raw.question_type,
+                    options=mc_options,
+                    correct_index=mc_correct_index,
                 )
             )
         return questions

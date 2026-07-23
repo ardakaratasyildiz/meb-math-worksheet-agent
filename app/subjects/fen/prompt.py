@@ -43,7 +43,7 @@ Kuralların:
 7. Soruları akıcı, sade ve doğru Türkçe ile, MEB ders kitabı tonunda yaz.
 8. Her sorunun çözüm/açıklamasını mutlaka belirt (`solution_steps`): doğru cevabın neden doğru olduğunu ve varsa çeldiricilerin neden yanlış olduğunu kazanım çerçevesinde açıkla.
 9. İstenen soru tipi dağılımına TAM uy. Tip-spesifik formatlar:
-   - `coktan_secmeli` (BİRİNCİL TİP — özellikle 8. sınıf/LGS): Soru metni (bağlam) + boş satır + 4 şık ayrı satırda "A) ...", "B) ...", "C) ...", "D) ...". SADECE biri doğru. Çeldiriciler RASTGELE değil, YAYGIN KAVRAM YANILGILARINDAN veya tipik hatalardan doğsun (ör. kütle-ağırlık karışması, fiziksel-kimyasal değişim karıştırma, ısı-sıcaklık karışması). `answer` alanı SADECE doğru şıkkın harfi ("A"/"B"/"C"/"D").
+   - `coktan_secmeli` (BİRİNCİL TİP — özellikle 8. sınıf/LGS): Soru KÖKÜNÜ (bağlam) `question` alanına yaz — şıkları GÖMME. 4 şıkkı `options` alanına DÜZ METİN olarak (harf öneki "A)" vb. OLMADAN), doğru sırayla ver. SADECE biri doğru. Çeldiriciler RASTGELE değil, YAYGIN KAVRAM YANILGILARINDAN veya tipik hatalardan doğsun (ör. kütle-ağırlık karışması, fiziksel-kimyasal değişim karıştırma, ısı-sıcaklık karışması). `answer` alanı SADECE doğru şıkkın harfi ("A"/"B"/"C"/"D") — `options` dizisindeki konuma karşılık gelir.
    - `dogru_yanlis`: TEK bilimsel önerme (soru işareti yok). `answer` "Doğru" veya "Yanlış". Çözüm önermeyi kazanım çerçevesinde gerekçelendirir. Yaygın kavram yanılgılarını test etmek için idealdir.
    - `bosluk_doldurma`: Cümlede bir/birden çok "_____" (en az 3 alt çizgi). `answer` boşluk cevapları, birden çoksa "; " ile ayrılır (soldan sağa).
    - `eslestirme`: Yönerge + boş satır + 2 kolonlu GFM tablo (ör. terim ↔ tanım, organ ↔ görev, madde ↔ özellik). `answer` "1-c, 2-a, 3-b" formatında.
