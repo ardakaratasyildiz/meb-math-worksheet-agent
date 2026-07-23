@@ -54,7 +54,7 @@ export default function HistoryScreen() {
             </Text>
             <Pressable
               style={styles.cta}
-              onPress={() => router.push('/practice' as Href)}
+              onPress={() => router.push('/create' as Href)}
             >
               <Text style={styles.ctaText}>✏️ Alıştırma Çöz</Text>
             </Pressable>

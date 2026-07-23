@@ -72,6 +72,15 @@ export function effectiveRole(
   return legacy && SELECTABLE.has(legacy) ? (legacy as Role) : null;
 }
 
+/**
+ * Ton kararı: öğrenci = oyunsu (maskot, XP/seri, rozet, kutlama); öğretmen/veli/
+ * admin = sade "yetişkin" (maskotsuz, nötr kopya, tek dingin vurgu). Rol henüz
+ * yoksa (gate öncesi) öğrenci varsayılır. Ekranlar bununla ton seçer.
+ */
+export function isPlayfulRole(role: Role | null): boolean {
+  return role === null || role === "student";
+}
+
 export function roleLabel(role: Role | null): string {
   switch (role) {
     case "student":

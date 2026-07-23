@@ -1,11 +1,12 @@
 import { useAuth, useUser } from "@clerk/expo";
 import { Tabs } from "expo-router";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { RoleGate } from "@/components/role-gate";
 import { SignInForm } from "@/components/sign-in-form";
+import { TabBar } from "@/components/tab-bar";
 import { effectiveRole, type Role } from "@/lib/roles";
-import { colors, fonts, fontSize } from "@/theme/tokens";
+import { colors, fonts } from "@/theme/tokens";
 
 /**
  * Uygulamanın kimlik-korumalı kabuğu + alt sekme navigasyonu.
@@ -26,16 +27,17 @@ const ALL: Role[] = ["student", "teacher", "parent", "admin"];
 type TabDef = {
   name: string;
   title: string;
-  icon: string;
   roles: Role[];
   headerShown?: boolean;
 };
 
+// v1: 4 çekirdek sekme tüm rollere açık. Öğretmen "Sınıfım"/veli "Çocuklarım"
+// sekmeleri buraya eklenip roles ile açılacak (ikon/etiket TabBar'da tanımlı).
 const TAB_DEFS: TabDef[] = [
-  { name: "index", title: "Ana Sayfa", icon: "🏠", roles: ALL, headerShown: false },
-  { name: "practice", title: "Çöz", icon: "✏️", roles: ALL },
-  { name: "worksheet", title: "Kağıt", icon: "📄", roles: ALL },
-  { name: "progress", title: "Gelişim", icon: "📈", roles: ALL },
+  { name: "index", title: "Ana Sayfa", roles: ALL, headerShown: false },
+  { name: "create", title: "Oluştur", roles: ALL, headerShown: false },
+  { name: "progress", title: "Gelişim", roles: ALL, headerShown: false },
+  { name: "profile", title: "Profil", roles: ALL, headerShown: false },
 ];
 
 function Splash() {
@@ -58,11 +60,8 @@ export default function TabsLayout() {
 
   return (
     <Tabs
+      tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: colors.brand,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: { fontFamily: fonts.bodyMedium, fontSize: fontSize.xs },
-        tabBarStyle: { borderTopColor: colors.border },
         headerTitleStyle: { fontFamily: fonts.headingSemi, color: colors.text },
         headerTintColor: colors.brand,
         headerShadowVisible: false,
@@ -78,9 +77,6 @@ export default function TabsLayout() {
             headerShown: t.headerShown ?? true,
             // Role izin listesinde yoksa sekmeyi gizle (rota yine var, bar'da görünmez).
             href: t.roles.includes(role) ? undefined : null,
-            tabBarIcon: ({ focused }) => (
-              <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.55 }}>{t.icon}</Text>
-            ),
           }}
         />
       ))}

@@ -177,6 +177,7 @@ function blobToBase64(blob: Blob): Promise<string> {
  */
 export async function fetchWorksheetPdfBase64(
   worksheet: Worksheet,
+  opts: { includeAnswerKey?: boolean; includeSolutions?: boolean } = {},
 ): Promise<string> {
   const auth = await authHeader();
   const res = await fetch(`${ENV.apiUrl}/api/worksheets/render.pdf`, {
@@ -184,8 +185,8 @@ export async function fetchWorksheetPdfBase64(
     headers: { ...baseHeaders(), ...auth },
     body: JSON.stringify({
       worksheet,
-      include_answer_key: true,
-      include_solutions: true,
+      include_answer_key: opts.includeAnswerKey ?? true,
+      include_solutions: opts.includeSolutions ?? true,
     }),
   });
   if (!res.ok) throw new Error(`PDF oluşturulamadı: ${res.status}`);
@@ -286,6 +287,252 @@ export function submitAttempt(
     `/api/quizzes/${encodeURIComponent(quizId)}/attempt`,
     { method: "POST", body: JSON.stringify(body) },
   );
+}
+
+// ── Veli ↔ çocuk bağlama (/api/me) ───────────────────────────────────────────
+/** Öğrencinin veli takip kodu (yoksa üretilir, kalıcı). Veli bu kodla bağlanır. */
+export async function getParentCode(tenantId: string): Promise<string> {
+  const r = await apiRequest<{ code: string }>("/api/me/parent-code", {
+    method: "POST",
+    body: JSON.stringify({ tenant_id: tenantId }),
+  });
+  return r.code;
+}
+
+/** Veli bir öğrenciyi takip koduyla bağlar. */
+export function linkChild(
+  tenantId: string,
+  code: string,
+  childLabel?: string,
+): Promise<{ student_id: string; ok: boolean }> {
+  return apiRequest("/api/me/link-child", {
+    method: "POST",
+    body: JSON.stringify({ tenant_id: tenantId, code, child_label: childLabel ?? null }),
+  });
+}
+
+export interface ChildItem {
+  student_id: string;
+  label: string;
+  linked_at: string;
+}
+
+/** Velinin bağlı olduğu öğrenciler. */
+export async function listChildren(tenantId: string): Promise<ChildItem[]> {
+  const r = await apiRequest<{ items: ChildItem[] }>(
+    `/api/me/children?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+/** Bağlı bir çocuğun ilerlemesi (salt-okunur; kendi progress'iyle aynı şekil). */
+export function getChildProgress(
+  tenantId: string,
+  studentId: string,
+): Promise<ProgressResponse> {
+  return apiRequest<ProgressResponse>(
+    `/api/me/children/${encodeURIComponent(studentId)}/progress?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+// ── Öğretmen sınıf / ödev (/api/classrooms, /api/assignments, /api/me) ────────
+export interface ClassroomSummary {
+  id: string;
+  name: string;
+  role: string; // 'owner' | 'student'
+  member_count: number;
+  created_at: string;
+  join_code?: string | null;
+}
+export interface ClassroomMember {
+  student_tenant_id: string;
+  display_name: string;
+  joined_at: string;
+}
+export interface AssignmentSummary {
+  id: string;
+  quiz_id: string;
+  title: string;
+  created_at: string;
+  due_at?: string | null;
+  assignment_type: string; // 'quiz' | 'pdf'
+}
+export interface ClassroomDetail {
+  id: string;
+  name: string;
+  is_owner: boolean;
+  member_count: number;
+  created_at: string;
+  join_code?: string | null;
+  members: ClassroomMember[];
+  assignments: AssignmentSummary[];
+}
+export interface MyQuizItem {
+  id: string;
+  title: string;
+  grade?: number | null;
+  topic_id: string;
+  difficulty: string;
+  created_at: string;
+}
+export interface AssignmentResultItem {
+  student_tenant_id: string;
+  display_name: string;
+  solved: boolean;
+  score?: number | null;
+  total?: number | null;
+  completed_at?: string | null;
+}
+export interface AssignmentResultsResponse {
+  title: string;
+  question_count: number;
+  member_count: number;
+  solved_count: number;
+  items: AssignmentResultItem[];
+}
+
+/** Kullanıcının sınıfları: sahip olunan (teaching) + katılınan (enrolled). */
+export function listClassrooms(
+  tenantId: string,
+): Promise<{ teaching: ClassroomSummary[]; enrolled: ClassroomSummary[] }> {
+  return apiRequest(`/api/classrooms?tenant_id=${encodeURIComponent(tenantId)}`);
+}
+
+/** Yeni sınıf oluştur (öğretmen). Katılma kodunu içeren detay döner. */
+export function createClassroom(tenantId: string, name: string): Promise<ClassroomDetail> {
+  return apiRequest<ClassroomDetail>("/api/classrooms", {
+    method: "POST",
+    body: JSON.stringify({ tenant_id: tenantId, name }),
+  });
+}
+
+/** Sınıf detayı (sahip: kod + üyeler + ödevler). */
+export function getClassroom(id: string, tenantId: string): Promise<ClassroomDetail> {
+  return apiRequest<ClassroomDetail>(
+    `/api/classrooms/${encodeURIComponent(id)}?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Sınıfı sil (yalnız sahibi). */
+export function deleteClassroom(id: string, tenantId: string): Promise<{ ok: boolean }> {
+  return apiRequest(
+    `/api/classrooms/${encodeURIComponent(id)}?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "DELETE" },
+  );
+}
+
+/** Sınıfa bir quiz'i ödev olarak ata (yalnız sahibi + kendi quiz'i). */
+export function assignQuiz(
+  classroomId: string,
+  tenantId: string,
+  quizId: string,
+  dueDate?: string | null,
+): Promise<{ id: string; created_at: string }> {
+  return apiRequest(`/api/classrooms/${encodeURIComponent(classroomId)}/assignments`, {
+    method: "POST",
+    body: JSON.stringify({ tenant_id: tenantId, quiz_id: quizId, due_date: dueDate ?? null }),
+  });
+}
+
+/** Öğretmenin ödev atamak için seçebileceği kendi quiz'leri (hafif meta). */
+export async function listMyQuizzes(tenantId: string): Promise<MyQuizItem[]> {
+  const r = await apiRequest<{ items: MyQuizItem[] }>(
+    `/api/me/quizzes?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+/** Ödevin sonuç panosu (sınıf roster'ı: çözen/çözmeyen). Yalnız sınıf sahibi. */
+export function getAssignmentResults(
+  assignmentId: string,
+  tenantId: string,
+): Promise<AssignmentResultsResponse> {
+  return apiRequest<AssignmentResultsResponse>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}/results?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Öğretmen: bir öğrencinin ödevdeki denemesini soru-soru görür (yalnız sınıf sahibi). */
+export function getStudentAttemptDetail(
+  assignmentId: string,
+  studentId: string,
+  tenantId: string,
+): Promise<AttemptDetail> {
+  return apiRequest<AttemptDetail>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}/attempts/${encodeURIComponent(studentId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Öğrenci sınıftan ayrılır (üyeliğini siler). */
+export function leaveClassroom(id: string, tenantId: string): Promise<{ ok: boolean }> {
+  return apiRequest(
+    `/api/classrooms/${encodeURIComponent(id)}/leave?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "POST" },
+  );
+}
+
+// ── Öğrenci: sınıfa katıl + ödevler (/api/classrooms/join, /api/me, /api/assignments) ──
+/** Öğrenci katılma koduyla sınıfa katılır (görünen ad öğretmene gösterilir). */
+export function joinClassroom(
+  tenantId: string,
+  code: string,
+  displayName: string,
+): Promise<{ classroom_id: string; name: string }> {
+  return apiRequest("/api/classrooms/join", {
+    method: "POST",
+    body: JSON.stringify({ tenant_id: tenantId, code, display_name: displayName }),
+  });
+}
+
+export interface MyAssignmentItem {
+  assignment_id: string;
+  classroom_id: string;
+  classroom_name: string;
+  quiz_id: string;
+  title: string;
+  created_at: string;
+  solved: boolean;
+  score?: number | null;
+  total?: number | null;
+  due_at?: string | null;
+  assignment_type: string; // 'quiz' | 'pdf'
+}
+
+/** Öğrencinin sınıflarındaki ödevleri (çözülen durumu dahil). */
+export async function listMyAssignments(tenantId: string): Promise<MyAssignmentItem[]> {
+  const r = await apiRequest<{ items: MyAssignmentItem[] }>(
+    `/api/me/assignments?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+/** Ödevi çözmek için getir — CEVAPSIZ (quiz + PDF ödevi). */
+export function getAssignment(assignmentId: string, tenantId: string): Promise<QuizPublic> {
+  return apiRequest<QuizPublic>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Ödev cevaplarını gönder → sunucuda puanla → sonuç + kazanım kırılımı. */
+export function submitAssignmentAttempt(
+  assignmentId: string,
+  body: { tenant_id: string; answers: SubmittedAnswer[]; duration_seconds?: number },
+): Promise<AttemptResult> {
+  return apiRequest<AttemptResult>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}/attempt`,
+    { method: "POST", body: JSON.stringify(body) },
+  );
+}
+
+/** PDF ödevinin worksheet'i (öğrenci istemcide PDF'e render/paylaş eder). */
+export async function getAssignmentWorksheet(
+  assignmentId: string,
+  tenantId: string,
+): Promise<Worksheet> {
+  const r = await apiRequest<{ title: string; worksheet: Worksheet }>(
+    `/api/assignments/${encodeURIComponent(assignmentId)}/worksheet?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.worksheet;
 }
 
 /** Backend uyandırma ping'i (Render free-tier cold start). Hata yutulur. */
