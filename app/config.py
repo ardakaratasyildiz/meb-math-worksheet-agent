@@ -75,14 +75,20 @@ class Settings(BaseSettings):
 
     enable_critic: bool = True
     critic_model: str = "gemini-2.5-flash-lite"
-    critic_min_confidence: float = 0.6
+    # A/B (2026-07-23, scripts/eval/thinking_ab.py): 0.6→0.75. Düşük-güvenli (conf~0.70)
+    # tartışmalı redler soruyu düşürüp gereksiz top-up turu (pahalı yeniden üretim)
+    # tetikliyordu; 0.75 yalnız yüksek-güvenli redleri düşürür → cebir/fen kağıt maliyeti
+    # ~%50 azaldı, critic geçiş oranı korundu/iyileşti (0.96→1.00). Bkz. overshoot.
+    critic_min_confidence: float = 0.75
 
     enable_math_verifier: bool = True
 
     # Latency: ilk üretim batch'ini hedeften fazla iste ki math/critic elemeleri
     # seri post-filter top-up turu açmadan absorbe edilsin. 1.0 = kapalı (eski
-    # davranış). ~1.3 → ilk çağrı %30 fazla soru ister, sonda hedefe kırpılır.
-    generation_overshoot_ratio: float = 1.3
+    # davranış). A/B (2026-07-23): 1.3→1.8. Grade 8'de format/critic drop'ları 1.3
+    # buffer'ını aşıp 2 top-up turu (her biri ~48k prompt'u YENİDEN gönderir) tetikliyordu;
+    # 1.8 drop'ları ilk çağrıda absorbe eder → top-up ~kaybolur, maliyet düşer.
+    generation_overshoot_ratio: float = 1.8
     # Latency: mixed/progressive modda kolay/orta/zor bucket'larını paralel koş
     # (ardışık yerine). Her bucket bağımsız → ~3× hızlanma.
     parallel_difficulty_buckets: bool = True
@@ -100,7 +106,9 @@ class Settings(BaseSettings):
 
     # Generation cache (Sprint 6) — aynı tuple için cached set döndürür, LLM call atlar
     enable_generation_cache: bool = True
-    generation_cache_max_per_key: int = 10
+    # 10→30 (2026-07-23): aynı anahtarda kullanıcının geçmişi tükenmeden daha çok
+    # bedava çeşitlilik → cache hit oranı artar, taze (pahalı) üretim azalır.
+    generation_cache_max_per_key: int = 30
 
     # Sentry error tracking (Sprint 6) — DSN boşsa Sentry off
     sentry_dsn: str = ""

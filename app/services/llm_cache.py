@@ -229,4 +229,4 @@ class GenerationCache:
             self._misses = 0
 
 
-GENERATION_CACHE = GenerationCache()
+GENERATION_CACHE = GenerationCache(max_per_key=settings.generation_cache_max_per_key)
