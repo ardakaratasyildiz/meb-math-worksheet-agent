@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { colors, fonts, fontSize, radius, spacing } from "@/theme/tokens";
+import { colors, fonts, fontSize, radius, shadow, spacing } from "@/theme/tokens";
 
 /** Seçilebilir yuvarlak etiket (ders/sınıf/zorluk seçicileri). */
 export function Chip({
@@ -18,7 +18,11 @@ export function Chip({
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.chip, selected && { backgroundColor: accent, borderColor: accent }]}
+      style={({ pressed }) => [
+        styles.chip,
+        selected ? [{ backgroundColor: accent }, shadow.card] : styles.chipIdle,
+        pressed && styles.chipPressed,
+      ]}
     >
       <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text>
     </Pressable>
@@ -50,17 +54,20 @@ const styles = StyleSheet.create({
   },
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
   chip: {
-    borderWidth: 1,
-    borderColor: colors.border,
     borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    backgroundColor: colors.bg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm + 2,
   },
+  chipIdle: {
+    backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+  },
+  chipPressed: { transform: [{ scale: 0.96 }] },
   chipText: {
     color: colors.text,
     fontSize: fontSize.sm,
-    fontFamily: fonts.bodyMedium,
+    fontFamily: fonts.bodyBold,
   },
   chipTextSelected: { color: colors.onBrand },
 });

@@ -8,8 +8,11 @@ import { fetchWorksheetPdfBase64 } from "./api";
  * Worksheet'i backend'de PDF'e çevirir, cihaza (cache) yazar ve native paylaşım
  * sayfasını açar (WhatsApp, e-posta, kaydet…). Katil senaryo: "üret → PDF → paylaş".
  */
-export async function shareWorksheetPdf(worksheet: Worksheet): Promise<void> {
-  const base64 = await fetchWorksheetPdfBase64(worksheet);
+export async function shareWorksheetPdf(
+  worksheet: Worksheet,
+  opts: { includeAnswerKey?: boolean; includeSolutions?: boolean } = {},
+): Promise<void> {
+  const base64 = await fetchWorksheetPdfBase64(worksheet, opts);
 
   const dir = FileSystem.cacheDirectory;
   if (!dir) throw new Error("Geçici dizin bulunamadı.");
