@@ -50,6 +50,28 @@ entitlements.BILLING_STORE = STORE
 entitlements.USAGE_LEDGER = LEDGER
 
 
+# Aile-bağ store (parent_link) fake'i — miras + paylaşımlı havuz testleri + izolasyon.
+class _FakeLinks:
+    def __init__(self) -> None:
+        self._children: dict[str, list[str]] = {}
+        self._parents: dict[str, list[str]] = {}
+
+    def list_children(self, parent: str) -> list[dict]:
+        return [{"student_id": c, "label": "C", "linked_at": ""} for c in self._children.get(parent, [])]
+
+    def parents_of(self, child: str) -> list[str]:
+        return list(self._parents.get(child, []))
+
+    def link_family(self, parent: str, children: list[str]) -> None:
+        self._children[parent] = children
+        for c in children:
+            self._parents.setdefault(c, []).append(parent)
+
+
+FAKELINKS = _FakeLinks()
+entitlements.PARENT_LINK_STORE = FAKELINKS
+
+
 # ── 1. BillingStore CRUD + get_active durum mantığı ──────────────────────────
 
 def test_store_empty() -> None:
@@ -177,20 +199,21 @@ def test_allowlist_dev() -> None:
 
 def test_quota_limits() -> None:
     print("test_quota_limits")
-    settings.free_monthly_questions = 100
-    settings.pro_monthly_questions = 1000
-    settings.pro_plus_fair_use_questions = 10000
-    check(entitlements.quota_limit("free") == 100, "free kota 100")
-    check(entitlements.quota_limit("pro") == 1000, "pro kota 1000")
-    check(entitlements.quota_limit("pro-plus") == 10000, "pro-plus fair-use 10000")
-    check(entitlements.quota_limit("trial") == 10000, "trial fair-use 10000")
+    settings.free_monthly_worksheets = 10
+    settings.pro_monthly_worksheets = 50
+    settings.pro_plus_monthly_worksheets = 120
+    check(entitlements.quota_limit("free") == 10, "free kota 10 kağıt")
+    check(entitlements.quota_limit("pro") == 50, "pro kota 50 kağıt")
+    check(entitlements.quota_limit("pro-plus") == 120, "pro-plus kota 120 kağıt")
+    check(entitlements.quota_limit("trial") == 120, "trial → pro-plus kotası (120)")
 
 
 def test_check_quota() -> None:
     print("test_check_quota")
     settings.premium_all = False
     settings.premium_tenant_ids = ""
-    settings.free_monthly_questions = 100
+    settings.free_monthly_worksheets = 100
+    settings.pro_monthly_worksheets = 1000
 
     # Anonim → kotasız
     q = entitlements.check_quota(None)
@@ -199,7 +222,7 @@ def test_check_quota() -> None:
     # Sahte usage ledger ile kontrollü kullanım
     class _FakeLedger:
         used = 0
-        def questions_used_since(self, tenant_id, since_ts):  # noqa: ARG002
+        def worksheets_used_since(self, tenant_ids, since_ts):  # noqa: ARG002
             return self.used
 
     fake = _FakeLedger()
@@ -230,6 +253,35 @@ def test_check_quota() -> None:
     entitlements.USAGE_LEDGER = LEDGER  # geri yükle
 
 
+def test_family_shared_quota() -> None:
+    """Aile: çocuk premium velinin planını MİRAS alır + aile TEK kota havuzunu paylaşır."""
+    print("test_family_shared_quota")
+    settings.premium_all = False
+    settings.premium_tenant_ids = ""
+    settings.pro_monthly_worksheets = 50
+    STORE.upsert(tenant_id="u_parent", plan_code="pro", status="active",
+                 current_period_end=_iso_in(20))
+    FAKELINKS.link_family("u_parent", ["u_kid1", "u_kid2"])
+
+    check(entitlements.plan_of("u_kid1") == "pro", "çocuk premium velinin planını miras alır")
+    check(entitlements.is_premium("u_kid2") is True, "çocuk is_premium (aile mirası)")
+    check(entitlements.is_premium_for_model("u_kid1") is True, "çocuk model-premium (aile mirası)")
+
+    class _FakeLedger:
+        seen = None
+        def worksheets_used_since(self, tenant_ids, since_ts):  # noqa: ARG002
+            self.seen = list(tenant_ids)
+            return 30
+    fake = _FakeLedger()
+    entitlements.USAGE_LEDGER = fake
+    q = entitlements.check_quota("u_kid1")
+    check(set(fake.seen or []) == {"u_parent", "u_kid1", "u_kid2"},
+          "havuz = veli + bağlı çocuklar (tek paylaşımlı sayaç)")
+    check(q["plan"] == "pro" and q["limit"] == 50 and q["used"] == 30 and q["remaining"] == 20,
+          "çocuk sorgusu → veli planı (pro) + aile havuzu (50 limit, 30 kullanılmış → 20 kalan)")
+    entitlements.USAGE_LEDGER = LEDGER
+
+
 # ── 5. ensure_trial + enforce_quota (Faz A: kota kapısı + reverse trial) ──────
 
 def test_ensure_trial() -> None:
@@ -252,11 +304,11 @@ def test_enforce_quota() -> None:
 
     settings.premium_all = False
     settings.premium_tenant_ids = ""
-    settings.free_monthly_questions = 100
+    settings.free_monthly_worksheets = 100
 
     class _FakeLedger:
         used = 100
-        def questions_used_since(self, tenant_id, since_ts):  # noqa: ARG002
+        def worksheets_used_since(self, tenant_ids, since_ts):  # noqa: ARG002
             return self.used
 
     entitlements.USAGE_LEDGER = _FakeLedger()
@@ -296,7 +348,7 @@ def _run() -> int:
         test_past_due_grace, test_canceled_and_expired, test_upsert_preserves_created_at,
         test_cancel_flag, test_event_idempotency, test_plan_premium_all,
         test_plan_resolution, test_allowlist_dev, test_quota_limits, test_check_quota,
-        test_ensure_trial, test_enforce_quota,
+        test_family_shared_quota, test_ensure_trial, test_enforce_quota,
     ]:
         fn()
     print()

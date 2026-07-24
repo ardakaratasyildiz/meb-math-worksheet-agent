@@ -67,6 +67,11 @@ class ParentLinkStore:
             "CREATE INDEX IF NOT EXISTS idx_parent_links_parent "
             "ON parent_links(parent_tenant_id, linked_at DESC)"
         )
+        # Ters arama (öğrenci → veli): aile paylaşımlı-kota + entitlement mirası için.
+        self._db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_parent_links_student "
+            "ON parent_links(student_tenant_id)"
+        )
         self._db.commit()
 
     def _gen_unique_code(self) -> str:
@@ -151,6 +156,22 @@ class ParentLinkStore:
             {"student_id": r[0], "label": r[1] or "Öğrenci", "linked_at": _iso(r[2])}
             for r in rows
         ]
+
+    def parents_of(self, student_tenant_id: str) -> list[str]:
+        """Bu öğrenciye bağlı veli tenant'ları (en eski bağ önce).
+
+        Aile paylaşımlı-kota havuzu + entitlement mirası (çocuk, premium velisinin
+        planını miras alır) için ters arama. Boş/bağsız → []."""
+        if not student_tenant_id:
+            return []
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                "SELECT parent_tenant_id FROM parent_links WHERE student_tenant_id = ? "
+                "ORDER BY linked_at ASC",
+                (student_tenant_id,),
+            ).fetchall()
+        return [r[0] for r in rows]
 
     def unlink(self, parent_tenant_id: str, student_tenant_id: str) -> bool:
         with self._lock:

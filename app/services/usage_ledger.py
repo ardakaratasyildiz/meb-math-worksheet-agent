@@ -118,6 +118,30 @@ class UsageLedger:
             logger.warning("usage_ledger kota sayımı başarısız (yutuldu): %s", exc)
             return 0
 
+    def worksheets_used_since(self, tenant_ids, since_ts: float) -> int:
+        """Bir/birden çok tenant'ın `since_ts`'ten beri ürettiği ÇALIŞMA KAĞIDI sayısı
+        (cache-hit HARİÇ). Kota birimi = kağıt (soru değil): her generate() bir satır =
+        bir kağıt. **Aile paylaşımlı havuzu** için tenant LİSTESİ alır (veli + bağlı
+        çocuklar TEK havuzdan çeker). Tek tenant str de kabul eder. Fail-open → 0.
+        """
+        if isinstance(tenant_ids, str):
+            tenant_ids = [tenant_ids]
+        ids = [t for t in (tenant_ids or []) if t]
+        if not ids:
+            return 0
+        try:
+            placeholders = ",".join("?" * len(ids))
+            with self._lock:
+                row = self._db.execute(
+                    f"SELECT COUNT(*) FROM usage_ledger "
+                    f"WHERE tenant_id IN ({placeholders}) AND cache_hit=0 AND created_at>=?",
+                    (*ids, since_ts),
+                ).fetchone()
+            return int(row[0] or 0)
+        except Exception as exc:  # noqa: BLE001 — kağıt sayımı üretimi bozmasın
+            logger.warning("usage_ledger kağıt sayımı başarısız (yutuldu): %s", exc)
+            return 0
+
     def recent(self, limit: int = 100, since_ts: float | None = None) -> list[dict]:
         """Son N üretim — HER SATIR ayrı (agregasyon değil): kağıt-bazında maliyet
         detayı. "Hangi üretim (sınıf/konu) hangi modelle ne kadar harcadı" için.

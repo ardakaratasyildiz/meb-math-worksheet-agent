@@ -401,7 +401,7 @@ def generate_worksheet(
     verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> GenerateWorksheetResponse:
-    entitlements.enforce_quota(verified, req.question_count)
+    entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
     worksheet, metadata = _build_worksheet(req)
     return GenerateWorksheetResponse(worksheet=worksheet, metadata=metadata)
 
@@ -464,7 +464,7 @@ def generate_worksheet_pdf(
     _api_key: str = Depends(require_api_key),
 ) -> Response:
     """Üretim + PDF render tek call'da. Rate limit + auth uygulanır (LLM çağrısı yapar)."""
-    entitlements.enforce_quota(verified, req.question_count)
+    entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
     worksheet, _ = _build_worksheet(req)
     return _pdf_response(
         worksheet,
@@ -756,7 +756,7 @@ def generate_worksheet_stream(
 ) -> StreamingResponse:
     """SSE streaming üretim. Frontend EventSource ile bağlanır."""
     # Kota kapısı stream BAŞLAMADAN uygulanır (aşımda 402, akış hiç açılmaz).
-    entitlements.enforce_quota(verified, req.question_count)
+    entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
     return StreamingResponse(
         _stream_worksheet_events(req),
         media_type="text/event-stream",
