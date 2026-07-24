@@ -1,6 +1,6 @@
 # Monetizasyon / Abonelik Planı (İSKELET — tartışma taslağı)
 
-> Durum: **model netleşti (persona bazlı + aile bağlı-hesap).** Güncelleme 2026-07-23 (bkz. §6).
+> Durum: **KESİN — Pro/Pro+ kota-merdiveni + ek-paket (top-up) + Kurumsal(Faz2).** Güncelleme 2026-07-24 (bkz. §2 + §6).
 > Kaynak analiz: RevenueCat *State of Subscription Apps 2026* (SOSA, 333 sf.) +
 > bizim birim ekonomi & edinim gerçeklerimiz.
 > Bu belge PROJECT_PLAN Faz 5 (Monetization — "mimari hazır, ertelendi")'in
@@ -60,91 +60,81 @@
 
 ## 2. Önerilen model: Freemium + Reverse-trial + fair-use kota
 
-### Değer çiti (REVİZE — 2026-07-23; "iki Pro kademesi" 2026-07-16 kararını GÜNCELLER → PERSONA BAZLI)
-**Kademe ekseni değişti (2026-07-23, kullanıcı kararı):** Soyut "Pro / Pro+" (kota vs
-analitik ayrımı bulanıktı) yerine **persona bazlı iki ücretli paket — 👨‍👩‍👧 Aile ve 🎓 Öğretmen**
-+ **kalıcı ücretsiz kademe** + **7 gün kartsız reverse trial**. Gerekçe: bu üründe **satın
-alan ≠ kullanan** (veli öder/çocuk kullanır; öğretmen öder/sınıfı kullanır) → müşteri
-kendini bir "kutuda" görünce paket canlanır. Fiyat aralığı aynı (~₺199-249); sadece sunum
-netleşti.
+### Değer çiti (KESİN — 2026-07-24; persona-SKU kararını GÜNCELLER → kota-merdiveni + top-up)
+**Karar evrimi:** ~~Persona-SKU (Aile/Öğretmen, 2026-07-23)~~ kullanıcıyı kilitliyordu (ihtiyacı
+iki personaya yayılan kişi "ben hangisiyim?" diye kalıyordu). **Persona artık PAZARLAMA dili**
+(landing "veli/öğretmen misin?"), ürün DEĞİL. Ürün = tek **Pro** + **kota merdiveni**; TÜM
+özellikler her ücretli kademede. Fark = yalnız **aylık kağıt kotası** (net sayı, bulanık değil).
+**"Sınırsız" YOK → açık, cömert aylık çalışma-kağıdı sınırı** (gizli maliyet-tavanı = kandırma;
+kullanıcı kararı 2026-07-24). Kota birimi = **çalışma kağıdı** (soru değil — kullanıcının zihinsel
++ bizim üretim/maliyet birimi).
 
-| Özellik | 🆓 Ücretsiz (kalıcı) | 🎁 7g Deneme | 👨‍👩‍👧 Aile ~₺199/ay | 🎓 Öğretmen ~₺249/ay |
-|---|---|---|---|---|
-| Anonim önizleme üretimi (girişsiz, web) | ✅ (SEO motoru) | — | ✅ | ✅ |
-| Giriş sonrası üretim kotası | **30-50 soru/ay** | tam-Pro / 7 gün | **sınırsız\*** | **sınırsız\*** |
-| Kalite | standart | **yeni nesil** | **yeni nesil** | **yeni nesil** |
-| PDF indirme | ✅ footer "Soru Atölyesi ile üretildi" | ✅ white-label | ✅ **white-label** | ✅ **white-label** |
-| Quiz çözme (kendi + paylaşılan) | ✅ | ✅ | ✅ | ✅ |
-| İlerleme + oyunlaştırma | ✅ | ✅ | ✅ | ✅ |
-| Temel sınıf/ödev + veli bağı | ✅ (viral döngü) | ✅ | ✅ | ✅ |
-| **Çocuk takibi (bağlı çocuk, derin ilerleme)** | 1 çocuk, temel | ✅ | **3 çocuğa kadar, derin** | — |
-| **Çoklu sınıf + ödev/sonuç analitiği (kazanım kırılımı)** | 1 sınıf, temel | ✅ | — | **tam** |
+| Özellik | 🆓 Ücretsiz | ⭐ Pro ₺199/ay | ⭐⭐ Pro+ ₺349/ay |
+|---|---|---|---|
+| Aylık çalışma kağıdı (açık; cache-hit SAYILMAZ) | **10** | **50** | **120** |
+| Kalite | standart | **yeni nesil** | **yeni nesil** |
+| PDF indirme | footer "Soru Atölyesi ile üretildi" | **white-label** | **white-label** |
+| Quiz çözme + ilerleme + oyunlaştırma | ✅ | ✅ | ✅ |
+| Çocuk takibi (bağlı hesap, **paylaşımlı kota**) | 1, temel | **3'e kadar, derin** | **3'e kadar, derin** |
+| Çoklu sınıf + ödev/sonuç analitiği | 1 sınıf (viral) | **tam** | **tam** |
+| 7 gün kartsız reverse trial | — | ✅ | ✅ |
 
-\***"sınırsız" = arka planda ~2.500 soru/ay adil-kullanım tavanı** (pazarlamada sınırsız;
-tavan yalnız kötüye-kullanım kuyruğunu keser — bkz. §2.1 ekonomi).
+**TEK fark = KOTA (50 vs 120).** White-label + çocuk takibi + çoklu sınıf/ödev **HER İKİ ücretli
+kademede de** → veli de öğretmen de aynı ürünü alır, persona-kilit yok. Pro+ = 2.4× kota, +%75
+fiyat (cazip yükseltme). Anonim önizleme (web, girişsiz) kotasız (SEO motoru). Anlık kota =
+abonelik kotası (aylık reset) + varsa aktif ek-paket kredisi (aşağı).
 
-**Kota birimi = soru/ay** (USAGE_LEDGER üretim başına soru sayar), **aylık reset**,
-**cache-hit üretimler kotadan düşmez** (fiyat sayfasındaki söz korunur). Anonim üretim
-kotasızdır (SEO motoru — web). Aile/Öğretmen ayrımı **kota değil, kime hizmet ettiği**:
-Aile = çocuk takibi (3 çocuğa kadar), Öğretmen = çoklu sınıf + ödev analitiği. White-label,
-sınırsız üretim ve yeni-nesil kalite **her iki üründe de** var.
+### Ek kağıt paketi (top-up — KARAR 2026-07-24)
+Abone aylık kotayı bitirince ay-sonunu beklemeden **ek kağıt satın alır** (tüketilebilir IAP):
+- **Paketler:** +25 kağıt **₺89** · +75 kağıt **₺199**. Kağıt-başı fiyat abonelikten YÜKSEK
+  (bilinçli: marj + "sürekli alıyorsan Pro+'a geç" doğal upsell'i).
+- **Yalnız aktif aboneye** (Pro/Pro+). Ücretsiz kullanıcı → Pro'ya yönlendirilir.
+- **30 günlük kullanım süresi** (satın alımdan; kullanılmazsa yanar — şeffaf tüketilebilir).
+- **Tüketim sırası:** önce abonelik kotası (use-or-lose, aylık sıfırlanır), sonra ek paket;
+  bir ek paket ay-sonundan önce bitecekse önce o harcanır ("en erken biten önce" → israfı önle).
 
-### Aile hesap modeli — "bağlı hesaplar" (KARAR 2026-07-23)
-Aile paketinde **ödeyen veli, kullanan çocuk.** Model = **bağlı hesaplar** (mevcut
-`parent-code`/`link-child` mimarisiyle birebir; ekstra mimari yok):
-- Veli **kendi** Clerk hesabına abone olur → entitlement veli hesabında.
-- Kodla bağladığı çocuk hesapları (max 3) premium'u **miras alır.**
-- Çocuk kendi cihazında **kendi hesabıyla** girer, premium'u görür.
-- **Entitlement kuralı (yeni):** `plan_of` çözümü = *"tenant premium mi VEYA tenant'ı
-  bağlayan bir veli premium mi"*. `entitlements.py` içinde bağlı-veli lookup eklenir.
-- (Alternatif "profiller / Netflix modeli" — tek veli hesabı altında çocuk profilleri —
-  KVKK-küçük dostu ama yeni mimari; v2'ye ertelendi. Küçük yaş ağırlığı artarsa yeniden bakılır.)
-- **Öğretmen paketi seat/aile İÇERMEZ:** tek hesap; sınıfa katılan öğrenciler ücretsiz (viral döngü).
+### Aile hesap modeli — "bağlı hesaplar, PAYLAŞIMLI kota" (KARAR 2026-07-23/24)
+Aile senaryosu = veli Pro/Pro+ alır, çocuk kullanır. Model = **bağlı hesaplar** (mevcut
+`parent-code`/`link-child`; ekstra mimari yok):
+- Veli kendi hesabına abone → 3 çocuğa kadar kodla bağlar → çocuklar premium'u **miras alır**
+  (kendi cihazında kendi hesabıyla girer).
+- **KRİTİK: kota PAYLAŞILIR** — aile TEK havuz (çocuk başına DEĞİL). 3 çocuk = "3 bedava
+  sınırsız hesap" DEĞİL; hepsi tek Pro/Pro+ havuzundan çeker → maliyet çocuk sayısından bağımsız.
+  3 çocuk sınırı = "gerçek aile" sınırı (bir sınıfa dağıtılmasın → o Kurumsal).
+- **Entitlement kuralı:** `plan_of` = *"tenant premium mi VEYA bağlayan velisi premium mi"*;
+  kota sayacı veli + bağlı çocukları TEK havuzda toplar. (Profiller/Netflix modeli → v2.)
+- **Öğretmen ayrı paket DEĞİL** (persona-SKU kaldırıldı); öğretmen de Pro/Pro+ alır, sınıfa
+  katılan öğrenciler ücretsiz (viral).
 
-**Tasarım prensipleri (neden böyle):**
-1. **Ücretsiz PDF footer'ı = dağıtım kaldıracı.** Her ücretsiz PDF "Soru Atölyesi ile
-   üretildi" taşır → organik erişim (darboğazımız). Footer'ı kaldırmak (white-label)
-   başlı başına Pro sebebi. **[Karar A: footer AÇIK.]**
-2. **Alışkanlık döngüsü ücretsiz, para hacim + profesyonellik + yönetime biner.**
-   Çözme/ilerleme/oyunlaştırma ücretsiz (kullanım = retention = ileride dönüşüm).
-   Kota dolan hacim için, öğretmen white-label + sınıf için öder.
-3. **Sınıf/ödev hem Pro hem büyüme döngüsü.** Öğretmen ödev atayınca 20-30 öğrenci
-   siteye girer (viral edinim). O yüzden **viral kısım ücretsiz** (1 sınıf + öğrenci
-   katılım/çözme), **ölçek+analitik Pro** (çoklu sınıf, sonuç panosu, kazanım kırılımı).
-   **[Karar B: viral kısım ücretsiz, ölçek Pro.]**
+**Tasarım prensipleri:**
+1. **Ücretsiz PDF footer'ı = dağıtım kaldıracı** (organik erişim darboğazımız); white-label = upgrade sebebi. **[Karar A: footer AÇIK.]**
+2. **Alışkanlık döngüsü ücretsiz** (çözme/ilerleme/oyunlaştırma); para **hacme (kota) + profesyonelliğe (white-label)** biner.
+3. **Sınıf/ödev viral kısmı ücretsiz** (1 sınıf + öğrenci çözme), ölçek (çoklu sınıf/analitik) ücretli. **[Karar B]**
+4. **Persona = mesaj, Pro = ürün** (kilit yok). Yüksek-WTP'yi (öğretmen/dershane) **Kurumsal** ayrıca yakalar (Faz 2).
 
-**Persona başına "neden ödeyeyim":**
-- **Öğretmen:** white-label + çoklu sınıf/ödev/sonuç panosu + hacim. (Güçlü çıpa.)
-- **Veli:** çocuğa sınırsız pratik + yeni nesil kalite + 3 çocuğa kadar derin ilerleme takibi.
-  (Kasual veli ücretsiz kalır → ağızdan ağıza yayar, sorun değil.)
+### Fiyat & trial (KESİN — 2026-07-24)
+- **Pro ₺199/ay** (50 kağıt) · **Pro+ ₺349/ay** (120 kağıt) · ek paket **+25 ₺89 / +75 ₺199**
+  (tüketilebilir, 30 gün, aboneye). Fiyatlar **KDV DAHİL** (B2C).
+- **7 gün kartsız reverse trial.** Ayrı intro-indirim YOK (trial zaten kanca).
+- Lansmanda **yalnız aylık** (SKU: `pro-aylik`, `proplus-aylik` + consumable `topup-25`, `topup-75`).
+  Yıllık ("ayda ₺X gibi") sonra — MEA aylık-ağırlıklı.
+- Fiyatlar başlangıç çıpası; RevenueCat/mağazada WTP verisiyle ayarlanır.
 
-### Fiyat & trial (GÜNCELLENDİ — 2026-07-23)
-- İki persona paketi: **Aile ~₺199/ay**, **Öğretmen ~₺249/ay**. İkisi de sınırsız üretim
-  (fair-use tavanlı) + white-label + yeni nesil kalite; ayrım çocuk-takibi vs sınıf-analitiği.
-  Fiyatlar **KDV DAHİL** gösterilir (B2C).
-- **7 gün kartsız reverse trial** (tam-Pro deneyim).
-- Lansmanda **yalnız aylık** (2 SKU: `aile-aylik`, `ogretmen-aylik`). Yıllık plan
-  ("aylık ₺X gibi" çerçeveyle) sonra eklenebilir — MEA aylık-ağırlıklı profiline uygun.
-- Fiyatlar başlangıç çıpası; RevenueCat/mağaza fiyatında kolay ayarlanır (WTP verisiyle iterasyon).
-- (Ref: rapor hipotezi ~₺149-199/ay idi; ₺199/₺249 bu aralığın üst-ucu, değer ürünü için savunulabilir.)
-
-### 2.1 Ekonomi — net gelir tuzağı & fair-use tavanı (2026-07-23 eklendi)
-Mobil IAP'te **gösterilen fiyat ile cebe giren çok farklı.** Gösterilen ₺200/ay (KDV dahil):
-
+### 2.1 Ekonomi — net gelir & marj (GÜNCEL 2026-07-24)
+Mobil IAP: **net gelir = gösterilen × ~0.60** (KDV −%20 → platform komisyonu −%15 → GVK Mük.20/B
+banka stopajı −%15; hepsi nihai). Örn:
 ```
-₺200 gösterilen (KDV dahil)
- −KDV %20 (Apple/Google GİB'e yatırır, biz taraf değiliz)  → ₺166.7
- −Platform komisyonu %15 (Small Business / <$1M)           → ₺141.7
- −GVK Mük. 20/B banka stopajı %15 (nihai vergi)            → ₺120.4  ← net (founder)
+₺199 gösterilen → /1.20 (KDV) = ₺165.8 → ×0.85 (platform) = ₺140.9 → ×0.85 (stopaj) = ₺120  net
 ```
-- **Tipik Pro kullanıcı** (300-800 soru/ay): LLM maliyeti ~₺5-16 → **marj ~%90**. Rahat kurtarır.
-- **TUZAK:** Gerçek "sınırsız" abuse tail (~10.000 soru) LLM'de ~₺160-200'e çıkar (₺40/$ kur) →
-  net gelir ₺120'yi **geçer, zarar.** Ayrıca kur yükselirse TL maliyet artar, IAP fiyatı yapışkan.
-- **Çözüm:** "sınırsız" pazarla ama arkada **~2.500 soru/ay adil-kullanım tavanı.** Bu gerçek
-  kullanıcıların ~%99'unu kapsar; tavanda LLM ~₺50 → hâlâ ~₺70 marj. `USAGE_LEDGER` zaten sayıyor;
-  tavan aşımında nazik "bu ay çok ürettin, gelecek ay sıfırlanacak" mesajı (churn'e sürüklemeden).
-- **Not:** Soru sınırı bir MALİYET aracı değil, bir **segmentasyon/kötüye-kullanım** aracı
-  ([[unit-economics-llm-cost]]: soru başına ~$0.0004-0.0005, LLM fiyatı belirlemiyor).
+- Pro ₺199 → net **~₺120** · Pro+ ₺349 → net **~₺210** · +25 paket ₺89 → net ~₺53 · +75 ₺199 → net ~₺119.
+- **Kağıt başı maliyet (D1+D2b+A+C sonrası, ÖLÇÜLDÜ — [[gen-cost-quality-2026-07]]):** harmanlanmış
+  **~₺1-3/kağıt** (grade 8 zor uç ₺2.88; alt sınıf + cache-hit çok daha ucuz/bedava).
+- **Marj kuralı (net-gelir/kağıt > maliyet ~₺1.5):** Pro ₺2.40/kağıt · Pro+ ₺1.75/kağıt ·
+  +25 ₺2.14/kağıt · +75 ₺1.59/kağıt → **hepsi maliyet üstünde** ✅. Açık kağıt sayısı zaten
+  worst-case'i sınırlar → **gizli maliyet-tavanına gerek YOK** (kullanıcı kararı: şeffaflık > "sınırsız yalanı").
+- **Anti-bot:** görünmez günlük hız limiti (~15 kağıt/gün) — pazarlama sınırı değil, otomasyon freni.
+- Not: LLM fiyatı fiyatı belirlemiyor; değere göre fiyatla. ([[unit-economics-llm-cost]] güncellendi:
+  eski ₺0.02/soru varsayımı geçersiz — gerçek grade-8 ~₺1-3/kağıt.)
 
 ### 🏫 Kurum/Zümre (B2B) — Faz 2
 - Koltuk/okul lisansı, faturalı. Yüksek ARPU, GROWTH_ROADMAP'e uygun. Bireysel motor
@@ -158,10 +148,11 @@ Mobil IAP'te **gösterilen fiyat ile cebe giren çok farklı.** Gösterilen ₺2
 |---|---|---|
 | Yetki kararı | `app/services/entitlements.py` seam (allowlist) | `is_premium` → Turso abonelik durumu (aktif sub veya trial) |
 | Abonelik durumu | yok | Turso/libSQL `subscriptions` tablosu: tenant_id, plan, status, period_end, provider_ref, trial_end |
-| Kota ölçümü | `USAGE_LEDGER` her üretimi tenant bazında kaydediyor | Aylık sayaç → ücretsiz kotayı generate uçlarında uygula (402/paywall sinyali) |
-| Ödeme | yok | iyzico/PayTR hosted checkout + webhook → sub satırını güncelle; recurring + dunning |
+| Kota ölçümü | `USAGE_LEDGER` her üretimi tenant bazında kaydediyor (cache-hit hariç) | Aylık **çalışma-kağıdı** sayacı (soru değil) → plan kotasını generate uçlarında uygula (402/paywall). **Aile: veli+bağlı çocuklar TEK havuz.** |
+| Ek paket kredisi (top-up) | yok | `top_up_credits` tablosu (tenant, amount, remaining, purchased_at, expires_at+30g). Tüketim: önce abonelik kotası, sonra en-erken-biten kredi. |
+| Ödeme | yok | **RevenueCat** (mobil IAP): auto-renewable (Pro/Pro+) + **consumable** (topup-25/75) webhook → billing_store upsert. |
 | Reverse trial | yok | İlk girişte `trialing` sub (trial_end +7g), sunucu-otoriter |
-| Paywall UI | yok | 2-planlı, vurgulu fiyat, "aylık ₺X" çerçeve, sosyal kanıt, "istediğin an iptal", güven-önce yerleşim (kota dolunca/trial bitince, jarring değil) |
+| Paywall UI | yok | Pro/Pro+ 2-kademe kartı (persona-farkında mesaj) + ek-paket CTA (kota dolunca) + "7 gün ücretsiz" + "istediğin an iptal"; güven-önce yerleşim |
 | Kimlik | Clerk (userId = tenant_id) | değişmez |
 
 **Enforcement noktaları:** `worksheets.py` + `quizzes.py` generate uçları → üretimden
@@ -189,12 +180,26 @@ mevcut `entitlements` ilkesi korunur).
 ---
 
 ## 6. Kararlar
+**✅ KESİN (2026-07-24 — persona-SKU → Pro/Pro+ kota-merdiveni + top-up; nihai sayılar):**
+- **Ürün = tek Pro + kota merdiveni; persona = pazarlama dili, SKU DEĞİL.** ~~Persona-SKU (Aile/
+  Öğretmen, 2026-07-23)~~ kilitliyordu → kaldırıldı. TÜM özellikler her ücretli kademede; fark = yalnız kota.
+- **Paketler:** 🆓 Ücretsiz **10 kağıt/ay** · ⭐ Pro **₺199 / 50 kağıt** · ⭐⭐ Pro+ **₺349 / 120 kağıt**.
+  Kota birimi = **çalışma kağıdı** (soru değil), cache-hit sayılmaz. **"Sınırsız" YOK → açık sayı**
+  (gizli maliyet-tavanı = kandırma; şeffaflık kararı).
+- **Ek kağıt paketi (top-up):** +25 **₺89**, +75 **₺199** — tüketilebilir IAP, **30 günlük** süre,
+  yalnız aboneye. Tüketim: önce abonelik kotası, sonra en-erken-biten kredi.
+- **Aile = bağlı hesaplar + PAYLAŞIMLI kota** (3 çocuğa kadar, tek havuz → "3 bedava hesap" değil).
+- **Kurumsal (okul/dershane) = AYRI, teklif-bazlı, faturalı, Faz 2** (yüksek-WTP'yi yakalar; IAP değil).
+- **Marj doğrulandı:** net-gelir/kağıt (Pro ₺2.40 / Pro+ ₺1.75 / +25 ₺2.14 / +75 ₺1.59) > maliyet
+  ~₺1.5 ([[gen-cost-quality-2026-07]] ölçümü). 7g reverse trial, ayrı intro-indirim yok, yalnız aylık.
+- Açık: yıllık plan (sonra), fair-use günlük hız-limiti değeri (anti-bot), WTP ile fiyat iterasyonu.
+
 **✅ Kapandı (2026-07-10):**
 - **Persona:** hibrit — öğretmen **ve** veli ana persona.
 - **Karar A:** ücretsiz PDF'te "Soru Atölyesi ile üretildi" footer AÇIK (dağıtım + upgrade tetiği).
 - **Karar B:** sınıf/ödev viral kısmı ücretsiz (temel sınıf/ödev + veli bağı), ölçek+analitik Pro.
 
-**✅ Kapandı (2026-07-23 — kademe ekseni PERSONA BAZLI + aile hesap modeli):**
+**⏸ ARŞİV (2026-07-23 — persona-SKU; 2026-07-24'te Pro/Pro+ kota-merdivenine ÇEVRİLDİ → üstteki KESİN blok geçerli. Yalnız "bağlı-hesap aile" kararı korundu, paylaşımlı-kota olarak):**
 - **Plan yapısı:** **persona bazlı** — 👨‍👩‍👧 Aile + 🎓 Öğretmen (bölüm 2 tablosu).
   ~~Soyut Pro/Pro+~~ (2026-07-16) GÜNCELLENDİ. Gerekçe: satın alan ≠ kullanan; müşteri
   kendini "Aile" ya da "Öğretmen" kutusunda görünce paket canlanır. Fiyat aralığı aynı.
