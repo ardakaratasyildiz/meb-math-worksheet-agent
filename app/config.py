@@ -190,6 +190,11 @@ class Settings(BaseSettings):
     # 7g reverse trial süresi (gün) + trial kotası (tam-Pro deneyim → pro-plus tavanı).
     trial_days: int = 7
     billing_enabled: bool = False
+    # Ek kağıt paketi (top-up) — tüketilebilir IAP; abonelik üstü, süreli (MONETIZATION_PLAN §2).
+    topup_expiry_days: int = 30
+    # RevenueCat consumable product id → eklenecek kağıt sayısı. Webhook consumable olayında
+    # TOP_UP_STORE'a bu haritadan kredi eklenir (ürünler 28 Tem sonrası mağazada tanımlanır).
+    topup_products: str = "topup-25:25,topup-75:75"
 
     # Ders (subject) ekseni — çok-ders geçişi (docs/FEN_BILIMLERI_PLAN.md).
     # KALİTE KAPISI feature-flag'leri. Kalite paritesi doğrulandıktan sonra
@@ -234,6 +239,24 @@ class Settings(BaseSettings):
     @property
     def fallback_model_list(self) -> list[str]:
         return [m.strip() for m in self.gemini_fallback_models.split(",") if m.strip()]
+
+    @property
+    def topup_product_credits(self) -> dict[str, int]:
+        """RevenueCat consumable product id → kağıt sayısı ('topup-25:25,topup-75:75')."""
+        out: dict[str, int] = {}
+        for part in self.topup_products.split(","):
+            part = part.strip()
+            if ":" not in part:
+                continue
+            pid, _, val = part.partition(":")
+            pid = pid.strip()
+            try:
+                n = int(val.strip())
+            except ValueError:
+                continue
+            if pid and n > 0:
+                out[pid] = n
+        return out
 
 
 settings = Settings()
