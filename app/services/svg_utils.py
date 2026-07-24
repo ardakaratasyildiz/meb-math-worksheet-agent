@@ -444,6 +444,49 @@ def _render_geo_circle(p: dict[str, str]) -> str:
     return _geo_wrap(200, 180, body)
 
 
+def _render_parallelogram(p: dict[str, str]) -> str:
+    base = p.get("base") or p.get("taban") or p.get("w") or "?"
+    h = p.get("height") or p.get("h") or p.get("yukseklik") or "?"
+    body = (
+        _geo_poly("70,45 190,45 160,130 40,130")
+        # yükseklik (dik) çizgisi + dik açı işareti
+        + f'<line x1="70" y1="45" x2="70" y2="130" stroke="{_GEO_STROKE}" stroke-width="1.3" stroke-dasharray="5 4"/>'
+        + f'<polyline points="70,118 82,118 82,130" fill="none" stroke="{_GEO_STROKE}" stroke-width="1.2"/>'
+        + _geo_text(100, 148, base, "middle")   # taban
+        + _geo_text(62, 92, h, "end")           # yükseklik
+    )
+    return _geo_wrap(210, 160, body)
+
+
+def _render_trapezoid(p: dict[str, str]) -> str:
+    a = p.get("a") or p.get("ust") or p.get("üst") or "?"   # üst taban
+    b = p.get("b") or p.get("alt") or "?"                     # alt taban
+    h = p.get("h") or p.get("height") or p.get("yukseklik") or "?"
+    body = (
+        _geo_poly("75,45 150,45 185,130 40,130")
+        + f'<line x1="75" y1="45" x2="75" y2="130" stroke="{_GEO_STROKE}" stroke-width="1.3" stroke-dasharray="5 4"/>'
+        + f'<polyline points="75,118 87,118 87,130" fill="none" stroke="{_GEO_STROKE}" stroke-width="1.2"/>'
+        + _geo_text(112, 38, a, "middle")    # üst taban
+        + _geo_text(112, 148, b, "middle")   # alt taban
+        + _geo_text(67, 92, h, "end")        # yükseklik
+    )
+    return _geo_wrap(220, 160, body)
+
+
+def _render_angle(p: dict[str, str]) -> str:
+    deg = p.get("deg") or p.get("aci") or p.get("açı") or p.get("derece") or "?"
+    lbl = deg if (deg == "?" or "°" in deg) else f"{deg}°"
+    body = (
+        # köşe + iki ışın (şematik dar açı; ölçek değil, etiket değeri gösterir)
+        f'<line x1="45" y1="130" x2="195" y2="130" stroke="{_GEO_STROKE}" stroke-width="2"/>'
+        + f'<line x1="45" y1="130" x2="160" y2="45" stroke="{_GEO_STROKE}" stroke-width="2"/>'
+        + f'<path d="M 90 130 A 45 45 0 0 0 80 100" fill="none" stroke="{_GEO_STROKE}" stroke-width="1.5"/>'
+        + f'<circle cx="45" cy="130" r="2.5" fill="{_GEO_STROKE}"/>'
+        + _geo_text(103, 116, lbl, "start")
+    )
+    return _geo_wrap(210, 160, body)
+
+
 _GEO_RENDERERS = {
     "right_triangle": _render_right_triangle, "dik_ucgen": _render_right_triangle,
     "triangle": _render_triangle, "ucgen": _render_triangle, "üçgen": _render_triangle,
@@ -451,6 +494,9 @@ _GEO_RENDERERS = {
     "square": _render_square, "kare": _render_square,
     "circle": _render_geo_circle, "cember": _render_geo_circle, "çember": _render_geo_circle,
     "daire": _render_geo_circle,
+    "parallelogram": _render_parallelogram, "paralelkenar": _render_parallelogram,
+    "trapezoid": _render_trapezoid, "yamuk": _render_trapezoid,
+    "angle": _render_angle, "aci": _render_angle, "açı": _render_angle,
 }
 
 
