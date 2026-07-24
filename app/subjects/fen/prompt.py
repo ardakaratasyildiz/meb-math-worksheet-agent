@@ -29,17 +29,8 @@ Kuralların:
 6. Görsel ihtiyaçları (tablo/grafik) için RESİM üretme; SADECE METİN-TABANLI gösterim kullan:
    - Tablolar için: GitHub-flavored Markdown tablosu (`| Başlık | ... |` ve `|---|---|`).
    - Grafik için: `{{chart:bar|Etiket=deger|...}}` veya `{{chart:pie|Etiket=deger|...}}` direktifi (sistem otomatik çizer; elle SVG grafik ÇİZME). En fazla 8 kategori; değerler/oranlar soru ve cevapla TUTARLI.
-   - BASİT bilimsel diyagramlar (Dünya-Güneş-Ay konumu, basit elektrik devresi, kaldıraç/makara/eğik düzlem, ışık ışını/mercek, basit deney düzeneği): INLINE `<svg>` üret (kod bloğu DEĞİL) — aşağıdaki SVG KURALLARINA MUTLAKA uy.
-   - ÇOK karmaşık/detaylı diyagramlar (ayrıntılı hücre organelleri, insan sistem organları, karmaşık moleküler yapı): SVG'ye SADIK çevrilemeyecekse ÜRETME → düzeneği/durumu NET metinle betimle, tüm gerekli veriyi metinde ver (cevaplanabilir kalsın). "Şekildeki düzeneğe göre" deyip şekil ÜRETMEMEK YASAK (cevaplanamaz soru olur).
-   Tüm görsel bloklar `question` alanının İÇİNDE Markdown/direktif/SVG olarak gömülü olmalı; soru kendi kendini açıklamalı.
-
-   BİLİMSEL SVG KURALLARI (`gorsel_geometri` tipi):
-   (a) `<svg viewBox="0 0 W H" xmlns="http://www.w3.org/2000/svg">...</svg>` (W ≤ 340, H ≤ 220).
-   (b) SADECE şu elementler: `line`, `polyline`, `polygon`, `rect`, `circle`, `ellipse`, `path`, `text`, `g`. ASLA `script`, `foreignObject`, `image`, harici `href` KULLANMA.
-   (c) Stroke koyu (`#1f2937` / `black`), stroke-width 1.5-2; dolgu `none` veya çok açık renk. Renk kategorisi gerekiyorsa kontrastlı (`#ef4444`,`#3b82f6`,`#10b981`,`#f59e0b`).
-   (d) ETİKETLER: (1) çizgilerin/şeklin ÜZERİNE BİNMESİN — kenardan/noktadan en az 12-15 px uzağa; (2) tamamen viewBox İÇİNDE kalsın — her kenardan ≥10 px pay bırak, ASLA taşmasın (uzun etiket için viewBox'ı genişlet veya etiketi kısalt); (3) her etiket ilgili öğenin YANINDA olsun, havada/kopuk durmasın; `text-anchor` konuma göre (`start`/`middle`/`end`), font-size 10-14.
-   (e) Diyagram BİLİMSEL OLARAK DOĞRU olmalı (ör. Güneş ışınları paralel oklarla; devrede pil+ampul+bağlantı; eğik düzlemde açı) ve sorunun cevabı diyagramla TUTARLI.
-   (f) `answer` sade metin/harf; LaTeX sınırlayıcı ($) KULLANMA.
+   - Bilimsel diyagramlar (elektrik devresi, Dünya-Güneş-Ay konumu, kaldıraç/makara/eğik düzlem, ışık ışını/mercek, deney düzeneği, hücre, organ, moleküler yapı): ham `<svg>` ÜRETME. Model bilimsel şekli güvenilir çizemiyor (bozuk/eksik figür → soru elenir). Bunun yerine: düzeneği/durumu TÜM ölçü, değer ve ilişkileriyle NET METİNLE betimle — soru yalnızca metinden cevaplanabilir olsun. Sayısal/karşılaştırmalı veri → `{{chart:...}}`; tablosal veri veya iki-değişkenli ızgara (ör. Punnett/çaprazlama karesi, deney sonuç tablosu) → `{{table:...}}` direktifi. "Şekildeki düzeneğe göre" deyip görsel ÜRETMEMEK YASAK → gerekli her ölçüyü metne koy.
+   Tüm tablo/grafik blokları `question` alanının İÇİNDE direktif olarak gömülü olmalı; soru kendi kendini açıklamalı.
 7. Soruları akıcı, sade ve doğru Türkçe ile, MEB ders kitabı tonunda yaz.
 8. Her sorunun çözüm/açıklamasını mutlaka belirt (`solution_steps`): doğru cevabın neden doğru olduğunu ve varsa çeldiricilerin neden yanlış olduğunu kazanım çerçevesinde açıkla.
 9. İstenen soru tipi dağılımına TAM uy. Tip-spesifik formatlar:
