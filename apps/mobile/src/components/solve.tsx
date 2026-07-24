@@ -7,6 +7,21 @@ import { QuestionText } from '@/components/question-text';
 import { Card, PrimaryButton, ProgressBar } from '@/components/ui';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
+/** Gömülü "A) .. B) .." şıklarını soru KÖKÜNDEN ayıklar (web QuestionReview deseni).
+ * D1 sonrası backend şıkları hem `.options` alanına hem metne gömüyor → çoktan seçmeli
+ * çözme ekranında şıklar buton olarak render edilirken metinde İKİNCİ KEZ görünmesin. */
+function stripInlineOptions(text: string): string {
+  const re = /(^|[^A-Za-z0-9])([A-D])[)\.]/g;
+  const marks: number[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    marks.push(m.index + m[1].length);
+    if (m.index === re.lastIndex) re.lastIndex++;
+  }
+  if (marks.length < 2) return text; // tek işaretçi cümle-içi olabilir → dokunma
+  return marks[0] > 0 ? text.slice(0, marks[0]).trim() : text;
+}
+
 /** Skor/kazanım oranına göre geri-bildirim rengi (çöz + ödev ortak). */
 export function toneFor(ratio: number): string {
   if (ratio >= 0.7) return colors.success;
@@ -108,7 +123,13 @@ export function QuestionCard({
           <Text style={styles.qNoText}>{q.number}</Text>
         </View>
         <View style={styles.qBody}>
-          <QuestionText text={q.question} />
+          <QuestionText
+            text={
+              q.question_type === 'coktan_secmeli' && q.options?.length
+                ? stripInlineOptions(q.question)
+                : q.question
+            }
+          />
         </View>
       </View>
 
