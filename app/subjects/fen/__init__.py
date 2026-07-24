@@ -53,8 +53,11 @@ DEFAULT_TYPES: list[QuestionType] = [
     QuestionType.ESLESTIRME,
     QuestionType.TABLO_SORUSU,
     QuestionType.GRAFIK_OKUMA,
-    QuestionType.GORSEL_GEOMETRI,
 ]
+# NOT (Fen A, 2026-07): GORSEL_GEOMETRI (ham <svg> bilimsel diyagram) DEFAULT'tan
+# ÇIKARILDI — model devre/Punnett/hücre gibi diyagramları güvenilir SVG üretemiyordu
+# (figür drop'u). Fen görselleri artık {{table}}/{{chart}} + metin betimleme ile
+# karşılanır (bkz. prompt.py). Kullanıcı açıkça question_types ile isterse yine üretilir.
 
 
 def select_kazanimlar(
