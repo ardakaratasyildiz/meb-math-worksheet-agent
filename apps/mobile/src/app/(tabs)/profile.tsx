@@ -1,4 +1,5 @@
 import { useAuth, useUser } from '@clerk/expo';
+import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,9 +7,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconChevron, IconFire, IconSpark, IconStar } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
+import { useEntitlements } from '@/hooks/useEntitlements';
 import { getGamification, getParentCode, type GamificationResponse } from '@/lib/api';
 import { effectiveRole, isPlayfulRole, roleLabel } from '@/lib/roles';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/theme/tokens';
+
+/** Plan kodu → görünen ad. */
+const PLAN_LABEL: Record<string, string> = {
+  free: 'Ücretsiz',
+  trial: 'Deneme (Pro+)',
+  pro: 'Pro',
+  'pro-plus': 'Pro+',
+};
 
 const DEMO: GamificationResponse = {
   xp: 120,
@@ -33,6 +43,8 @@ const SITE = 'https://soruatolyesi.com';
 export default function ProfileScreen() {
   const { userId, signOut } = useAuth();
   const { user } = useUser();
+  const router = useRouter();
+  const { entitlements } = useEntitlements();
   const [game, setGame] = useState<GamificationResponse | null>(null);
   const [notify, setNotify] = useState(true);
   const [parentCode, setParentCode] = useState<string | null>(null);
@@ -134,14 +146,26 @@ export default function ProfileScreen() {
           <Card>
             <Text style={styles.cardTitle}>Abonelik</Text>
             <View style={styles.planRow}>
-              <View>
-                <Text style={styles.planName}>Ücretsiz</Text>
-                <Text style={styles.planSub}>Sınırlı üretim · reklamsız</Text>
+              <View style={styles.planInfo}>
+                <Text style={styles.planName}>{PLAN_LABEL[entitlements.plan] ?? 'Ücretsiz'}</Text>
+                <Text style={styles.planSub}>
+                  {entitlements.quota.limit !== null
+                    ? `${entitlements.quota.used}/${entitlements.quota.limit} kağıt · bu ay`
+                    : 'Sınırsız · fair-use'}
+                </Text>
               </View>
-              <View style={styles.planPill}>
-                <Text style={styles.planPillText}>Aktif</Text>
-              </View>
+              {entitlements.is_premium ? (
+                <View style={styles.planPill}>
+                  <Text style={styles.planPillText}>Aktif</Text>
+                </View>
+              ) : null}
             </View>
+            <PrimaryButton
+              label={entitlements.is_premium ? 'Planı yönet' : 'Premium’a yükselt'}
+              variant={entitlements.is_premium ? 'soft' : 'solid'}
+              color={colors.magic}
+              onPress={() => router.push('/paywall')}
+            />
           </Card>
 
           {/* Ayarlar */}
@@ -235,7 +259,8 @@ const styles = StyleSheet.create({
   miniValue: { fontFamily: fonts.heading, fontSize: fontSize.md, color: colors.text },
   miniLabel: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted },
 
-  planRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  planRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg },
+  planInfo: { flex: 1 },
   planName: { fontFamily: fonts.bodyHeavy, fontSize: fontSize.md, color: colors.text },
   planSub: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted, marginTop: 1 },
   planPill: { backgroundColor: colors.tintGreen, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: 5 },

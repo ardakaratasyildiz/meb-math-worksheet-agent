@@ -1,7 +1,8 @@
 import { useAuth, useUser } from '@clerk/expo';
 import type { AttemptResult, QuizPublic, SubmittedAnswer, Worksheet } from '@soruatolyesi/shared';
+import { useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GeneratorSetup, type GeneratorParams } from '@/components/generator-setup';
@@ -11,6 +12,7 @@ import { QuestionText } from '@/components/question-text';
 import { SkeletonList } from '@/components/skeleton';
 import { QuestionCard, ResultView } from '@/components/solve';
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
+import { useEntitlements } from '@/hooks/useEntitlements';
 import { createQuiz, generateWorksheet, submitAttempt } from '@/lib/api';
 import { shareWorksheetPdf } from '@/lib/pdf';
 import { effectiveRole, isPlayfulRole } from '@/lib/roles';
@@ -26,6 +28,8 @@ type Phase = 'setup' | 'solving' | 'result' | 'sheet';
 export default function CreateScreen() {
   const { userId } = useAuth();
   const { user } = useUser();
+  const router = useRouter();
+  const { entitlements, quotaExhausted, refresh: refreshEntitlements } = useEntitlements();
   const sober = !isPlayfulRole(effectiveRole(user));
   const [phase, setPhase] = useState<Phase>('setup');
   const [busy, setBusy] = useState(false);
@@ -48,6 +52,11 @@ export default function CreateScreen() {
     async (p: GeneratorParams) => {
       if (p.mode === 'solve' && !userId) {
         setError('Çözmek için giriş gerekli.');
+        return;
+      }
+      // Soft-gate: kota bittiyse paywall'a yönlendir (gerçek enforce sunucuda).
+      if (quotaExhausted) {
+        router.push({ pathname: '/paywall', params: { reason: 'quota' } });
         return;
       }
       setParams(p);
@@ -91,9 +100,10 @@ export default function CreateScreen() {
         setError((e as Error).message);
       } finally {
         setBusy(false);
+        void refreshEntitlements(); // kota tüketildi → göstergeyi güncelle
       }
     },
-    [userId],
+    [userId, quotaExhausted, router, refreshEntitlements],
   );
 
   const onSubmitQuiz = useCallback(async () => {
@@ -148,6 +158,14 @@ export default function CreateScreen() {
           {phase === 'setup' && (
             <>
               {error ? <Text style={styles.error}>{error}</Text> : null}
+              {userId && entitlements.quota.limit !== null ? (
+                <Pressable onPress={() => router.push('/paywall')} style={styles.quotaChip}>
+                  <Text style={styles.quotaChipText}>
+                    Bu ay: {entitlements.quota.used}/{entitlements.quota.limit} kağıt
+                  </Text>
+                  <Text style={styles.quotaChipCta}>Yükselt</Text>
+                </Pressable>
+              ) : null}
               <GeneratorSetup busy={busy} onSubmit={onGenerate} sober={sober} pdfOnly={sober} />
               {busy ? (
                 <>
@@ -225,6 +243,17 @@ const styles = StyleSheet.create({
   content: { padding: spacing.xl, gap: spacing.lg, paddingBottom: 120 }, // yüzen tab bar payı
   muted: { color: colors.textMuted, fontSize: fontSize.sm, fontFamily: fonts.body, textAlign: 'center' },
   error: { color: colors.danger, fontSize: fontSize.sm, fontFamily: fonts.bodyMedium },
+  quotaChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.tintBlue,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  quotaChipText: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.brand },
+  quotaChipCta: { fontFamily: fonts.bodyBold, fontSize: fontSize.sm, color: colors.brandDark },
   loadingWrap: { alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.md },
 
   // PDF soru kartı

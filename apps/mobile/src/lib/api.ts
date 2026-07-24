@@ -72,6 +72,34 @@ export function getGamification(tenantId: string): Promise<GamificationResponse>
   );
 }
 
+// ── Entitlements / abonelik (mobil paywall + gating; GÖSTERİM için) ──────────
+export interface Quota {
+  /** Aylık kağıt kotası; null = kotasız (fair-use/anonim). */
+  limit: number | null;
+  used: number;
+  remaining: number | null;
+}
+export interface Entitlements {
+  plan: "free" | "trial" | "pro" | "pro-plus";
+  is_premium: boolean;
+  status: string | null; // trialing | active | past_due | canceled | expired
+  trial_end: string | null;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
+  quota: Quota;
+}
+
+/**
+ * Kullanıcının efektif planı + kotası + abonelik durumu (backend karar verir).
+ * Tenant-korumalı → Expo Go pk_test'te 401 olabilir; çağıran best-effort ele almalı
+ * (useEntitlements free'ye düşer). Gating yine SUNUCUDA enforce edilir; bu yalnız gösterim.
+ */
+export function getEntitlements(tenantId: string): Promise<Entitlements> {
+  return apiRequest<Entitlements>(
+    `/api/me/entitlements?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
 // ── Matematik render (LaTeX → SVG segmentleri; QuestionText tüketir) ─────────
 export interface MathSegment {
   kind: "text" | "math";
