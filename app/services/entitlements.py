@@ -22,6 +22,7 @@ from datetime import datetime, timedelta, timezone
 from app.config import settings
 from app.services.billing_store import BILLING_STORE, STATUS_TRIALING
 from app.services.parent_link_store import PARENT_LINK_STORE
+from app.services.top_up_store import TOP_UP_STORE
 from app.services.usage_ledger import USAGE_LEDGER
 
 _IST = timezone(timedelta(hours=3))  # Türkiye — aylık reset takvim ayına göre
@@ -165,6 +166,23 @@ def ensure_trial(tenant_id: str | None) -> None:
         BILLING_STORE.start_trial(tenant_id)
 
 
+def credit_topup(tenant_id: str | None, product_id: str, *, provider_ref: str | None = None) -> int:
+    """RevenueCat consumable satın alımı → ek kağıt kredisi ekle (webhook girişi).
+
+    product_id `settings.topup_product_credits` ile kağıt sayısına eşlenir. Kredi HAVUZ
+    SAHİBİNE (ödeyen) eklenir → aile paylaşır. provider_ref = işlem id (idempotency).
+    Eklenen kağıt sayısını döner (bilinmeyen ürün / eklenemezse 0).
+    """
+    if not tenant_id or not product_id:
+        return 0
+    credits = settings.topup_product_credits.get(product_id, 0)
+    if credits <= 0:
+        return 0
+    owner, _ = _billing_owner(tenant_id)
+    ok = TOP_UP_STORE.add(owner or tenant_id, credits, provider_ref=provider_ref)
+    return credits if ok else 0
+
+
 def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
     """Generate uçları için kota kapısı. Aşımda HTTP 402 + paywall sinyali fırlatır.
 
@@ -188,12 +206,17 @@ def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
             status_code=402,
             detail={
                 "error": "quota_exceeded",
-                "message": "Aylık üretim hakkın doldu. Devam etmek için Pro'ya geçebilirsin.",
+                "message": "Bu ayki çalışma kağıdı hakkın doldu. Pro'ya geç ya da ek paket al.",
                 "plan": q["plan"],
                 "limit": q["limit"],
                 "used": q["used"],
+                "topup_balance": q.get("topup_balance", 0),
             },
         )
+    # Plan kotası bittiyse bu üretim EK PAKETTEN karşılanır → 1 kredi düş (havuz sahibinde,
+    # en erken biten önce). Plan içindeyse dokunma (kullanım usage_ledger'dan sayılır).
+    if q.get("plan_remaining", 1) <= 0 and q.get("topup_balance", 0) > 0:
+        TOP_UP_STORE.consume(q.get("owner") or tenant_id, requested)
 
 
 def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
@@ -212,11 +235,16 @@ def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
     limit = quota_limit(plan)                        # kağıt/ay
     family = _family_tenants(owner)                  # veli + bağlı çocuklar = TEK havuz
     used = USAGE_LEDGER.worksheets_used_since(family, _month_start_ts())  # kağıt, cache-hit hariç
-    remaining = max(0, limit - used)
+    plan_remaining = max(0, limit - used)
+    topup = TOP_UP_STORE.balance(owner)              # ek paket kredisi (havuz sahibinde, süreli)
+    remaining = plan_remaining + topup
     return {
         "plan": plan,
         "limit": limit,
         "used": used,
+        "plan_remaining": plan_remaining,
+        "topup_balance": topup,
         "remaining": remaining,
+        "owner": owner,
         "allowed": remaining >= max(requested, 1),
     }

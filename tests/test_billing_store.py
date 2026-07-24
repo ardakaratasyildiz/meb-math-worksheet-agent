@@ -24,6 +24,7 @@ os.environ.setdefault("GEMINI_API_KEY", "fake-key-for-tests")
 from app.config import settings  # noqa: E402
 from app.services import entitlements  # noqa: E402
 from app.services.billing_store import BillingStore  # noqa: E402
+from app.services.top_up_store import TopUpStore  # noqa: E402
 from app.services.usage_ledger import UsageLedger  # noqa: E402
 
 _failures: list[str] = []
@@ -44,10 +45,12 @@ _TMP = tempfile.mkdtemp()
 _DB = str(Path(_TMP) / "billing_test.sqlite3")
 STORE = BillingStore(db_path=_DB)
 LEDGER = UsageLedger(db_path=_DB)
+TOPUP = TopUpStore(db_path=_DB)
 
 # entitlements singleton'larını test instance'larına bağla
 entitlements.BILLING_STORE = STORE
 entitlements.USAGE_LEDGER = LEDGER
+entitlements.TOP_UP_STORE = TOPUP
 
 
 # Aile-bağ store (parent_link) fake'i — miras + paylaşımlı havuz testleri + izolasyon.
@@ -342,13 +345,54 @@ def test_enforce_quota() -> None:
     entitlements.USAGE_LEDGER = LEDGER
 
 
+def test_topup() -> None:
+    """Ek kağıt paketi: kredi ekleme (idempotent) + kota-üstü tüketim + tükenince 402."""
+    print("test_topup")
+    from fastapi import HTTPException
+    settings.premium_all = False
+    settings.premium_tenant_ids = ""
+    settings.billing_enabled = True
+    settings.pro_monthly_worksheets = 2
+    settings.topup_products = "topup-25:25,topup-75:75"
+    t = "u_topup"
+    STORE.upsert(tenant_id=t, plan_code="pro", status="active", current_period_end=_iso_in(20))
+
+    class _FakeLedger:  # plan kotası dolu (2/2)
+        def worksheets_used_since(self, tenant_ids, since_ts):  # noqa: ARG002
+            return 2
+    entitlements.USAGE_LEDGER = _FakeLedger()
+
+    # topup yok + plan dolu → 402
+    try:
+        entitlements.enforce_quota(t)
+        check(False, "topup yok + plan dolu → 402 beklenir")
+    except HTTPException as e:
+        check(e.status_code == 402, "plan dolu, topup yok → 402")
+
+    # credit_topup: bilinmeyen ürün → 0; +25 ekle; aynı tx idempotent
+    check(entitlements.credit_topup(t, "yok_urun") == 0, "bilinmeyen ürün → 0 kredi")
+    check(entitlements.credit_topup(t, "topup-25", provider_ref="tx_1") == 25, "topup-25 → 25 kredi")
+    check(entitlements.credit_topup(t, "topup-25", provider_ref="tx_1") == 0, "aynı tx → idempotent 0")
+
+    q = entitlements.check_quota(t)
+    check(q["plan_remaining"] == 0 and q["topup_balance"] == 25 and q["allowed"] is True,
+          "plan dolu ama topup 25 → allowed")
+
+    # kota-üstü üretim → topup'tan 1 düşer
+    entitlements.enforce_quota(t)
+    check(TOPUP.balance(t) == 24, "plan dolu + üretim → topup 25→24 düştü")
+
+    settings.billing_enabled = False
+    entitlements.USAGE_LEDGER = LEDGER
+
+
 def _run() -> int:
     for fn in [
         test_store_empty, test_start_trial, test_trial_expired, test_active_pro,
         test_past_due_grace, test_canceled_and_expired, test_upsert_preserves_created_at,
         test_cancel_flag, test_event_idempotency, test_plan_premium_all,
         test_plan_resolution, test_allowlist_dev, test_quota_limits, test_check_quota,
-        test_family_shared_quota, test_ensure_trial, test_enforce_quota,
+        test_family_shared_quota, test_ensure_trial, test_enforce_quota, test_topup,
     ]:
         fn()
     print()
