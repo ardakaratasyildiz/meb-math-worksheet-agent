@@ -328,7 +328,7 @@ def create_quiz(
     _api_key: str = Depends(require_api_key),
 ) -> QuizPublic:
     """Çözülebilir quiz üret + kaydet → CEVAPSIZ döndür. LLM çağrısı (rate limitli)."""
-    entitlements.enforce_quota(verified, req.question_count)
+    entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
     # Sahiplik client-supplied tenant'a DEĞİL, doğrulanmış kimliğe bağlanır (IDOR/spoof).
     req.tenant_id = require_tenant(verified, req.tenant_id)
     questions, topic_name, traces = _generate_solvable(req)

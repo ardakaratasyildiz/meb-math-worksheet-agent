@@ -181,6 +181,12 @@ class Settings(BaseSettings):
     pro_monthly_questions: int = 1000
     # pro-plus "sınırsız" ama suistimale karşı arka plan makul tavan (soru/ay).
     pro_plus_fair_use_questions: int = 10000
+    # KESİN model (2026-07-24, MONETIZATION_PLAN §2): kota birimi = ÇALIŞMA KAĞIDI (soru değil).
+    # Açık sayı (gizli maliyet-tavanı YOK — şeffaflık). quota_limit BUNLARI kullanır;
+    # yukarıdaki *_questions artık atıl (geriye-uyum için bırakıldı).
+    free_monthly_worksheets: int = 10
+    pro_monthly_worksheets: int = 50
+    pro_plus_monthly_worksheets: int = 120
     # 7g reverse trial süresi (gün) + trial kotası (tam-Pro deneyim → pro-plus tavanı).
     trial_days: int = 7
     billing_enabled: bool = False

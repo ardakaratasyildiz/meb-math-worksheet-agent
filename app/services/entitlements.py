@@ -5,9 +5,10 @@ Abonelik durumunun kaynak-of-truth'u `billing_store.subscriptions` satırıdır
 kararını verir. Karar HER ZAMAN sunucu tarafında; çağıranlar client'tan gelen bir
 bayrağa/tenant'a ASLA güvenmez (bkz. clerk_auth doğrulaması).
 
-Model (MONETIZATION_PLAN §2, 2026-07-16):
-  free (satırsız, 100 soru/ay) · trial (7g kartsız tam-Pro) · pro (1000 soru/ay) ·
-  pro-plus (fair-use sınırsız — arka planda makul tavan).
+Model (MONETIZATION_PLAN §2, 2026-07-24 — kağıt-bazlı + AİLE PAYLAŞIMLI havuz):
+  free (10 kağıt/ay) · trial (7g kartsız tam Pro+) · pro (50 kağıt/ay) · pro-plus (120 kağıt/ay).
+  Kota birimi = ÇALIŞMA KAĞIDI (soru değil); açık sayı (gizli tavan yok). Çocuk, PREMIUM
+  velisinin planını miras alır ve aile TEK kota havuzunu paylaşır (_billing_owner/_family_tenants).
 
 Kademeli açılış:
   - settings.premium_all=True → herkes pro-plus (dev/demo/dark-launch; BUGÜNKÜ prod).
@@ -20,6 +21,7 @@ from datetime import datetime, timedelta, timezone
 
 from app.config import settings
 from app.services.billing_store import BILLING_STORE, STATUS_TRIALING
+from app.services.parent_link_store import PARENT_LINK_STORE
 from app.services.usage_ledger import USAGE_LEDGER
 
 _IST = timezone(timedelta(hours=3))  # Türkiye — aylık reset takvim ayına göre
@@ -37,23 +39,53 @@ def _month_start_ts() -> float:
     return start.timestamp()
 
 
-def plan_of(tenant_id: str | None) -> str:
-    """Kullanıcının EFEKTİF planı: free | trial | pro | pro-plus.
-
-    Anonim (tenant yok) → free. premium_all/allowlist dev override'ları pro-plus sayar.
-    """
-    if not tenant_id:
-        return PLAN_FREE
+def _own_active_plan(tenant_id: str) -> str | None:
+    """Tenant'ın KENDİ (miras değil) aktif planı: pro | pro-plus | trial; yoksa None.
+    premium_all/allowlist dev override'ları pro-plus sayar."""
     if settings.premium_all:  # dev/demo/dark-launch — bugünkü prod davranışı
         return PLAN_PRO_PLUS
     sub = BILLING_STORE.get_active(tenant_id)  # yalnız erişim VEREN satır (period kontrollü)
     if sub:
-        if sub["status"] == STATUS_TRIALING:
-            return PLAN_TRIAL
-        return sub["plan_code"]  # "pro" | "pro-plus"
+        return PLAN_TRIAL if sub["status"] == STATUS_TRIALING else sub["plan_code"]
     if tenant_id in settings.premium_tenant_id_set:  # allowlist (dev)
         return PLAN_PRO_PLUS
-    return PLAN_FREE
+    return None
+
+
+def _billing_owner(tenant_id: str) -> tuple[str, str]:
+    """(sahip_tenant, plan) — kota/entitlement havuzunun SAHİBİ + planı.
+
+    Tenant kendi aboneliğine sahipse o; değilse PREMIUM bir velisi varsa o veli (AİLE
+    MİRASI — çocuk velinin planını alır); hiçbiri yoksa (tenant, free). Aile PAYLAŞIMLI
+    kota havuzunun sahibini belirler → check_quota bu sahibin ailesini tek havuz sayar.
+    """
+    own = _own_active_plan(tenant_id) if tenant_id else None
+    if own:
+        return tenant_id, own
+    for parent in PARENT_LINK_STORE.parents_of(tenant_id or ""):
+        p_plan = _own_active_plan(parent)
+        if p_plan:
+            return parent, p_plan  # miras: premium velinin planı + havuzu
+    return tenant_id or "", PLAN_FREE
+
+
+def _family_tenants(owner_tenant: str) -> list[str]:
+    """Paylaşımlı havuzu paylaşan tenant'lar: sahip (veli/kendisi) + bağlı çocuklar."""
+    if not owner_tenant:
+        return []
+    kids = [c["student_id"] for c in PARENT_LINK_STORE.list_children(owner_tenant)]
+    return [owner_tenant, *kids]
+
+
+def plan_of(tenant_id: str | None) -> str:
+    """Kullanıcının EFEKTİF planı (AİLE MİRASI dahil): free | trial | pro | pro-plus.
+
+    Anonim (tenant yok) → free. Çocuk, PREMIUM velisinin planını miras alır (paylaşımlı
+    kota). premium_all/allowlist dev override'ları pro-plus sayar.
+    """
+    if not tenant_id:
+        return PLAN_FREE
+    return _billing_owner(tenant_id)[1]
 
 
 def is_premium(tenant_id: str | None) -> bool:
@@ -74,7 +106,13 @@ def is_premium_for_model(tenant_id: str | None) -> bool:
         return False
     if BILLING_STORE.get_active(tenant_id) is not None:
         return True
-    return tenant_id in settings.premium_tenant_id_set
+    if tenant_id in settings.premium_tenant_id_set:
+        return True
+    # Aile mirası: PREMIUM velisi olan çocuk da model-premium (havuz paylaşımlı → bağlı).
+    for parent in PARENT_LINK_STORE.parents_of(tenant_id):
+        if BILLING_STORE.get_active(parent) is not None or parent in settings.premium_tenant_id_set:
+            return True
+    return False
 
 
 def wants_yeni_nesil(tenant_id: str | None) -> bool:
@@ -105,13 +143,14 @@ def yeni_nesil_for_bucket(tenant_id: str | None, difficulty) -> bool:
 
 
 def quota_limit(plan: str) -> int:
-    """Plana göre aylık soru kotası. pro-plus/trial = fair-use tavanı ('sınırsız')."""
+    """Plana göre aylık ÇALIŞMA KAĞIDI kotası (açık sayı; MONETIZATION_PLAN §2, 2026-07-24).
+    trial = tam Pro+ deneyimi → pro-plus kotası."""
     if plan == PLAN_FREE:
-        return settings.free_monthly_questions
+        return settings.free_monthly_worksheets
     if plan == PLAN_PRO:
-        return settings.pro_monthly_questions
-    # pro-plus + trial → fair-use makul tavan
-    return settings.pro_plus_fair_use_questions
+        return settings.pro_monthly_worksheets
+    # pro-plus + trial
+    return settings.pro_plus_monthly_worksheets
 
 
 def ensure_trial(tenant_id: str | None) -> None:
@@ -136,7 +175,11 @@ def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
     """
     if not settings.billing_enabled or not tenant_id:
         return
-    ensure_trial(tenant_id)
+    # Trial YALNIZ solo + kapsamsız kullanıcıya: aile mirası varsa (premium veli) çocuğa
+    # KENDİ trial'ını açma — yoksa havuz parent yerine çocuğun trial'ına kayardı.
+    owner, plan = _billing_owner(tenant_id)
+    if plan == PLAN_FREE and owner == tenant_id:
+        ensure_trial(tenant_id)
     q = check_quota(tenant_id, requested=requested)
     if not q["allowed"]:
         from fastapi import HTTPException  # local import — entitlements'ı saf tut
@@ -165,9 +208,10 @@ def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
     """
     if not tenant_id:
         return {"plan": "anon", "limit": None, "used": 0, "remaining": None, "allowed": True}
-    plan = plan_of(tenant_id)
-    limit = quota_limit(plan)
-    used = USAGE_LEDGER.questions_used_since(tenant_id, _month_start_ts())
+    owner, plan = _billing_owner(tenant_id)          # aile mirası → havuz sahibi + plan
+    limit = quota_limit(plan)                        # kağıt/ay
+    family = _family_tenants(owner)                  # veli + bağlı çocuklar = TEK havuz
+    used = USAGE_LEDGER.worksheets_used_since(family, _month_start_ts())  # kağıt, cache-hit hariç
     remaining = max(0, limit - used)
     return {
         "plan": plan,
