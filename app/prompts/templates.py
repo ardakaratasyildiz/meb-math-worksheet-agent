@@ -50,6 +50,8 @@ Kuralların:
            Genel üçgen:  `{{geo:triangle|a=5|b=6|c=7}}`  (a sol kenar, b sağ kenar, c taban)
        (c) Dikdörtgen:  `{{geo:rectangle|w=8|h=5}}`  ·  Kare:  `{{geo:square|s=6}}`
        (d) Çember:  `{{geo:circle|r=7}}`  (yarıçap çizgisi + etiket)
+       (d2) Paralelkenar:  `{{geo:parallelogram|base=10|height=6}}`  ·  Yamuk:  `{{geo:trapezoid|a=6|b=12|h=5}}`  (a üst taban, b alt taban, h yükseklik — kesikli yükseklik çizgisi)
+       (d3) Açı:  `{{geo:angle|deg=65}}`  (köşe + iki ışın + derece yayı; ölçme/açı soruları)
        (e) Direktifi soru metninin içine ilgili cümleden hemen sonra koy. Direktifteki ölçüler soru
            ve cevapla TUTARLI olmalı. `answer` sade sayı + birim (ör. "32 cm"); LaTeX ($) KULLANMA.
        (f) Bu 5 şekle (dik üçgen / üçgen / dikdörtgen / kare / çember) UYMAYAN özel bir figür
