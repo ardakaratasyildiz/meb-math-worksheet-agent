@@ -28,7 +28,12 @@ from app.services.diversity import (
 from app.services.embedder import EmbedderError, GeminiEmbedder
 from app.services.examples import get_examples_for_kazanim, select_diverse
 from app.services.llm_cache import GENERATION_CACHE
-from app.services.structured import _answer_letter, _parse_mcq, reference_integrity_issue
+from app.services.structured import (
+    _answer_letter,
+    _parse_mcq,
+    reference_integrity_issue,
+    structured_content_issue,
+)
 from app.services.llm_providers import (
     AnthropicProvider,
     GeminiProvider,
@@ -1224,6 +1229,14 @@ class GeminiAgent:
             if ref_issue:
                 logger.info(
                     "Atıf bütünlüğü ihlali (%s): %s", ref_issue, raw.question[:70]
+                )
+                continue
+            # Eşleştirme/sıralama: gövde yalnız yönerge, öğe/şık listesi yok →
+            # cevaplanamaz (WS: sosyal PDF boş eşleştirme/sıralama) → ele, top-up doldurur.
+            content_issue = structured_content_issue(raw.question_type, q_text)
+            if content_issue:
+                logger.info(
+                    "Yapısal içerik eksik (%s): %s", content_issue, raw.question[:70]
                 )
                 continue
             # Dangling HTML tag: "altı çizili" yazılı ama <u> tag'i var, tırnak yok → ele.

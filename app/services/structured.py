@@ -228,6 +228,32 @@ def reference_integrity_issue(question: str) -> str | None:
     return None
 
 
+# Eşleştirme sağ-kolon harf şıkları (iki-liste formatı: "a. …" / "a) …" / "A) …").
+_LETTER_OPT_RE = re.compile(r"(?:^|\n)\s*[a-eA-E][.)]\s")
+
+
+def structured_content_issue(question_type: QuestionType, question: str) -> str | None:
+    """Eşleştirme/sıralama sorusu GÖVDESİNDE gerekli öğe/şık içeriğini taşımıyorsa
+    (model yalnız yönergeyi üretmiş; öğeler/şıklar ne metinde ne yapısal alanda var →
+    cevaplanamaz) neden döner. WS: 4.sınıf sosyal PDF'inde "…eşleştiriniz." /
+    "…sıralayınız." yönergeleri boş gövdeyle yayınlanıyordu.
+
+    - eşleştirme: GFM tablo VEYA (numaralı öğe listesi + harf şık listesi) olmalı.
+    - sıralama: sıralanacak numaralı/Roman öğe listesi (≥2) olmalı.
+    """
+    if not question:
+        return None
+    if question_type == QuestionType.ESLESTIRME:
+        has_table = bool(_MD_TABLE_RE.search(question))
+        has_pairs = _has_enum_items(question) and bool(_LETTER_OPT_RE.search(question))
+        if not (has_table or has_pairs):
+            return "eşleştirme öğe/şık listesi yok (yalnız yönerge → cevaplanamaz)"
+    elif question_type == QuestionType.SIRALAMA:
+        if not _has_enum_items(question):
+            return "sıralama öğe listesi yok (yalnız yönerge → cevaplanamaz)"
+    return None
+
+
 def derive_structured_fields(q: Question) -> Question:
     """LLM yapısal alan üretmediyse metinden en-iyi-çaba doldurur.
 

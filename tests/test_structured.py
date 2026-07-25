@@ -25,6 +25,7 @@ from app.services.structured import (  # noqa: E402
     SOLVABLE_TYPES,
     count_blanks,
     derive_structured_fields,
+    structured_content_issue,
     validate_structured,
 )
 
@@ -203,6 +204,45 @@ def test_non_solvable_passthrough() -> None:
     check(len(SOLVABLE_TYPES) == 4, "Adım 0: 4 çözülebilir tip")
 
 
+# ── Yapısal içerik eksikliği (eşleştirme/sıralama boş gövde) ──────────────────
+def test_structured_content_issue() -> None:
+    print("yapısal içerik eksikliği (eşleştirme/sıralama)")
+    # eşleştirme: yalnız yönerge, öğe/şık yok → düşürülür
+    check(
+        structured_content_issue(QuestionType.ESLESTIRME, "Aşağıdaki kavramları eşleştiriniz.")
+        is not None,
+        "boş eşleştirme (yalnız yönerge) düşürülür",
+    )
+    # eşleştirme: GFM tablo → korunur
+    tbl = "Eşleştir:\n| Öğe | Karşılık |\n|---|---|\n| 1. Çığ | a. Yamaç |\n| 2. Sel | b. Akarsu |"
+    check(
+        structured_content_issue(QuestionType.ESLESTIRME, tbl) is None,
+        "tablolu eşleştirme korunur",
+    )
+    # eşleştirme: iki liste (I/II + a/b) → korunur
+    lists = "Eşleştir:\nI. Deprem\nII. Sel\n\na. Fay\nb. Akarsu"
+    check(
+        structured_content_issue(QuestionType.ESLESTIRME, lists) is None,
+        "iki-listeli eşleştirme korunur",
+    )
+    # sıralama: öğe listesi yok → düşürülür
+    check(
+        structured_content_issue(QuestionType.SIRALAMA, "Olayları sıralayınız.") is not None,
+        "boş sıralama (yalnız yönerge) düşürülür",
+    )
+    # sıralama: öğe listesi var → korunur
+    check(
+        structured_content_issue(QuestionType.SIRALAMA, "Sırala:\nI. Biri\nII. İkisi\nIII. Üçü")
+        is None,
+        "öğe-listeli sıralama korunur",
+    )
+    # ilgisiz tip → etkilenmez
+    check(
+        structured_content_issue(QuestionType.COKTAN_SECMELI, "Soru? A) x B) y") is None,
+        "coktan_secmeli bu kontrolden etkilenmez",
+    )
+
+
 def main() -> int:
     for fn in (
         test_numeric_equivalent,
@@ -211,6 +251,7 @@ def main() -> int:
         test_blank_derive_and_validate,
         test_numeric_validate,
         test_non_solvable_passthrough,
+        test_structured_content_issue,
     ):
         fn()
     print()
