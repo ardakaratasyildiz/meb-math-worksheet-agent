@@ -37,10 +37,10 @@ Kuralların:
    - `coktan_secmeli` (BİRİNCİL TİP — özellikle 8. sınıf/LGS): Soru KÖKÜNÜ (bağlam) `question` alanına yaz — şıkları GÖMME. 4 şıkkı `options` alanına DÜZ METİN olarak (harf öneki "A)" vb. OLMADAN), doğru sırayla ver. SADECE biri doğru. Çeldiriciler RASTGELE değil, YAYGIN KAVRAM YANILGILARINDAN veya tipik hatalardan doğsun (ör. kütle-ağırlık karışması, fiziksel-kimyasal değişim karıştırma, ısı-sıcaklık karışması). `answer` alanı SADECE doğru şıkkın harfi ("A"/"B"/"C"/"D") — `options` dizisindeki konuma karşılık gelir.
    - `dogru_yanlis`: TEK bilimsel önerme (soru işareti yok). `answer` "Doğru" veya "Yanlış". Çözüm önermeyi kazanım çerçevesinde gerekçelendirir. Yaygın kavram yanılgılarını test etmek için idealdir.
    - `bosluk_doldurma`: Cümlede bir/birden çok "_____" (en az 3 alt çizgi). `answer` boşluk cevapları, birden çoksa "; " ile ayrılır (soldan sağa).
-   - `eslestirme`: Yönerge + boş satır + 2 kolonlu GFM tablo (ör. terim ↔ tanım, organ ↔ görev, madde ↔ özellik). `answer` "1-c, 2-a, 3-b" formatında.
+   - `eslestirme`: Yönerge + boş satır + 2 kolonlu `{{table:...}}` (ör. terim ↔ tanım, organ ↔ görev, madde ↔ özellik). `answer` "1-c, 2-a, 3-b". ⛔ Öğe+karşılık tablosunu SORU METNİNE MUTLAKA koy; yalnız "eşleştiriniz" yazıp boş bırakma YASAK (elenir).
    - `tablo_sorusu`: Soru metni + Markdown tablo (deney verisi/gözlem sonucu) + tabloya dayalı yorum/çıkarım sorusu.
    - `grafik_okuma`: Soru metni + `{{chart:...}}` direktifi + grafiğe dayalı okuma/yorum sorusu.
-   - `siralama`: Yönerge (ör. "olayları oluş sırasına göre sıralayınız") + karışık öğe listesi. `answer` doğru sıra " → " ile.
+   - `siralama`: Yönerge (ör. "olayları oluş sırasına göre sıralayınız") + karışık öğe listesi (I., II., III. …). `answer` doğru sıra " → " ile. ⛔ Sıralanacak öğeleri SORU METNİNE MUTLAKA koy; yalnız "sıralayınız" yazıp boş bırakma YASAK (elenir).
    - Sözel/kavram tipleri (kavram_sorusu, sozel_problem, akil_yurutme, gunluk_hayat): bağlamlı, muhakeme gerektiren metin soruları.
 10. Verilen örnek soruların STİLİNİ ve seviyesini referans al, AMA aynı bağlamı/verileri/şıkları KOPYALAMA. Örneğin bir deney senaryosundan hareketle farklı bir deney/gözlem bağlamı kurabilirsin — yeter ki kazanımla ve bilimsel olguyla TUTARLI olsun.
 11. Çıktıyı MUTLAKA istenen JSON formatında üret; ek metin/açıklama EKLEME. `question` alanı Markdown içerebilir (newline, tablo, grafik direktifi serbest)."""

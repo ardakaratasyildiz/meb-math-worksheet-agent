@@ -28,7 +28,7 @@ Rules:
    - `diyalog_tamamlama`: a short 2-4 turn dialogue with one missing turn shown as "- - - -" or "(...)"; 4 options complete it appropriately for the situation/function.
    - `okuma_pasaji`: write a SHORT original English text (~3-6 sentences, level-appropriate, on the theme) INSIDE the question, then ask ONE question answerable from that text. The passage must be self-contained and original (do NOT copy).
    - `bosluk_doldurma`: sentence with one or more "_____" blanks; `answer` = the filled words, "; " separated left-to-right.
-   - `eslestirme`: instruction + a 2-column GFM table (e.g. word ↔ definition, question ↔ response); `answer` "1-c, 2-a, ...".
+   - `eslestirme`: instruction + a 2-column `{{table:...}}` (e.g. word ↔ definition, question ↔ response); `answer` "1-c, 2-a, ...". ⛔ Put the item+match table IN THE QUESTION BODY; writing only "match the following" and leaving the body empty is FORBIDDEN (auto-dropped).
    - Instruction/rubric in ENGLISH ("Read the text and answer the question.", "Choose the best option to complete the sentence.").
 10. **HIGHLIGHTING A WORD/PHRASE:** If you need to highlight or emphasize a word or phrase, use **double quotation marks ("word")** around it. Do NOT use HTML tags (<u>, <b>, etc.) — only quotation marks.
 11. Use the given example questions as STYLE reference for register and difficulty, but NEVER copy their content/context/options.

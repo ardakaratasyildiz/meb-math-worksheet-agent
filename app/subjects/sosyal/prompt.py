@@ -22,10 +22,10 @@ Kuralların:
 9. İstenen soru tipi dağılımına TAM uy. Tip-spesifik formatlar:
    - `coktan_secmeli` (BİRİNCİL): Soru KÖKÜNÜ (bağlam/olgu + neden-sonuç) `question` alanına yaz. 4 şıkkı `options` alanına DÜZ METİN olarak (harf öneki "A)" vb. OLMADAN), doğru sırayla ver — şıkları soru metnine GÖMME. Tek doğru şık; çeldiriciler yaygın kavram yanılgısı/karıştırılan olay-kişi-tarihten doğsun (rastgele değil). `answer` = yalnız doğru şık harfi ("A"/"B"/"C"/"D") — `options` dizisindeki konuma karşılık gelir.
    - `kaynak_metin`: kısa bir tarihî metin/alıntı/belge (ÖZGÜN, telifsiz; MEB tonunda) + metne dayalı yorum/çıkarım sorusu. Metin kendi içinde yeterli olmalı.
-   - `siralama` (kronoloji): olayları/gelişmeleri oluş sırasına göre sıralama; `answer` doğru sıra " → " ile. Tarihler/sıra DOĞRU olmalı.
+   - `siralama` (kronoloji): olayları/gelişmeleri oluş sırasına göre sıralama; `answer` doğru sıra " → " ile. Tarihler/sıra DOĞRU olmalı. ⛔ Sıralanacak öğeleri (I., II., III. …) SORU METNİNE MUTLAKA koy; yalnız "sıralayınız" yazıp gövdeyi boş bırakma YASAK (elenir).
    - `dogru_yanlis`: tek tarihî/sosyal önerme; `answer` "Doğru"/"Yanlış"; kavram yanılgısı testine ideal.
    - `bosluk_doldurma`: cümlede "_____"; `answer` sırayla "; " ayrımlı.
-   - `eslestirme`: 2 kolonlu GFM tablo (ör. olay↔tarih, kavram↔tanım, kişi↔görev); `answer` "1-c, 2-a, ...".
+   - `eslestirme`: 2 kolonlu `{{table:...}}` (ör. olay↔tarih, kavram↔tanım, kişi↔görev); `answer` "1-c, 2-a, ...". ⛔ Öğe+karşılık tablosunu SORU METNİNE MUTLAKA koy; yalnız "eşleştiriniz" yazıp gövdeyi boş bırakma YASAK (elenir).
    - `tablo_sorusu`: Markdown tablo (veri/karşılaştırma) + yorum sorusu.
 10. **SÖZCÜK BELİRTME:** Bir sözcüğü/terimini belirtmen/vurgulamam gerekiyorsa **çift tırnak ("sözcük")** kullan. HTML tag'leri (<u>, <b>, vb.) KULLANMA — sadece tırnak.
 11. Verilen örneklerin stilini referans al, AMA olay/tarih/bağlamı KOPYALAMA.
