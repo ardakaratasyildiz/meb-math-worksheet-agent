@@ -239,6 +239,42 @@ export function getProgress(tenantId: string): Promise<ProgressResponse> {
   );
 }
 
+// ── Haftalık çalışma programı (WS-6a; /api/me/study-plan) ─────────────────────
+export interface StudyPlanDay {
+  day_no: number;
+  weekday: string;
+  kind: string; // focus (eksik) | review (tekrar) | mixed (karışık)
+  title: string;
+  subject: string;
+  grade?: number | null;
+  kazanim_kod: string;
+  topic_name: string;
+  question_count: number;
+  tip: string;
+  ratio: number; // mevcut doğruluk 0-1
+}
+export interface StudyPlanResponse {
+  summary: string;
+  days: StudyPlanDay[];
+  ai_generated: boolean;
+  created_at: string; // ISO; boşsa henüz plan yok
+}
+
+/** Kayıtlı haftalık programı getirir (LLM YOK, hızlı). created_at boş = plan yok. */
+export function getStudyPlan(tenantId: string): Promise<StudyPlanResponse> {
+  return apiRequest<StudyPlanResponse>(
+    `/api/me/study-plan?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Programı (yeniden) üretir + kaydeder (LLM çağrısı — birkaç sn sürebilir). */
+export function createStudyPlan(tenantId: string): Promise<StudyPlanResponse> {
+  return apiRequest<StudyPlanResponse>(
+    `/api/me/study-plan?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "POST" },
+  );
+}
+
 // ── Deneme geçmişi (/api/me/attempts) ────────────────────────────────────────
 /** Geçmiş listesi satırı (hafif — sorular yok). Backend AttemptHistoryItem aynası. */
 export interface AttemptHistoryItem {

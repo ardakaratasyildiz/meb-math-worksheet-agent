@@ -8,6 +8,7 @@
     "@expo-google-fonts/nunito": "^0.4.2",
     "@soruatolyesi/shared": "*",
     "expo": "~54.0.36",
+    "expo-auth-session": "~7.0.11",
     "expo-constants": "~18.0.13",
     "expo-crypto": "~15.0.9",
     "expo-dev-client": "~6.0.21",

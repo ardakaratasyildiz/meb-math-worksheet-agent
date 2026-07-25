@@ -1,9 +1,10 @@
 import { useAuth, useUser } from "@clerk/expo";
 import { Tabs } from "expo-router";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
+import { AuthScreen } from "@/components/auth-screen";
 import { RoleGate } from "@/components/role-gate";
-import { SignInForm } from "@/components/sign-in-form";
 import { TabBar } from "@/components/tab-bar";
 import { effectiveRole, type Role } from "@/lib/roles";
 import { colors, fonts } from "@/theme/tokens";
@@ -40,10 +41,15 @@ const TAB_DEFS: TabDef[] = [
   { name: "profile", title: "Profil", roles: ALL, headerShown: false },
 ];
 
-function Splash() {
+function Splash({ slow }: { slow?: boolean }) {
   return (
     <View style={styles.center}>
       <ActivityIndicator size="large" color={colors.brand} />
+      {slow ? (
+        <Text style={styles.slowText}>
+          Giriş servisi (Clerk) yüklenemiyor.{"\n"}İnternet bağlantısını ve anahtarı kontrol et.
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -52,8 +58,16 @@ export default function TabsLayout() {
   const { isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
 
-  if (!isLoaded) return <Splash />;
-  if (!isSignedIn) return <SignInForm />;
+  // Clerk 8sn'de yüklenmezse infinite spinner yerine yardımcı uyarı göster.
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    if (isLoaded) return;
+    const t = setTimeout(() => setSlow(true), 8000);
+    return () => clearTimeout(t);
+  }, [isLoaded]);
+
+  if (!isLoaded) return <Splash slow={slow} />;
+  if (!isSignedIn) return <AuthScreen />;
 
   const role = effectiveRole(user);
   if (role === null) return <RoleGate />;
@@ -90,5 +104,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.bg,
+    gap: 16,
+    padding: 24,
   },
+  slowText: { fontSize: 13, color: colors.textMuted, textAlign: "center" },
 });

@@ -10,15 +10,40 @@ import {
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Component, type ReactNode, useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthTokenBridge } from '@/components/auth-token-bridge';
 import { ENV } from '@/lib/env';
 import { colors } from '@/theme/tokens';
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {});
+
+/** TEŞHİS: render hatasını beyaz ekran yerine görünür metne çevirir. */
+class RootErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  componentDidCatch(error: Error) {
+    console.error('[RootErrorBoundary]', error?.message, error?.stack);
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <View style={styles.diag}>
+          <Text style={styles.diagTitle}>Uygulama hatası</Text>
+          <ScrollView style={styles.diagScroll}>
+            <Text style={styles.diagText}>{this.state.error.message}</Text>
+            <Text style={styles.diagStack}>{this.state.error.stack}</Text>
+          </ScrollView>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -30,46 +55,59 @@ export default function RootLayout() {
     Nunito_800ExtraBold,
   });
 
+  // TEŞHİS: fontlar takılsa bile 4 sn sonra devam et (beyaz ekranda kilitlenme).
+  const [fontTimeout, setFontTimeout] = useState(false);
   useEffect(() => {
-    if (fontsLoaded || fontError) SplashScreen.hideAsync().catch(() => {});
-  }, [fontsLoaded, fontError]);
+    const t = setTimeout(() => setFontTimeout(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
 
-  // Fontlar yüklenene kadar splash'te bekle (hata olursa sistem fontuyla devam).
-  if (!fontsLoaded && !fontError) return null;
+  const ready = fontsLoaded || !!fontError || fontTimeout;
 
-  // Anahtar yoksa ClerkProvider patlar → yardımcı yapılandırma ekranı göster.
+  useEffect(() => {
+    if (ready) SplashScreen.hideAsync().catch(() => {});
+  }, [ready]);
+
+  // Hazır olana kadar GÖRÜNÜR yükleyici (eskiden `return null` → beyaz ekran).
+  if (!ready) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={colors.brand} />
+        <Text style={styles.loadingText}>Yükleniyor…</Text>
+      </View>
+    );
+  }
+
   if (!ENV.clerkPublishableKey) {
     return (
-      <View style={styles.configScreen}>
-        <Text style={styles.configTitle}>Yapılandırma eksik</Text>
-        <Text style={styles.configText}>
-          EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY tanımlı değil.{"\n"}
-          apps/mobile/.env dosyasına ekleyip yeniden başlatın.
+      <View style={styles.diag}>
+        <Text style={styles.diagTitle}>Yapılandırma eksik</Text>
+        <Text style={styles.diagText}>
+          EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY tanımlı değil. apps/mobile/.env dosyasına ekleyip
+          Metro'yu yeniden başlatın.
         </Text>
       </View>
     );
   }
 
   return (
-    <ClerkProvider publishableKey={ENV.clerkPublishableKey} tokenCache={tokenCache}>
-      <AuthTokenBridge />
-      <SafeAreaProvider>
-        {/* Kök Stack yalnız (tabs) grubunu barındırır; header/sekme chrome'u
-            (tabs)/_layout içindeki gate + Tabs navigatöründe yönetilir. */}
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }} />
-      </SafeAreaProvider>
-    </ClerkProvider>
+    <RootErrorBoundary>
+      <ClerkProvider publishableKey={ENV.clerkPublishableKey} tokenCache={tokenCache}>
+        <AuthTokenBridge />
+        <SafeAreaProvider>
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }} />
+        </SafeAreaProvider>
+      </ClerkProvider>
+    </RootErrorBoundary>
   );
 }
 
 const styles = StyleSheet.create({
-  configScreen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    gap: 8,
-  },
-  configTitle: { fontSize: 18, fontWeight: '700' },
-  configText: { fontSize: 14, textAlign: 'center', opacity: 0.7 },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg, gap: 12 },
+  loadingText: { fontSize: 15, color: colors.textMuted },
+  diag: { flex: 1, padding: 24, paddingTop: 60, backgroundColor: colors.bg, gap: 12 },
+  diagTitle: { fontSize: 20, fontWeight: '700', color: colors.danger },
+  diagScroll: { flex: 1 },
+  diagText: { fontSize: 14, color: colors.text, marginBottom: 12 },
+  diagStack: { fontSize: 11, color: colors.textMuted, fontFamily: 'monospace' },
 });
