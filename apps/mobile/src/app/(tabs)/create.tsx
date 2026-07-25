@@ -15,7 +15,7 @@ import { QuestionCard, ResultView, stripInlineOptions } from '@/components/solve
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { createQuiz, generateWorksheet, submitAttempt } from '@/lib/api';
-import { shareWorksheetPdf } from '@/lib/pdf';
+import { previewWorksheetPdf, shareWorksheetPdf } from '@/lib/pdf';
 import { effectiveRole, isPlayfulRole } from '@/lib/roles';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
@@ -44,6 +44,7 @@ export default function CreateScreen() {
 
   const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
   const [sharing, setSharing] = useState(false);
+  const [previewing, setPreviewing] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
   const setAnswer = useCallback((n: number, patch: Partial<SubmittedAnswer>) => {
@@ -128,21 +129,39 @@ export default function CreateScreen() {
     }
   }, [quiz, userId, busy, answers]);
 
+  const pdfOpts = useCallback(
+    () => ({
+      includeAnswerKey: params?.includeAnswerKey ?? true,
+      includeSolutions: params?.includeSolutions ?? true,
+    }),
+    [params],
+  );
+
+  const onPreviewPdf = useCallback(async () => {
+    if (!worksheet || previewing) return;
+    setPreviewing(true);
+    setError(null);
+    try {
+      await previewWorksheetPdf(worksheet, pdfOpts());
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setPreviewing(false);
+    }
+  }, [worksheet, previewing, pdfOpts]);
+
   const onSharePdf = useCallback(async () => {
     if (!worksheet || sharing) return;
     setSharing(true);
     setError(null);
     try {
-      await shareWorksheetPdf(worksheet, {
-        includeAnswerKey: params?.includeAnswerKey ?? true,
-        includeSolutions: params?.includeSolutions ?? true,
-      });
+      await shareWorksheetPdf(worksheet, pdfOpts());
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setSharing(false);
     }
-  }, [worksheet, sharing, params]);
+  }, [worksheet, sharing, pdfOpts]);
 
   const restart = useCallback(() => {
     setPhase('setup');
@@ -252,16 +271,23 @@ export default function CreateScreen() {
               })}
               {error ? <Text style={styles.error}>{error}</Text> : null}
               <PrimaryButton
-                label="PDF oluştur & paylaş"
+                label="PDF önizle"
+                busy={previewing}
+                onPress={onPreviewPdf}
+                icon={<IconWorksheet size={22} tone="#FFFFFF" />}
+              />
+              <PrimaryButton
+                label="Paylaş"
+                variant="soft"
                 busy={sharing}
                 onPress={onSharePdf}
-                icon={<IconWorksheet size={22} tone="#FFFFFF" />}
+                icon={<IconDocSimple size={20} color={colors.brand} />}
               />
               <PrimaryButton
                 label="Yeni oluştur"
                 variant="soft"
+                color={colors.textMuted}
                 onPress={restart}
-                icon={<IconDocSimple size={20} color={colors.brand} />}
               />
             </>
           )}
