@@ -123,6 +123,91 @@ function MathText({ text, color }: { text: string; color: string }) {
   return <Text style={[styles.text, { color }]}>{latexLite(text)}</Text>;
 }
 
+// ── GFM tablo (eşleştirme / tablo_sorusu — {{table}} direktifi q.question'a gömülür) ──
+const TABLE_ROW_RE = /^\s*\|.*\|\s*$/;
+
+function parseCells(line: string): string[] {
+  return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+}
+function isSeparatorRow(cells: string[]): boolean {
+  return cells.length > 0 && cells.every((c) => /^:?-{2,}:?$/.test(c.replace(/\s/g, "")));
+}
+
+type TextPart = { kind: "text"; value: string } | { kind: "table"; rows: string[][] };
+
+/** Düz metni GFM tablo bloklarından ayırır (başlık + `|---|` ayraç + satırlar). */
+function splitByTable(text: string): TextPart[] {
+  const lines = text.split("\n");
+  const parts: TextPart[] = [];
+  let buf: string[] = [];
+  const flush = () => {
+    if (buf.length) {
+      parts.push({ kind: "text", value: buf.join("\n") });
+      buf = [];
+    }
+  };
+  let i = 0;
+  while (i < lines.length) {
+    const isTableStart =
+      TABLE_ROW_RE.test(lines[i]) &&
+      i + 1 < lines.length &&
+      TABLE_ROW_RE.test(lines[i + 1]) &&
+      isSeparatorRow(parseCells(lines[i + 1]));
+    if (isTableStart) {
+      flush();
+      const rows: string[][] = [parseCells(lines[i])]; // başlık
+      i += 2; // başlık + ayraç satırı atlanır
+      while (i < lines.length && TABLE_ROW_RE.test(lines[i])) {
+        rows.push(parseCells(lines[i]));
+        i++;
+      }
+      parts.push({ kind: "table", rows });
+    } else {
+      buf.push(lines[i]);
+      i++;
+    }
+  }
+  flush();
+  return parts;
+}
+
+function TableView({ rows, color }: { rows: string[][]; color: string }) {
+  return (
+    <View style={styles.table}>
+      {rows.map((cells, r) => (
+        <View key={r} style={styles.tableRow}>
+          {cells.map((c, ci) => (
+            <View key={ci} style={[styles.tableCell, r === 0 && styles.tableHeadCell]}>
+              <Text style={[styles.cellText, { color }, r === 0 && styles.cellHeadText]}>
+                {latexLite(c)}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+/** Bir metin parçasını GFM tablolara böler; tablo → TableView, gerisi → MathText. */
+function TextOrTable({ text, color }: { text: string; color: string }) {
+  const parts = splitByTable(text);
+  if (parts.length === 1 && parts[0].kind === "text") {
+    return <MathText text={text} color={color} />;
+  }
+  return (
+    <View style={styles.wrap}>
+      {parts.map((p, i) =>
+        p.kind === "table" ? (
+          <TableView key={i} rows={p.rows} color={color} />
+        ) : p.value.trim() ? (
+          <MathText key={i} text={p.value} color={color} />
+        ) : null,
+      )}
+    </View>
+  );
+}
+
 export function QuestionText({
   text,
   width = 300,
@@ -147,7 +232,7 @@ export function QuestionText({
           );
         }
         if (!seg.value.trim()) return null;
-        return <MathText key={i} text={seg.value} color={color} />;
+        return <TextOrTable key={i} text={seg.value} color={color} />;
       })}
     </View>
   );
@@ -160,4 +245,23 @@ const styles = StyleSheet.create({
   mathRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center" },
   mathItem: { marginHorizontal: 1 },
   mathBlock: { width: "100%", alignItems: "flex-start", marginVertical: 4 },
+  table: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    overflow: "hidden",
+    marginVertical: 4,
+    alignSelf: "stretch",
+  },
+  tableRow: { flexDirection: "row" },
+  tableCell: {
+    flex: 1,
+    borderWidth: 0.5,
+    borderColor: colors.border,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
+  tableHeadCell: { backgroundColor: colors.bgTint },
+  cellText: { fontFamily: fonts.body, fontSize: fontSize.sm, lineHeight: 18 },
+  cellHeadText: { fontFamily: fonts.bodyBold },
 });
