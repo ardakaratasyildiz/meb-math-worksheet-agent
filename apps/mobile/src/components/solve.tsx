@@ -10,7 +10,7 @@ import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 /** Gömülü "A) .. B) .." şıklarını soru KÖKÜNDEN ayıklar (web QuestionReview deseni).
  * D1 sonrası backend şıkları hem `.options` alanına hem metne gömüyor → çoktan seçmeli
  * çözme ekranında şıklar buton olarak render edilirken metinde İKİNCİ KEZ görünmesin. */
-function stripInlineOptions(text: string): string {
+export function stripInlineOptions(text: string): string {
   const re = /(^|[^A-Za-z0-9])([A-D])[)\.]/g;
   const marks: number[] = [];
   let m: RegExpExecArray | null;

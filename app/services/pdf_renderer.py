@@ -32,6 +32,7 @@ from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
+    CondPageBreak,
     Image,
     KeepTogether,
     PageBreak,
@@ -371,7 +372,7 @@ def _normalize_svg_fonts(svg: str) -> str:
 
 
 def _render_svg_block(
-    svg_str: str, max_width_cm: float = 12.0, max_height_cm: float = 15.0
+    svg_str: str, max_width_cm: float = 12.0, max_height_cm: float = 10.0
 ) -> object | None:
     """SVG string'i svglib ile reportlab Drawing'e çevirir.
 
@@ -520,18 +521,45 @@ def _render_markdown_blocks(
     return flow
 
 
+# Gömülü "A) .. B) .." şık işaretçileri (web splitInlineOptions / mobil stripInlineOptions
+# ile birebir desen). Kök metni şıklardan ayırmak için.
+_OPT_MARKER_RE = re.compile(r"(^|[^A-Za-z0-9])([A-D])[)\.]")
+
+
+def _strip_inline_options(text: str) -> str:
+    """Gömülü A)-D) şıklarını metin KÖKÜNDEN ayıklar (en az iki işaretçi varsa)."""
+    marks = [m.start() + len(m.group(1)) for m in _OPT_MARKER_RE.finditer(text)]
+    if len(marks) < 2:
+        return text
+    return text[: marks[0]].rstrip()
+
+
 def _question_block(q: Question, styles: dict[str, ParagraphStyle]) -> list:
-    flow: list = [Paragraph(f"Soru {q.number}", styles["qheader"])]
-    blocks = _render_markdown_blocks(q.question, styles)
+    # Çoktan seçmeli: şıkları YAPISAL `q.options` alanından otoriter render et
+    # (metne gömülü olsa da; D1). Kök metinden gömülü A)-D) ayıklanır → çift-render yok.
+    is_mc = q.question_type == "coktan_secmeli" and bool(q.options) and len(q.options or []) >= 2
+    stem_src = _strip_inline_options(q.question) if is_mc else q.question
+
+    header_stem: list = [Paragraph(f"Soru {q.number}", styles["qheader"])]
+    blocks = _render_markdown_blocks(stem_src, styles)
     if not blocks:
         # Hiç içerik üretilmediyse boş soru riski — fallback olarak ham metin bas.
-        safe = q.question.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        safe = stem_src.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         blocks = [Paragraph(safe, styles["qbody"])]
-    flow.extend(blocks)
-    flow.append(Paragraph("Cevap: " + "_" * 40, styles["answerline"]))
-    flow.append(Spacer(1, 0.2 * cm))
-    # Tüm soruyu mümkünse aynı sayfada tut — şekil sayfa sonunda bölünürse okunmuyor.
-    return [KeepTogether(flow)]
+    header_stem.extend(blocks)
+
+    tail: list = []
+    if is_mc:
+        for i, opt in enumerate(q.options or []):
+            letter = chr(65 + i)
+            tail.append(Paragraph(f"{letter}) {_md_inline_to_rl(opt)}", styles["qbody"]))
+    tail.append(Paragraph("Cevap: " + "_" * 40, styles["answerline"]))
+    tail.append(Spacer(1, 0.2 * cm))
+
+    # Sayfa dibinde yalnız başlık kalmasın; başlık+kök birlikte (küçük birim → footer'a
+    # taşmaz), şıklar/cevap serbest akar. KeepTogether tüm soruyu sarınca uzun bloklar
+    # footer/sayfa-no üzerine biniyordu → CondPageBreak + küçük KeepTogether ile çözüldü.
+    return [CondPageBreak(4 * cm), KeepTogether(header_stem), *tail]
 
 
 def _clean_answer_for_table(answer: str) -> str:

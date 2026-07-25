@@ -6,11 +6,12 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GeneratorSetup, type GeneratorParams } from '@/components/generator-setup';
-import { IconDocSimple, IconWorksheet } from '@/components/icons';
+import { IconDocSimple, IconSpark, IconWorksheet } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
 import { QuestionText } from '@/components/question-text';
+import { ShareSheet } from '@/components/share-sheet';
 import { SkeletonList } from '@/components/skeleton';
-import { QuestionCard, ResultView } from '@/components/solve';
+import { QuestionCard, ResultView, stripInlineOptions } from '@/components/solve';
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { createQuiz, generateWorksheet, submitAttempt } from '@/lib/api';
@@ -43,6 +44,7 @@ export default function CreateScreen() {
 
   const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
   const [sharing, setSharing] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const setAnswer = useCallback((n: number, patch: Partial<SubmittedAnswer>) => {
     setAnswers((prev) => ({ ...prev, [n]: { ...prev[n], ...patch, number: n } }));
@@ -192,11 +194,28 @@ export default function CreateScreen() {
               ))}
               {error ? <Text style={styles.error}>{error}</Text> : null}
               <PrimaryButton label="Bitir & Puanla" color={colors.success} busy={busy} onPress={onSubmitQuiz} />
+              <PrimaryButton
+                label="Testi paylaş"
+                variant="soft"
+                onPress={() => setShareOpen(true)}
+                icon={<IconSpark size={20} />}
+              />
             </>
           )}
 
           {phase === 'result' && result && (
-            <ResultView result={result} onRestart={restart} sober={sober} />
+            <>
+              <ResultView result={result} onRestart={restart} sober={sober} />
+              {quiz ? (
+                <PrimaryButton
+                  label="Bu testi arkadaşlarınla paylaş"
+                  variant="soft"
+                  color={colors.magic}
+                  onPress={() => setShareOpen(true)}
+                  icon={<IconSpark size={20} />}
+                />
+              ) : null}
+            </>
           )}
 
           {phase === 'sheet' && worksheet && (
@@ -206,16 +225,31 @@ export default function CreateScreen() {
                 subtitle={`${worksheet.question_count} soru · ${worksheet.difficulty}`}
                 right={<Mascot variant="happy" size={64} />}
               />
-              {worksheet.questions.map((q) => (
-                <Card key={q.number} style={styles.qCard}>
-                  <View style={styles.qNo}>
-                    <Text style={styles.qNoText}>{q.number}</Text>
-                  </View>
-                  <View style={styles.qBody}>
-                    <QuestionText text={q.question} />
-                  </View>
-                </Card>
-              ))}
+              {worksheet.questions.map((q) => {
+                const isMc = q.question_type === 'coktan_secmeli' && !!q.options?.length;
+                return (
+                  <Card key={q.number} style={styles.qCard}>
+                    <View style={styles.qNo}>
+                      <Text style={styles.qNoText}>{q.number}</Text>
+                    </View>
+                    <View style={styles.qBody}>
+                      <QuestionText text={isMc ? stripInlineOptions(q.question) : q.question} />
+                      {isMc ? (
+                        <View style={styles.optList}>
+                          {q.options!.map((opt, i) => (
+                            <View key={i} style={styles.optRow}>
+                              <Text style={styles.optLetter}>{String.fromCharCode(65 + i)})</Text>
+                              <View style={styles.optText}>
+                                <QuestionText text={opt} />
+                              </View>
+                            </View>
+                          ))}
+                        </View>
+                      ) : null}
+                    </View>
+                  </Card>
+                );
+              })}
               {error ? <Text style={styles.error}>{error}</Text> : null}
               <PrimaryButton
                 label="PDF oluştur & paylaş"
@@ -231,6 +265,13 @@ export default function CreateScreen() {
               />
             </>
           )}
+
+          <ShareSheet
+            quizId={quiz?.id ?? null}
+            tenantId={userId ?? null}
+            visible={shareOpen}
+            onClose={() => setShareOpen(false)}
+          />
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -261,4 +302,8 @@ const styles = StyleSheet.create({
   qNo: { width: 32, height: 32, borderRadius: radius.md, backgroundColor: colors.tintBlue, alignItems: 'center', justifyContent: 'center' },
   qNoText: { color: colors.brand, fontFamily: fonts.heading, fontSize: fontSize.md },
   qBody: { flex: 1 },
+  optList: { marginTop: spacing.sm, gap: spacing.xs },
+  optRow: { flexDirection: 'row', gap: spacing.sm, alignItems: 'flex-start' },
+  optLetter: { fontFamily: fonts.bodyBold, fontSize: fontSize.sm, color: colors.brand, marginTop: 1 },
+  optText: { flex: 1 },
 });

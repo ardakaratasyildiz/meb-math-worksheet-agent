@@ -180,6 +180,27 @@ function splitInlineOptions(
 // en az iki "X)" işaretçisi yoksa null döner) → çoktan seçmeli + okuma_pasaji,
 // kelime_bilgisi, dil_bilgisi, yazim_noktalama gibi tüm şıklı sözel tipleri kapsar.
 function QuestionBody({ q }: { q: Question }) {
+  // D1 (#133) sonrası çoktan seçmeli şıklar YAPISAL `q.options` alanında gelir
+  // (metne GÖMÜLÜ değil). Önce alandan render et; harf (A/B/C) burada eklenir.
+  if (q.question_type === "coktan_secmeli" && q.options && q.options.length > 0) {
+    const stem = splitInlineOptions(q.question)?.stem ?? q.question;
+    return (
+      <div className="space-y-1">
+        <MarkdownQuestion text={stem} />
+        <div className="space-y-0.5 pl-1">
+          {q.options.map((opt, i) => (
+            <div key={i} className="flex gap-1.5">
+              <span className="shrink-0 text-sm font-semibold text-primary">
+                {String.fromCharCode(65 + i)})
+              </span>
+              <MarkdownQuestion text={opt} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  // Geriye dönük: bazı tipler şıkları hâlâ metne gömülü gönderebilir → tespit et.
   const split = splitInlineOptions(q.question);
   if (split) {
     return (

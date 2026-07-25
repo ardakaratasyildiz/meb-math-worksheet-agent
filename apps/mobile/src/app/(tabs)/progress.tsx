@@ -141,6 +141,21 @@ export default function ProgressScreen() {
                 <IconChevron size={18} color={colors.textFaint} />
               </Pressable>
 
+              {/* Paylaşımlarım */}
+              <Pressable
+                style={({ pressed }) => [styles.linkCard, pressed && styles.linkPressed]}
+                onPress={() => router.push('/shares' as Href)}
+              >
+                <View style={[styles.linkIcon, { backgroundColor: colors.tintGreen }]}>
+                  <IconSpark size={26} />
+                </View>
+                <View style={styles.linkBody}>
+                  <Text style={styles.linkTitle}>Paylaşımlarım</Text>
+                  <Text style={styles.linkSub}>Paylaştığın testleri kimler çözdü?</Text>
+                </View>
+                <IconChevron size={18} color={colors.textFaint} />
+              </Pressable>
+
               {/* Geliştirilecek kazanımlar (zayıf) — "tüm kazanımlar" kaldırıldı */}
               {data.weak.length > 0 && (
                 <Card>

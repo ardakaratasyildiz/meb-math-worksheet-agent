@@ -275,6 +275,61 @@ export function createStudyPlan(tenantId: string): Promise<StudyPlanResponse> {
   );
 }
 
+// ── Quiz paylaşımı + QR (viral döngü; /api/quizzes/{id}/share, /api/me/shares) ─
+export interface CreateShareResponse {
+  share_code: string;
+  share_url: string; // göreli: /q/{code} — tam URL için origin eklenir
+}
+export interface ShareSummary {
+  share_id: string;
+  share_code: string;
+  quiz_id: string;
+  title: string;
+  grade?: number | null;
+  topic_id: string;
+  created_at: string;
+  attempt_count: number;
+  avg_score_pct?: number | null;
+}
+export interface ShareResultItem {
+  solver_label?: string | null;
+  score: number;
+  total: number;
+  duration_seconds?: number | null;
+  completed_at: string;
+}
+export interface ShareResultsResponse {
+  title: string;
+  question_count: number;
+  items: ShareResultItem[];
+}
+
+/** Quiz için paylaşım linki oluştur (idempotent; yalnız sahibi). Giriş şart. */
+export function createShare(quizId: string, tenantId: string): Promise<CreateShareResponse> {
+  return apiRequest<CreateShareResponse>(
+    `/api/quizzes/${encodeURIComponent(quizId)}/share?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: "POST", headers: { "X-Tenant-Id": tenantId } },
+  );
+}
+
+/** Kullanıcının oluşturduğu paylaşımlar + çözülme sayısı + ort. skor (pano). */
+export async function listMyShares(tenantId: string): Promise<ShareSummary[]> {
+  const r = await apiRequest<{ items: ShareSummary[] }>(
+    `/api/me/shares?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+  return r.items;
+}
+
+/** Bir paylaşımın sonuç panosu — kim çözdü, kaç doğru (sahip-only). */
+export function getShareResults(shareId: string, tenantId: string): Promise<ShareResultsResponse> {
+  return apiRequest<ShareResultsResponse>(
+    `/api/me/shares/${encodeURIComponent(shareId)}/results?tenant_id=${encodeURIComponent(tenantId)}`,
+  );
+}
+
+/** Web origin — paylaşım linkleri buradan servis edilir (login'siz /q/{code}). */
+export const WEB_ORIGIN = "https://soruatolyesi.com";
+
 // ── Deneme geçmişi (/api/me/attempts) ────────────────────────────────────────
 /** Geçmiş listesi satırı (hafif — sorular yok). Backend AttemptHistoryItem aynası. */
 export interface AttemptHistoryItem {
