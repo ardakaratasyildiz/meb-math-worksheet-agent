@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import type { ProgressResponse } from "@soruatolyesi/shared";
+
 import {
   HexBadge,
   IconBell,
@@ -17,12 +19,12 @@ import {
   IconStar,
   IconTarget,
   IconWorksheet,
-  type BadgeGlyph,
 } from "@/components/icons";
 import { AdultHome } from "@/components/home-adult";
 import { Mascot } from "@/components/mascot";
 import { Card, ProgressBar, SpeechBubble, StatChip } from "@/components/ui";
-import { getGamification, pingHealth, type GamificationResponse } from "@/lib/api";
+import { getGamification, getProgress, pingHealth, type GamificationResponse } from "@/lib/api";
+import { badgeGlyph, badgeVariant, computeBadges, tierLabel } from "@/lib/badges";
 import { effectiveRole } from "@/lib/roles";
 import { colors, fonts, fontSize, radius, shadow, spacing } from "@/theme/tokens";
 
@@ -47,20 +49,14 @@ const DEMO: GamificationResponse = {
   total_active_days: 12,
 };
 
-// TODO(backend): "bugün çözülen soru" ucu yok → şimdilik görsel kabuk değerleri.
-const DAILY_DONE = 7;
+// Günlük soru hedefi (motivasyon nudge'ı — sabit hedef, "çözülen" gerçek veriden).
 const DAILY_GOAL = 15;
 
-// TODO(backend): "devam et" (son yarım kalan konu) ucu yok → görsel kabuk.
-const CONTINUE = { topic: "Kesirler", sub: "Kesirlerde Toplama İşlemi", pct: 65 };
-
-// TODO(backend): mobilde rozet ucu yok (web lib/badges.ts port edilecek) → görsel kabuk.
-const BADGES: { title: string; desc: string; glyph: BadgeGlyph; variant: string }[] = [
-  { title: "İlk Adım", desc: "5 soru çözdün", glyph: "trophy", variant: "bronze" },
-  { title: "Odaklı", desc: "10 doğru yaptın", glyph: "target", variant: "teal" },
-  { title: "Azimli", desc: "5 gün seri yaptın", glyph: "fire", variant: "ember" },
-  { title: "Başarılı", desc: "Seviye 3 oldun", glyph: "star", variant: "royal" },
-];
+/** Cihazın yerel (Türkiye) günü — YYYY-MM-DD; daily_trend ile eşleşir. */
+function todayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 function levelTitle(level: number): string {
   if (level <= 1) return "Acemi";
@@ -75,14 +71,16 @@ export default function HomeScreen() {
   const { user } = useUser();
   const router = useRouter();
   const [game, setGame] = useState<GamificationResponse | null>(null);
+  const [progress, setProgress] = useState<ProgressResponse | null>(null);
 
   const load = useCallback(async () => {
     if (!userId) return;
-    try {
-      setGame(await getGamification(userId));
-    } catch {
-      setGame(null); // dev'de 401 → DEMO'ya düşer
-    }
+    const [gg, pp] = await Promise.all([
+      getGamification(userId).catch(() => null), // 401/hata → DEMO'ya düşer
+      getProgress(userId).catch(() => null),
+    ]);
+    setGame(gg);
+    setProgress(pp);
   }, [userId]);
 
   useEffect(() => {
@@ -93,6 +91,13 @@ export default function HomeScreen() {
   const g = game ?? DEMO;
   const firstName = user?.firstName ?? "Arda";
   const go = (path: string) => () => router.push(path as Href);
+
+  // Gerçek verilerden türet: bugün çözülen / devam et (en zayıf kazanım) / rozetler.
+  const todayPoint = progress?.daily_trend?.find((d) => d.date === todayStr());
+  const dailyDone = Math.min(todayPoint?.total ?? 0, DAILY_GOAL);
+  const weakest = progress?.weak?.[0] ?? null;
+  const weakPct = weakest ? Math.round((weakest.ratio <= 1 ? weakest.ratio : weakest.ratio / 100) * 100) : 0;
+  const badges = progress ? computeBadges(progress.mastery).slice(0, 4) : [];
 
   // Öğretmen/veli → sade "yetişkin" ana ekran (oyunlaşma yok). Öğrenci → aşağıdaki oyunsu hub.
   const role = effectiveRole(user);
@@ -143,7 +148,13 @@ export default function HomeScreen() {
           {/* ── Maskot konuşma balonu ─────────────────────────────────────── */}
           <SpeechBubble style={styles.bubble}>
             <Text style={styles.bubbleText}>
-              Bugün seni bekleyen <Text style={styles.bubbleAccent}>3 görev</Text> var! 🎉
+              {dailyDone >= DAILY_GOAL ? (
+                <>Bugünkü hedefini tamamladın! 🎉</>
+              ) : (
+                <>
+                  Hedefe <Text style={styles.bubbleAccent}>{DAILY_GOAL - dailyDone} soru</Text> kaldı! 🎯
+                </>
+              )}
             </Text>
           </SpeechBubble>
 
@@ -156,7 +167,7 @@ export default function HomeScreen() {
               </View>
               <View style={styles.goalBarRow}>
                 <View style={{ flex: 1 }}>
-                  <ProgressBar progress={DAILY_DONE / DAILY_GOAL} color={colors.success} />
+                  <ProgressBar progress={dailyDone / DAILY_GOAL} color={colors.success} />
                 </View>
                 <View style={styles.goalGift}>
                   <IconGift size={40} />
@@ -164,11 +175,17 @@ export default function HomeScreen() {
               </View>
               <Text style={styles.goalCount}>
                 <Text style={styles.goalCountStrong}>
-                  {DAILY_DONE} / {DAILY_GOAL}
+                  {dailyDone} / {DAILY_GOAL}
                 </Text>{" "}
                 soru çözdün
               </Text>
-              <Text style={styles.goalHint}>Harika gidiyorsun!</Text>
+              <Text style={styles.goalHint}>
+                {dailyDone >= DAILY_GOAL
+                  ? "Bugünkü hedefe ulaştın! 🎉"
+                  : dailyDone > 0
+                    ? "Harika gidiyorsun!"
+                    : "Hadi bugüne başlayalım!"}
+              </Text>
             </Card>
 
             <Card style={styles.streakCard}>
@@ -189,13 +206,21 @@ export default function HomeScreen() {
                 <IconWorksheet size={40} tone="#FFFFFF" />
               </View>
               <View style={styles.continueBody}>
-                <Text style={styles.continueKicker}>Devam Et</Text>
-                <Text style={styles.continueTopic}>{CONTINUE.topic}</Text>
-                <Text style={styles.continueSub}>{CONTINUE.sub}</Text>
-                <View style={styles.continueBarWrap}>
-                  <ProgressBar progress={CONTINUE.pct / 100} color="#FFFFFF" height={8} />
-                </View>
-                <Text style={styles.continuePct}>%{CONTINUE.pct} tamamlandı</Text>
+                <Text style={styles.continueKicker}>{weakest ? "Önce bunu çalış" : "Bugüne başla"}</Text>
+                <Text style={styles.continueTopic}>
+                  {weakest ? weakest.topic_name || weakest.kazanim_kod : "Yeni alıştırma"}
+                </Text>
+                <Text style={styles.continueSub}>
+                  {weakest ? "Bu kazanımı geliştirmeye ne dersin?" : "Alıştırma çöz, gelişimini gör"}
+                </Text>
+                {weakest ? (
+                  <>
+                    <View style={styles.continueBarWrap}>
+                      <ProgressBar progress={weakPct / 100} color="#FFFFFF" height={8} />
+                    </View>
+                    <Text style={styles.continuePct}>%{weakPct} doğruluk</Text>
+                  </>
+                ) : null}
               </View>
               <View style={styles.playBtn}>
                 <IconPlay size={26} color={colors.success} />
@@ -248,19 +273,25 @@ export default function HomeScreen() {
                 <IconChevron size={16} color={colors.brand} />
               </Pressable>
             </View>
-            <View style={styles.badgeRow}>
-              {BADGES.map((b) => (
-                <View key={b.title} style={styles.badgeItem}>
-                  <HexBadge size={58} glyph={b.glyph} variant={b.variant as never} />
-                  <Text style={styles.badgeTitle} numberOfLines={1}>
-                    {b.title}
-                  </Text>
-                  <Text style={styles.badgeDesc} numberOfLines={2}>
-                    {b.desc}
-                  </Text>
-                </View>
-              ))}
-            </View>
+            {badges.length > 0 ? (
+              <View style={styles.badgeRow}>
+                {badges.map((b, i) => (
+                  <View key={i} style={styles.badgeItem}>
+                    <HexBadge size={58} glyph={badgeGlyph(b.tier)} variant={badgeVariant(b.tier)} />
+                    <Text style={styles.badgeTitle} numberOfLines={1}>
+                      {b.topicName}
+                    </Text>
+                    <Text style={styles.badgeDesc} numberOfLines={1}>
+                      {tierLabel(b.tier)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <Text style={styles.badgeEmpty}>
+                İlk rozetini kazanmak için çözmeye başla! 🎯
+              </Text>
+            )}
           </Card>
         </ScrollView>
       </SafeAreaView>
@@ -562,5 +593,12 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: "center",
     marginTop: 1,
+  },
+  badgeEmpty: {
+    fontFamily: fonts.body,
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    textAlign: "center",
+    paddingVertical: spacing.lg,
   },
 });
