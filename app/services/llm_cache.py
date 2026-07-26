@@ -314,46 +314,56 @@ class SpareQuestionPool:
         self._db.commit()
 
     def add_many(self, key: str, questions: list[Question]) -> int:
-        """Fazla soruları havuza yazar. Tekrarlar sessizce atlanır. Eklenen sayı döner."""
+        """Fazla soruları havuza yazar. Tekrarlar sessizce atlanır. Eklenen sayı döner.
+
+        BEST-EFFORT: hiçbir koşulda istisna FIRLATMAZ. Havuz bir optimizasyondur;
+        prod'da Turso'ya yazar ve mixed modda 3 bucket paralel koşar — bir DB
+        hatası üretimi düşürmemeli (bucket'ın `except Exception`'ı hazır soruları
+        çöpe atardı).
+        """
         if not questions:
             return 0
         from app.services.diversity import normalize_question
 
         now = time.time()
         added = 0
-        with self._lock:
-            assert self._db is not None
-            for q in questions:
-                try:
-                    self._db.execute(
-                        "INSERT OR IGNORE INTO spare_questions "
-                        "(pool_key, norm_question, question_json, used_count, created_at) "
-                        "VALUES (?,?,?,0,?)",
-                        (
-                            key,
-                            normalize_question(q.question),
-                            json.dumps(q.model_dump(mode="json"), ensure_ascii=False),
-                            now,
-                        ),
-                    )
-                    added += 1
-                except Exception as exc:  # noqa: BLE001 — havuz üretimi bozmasın
-                    logger.warning("Havuz yazımı atlandı: %s", exc)
-            # Trim: en çok kullanılmış + en eski satırları at.
-            self._db.execute(
-                """
-                DELETE FROM spare_questions
-                WHERE pool_key = ?
-                  AND id NOT IN (
-                    SELECT id FROM spare_questions
+        try:
+            with self._lock:
+                assert self._db is not None
+                for q in questions:
+                    try:
+                        self._db.execute(
+                            "INSERT OR IGNORE INTO spare_questions "
+                            "(pool_key, norm_question, question_json, used_count, created_at) "
+                            "VALUES (?,?,?,0,?)",
+                            (
+                                key,
+                                normalize_question(q.question),
+                                json.dumps(q.model_dump(mode="json"), ensure_ascii=False),
+                                now,
+                            ),
+                        )
+                        added += 1
+                    except Exception as exc:  # noqa: BLE001 — havuz üretimi bozmasın
+                        logger.warning("Havuz satır yazımı atlandı: %s", exc)
+                # Trim: en çok kullanılmış + en eski satırları at.
+                self._db.execute(
+                    """
+                    DELETE FROM spare_questions
                     WHERE pool_key = ?
-                    ORDER BY used_count ASC, created_at DESC
-                    LIMIT ?
-                  )
-                """,
-                (key, key, self._max_per_key),
-            )
-            self._db.commit()
+                      AND id NOT IN (
+                        SELECT id FROM spare_questions
+                        WHERE pool_key = ?
+                        ORDER BY used_count ASC, created_at DESC
+                        LIMIT ?
+                      )
+                    """,
+                    (key, key, self._max_per_key),
+                )
+                self._db.commit()
+        except Exception as exc:  # noqa: BLE001 — trim/commit/lock hatası da yutulur
+            logger.warning("Havuz yazımı başarısız (yutuldu): %s", exc)
+            return added
         self._stored += added
         logger.info("Havuz PUT: %s (+%d soru)", key, added)
         return added
@@ -370,13 +380,17 @@ class SpareQuestionPool:
         if count <= 0:
             return []
         excl = set(exclude_norms)
-        with self._lock:
-            assert self._db is not None
-            rows = self._db.execute(
-                "SELECT id, norm_question, question_json FROM spare_questions "
-                "WHERE pool_key = ? ORDER BY used_count ASC, created_at DESC LIMIT ?",
-                (key, count + len(excl) + 20),
-            ).fetchall()
+        try:
+            with self._lock:
+                assert self._db is not None
+                rows = self._db.execute(
+                    "SELECT id, norm_question, question_json FROM spare_questions "
+                    "WHERE pool_key = ? ORDER BY used_count ASC, created_at DESC LIMIT ?",
+                    (key, count + len(excl) + 20),
+                ).fetchall()
+        except Exception as exc:  # noqa: BLE001 — BEST-EFFORT (bkz. add_many)
+            logger.warning("Havuz okuması başarısız (yutuldu): %s", exc)
+            return []
         picked: list[Question] = []
         picked_ids: list[int] = []
         for row_id, norm_q, payload in rows:
@@ -390,14 +404,17 @@ class SpareQuestionPool:
             except (json.JSONDecodeError, ValueError) as exc:
                 logger.warning("Havuz satırı parse edilemedi: %s", exc)
         if picked_ids:
-            with self._lock:
-                assert self._db is not None
-                self._db.execute(
-                    "UPDATE spare_questions SET used_count = used_count + 1 "
-                    f"WHERE id IN ({','.join('?' * len(picked_ids))})",
-                    picked_ids,
-                )
-                self._db.commit()
+            try:
+                with self._lock:
+                    assert self._db is not None
+                    self._db.execute(
+                        "UPDATE spare_questions SET used_count = used_count + 1 "
+                        f"WHERE id IN ({','.join('?' * len(picked_ids))})",
+                        picked_ids,
+                    )
+                    self._db.commit()
+            except Exception as exc:  # noqa: BLE001 — sayaç güncellemesi kritik değil
+                logger.warning("Havuz used_count güncellenemedi (yutuldu): %s", exc)
             self._served += len(picked_ids)
             logger.info("Havuz HIT: %s (%d soru)", key, len(picked_ids))
         return picked

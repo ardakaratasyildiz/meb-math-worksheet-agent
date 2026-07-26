@@ -1042,6 +1042,29 @@ class GeminiAgent:
                         c_rej = len(drop_c)
             return qs, embs, m_rej, c_rej
 
+        # Havuz BEST-EFFORT: yazma/okuma hatası üretimi ASLA düşürmemeli.
+        # Prod'da havuz Turso'ya yazar ve mixed modda 3 bucket PARALEL thread'te
+        # koşar; bir DB hatası (kilit/istemci) çıplak bırakılırsa bucket'ın
+        # `except Exception`'ı HAZIR SORULARI çöpe atar (canlıda 5 istenen kağıtta
+        # orta bucket'ın 3 sorusu böyle kayboldu → 2/5 teslim). `llm_cache.put`
+        # de aynı sözleşmeyi kullanıyor ("Cache yazımı başarısız (yutuldu)").
+        def _pool_add(qs: list) -> None:
+            if not (settings.enable_spare_pool and qs):
+                return
+            try:
+                SPARE_POOL.add_many(pool_key, qs)
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Havuz yazımı başarısız (yutuldu): %s", exc)
+
+        def _pool_take(n: int) -> list:
+            if not settings.enable_spare_pool or n <= 0:
+                return []
+            try:
+                return SPARE_POOL.take(pool_key, n, exclude_norms=history_seen)
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Havuzdan çekim başarısız (yutuldu): %s", exc)
+                return []
+
         def _accept(new_qs: list, new_embs: list) -> int:
             """Kabul edilenleri `questions`'a ekler (numaraları sıkı tutar). Eklenen sayı."""
             nonlocal questions, accepted_embeddings
@@ -1069,11 +1092,9 @@ class GeminiAgent:
                 if len(spare_embeddings) == len(spare_candidates)
                 else [[] for _ in spare_candidates]
             )
-            if settings.enable_spare_pool and len(free_qs) < (question_count - len(questions)):
-                drawn = SPARE_POOL.take(
-                    pool_key,
-                    (question_count - len(questions) - len(free_qs)) * 2,
-                    exclude_norms=history_seen,
+            if len(free_qs) < (question_count - len(questions)):
+                drawn = _pool_take(
+                    (question_count - len(questions) - len(free_qs)) * 2
                 )
                 # Havuzdan gelenler bu batch'te tekrar olmasın.
                 for q in drawn:
@@ -1087,19 +1108,19 @@ class GeminiAgent:
                 critic_rejected += c_rej
                 filled = _accept(kept, kept_embs)
                 # Filtreden geçip KULLANILMAYANLAR havuza (stok).
-                if settings.enable_spare_pool and len(kept) > filled:
-                    SPARE_POOL.add_many(pool_key, kept[filled:])
+                if len(kept) > filled:
+                    _pool_add(kept[filled:])
                 if filled:
                     logger.info(
                         "Post-filter eksiği LLM'siz kapatıldı: +%d soru "
                         "(yedek=%d havuz-dahil, kalan eksik=%d)",
                         filled, len(free_qs), question_count - len(questions),
                     )
-            elif settings.enable_spare_pool and spare_candidates:
-                SPARE_POOL.add_many(pool_key, spare_candidates)
-        elif settings.enable_spare_pool and spare_candidates:
+            else:
+                _pool_add(spare_candidates)
+        else:
             # Eksik yok → tüm fazlalar doğrudan stoğa.
-            SPARE_POOL.add_many(pool_key, spare_candidates)
+            _pool_add(spare_candidates)
 
         # (3) LLM top-up — yalnız hâlâ eksikse.
         post_filter_rounds = 0
@@ -1168,8 +1189,8 @@ class GeminiAgent:
 
             # En fazla `missing` kadar al; FAZLASI havuza (bir sonraki isteğe stok).
             filled = _accept(new_questions, new_embs)
-            if settings.enable_spare_pool and len(new_questions) > filled:
-                SPARE_POOL.add_many(pool_key, new_questions[filled:])
+            if len(new_questions) > filled:
+                _pool_add(new_questions[filled:])
             post_filter_rounds += 1
 
         # Trace bilgilerini sakla.

@@ -180,6 +180,33 @@ def test_failed_call_tokens_are_reported_not_lost():
     assert resp.wasted_cost_usd > 0, "israf maliyeti hesaplanmalı"
 
 
+def test_pool_is_best_effort_never_raises():
+    """Havuz DB'si patlasa bile ne add_many ne take istisna fırlatır.
+
+    Prod'da havuz Turso'ya yazar ve mixed modda 3 bucket PARALEL koşar; çıplak
+    bir DB hatası bucket'ın `except Exception`'ına düşüp HAZIR SORULARI çöpe
+    atardı (canlıda 5 soruluk kağıtta orta bucket'ın 3 sorusu böyle kayboldu)."""
+    class _BoomDB:
+        def execute(self, *a, **k):
+            raise RuntimeError("database is locked")
+
+        def commit(self):
+            raise RuntimeError("database is locked")
+
+    key = _pool_key(5, "dogal_sayilar", None, "orta")
+    SPARE_POOL.add_many(key, [_q(0), _q(1)])  # önce gerçek veri yaz
+    # monkeypatch DEĞİL: fixture teardown'ı (clear) monkeypatch geri almasından
+    # ÖNCE koşuyor → bozuk DB ile temizlik patlıyordu. Elle geri yükle.
+    real_db = SPARE_POOL._db
+    SPARE_POOL._db = _BoomDB()
+    try:
+        # Hiçbiri patlamamalı; take boş liste dönmeli.
+        assert SPARE_POOL.add_many(key, [_q(2)]) == 0
+        assert SPARE_POOL.take(key, 5) == []
+    finally:
+        SPARE_POOL._db = real_db
+
+
 def test_pro_removed_from_fallback_chain():
     """gemini-2.5-pro ($10/1M çıktı, thinking kapatılamaz) fallback'ten çıkarıldı."""
     assert "pro" not in settings.gemini_fallback_models
