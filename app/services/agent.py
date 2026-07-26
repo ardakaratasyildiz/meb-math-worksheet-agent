@@ -55,6 +55,18 @@ from app.subjects import get_content_module
 
 logger = logging.getLogger(__name__)
 
+# "4 şık, tek doğru, answer=harf" yapısal olarak ÖZDEŞ tipler → hepsi coktan_secmeli gibi
+# işlenir: şıklar .options'tan/metinden alınır, <4 ise ELENİR, correct_index türetilir ve
+# şıklar metne DETERMİNİSTİK gömülür (PDF/web/mobil hepsi gösterir). Türkçe okuma_pasaji/
+# kelime_bilgisi/dil_bilgisi/yazim_noktalama şıksız gövdeyle yayınlanıyordu (WS: Erdemler PDF).
+_MC_TYPES = frozenset({
+    QuestionType.COKTAN_SECMELI,
+    QuestionType.OKUMA_PASAJI,
+    QuestionType.KELIME_BILGISI,
+    QuestionType.DIL_BILGISI,
+    QuestionType.YAZIM_NOKTALAMA,
+})
+
 
 def model_for_grade(grade: int) -> str:
     """Sınıfa göre KABA model (geriye-uyum + testler). Ayrıntılı politika için
@@ -1201,15 +1213,15 @@ class GeminiAgent:
             # geriye-uyumlu). Alan boşsa (eski-format model) gömülü metinden parse edilir.
             mc_options: list[str] | None = None
             mc_correct_index: int | None = None
-            if raw.question_type == QuestionType.COKTAN_SECMELI:
+            if raw.question_type in _MC_TYPES:
                 opts = [o.strip() for o in (raw.options or []) if o and o.strip()]
                 if len(opts) < 4:
                     parsed, _ = _parse_mcq(q_text, raw.answer)  # geriye-uyum: gömülü metin
                     if parsed and len(parsed) >= 4:
                         opts = [o.strip() for o in parsed[:4] if o.strip()]
                 if len(opts) != 4:
-                    logger.info("Yapısal şıksız/eksik MC atıldı (%d şık): %s",
-                                len(opts), raw.question[:70])
+                    logger.info("Yapısal şıksız/eksik MC atıldı (%s, %d şık): %s",
+                                raw.question_type.value, len(opts), raw.question[:70])
                     continue
                 letter = _answer_letter(raw.answer)
                 if not letter or letter not in ("A", "B", "C", "D"):
