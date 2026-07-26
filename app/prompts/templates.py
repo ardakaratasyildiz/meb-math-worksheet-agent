@@ -311,6 +311,13 @@ def build_user_prompt(
         f"Yukarıdaki kriterlere göre tam {question_count} adet soru üret. "
         "Her sorunun kazanım koduyla ve soru tipiyle etiketli olduğundan emin ol. "
         "Sorular yukarıdaki Zorluk Kalibrasyonuna UYMALIDIR.",
+        # NOT (2026-07-26): sınav modunda (include_solutions=False) çözümleri
+        # kısaltma denendi ve GERİ ALINDI. Ölçüm: çözüm adımları çıktı
+        # maliyetinin ~%28'i (84 token/soru), kısaltma bunun %29'unu kesiyor
+        # → kağıt maliyetinin ~%8'i, ki bu koşu-arası varyansın (±%15) ALTINDA.
+        # Karşılığında cache/havuz anahtarı ikiye bölünüyordu (ödevler daima
+        # include_solutions=False gönderir) → yeniden kullanım kaybı kazançtan
+        # büyük. Bkz. docs/COST_REDUCTION_PLAN.md §3.5.
         # Açılış/kalıp çeşitliliği — few-shot örneklerin çoğu "Bir ..." ile başlar;
         # model bunu taklit edip tüm seti monotonlaştırıyor. Sayısal tavan + salient
         # konum (final talimat) ile bu anchor'ı kır (bkz. sistem kuralı 12).

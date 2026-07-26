@@ -27,7 +27,7 @@ from app.services.diversity import (
 )
 from app.services.embedder import EmbedderError, GeminiEmbedder
 from app.services.examples import get_examples_for_kazanim, select_diverse
-from app.services.llm_cache import GENERATION_CACHE
+from app.services.llm_cache import GENERATION_CACHE, SPARE_POOL, _pool_key
 from app.services.structured import (
     _answer_letter,
     _parse_mcq,
@@ -124,6 +124,31 @@ def model_for(
     if is_premium and difficulty == Difficulty.ZOR:
         return strong
     return cheap
+
+
+def output_cap_for(question_count: int, thinking_budget: int | None) -> int:
+    """Üretim çağrısı için `max_output_tokens` — yozlaşma/format-drop israfını keser.
+
+    Tavan yoksa model bazen kendini tekrar edip modelin 64K çıktı tavanına kadar
+    yazıyor, JSON kesiliyor ve TÜM token boşa gidiyor (ölçüm: tek istekte ~99K
+    çıktı token'ı / ~6.3 TL). Tavan içerik + thinking payından oluşur:
+
+    - içerik: `question_count × generation_output_cap_per_question`
+      (ölçülen normal tüketim ~420-450 token/soru → 900 iki kat pay)
+    - thinking: Gemini 2.5+ düşünme token'larını da max_output_tokens'a SAYAR →
+      bütçe 0 ise pay yok, N>0 ise N + %25, dinamik (-1) ise sabit cömert pay.
+
+    Tavana dayanmak = kesik JSON = şema-drop olduğundan cömert tutulur; amaç
+    meşru üretimi kesmek değil, YOZLAŞMAYI erken durdurmaktır.
+    """
+    content = max(1, question_count) * settings.generation_output_cap_per_question
+    if thinking_budget is None or thinking_budget < 0:
+        think = settings.generation_output_cap_thinking_allowance
+    elif thinking_budget == 0:
+        think = 0
+    else:
+        think = int(thinking_budget * 1.25)
+    return max(8192, content + think)
 
 
 def thinking_for_model(grade: int, model: str) -> int:
@@ -757,6 +782,9 @@ class GeminiAgent:
                 temperature=temperature,
                 gemini=self._gemini_provider,
                 anthropic=self._anthropic_provider,
+                # Yozlaşma freni: tavansız çağrıda model 64K'ya kadar yazıp
+                # kesik JSON üretebiliyor → tüm token çöp (bkz. output_cap_for).
+                max_output_tokens=output_cap_for(gen_target, self.thinking_budget),
             )
         except ProviderError as exc:
             raise AgentError(str(exc)) from exc
@@ -766,6 +794,9 @@ class GeminiAgent:
             total_prompt_tokens += result.usage.input_tokens
             total_completion_tokens += result.usage.output_tokens
             total_cost_usd += result.usage.estimated_cost_usd
+        # Başarısız denemelerin (şema-drop / 429-retry / atlanan fallback modeli)
+        # token'ları da faturalanır → deftere ekle, yoksa defter faturanın altında kalır.
+        total_cost_usd += result.wasted_cost_usd
         batch = result.parsed
         if not isinstance(batch, GeneratedBatch):
             raise AgentError("Provider beklenmedik tip döndürdü.")
@@ -824,6 +855,7 @@ class GeminiAgent:
                     temperature=retry_temperature,
                     gemini=self._gemini_provider,
                     anthropic=self._anthropic_provider,
+                    max_output_tokens=output_cap_for(missing, self.thinking_budget),
                 )
                 self._last_model_used = result2.model_name
                 self._last_provider = result2.provider
@@ -831,6 +863,7 @@ class GeminiAgent:
                     total_prompt_tokens += result2.usage.input_tokens
                     total_completion_tokens += result2.usage.output_tokens
                     total_cost_usd += result2.usage.estimated_cost_usd
+                total_cost_usd += result2.wasted_cost_usd
                 batch2 = result2.parsed
                 if not isinstance(batch2, GeneratedBatch):
                     raise ProviderError("Provider beklenmedik tip döndürdü.")
@@ -854,9 +887,18 @@ class GeminiAgent:
             accepted_embeddings.extend(more_embs[: len(take)])
             retry_round += 1
 
-        # Hedef sayıyı aşmasın.
+        # Hedef sayıyı aşmasın. FAZLALAR ATILMAZ: overshoot (1.8) ile üretilip
+        # kırpılan geçerli sorular `spare_candidates`'a alınır; post-filter
+        # eksiği önce BURADAN, sonra kalıcı havuzdan karşılanır — LLM top-up
+        # çağrısı (ölçüm: 19-24K çıktı token'ı) ancak ikisi de yetmezse atılır.
+        spare_candidates = questions[question_count:]
+        spare_embeddings = accepted_embeddings[question_count:]
         questions = questions[:question_count]
         accepted_embeddings = accepted_embeddings[: len(questions)]
+        pool_key = _pool_key(
+            grade, selection_key, kazanim_kod, difficulty.value,
+            allowed_types, yeni_nesil,
+        )
 
         # Deterministic math verifier: SymPy ile aritmetik doğrulama.
         # Critic'ten ÖNCE çalışır — ucuz, hızlı, yanılma payı yok.
@@ -891,6 +933,18 @@ class GeminiAgent:
                 ]
                 math_rejected = len(drop_indices)
 
+        # Critic bağlamı (non-math RAG) tek generate() içinde DEĞİŞMEZ → bir kez
+        # topla, tüm critic geçişlerinde yeniden kullan. Eskiden her top-up turu
+        # yeniden çağırıyordu (her çağrı = embedding API isteği).
+        _critic_ctx_cache: dict[str, str] = {}
+
+        def _critic_context() -> str:
+            if "v" not in _critic_ctx_cache:
+                _critic_ctx_cache["v"] = _collect_critic_context(
+                    subject, grade, kazanimlar
+                )
+            return _critic_ctx_cache["v"]
+
         # Critic geçişi: matematik doğruluğu + kazanım/zorluk uyumu kontrolü.
         critic_rejected = 0
         if settings.enable_critic and questions:
@@ -900,9 +954,8 @@ class GeminiAgent:
             if critic is not None:
                 # Non-math: referans ders kitabı bağlamını (RAG) critic'e ver → olgusal
                 # doğrulama kitaba dayansın (Fen "hücre duvarı" vb. hatalar).
-                critic_context = _collect_critic_context(subject, grade, kazanimlar)
                 verdicts = critic.evaluate(
-                    questions, kazanimlar, difficulty, context=critic_context
+                    questions, kazanimlar, difficulty, context=_critic_context()
                 )
                 _cu = getattr(critic, "_last_usage", None)
                 if _cu is not None:
@@ -941,10 +994,114 @@ class GeminiAgent:
                         ]
                         critic_rejected = len(drop_indices)
 
-        # Post-filter top-up: math_verifier ve/veya critic soru düşürdüyse,
-        # eksik kalan kadar yeniden üretim çağrısı at; yeni gelenleri de aynı
-        # filtrelerden geçir. Aksi halde kullanıcının istediği N'den az soru
-        # döner (10 → 7 problemi).
+        # ── Post-filter doldurma ────────────────────────────────────────────
+        # math_verifier/critic soru düşürdüyse eksiği kapat. SIRA (maliyet):
+        #   1) bu istekte fazla üretilmiş yedekler  → BEDAVA (zaten ödendi)
+        #   2) kalıcı yedek havuzu                  → BEDAVA (önceki istekler)
+        #   3) LLM top-up çağrısı                   → PAHALI (son çare)
+        # Eskiden yalnız (3) vardı ve fazlalar çöpe gidiyordu.
+        def _apply_post_filters(qs: list, embs: list) -> tuple[list, list, int, int]:
+            """math_verifier + critic uygular → (kalan, embedding, math_red, critic_red).
+            Critic token'ı toplam maliyete eklenir."""
+            nonlocal total_prompt_tokens, total_completion_tokens, total_cost_usd
+            m_rej = c_rej = 0
+            if settings.enable_math_verifier and is_math and qs:
+                verdicts_v = verify_math_batch(qs)
+                drop_v = {
+                    v.question_index for v in verdicts_v
+                    if v.is_verifiable and not v.is_valid
+                }
+                if drop_v:
+                    qs = [q for i, q in enumerate(qs) if i not in drop_v]
+                    if embs:
+                        embs = [e for i, e in enumerate(embs) if i not in drop_v]
+                    m_rej = len(drop_v)
+            if settings.enable_critic and qs:
+                _critic = self._get_critic(subject)
+                if _critic is not None:
+                    verdicts_c = _critic.evaluate(
+                        qs, kazanimlar, difficulty, context=_critic_context()
+                    ) or []
+                    _cu = getattr(_critic, "_last_usage", None)
+                    if _cu is not None:
+                        total_prompt_tokens += _cu.input_tokens
+                        total_completion_tokens += _cu.output_tokens
+                        total_cost_usd += _cu.estimated_cost_usd
+                    drop_c = {
+                        v.question_index for v in verdicts_c
+                        if (
+                            not v.is_valid
+                            and v.confidence >= settings.critic_min_confidence
+                            and 0 <= v.question_index < len(qs)
+                        )
+                    }
+                    if drop_c:
+                        qs = [q for i, q in enumerate(qs) if i not in drop_c]
+                        if embs:
+                            embs = [e for i, e in enumerate(embs) if i not in drop_c]
+                        c_rej = len(drop_c)
+            return qs, embs, m_rej, c_rej
+
+        def _accept(new_qs: list, new_embs: list) -> int:
+            """Kabul edilenleri `questions`'a ekler (numaraları sıkı tutar). Eklenen sayı."""
+            nonlocal questions, accepted_embeddings
+            take_n = question_count - len(questions)
+            if take_n <= 0 or not new_qs:
+                return 0
+            base_no = len(questions)
+            taken = [
+                q.model_copy(update={"number": base_no + i + 1})
+                for i, q in enumerate(new_qs[:take_n])
+            ]
+            questions.extend(taken)
+            if new_embs:
+                accepted_embeddings.extend(new_embs[: len(taken)])
+            return len(taken)
+
+        # (1)+(2): LLM'siz kaynaklar.
+        if len(questions) < question_count:
+            free_qs: list = list(spare_candidates)
+            # Embedding listesi soru listesiyle HİZALI olmalı: `_apply_post_filters`
+            # elemeyi index'e göre yapıyor. Semantic dedup kapalıysa embedding
+            # listesi boş gelir → boş yer tutucularla hizala.
+            free_embs: list = (
+                list(spare_embeddings)
+                if len(spare_embeddings) == len(spare_candidates)
+                else [[] for _ in spare_candidates]
+            )
+            if settings.enable_spare_pool and len(free_qs) < (question_count - len(questions)):
+                drawn = SPARE_POOL.take(
+                    pool_key,
+                    (question_count - len(questions) - len(free_qs)) * 2,
+                    exclude_norms=history_seen,
+                )
+                # Havuzdan gelenler bu batch'te tekrar olmasın.
+                for q in drawn:
+                    if not dedup.is_duplicate(q.question):
+                        dedup.add(q.question)
+                        free_qs.append(q)
+                        free_embs.append([])
+            if free_qs:
+                kept, kept_embs, m_rej, c_rej = _apply_post_filters(free_qs, free_embs)
+                math_rejected += m_rej
+                critic_rejected += c_rej
+                filled = _accept(kept, kept_embs)
+                # Filtreden geçip KULLANILMAYANLAR havuza (stok).
+                if settings.enable_spare_pool and len(kept) > filled:
+                    SPARE_POOL.add_many(pool_key, kept[filled:])
+                if filled:
+                    logger.info(
+                        "Post-filter eksiği LLM'siz kapatıldı: +%d soru "
+                        "(yedek=%d havuz-dahil, kalan eksik=%d)",
+                        filled, len(free_qs), question_count - len(questions),
+                    )
+            elif settings.enable_spare_pool and spare_candidates:
+                SPARE_POOL.add_many(pool_key, spare_candidates)
+        elif settings.enable_spare_pool and spare_candidates:
+            # Eksik yok → tüm fazlalar doğrudan stoğa.
+            SPARE_POOL.add_many(pool_key, spare_candidates)
+
+        # (3) LLM top-up — yalnız hâlâ eksikse.
         post_filter_rounds = 0
         POST_FILTER_MAX_RETRIES = 2
         while (
@@ -972,6 +1129,10 @@ class GeminiAgent:
                     temperature=retry_temperature,
                     gemini=self._gemini_provider,
                     anthropic=self._anthropic_provider,
+                    # ÇIKTI TAVANI: top-up "N soru daha" istiyor ama model hedefi
+                    # aşıp ilk batch'ten büyük yanıt üretebiliyor (ölçüm: 5 eksik
+                    # soru için 24.302 çıktı token'ı).
+                    max_output_tokens=output_cap_for(missing + 2, self.thinking_budget),
                 )
                 self._last_model_used = result_pf.model_name
                 self._last_provider = result_pf.provider
@@ -979,6 +1140,7 @@ class GeminiAgent:
                     total_prompt_tokens += result_pf.usage.input_tokens
                     total_completion_tokens += result_pf.usage.output_tokens
                     total_cost_usd += result_pf.usage.estimated_cost_usd
+                total_cost_usd += result_pf.wasted_cost_usd
                 batch_pf = result_pf.parsed
                 if not isinstance(batch_pf, GeneratedBatch) or not batch_pf.questions:
                     break
@@ -997,60 +1159,17 @@ class GeminiAgent:
                 post_filter_rounds += 1
                 continue
 
-            # Yeni gelenleri math verifier'dan geçir (yalnız matematik).
-            if settings.enable_math_verifier and is_math:
-                verdicts_v = verify_math_batch(new_questions)
-                drop_v = {
-                    v.question_index for v in verdicts_v
-                    if v.is_verifiable and not v.is_valid
-                }
-                if drop_v:
-                    new_questions = [q for i, q in enumerate(new_questions) if i not in drop_v]
-                    if new_embs:
-                        new_embs = [e for i, e in enumerate(new_embs) if i not in drop_v]
-                    math_rejected += len(drop_v)
-
-            # Critic'ten geçir.
-            if settings.enable_critic and new_questions:
-                critic = self._get_critic(subject)
-                if critic is not None:
-                    critic_context = _collect_critic_context(subject, grade, kazanimlar)
-                    verdicts_c = critic.evaluate(
-                        new_questions, kazanimlar, difficulty, context=critic_context
-                    ) or []
-                    _cu2 = getattr(critic, "_last_usage", None)
-                    if _cu2 is not None:
-                        total_prompt_tokens += _cu2.input_tokens
-                        total_completion_tokens += _cu2.output_tokens
-                        total_cost_usd += _cu2.estimated_cost_usd
-                    drop_c = {
-                        v.question_index for v in verdicts_c
-                        if (
-                            not v.is_valid
-                            and v.confidence >= settings.critic_min_confidence
-                            and 0 <= v.question_index < len(new_questions)
-                        )
-                    }
-                    if drop_c:
-                        new_questions = [q for i, q in enumerate(new_questions) if i not in drop_c]
-                        if new_embs:
-                            new_embs = [e for i, e in enumerate(new_embs) if i not in drop_c]
-                        critic_rejected += len(drop_c)
-
+            new_questions, new_embs, _m, _c = _apply_post_filters(new_questions, new_embs)
+            math_rejected += _m
+            critic_rejected += _c
             if not new_questions:
                 post_filter_rounds += 1
                 continue
 
-            # En fazla `missing` kadar al; numaraları sıkı tut.
-            take = new_questions[:missing]
-            base_no = len(questions)
-            take = [
-                q.model_copy(update={"number": base_no + i + 1})
-                for i, q in enumerate(take)
-            ]
-            questions.extend(take)
-            if new_embs:
-                accepted_embeddings.extend(new_embs[: len(take)])
+            # En fazla `missing` kadar al; FAZLASI havuza (bir sonraki isteğe stok).
+            filled = _accept(new_questions, new_embs)
+            if settings.enable_spare_pool and len(new_questions) > filled:
+                SPARE_POOL.add_many(pool_key, new_questions[filled:])
             post_filter_rounds += 1
 
         # Trace bilgilerini sakla.
@@ -1111,7 +1230,7 @@ class GeminiAgent:
                     questions=questions,
                     allowed_types=allowed_types,
                     yeni_nesil=yeni_nesil,
-                )
+                    )
             except Exception as exc:
                 logger.warning("Cache yazımı başarısız (yutuldu): %s", exc)
 

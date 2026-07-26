@@ -91,6 +91,18 @@ jobs:
           python tests/test_clerk_roles.py
           python tests/test_classroom.py
           python tests/test_assignment.py
+      # pytest-tabanlı testler (monkeypatch gerekiyor). pytest requirements.txt'te
+      # DEĞİL (prod imajını şişirmesin) → yalnız CI'da kurulur. Bu adım maliyet
+      # regresyonlarını korur: mixed-mod 500'ü, critic taşması, yedek havuzu,
+      # israf-token defteri, model politikası (bkz. docs/COST_REDUCTION_PLAN.md).
+      - name: Unit tests (pytest — maliyet/politika koruması)
+        env:
+          PYTHONIOENCODING: "utf-8"
+          GEMINI_API_KEY: "fake-key-for-import-only"
+        run: |
+          pip install pytest
+          python -m pytest tests/test_cost_waste_fixes.py tests/test_spare_pool.py \
+            tests/test_model_policy.py tests/test_cache_yeni_nesil.py -q
 
   # 2. PR gate: hızlı eval (~1-2 dk) — sadece PR'lar ve manual dispatch'te
   quick-eval:

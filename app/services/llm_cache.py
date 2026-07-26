@@ -230,3 +230,199 @@ class GenerationCache:
 
 
 GENERATION_CACHE = GenerationCache(max_per_key=settings.generation_cache_max_per_key)
+
+
+# ---------------------------------------------------------------------------
+# Yedek soru havuzu (spare pool)
+# ---------------------------------------------------------------------------
+
+
+def _pool_key(
+    grade: int,
+    topic_id: str,
+    kazanim_kod: str | None,
+    difficulty: str,
+    allowed_types=None,
+    yeni_nesil: bool = False,
+) -> str:
+    """Havuz anahtarı — `_cache_key`'in soru SAYISI olmayan hâli.
+
+    `generation_cache` anahtarı `q{count}` taşır: 10 soruluk bir set 20 soruluk
+    isteğe hizmet edemez (isabet oranı düşük). Havuz soru-bazlı olduğundan sayı
+    anahtarda yer ALMAZ → her istek havuzdan istediği kadar çekebilir.
+    """
+    if allowed_types:
+        types = "+".join(sorted(getattr(t, "value", str(t)) for t in allowed_types))
+    else:
+        types = "all"
+    suffix = "|premium" if yeni_nesil else ""
+    return (
+        f"g{grade}|{topic_id}|{kazanim_kod or '__AUTO__'}|{difficulty}"
+        f"|t{types}{suffix}"
+    )
+
+
+class SpareQuestionPool:
+    """Fazla üretilmiş soruların soru-BAZLI envanteri.
+
+    NEDEN: `generation_overshoot_ratio` (1.8) hedefin ~2 katı soru ürettiriyor —
+    eleme payını tek çağrıda karşılamak için (latency). Eleme az olduğunda fazla
+    sorular `questions[:question_count]` ile KIRPILIP ATILIYORDU: ölçümde 20
+    soruluk sosyal kağıdı için 36 soru üretilip 12'si çöpe gitti (~%40 çıktı
+    token'ı). Burada fazlalar saklanır ve SONRAKİ isteklerde LLM çağrısı yerine
+    buradan karşılanır → overshoot israf olmaktan çıkıp STOK olur.
+
+    NOT: havuza yazılan sorular `_process_batch` + dedup'tan geçmiştir ama
+    math_verifier/critic'ten GEÇMEMİŞ olabilir (kırpma bu filtrelerden önce
+    oluyor). Bu yüzden havuzdan çekilen sorular çağıran tarafta filtrelerden
+    yeniden geçirilir — critic ucuz (flash-lite, gruplu), üretim pahalı.
+    """
+
+    def __init__(self, db_path: str | None = None, max_per_key: int = 60) -> None:
+        self._db_path = db_path or settings.history_db_path
+        self._max_per_key = max_per_key
+        self._lock = threading.Lock()
+        self._db = None
+        self._served = 0
+        self._stored = 0
+        self._init_db()
+
+    def _init_db(self) -> None:
+        Path(self._db_path).parent.mkdir(parents=True, exist_ok=True)
+        self._db = db_connect(self._db_path)
+        self._db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS spare_questions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                pool_key TEXT NOT NULL,
+                norm_question TEXT NOT NULL,
+                question_json TEXT NOT NULL,
+                used_count INTEGER DEFAULT 0,
+                created_at REAL NOT NULL
+            )
+            """
+        )
+        self._db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_spare_key "
+            "ON spare_questions(pool_key, used_count, created_at)"
+        )
+        # Aynı sorunun havuzda iki kez durmasını engelle.
+        self._db.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_spare_unique "
+            "ON spare_questions(pool_key, norm_question)"
+        )
+        self._db.commit()
+
+    def add_many(self, key: str, questions: list[Question]) -> int:
+        """Fazla soruları havuza yazar. Tekrarlar sessizce atlanır. Eklenen sayı döner."""
+        if not questions:
+            return 0
+        from app.services.diversity import normalize_question
+
+        now = time.time()
+        added = 0
+        with self._lock:
+            assert self._db is not None
+            for q in questions:
+                try:
+                    self._db.execute(
+                        "INSERT OR IGNORE INTO spare_questions "
+                        "(pool_key, norm_question, question_json, used_count, created_at) "
+                        "VALUES (?,?,?,0,?)",
+                        (
+                            key,
+                            normalize_question(q.question),
+                            json.dumps(q.model_dump(mode="json"), ensure_ascii=False),
+                            now,
+                        ),
+                    )
+                    added += 1
+                except Exception as exc:  # noqa: BLE001 — havuz üretimi bozmasın
+                    logger.warning("Havuz yazımı atlandı: %s", exc)
+            # Trim: en çok kullanılmış + en eski satırları at.
+            self._db.execute(
+                """
+                DELETE FROM spare_questions
+                WHERE pool_key = ?
+                  AND id NOT IN (
+                    SELECT id FROM spare_questions
+                    WHERE pool_key = ?
+                    ORDER BY used_count ASC, created_at DESC
+                    LIMIT ?
+                  )
+                """,
+                (key, key, self._max_per_key),
+            )
+            self._db.commit()
+        self._stored += added
+        logger.info("Havuz PUT: %s (+%d soru)", key, added)
+        return added
+
+    def take(
+        self, key: str, count: int, exclude_norms: Iterable[str] = ()
+    ) -> list[Question]:
+        """En az kullanılmış `count` soruyu döndürür (silmez, used_count++).
+
+        Soru silinmez: farklı kullanıcılara tekrar servis edilmesi İSTENEN
+        davranıştır (yeniden kullanım = maliyet düşüşü). Aynı kullanıcıya tekrar
+        gitmesini `exclude_norms` (tenant history) engeller.
+        """
+        if count <= 0:
+            return []
+        excl = set(exclude_norms)
+        with self._lock:
+            assert self._db is not None
+            rows = self._db.execute(
+                "SELECT id, norm_question, question_json FROM spare_questions "
+                "WHERE pool_key = ? ORDER BY used_count ASC, created_at DESC LIMIT ?",
+                (key, count + len(excl) + 20),
+            ).fetchall()
+        picked: list[Question] = []
+        picked_ids: list[int] = []
+        for row_id, norm_q, payload in rows:
+            if len(picked) >= count:
+                break
+            if norm_q in excl:
+                continue
+            try:
+                picked.append(Question.model_validate(json.loads(payload)))
+                picked_ids.append(row_id)
+            except (json.JSONDecodeError, ValueError) as exc:
+                logger.warning("Havuz satırı parse edilemedi: %s", exc)
+        if picked_ids:
+            with self._lock:
+                assert self._db is not None
+                self._db.execute(
+                    "UPDATE spare_questions SET used_count = used_count + 1 "
+                    f"WHERE id IN ({','.join('?' * len(picked_ids))})",
+                    picked_ids,
+                )
+                self._db.commit()
+            self._served += len(picked_ids)
+            logger.info("Havuz HIT: %s (%d soru)", key, len(picked_ids))
+        return picked
+
+    def stats(self) -> dict[str, int]:
+        with self._lock:
+            assert self._db is not None
+            total = self._db.execute("SELECT COUNT(*) FROM spare_questions").fetchone()[0]
+            keys = self._db.execute(
+                "SELECT COUNT(DISTINCT pool_key) FROM spare_questions"
+            ).fetchone()[0]
+        return {
+            "served": self._served,
+            "stored": self._stored,
+            "total_entries": int(total),
+            "distinct_keys": int(keys),
+        }
+
+    def clear(self) -> None:
+        with self._lock:
+            assert self._db is not None
+            self._db.execute("DELETE FROM spare_questions")
+            self._db.commit()
+            self._served = 0
+            self._stored = 0
+
+
+SPARE_POOL = SpareQuestionPool(max_per_key=settings.spare_pool_max_per_key)

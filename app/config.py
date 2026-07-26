@@ -24,7 +24,13 @@ class Settings(BaseSettings):
     # (premium) bayrağından bağımsızdır — o yalnız prompt+dağılımı etkiler.
     gemini_model_grade_1_4: str = "gemini-2.5-flash"
     gemini_model_grade_5_8: str = "gemini-3.5-flash"
-    gemini_fallback_models: str = "gemini-2.5-flash-lite,gemini-2.5-pro"
+    # Fallback zinciri — KUYRUK MALİYETİ RİSKİ: `gemini-2.5-pro` çıkarıldı
+    # (2026-07-26). Şema-drop gibi KALICI hatada zincir pro'ya düşüyordu:
+    # çıktı $10/1M (2.5-flash'ın 4×'i) ve pro düşünmeyi KAPATAMIYOR (min 128) →
+    # tek talihsiz istek kağıt maliyetini katlıyordu. flash-lite fallback olarak
+    # yeterli; gerçekten güçlü modele ihtiyaç varsa `model_for()` politikası
+    # zaten baştan 3.5-flash seçiyor.
+    gemini_fallback_models: str = "gemini-2.5-flash-lite"
     # ── Model seçimi = model_for(grade, geometri?, zorluk, premium?) ─────────────
     # İki kutup: ucuz (grade_1_4=2.5-flash) ve güçlü (grade_5_8=3.5-flash). Politika
     # (A/B + Cloud Monitoring 2026-07 ile kalibre — 3.5 maliyetin %86'sıydı):
@@ -80,6 +86,14 @@ class Settings(BaseSettings):
     # tetikliyordu; 0.75 yalnız yüksek-güvenli redleri düşürür → cebir/fen kağıt maliyeti
     # ~%50 azaldı, critic geçiş oranı korundu/iyileşti (0.96→1.00). Bkz. overshoot.
     critic_min_confidence: float = 0.75
+    # Critic parçalama (2026-07-26 ölçümü): 30+ soruyu tek çağrıda denetlerken
+    # flash-lite yanıtı yozlaşıp 64K çıktı tavanına dayanıyor → kesik JSON →
+    # fail-open (filtreleme YOK) + ~65K token/148 sn israf. 10'luk gruplar
+    # hem maliyeti hem yozlaşmayı keser, denetim gerçekten çalışır.
+    critic_batch_size: int = 10
+    # Çözüm adımları critic girdisinin baskın kalemi (~500 karakter/soru);
+    # doğrulama için ilk adımlar yeterli.
+    critic_max_solution_chars: int = 400
 
     enable_math_verifier: bool = True
 
@@ -89,6 +103,23 @@ class Settings(BaseSettings):
     # buffer'ını aşıp 2 top-up turu (her biri ~48k prompt'u YENİDEN gönderir) tetikliyordu;
     # 1.8 drop'ları ilk çağrıda absorbe eder → top-up ~kaybolur, maliyet düşer.
     generation_overshoot_ratio: float = 1.8
+    # Yedek soru havuzu (spare pool): overshoot'un KIRPILAN fazlaları çöpe gitmek
+    # yerine soru-bazlı envantere yazılır ve sonraki isteklerde LLM top-up'ı
+    # YERİNE kullanılır (2026-07-26 ölçümü: 20 soruluk kağıt için 36 soru
+    # üretiliyor, ~12'si atılıyordu; top-up çağrıları 19-24K çıktı token'ı).
+    enable_spare_pool: bool = True
+    spare_pool_max_per_key: int = 60
+    # ÜRETİM ÇIKTI TAVANI — "format-drop" israfının panzehiri (2026-07-26 ölçümü):
+    # üretici modelin çıktı tavanı yoktu; g5 kağıdında 2.5-flash YOZLAŞIP 65.012
+    # token/237 sn yazdı, 64K tavanına dayandı, JSON kesildi ("şemaya uymadı"),
+    # zincir flash-lite'a düştü, o da 34.366 token yaktı → tek istekte ~99K çıktı
+    # token'ı (~6.3 TL) HİÇBİR ŞEY için harcandı.
+    # Tavan = soru_sayısı × per_question + thinking payı. Ölçülen normal tüketim
+    # ~420-450 token/soru → 900 iki kat pay bırakır. DİKKAT: Gemini 2.5+'ta
+    # thinking token'ları da max_output_tokens'a sayılır → dinamik thinking (-1)
+    # için ayrı pay eklenmeli, aksi halde meşru üretim kesilir.
+    generation_output_cap_per_question: int = 900
+    generation_output_cap_thinking_allowance: int = 20000
     # Latency: mixed/progressive modda kolay/orta/zor bucket'larını paralel koş
     # (ardışık yerine). Her bucket bağımsız → ~3× hızlanma.
     parallel_difficulty_buckets: bool = True

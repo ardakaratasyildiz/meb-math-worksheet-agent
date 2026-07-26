@@ -13,7 +13,7 @@ import json
 import logging
 import random
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Type, TypeVar
 
 from pydantic import BaseModel, ValidationError
@@ -66,14 +66,33 @@ class ProviderResponse:
     provider: str  # "gemini" | "anthropic"
     raw_text: str | None = None
     usage: TokenUsage | None = None
+    # BAŞARISIZ denemelerin (şema-drop, 429/5xx retry, fallback zincirinde atlanan
+    # model) token'ları. Google bunları faturalar; eskiden istisnayla birlikte
+    # düşüyordu → defter faturanın altında kalıyordu. Maliyete EKLENİR.
+    wasted: list[TokenUsage] = field(default_factory=list)
+
+    @property
+    def wasted_cost_usd(self) -> float:
+        return sum(u.estimated_cost_usd for u in self.wasted)
 
 
 class ProviderError(Exception):
-    """Provider'a özgü kalıcı hata — retry'a değmez."""
+    """Provider'a özgü kalıcı hata — retry'a değmez.
+
+    `usage`: hata ANINDA harcanmış token (varsa) — faturalanır, kaydedilmeli.
+    """
+
+    def __init__(self, *args, usage: TokenUsage | None = None) -> None:
+        super().__init__(*args)
+        self.usage = usage
 
 
 class ProviderTransientError(Exception):
     """Geçici hata (5xx, rate limit) — başka model/provider'a düş."""
+
+    def __init__(self, *args, usage: TokenUsage | None = None) -> None:
+        super().__init__(*args)
+        self.usage = usage
 
 
 # ---- Gemini ----
@@ -109,6 +128,7 @@ class GeminiProvider:
         schema: Type[T],
         temperature: float,
         model: str | None = None,
+        max_output_tokens: int | None = None,
     ) -> ProviderResponse:
         from google import genai
         from google.genai import errors as genai_errors
@@ -121,6 +141,12 @@ class GeminiProvider:
             response_mime_type="application/json",
             response_schema=schema,
         )
+        # Çıktı tavanı (maliyet emniyet supabı). Top-up gibi "N soru daha üret"
+        # çağrılarında model hedefi aşıp ilk batch'ten büyük yanıt üretebiliyor
+        # (ölçüm: 5 eksik soru için 24.302 çıktı token'ı). Tavan, tavan aşımında
+        # kesik JSON → şema-drop demektir; bu yüzden cömert hesaplanmalı.
+        if max_output_tokens is not None:
+            config_kwargs["max_output_tokens"] = max_output_tokens
         # Thinking bütçesi: yalnız açıkça set edildiyse uygula. gemini-2.5-pro
         # düşünmeyi KAPATAMAZ (min 128) → 0 istenirse -1'e (dinamik) düşür ki
         # provider hatası (fallback zincirinde pro'ya düşünce) çıkmasın.
@@ -174,7 +200,8 @@ class GeminiProvider:
             )
         text = getattr(response, "text", None)
         if not text:
-            raise ProviderError("Gemini boş yanıt döndü.")
+            # Boş yanıt da token yakar (thinking + kesik çıktı) → usage'ı taşı.
+            raise ProviderError("Gemini boş yanıt döndü.", usage=usage)
         try:
             return ProviderResponse(
                 parsed=schema.model_validate_json(text),
@@ -184,7 +211,8 @@ class GeminiProvider:
                 usage=usage,
             )
         except ValidationError as exc:
-            raise ProviderError("Gemini çıktısı şemaya uymadı.") from exc
+            # Şema-drop: token TAM olarak harcandı ve faturalanacak → kaybetme.
+            raise ProviderError("Gemini çıktısı şemaya uymadı.", usage=usage) from exc
 
 
 # ---- Anthropic ----
@@ -286,13 +314,19 @@ def call_with_chain(
     anthropic: AnthropicProvider | None,
     max_attempts_per_model: int = 3,
     base_delay: float = 1.5,
+    max_output_tokens: int | None = None,
 ) -> ProviderResponse:
     """Provider chain ile çağrı: Gemini fallback chain → Anthropic.
 
     Her model için exponential backoff. Tüm Gemini modelleri tükendiğinde
     Anthropic'e geçer (varsa). Hiçbir provider çalışmazsa son hata fırlatılır.
+
+    Başarısız denemelerin token'ları `ProviderResponse.wasted` içinde döner —
+    Google bunları faturalar, defter de saymalı (aksi halde defter faturanın
+    altında kalır).
     """
     last_error: Exception | None = None
+    wasted: list[TokenUsage] = []
 
     chain: list[tuple[str, str]] = []  # (provider_name, model_name)
     if gemini is not None:
@@ -306,11 +340,22 @@ def call_with_chain(
         for attempt in range(1, max_attempts_per_model + 1):
             try:
                 if provider_name == "gemini" and gemini is not None:
-                    return gemini.generate(system, prompt, schema, temperature, model=model_name)
+                    resp = gemini.generate(
+                        system, prompt, schema, temperature, model=model_name,
+                        max_output_tokens=max_output_tokens,
+                    )
+                    resp.wasted = wasted
+                    return resp
                 if provider_name == "anthropic" and anthropic is not None:
-                    return anthropic.generate(system, prompt, schema, temperature, model=model_name)
+                    resp = anthropic.generate(
+                        system, prompt, schema, temperature, model=model_name
+                    )
+                    resp.wasted = wasted
+                    return resp
             except ProviderTransientError as exc:
                 last_error = exc
+                if getattr(exc, "usage", None) is not None:
+                    wasted.append(exc.usage)
                 if attempt == max_attempts_per_model:
                     logger.warning(
                         "%s/%s: %s deneme sonrası başarısız, bir sonraki modele geçiliyor.",
@@ -326,9 +371,13 @@ def call_with_chain(
             except ProviderError as exc:
                 # Kalıcı hata: bu modeli atla, sonrakine geç (tüm chain'i öldürme).
                 last_error = exc
+                if getattr(exc, "usage", None) is not None:
+                    wasted.append(exc.usage)
                 logger.warning(
                     "%s/%s kalıcı hata, sonraki modele geçiliyor: %s",
                     provider_name, model_name, exc,
                 )
                 break
-    raise ProviderError(f"Tüm provider chain tükendi. Son hata: {last_error}")
+    exhausted = ProviderError(f"Tüm provider chain tükendi. Son hata: {last_error}")
+    exhausted.wasted = wasted  # çağıran isterse israfı deftere yazabilir
+    raise exhausted

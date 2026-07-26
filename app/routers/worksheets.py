@@ -332,9 +332,14 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             AnswerKeyEntry(number=q.number, answer=q.answer) for q in questions
         ],
     )
+    # NOT: `agent` YALNIZ single modda bağlanır; mixed/progressive'de bucket'lar
+    # kendi (local_agent) örnekleriyle çalışır. Burada `agent.last_model_used`
+    # okumak mixed/progressive'de UnboundLocalError → HTTP 500 veriyordu: üretim
+    # (3 bucket × LLM çağrısı) TAMAMEN yapılıp para harcandıktan SONRA istek
+    # çöküyordu. Model adını trace'ten al (her iki modda dolu).
     metadata = WorksheetMetadata(
         generated_at=datetime.now(tz=timezone.utc),
-        model=agent.last_model_used,
+        model=(trace_for_meta.model_used if trace_for_meta is not None else "unknown"),
         trace=trace_for_meta,
     )
 

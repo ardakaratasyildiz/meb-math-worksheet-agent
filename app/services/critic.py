@@ -91,20 +91,57 @@ class GeminiCritic:
 
         `context`: opsiyonel referans ders kitabı bağlamı (RAG). Verilirse olgusal
         doğrulama öncelikle buna göre yapılır (özellikle Fen bilimsel doğruluğu için).
+
+        PARÇALAMA (maliyet+kalite): tek çağrıda 30+ soru denetlenirken model yanıtı
+        yozlaşıp çıktı tavanına (64K) dayanıyordu → JSON kesik → parse hatası →
+        fail-open (HİÇ filtreleme yapılmaz, kalite düşer) + ~65K çıktı token'ı boşa
+        yanar (ölçüm: g8 kağıdı, 148 sn / ~1 TL). Sorular `critic_batch_size`'lık
+        gruplara bölünür; her grubun verdict index'i global index'e ötelenir.
         """
         from app.services.llm_providers import TokenUsage
         self._last_usage = TokenUsage(model_name=self.model)  # sıfırla
         if not questions:
             return []
 
+        size = max(1, settings.critic_batch_size)
+        if len(questions) <= size:
+            return self._evaluate_chunk(questions, kazanimlar, difficulty, context, 0)
+        verdicts: list[CriticVerdict] = []
+        for start in range(0, len(questions), size):
+            chunk = questions[start : start + size]
+            verdicts.extend(
+                self._evaluate_chunk(chunk, kazanimlar, difficulty, context, start)
+            )
+        return verdicts
+
+    def _evaluate_chunk(
+        self,
+        questions: list[Question],
+        kazanimlar: list[Kazanim],
+        difficulty: Difficulty,
+        context: str,
+        index_offset: int,
+    ) -> list[CriticVerdict]:
+        """Tek grup denetimi. Dönen verdict.question_index GLOBAL index'e ötelenir.
+        Token kullanımı `self._last_usage` üzerine BİRİKTİRİLİR (gruplar toplanır)."""
+        from app.services.llm_providers import TokenUsage
+
         kazanim_block = "\n".join(
             f"- {k['kod']}: {k['metin']}" for k in kazanimlar
         )
+        # Çözüm adımları girdi token'ının baskın kalemi (ort. ~500 karakter/soru).
+        # Doğrulama için ilk adımlar yeterli → makul üst sınırla kes (maliyet).
+        _sol_cap = settings.critic_max_solution_chars
+
+        def _sol(q: Question) -> str:
+            s = str(q.solution_steps or "")
+            return s if len(s) <= _sol_cap else s[:_sol_cap] + " …[kesildi]"
+
         questions_block = "\n\n".join(
             f"[{i}] kazanım: {q.kazanim_kod} | tip: {q.question_type.value}\n"
             f"Soru: {q.question}\n"
             f"Cevap: {q.answer}\n"
-            f"Çözüm: {q.solution_steps}"
+            f"Çözüm: {_sol(q)}"
             for i, q in enumerate(questions)
         )
         context_block = ""
@@ -122,11 +159,16 @@ class GeminiCritic:
             f"Değerlendirilecek sorular:\n{questions_block}"
         )
 
+        # ÇIKTI TAVANI: bir verdict ~40 token (index+bool+float+kısa issue listesi).
+        # Sınırsız bırakılınca model yozlaşıp modelin 64K çıktı tavanına kadar
+        # yazabiliyor (ölçülen olay: 65.524 token, kesik JSON, fail-open). Cömert
+        # ama sonlu bir tavan hem maliyeti hem yozlaşmayı keser.
         config = types.GenerateContentConfig(
             system_instruction=self.system_prompt,
             temperature=0.1,  # deterministic, akıl yürütme değil denetim
             response_mime_type="application/json",
             response_schema=CriticBatch,
+            max_output_tokens=512 + 128 * len(questions),
         )
 
         try:
@@ -135,12 +177,17 @@ class GeminiCritic:
             logger.warning("Critic çağrısı başarısız, sorular geçiriliyor (fail-open): %s", exc)
             return []
 
-        # Token kullanımını ölç (maliyet için).
+        # Token kullanımını ölç (maliyet için) — gruplar arasında BİRİKTİR.
         um = getattr(response, "usage_metadata", None)
         if um is not None:
+            prev = self._last_usage
             self._last_usage = TokenUsage(
-                input_tokens=getattr(um, "prompt_token_count", 0) or 0,
-                output_tokens=getattr(um, "candidates_token_count", 0) or 0,
+                input_tokens=prev.input_tokens + (getattr(um, "prompt_token_count", 0) or 0),
+                output_tokens=(
+                    prev.output_tokens
+                    + (getattr(um, "candidates_token_count", 0) or 0)
+                    + (getattr(um, "thoughts_token_count", 0) or 0)
+                ),
                 model_name=self.model,
             )
 
@@ -150,7 +197,13 @@ class GeminiCritic:
             logger.warning("Critic yanıtı parse edilemedi, sorular geçiriliyor: %s", exc)
             return []
 
-        return batch.verdicts
+        if not index_offset:
+            return batch.verdicts
+        # Grup index'i (0..len(chunk)-1) → global soru index'i.
+        return [
+            v.model_copy(update={"question_index": v.question_index + index_offset})
+            for v in batch.verdicts
+        ]
 
     def _call_with_backoff(
         self,
