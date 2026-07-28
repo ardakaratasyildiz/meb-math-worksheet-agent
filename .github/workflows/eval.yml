@@ -102,7 +102,8 @@ jobs:
         run: |
           pip install pytest
           python -m pytest tests/test_cost_waste_fixes.py tests/test_spare_pool.py \
-            tests/test_model_policy.py tests/test_cache_yeni_nesil.py -q
+            tests/test_model_policy.py tests/test_cache_yeni_nesil.py \
+            tests/test_history_permanent.py tests/test_pool_first.py -q
 
   # 2. PR gate: hızlı eval (~1-2 dk) — sadece PR'lar ve manual dispatch'te
   quick-eval:

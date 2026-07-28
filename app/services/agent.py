@@ -603,21 +603,8 @@ class GeminiAgent:
         # islem/salt_islem hariç). DEFAULT_TYPES ders içerik modülünden gelir.
         if not is_math and allowed_set is None:
             allowed_set = set(content.DEFAULT_TYPES)
-        # Over-generation (latency): ilk batch'i hedeften fazla iste ki math/critic
-        # elemeleri seri top-up turu açmadan absorbe edilsin. Eleme oranı ~%41
-        # üretimde >0; overshoot bunları tek çağrıda karşılar. question_count
-        # (gerçek hedef) cache anahtarı, retry/top-up durdurma koşulu ve sondaki
-        # kırpma için korunur; yalnızca İLK çağrının dağıtım+prompt hedefi büyür.
-        from math import ceil as _ceil
-        _overshoot = settings.generation_overshoot_ratio or 1.0
-        gen_target = _ceil(question_count * _overshoot) if _overshoot > 1.0 else question_count
-        distribution = distribute_question_types(
-            gen_target, difficulty, topic_id=dist_topic, allowed_types=allowed_set,
-            yeni_nesil=yeni_nesil,
-        )
-
-        # History anahtarı — hem cache lookup hem üretim sonrası kayıt için.
-        # selection_key (unit_id veya topic_id) namespace'i ayırır.
+        # History anahtarı — hem cache lookup hem depo/dedup hem üretim sonrası
+        # kayıt için. selection_key (unit_id veya topic_id) namespace'i ayırır.
         history_key: HistoryKey = (
             tenant_id or DEFAULT_TENANT,
             grade,
@@ -625,6 +612,13 @@ class GeminiAgent:
             kazanim_kod or "__AUTO__",
             difficulty.value,
         )
+        # Kalıcı görülmüş-set — TEK sorgu (§3a). Eskiden cache branch'i içinde
+        # `history_seen_norm` adıyla, üretim sonrası tekrar `history_seen` adıyla
+        # İKİ KEZ hesaplanıyordu (GenerationHistory anahtar başına zaten cache'lediği
+        # için ikinci çağrı ucuzdu ama gereksizdi). Depo (§3b) da aynı kümeyi
+        # exclude_norms olarak kullanır → tek sefer hesaplanıp HER YERDE aynı
+        # isimle paylaşılır (cache lookup, pool-first, dedup.prime, vb.).
+        history_seen = GENERATION_HISTORY.seen_questions(history_key)
 
         # --- Cache lookup (Sprint 6) ---------------------------------------
         # Aynı (grade, topic, kazanım, zorluk, count, tip, yeni_nesil) için önceden
@@ -633,14 +627,13 @@ class GeminiAgent:
         # yeni_nesil (premium) setleri de cache'lenir; cache anahtarına dahil
         # olduğundan normal setlerle ayrı havuzda tutulur (kaliteler karışmaz).
         if settings.enable_generation_cache:
-            history_seen_norm = GENERATION_HISTORY.seen_questions(history_key)
             cached = GENERATION_CACHE.get(
                 grade=grade,
                 topic_id=selection_key,
                 kazanim_kod=kazanim_kod,
                 difficulty=difficulty.value,
                 question_count=question_count,
-                exclude_questions=history_seen_norm,
+                exclude_questions=history_seen,
                 allowed_types=allowed_types,
                 yeni_nesil=yeni_nesil,
             )
@@ -666,6 +659,9 @@ class GeminiAgent:
                 self._last_prompt_tokens = 0
                 self._last_completion_tokens = 0
                 self._last_cost_usd = 0.0
+                self._last_pool_hit_count = 0
+                self._last_pool_math_rejected = 0
+                self._last_pool_critic_rejected = 0
                 # History'e yine de kaydet — sonraki çağrıda aynı set'i tekrar
                 # vermemek için (overlap kontrolü exclude_questions ile yapılıyor).
                 for q in cached:
@@ -677,6 +673,310 @@ class GeminiAgent:
                     )
                 logger.info("Üretim cache hit — LLM çağrısı atlandı (%d soru).", len(cached))
                 return cached
+
+        # --- Depo (spare pool) anahtarı ------------------------------------
+        # Cache MISS sonrası, LLM'DEN ÖNCE gerekir (§3b): pool-first serving
+        # akışı prompt kurulmadan/few-shot çekilmeden önce depoyu dener.
+        pool_key = _pool_key(
+            grade, selection_key, kazanim_kod, difficulty.value,
+            allowed_types, yeni_nesil,
+        )
+
+        # Cost metering — bu generate() boyunca tüm LLM çağrılarının (üretim +
+        # retry + critic + pool-first tembel damga çağrısı) token toplamı.
+        # NOT: eskiden bu bloğun hemen üstünde, ilk LLM çağrısından hemen önce
+        # tanımlıydı; pool-first bloğu da critic çağırabildiğinden buraya (LLM
+        # çağrısından ÖNCEye) taşındı.
+        total_prompt_tokens = 0
+        total_completion_tokens = 0
+        total_cost_usd = 0.0
+        math_rejected = 0
+        critic_rejected = 0
+        # Pool-first'in denetlediği/elediği ESKİ havuz satırları — Küçük 1
+        # (Opus denetimi 2026-07-28): `math_rejected`/`critic_rejected`'tan AYRI
+        # tutulur, aksi halde "üretim kalitesi düştü" ile "havuz temizliği
+        # yapıldı" ölçümde ayırt edilemezdi (plan §7). Bu ikisi YALNIZ
+        # `_pool_first_fill()` içinde artar; aşağıdaki TAZE üretim/top-up
+        # geçişleri hâlâ `math_rejected`/`critic_rejected`'a yazar.
+        pool_math_rejected = 0
+        pool_critic_rejected = 0
+        # Critic FAIL-OPEN izleyicisi (MUST-FIX 2, denetim 2026-07-28): critic
+        # çağrı/parse hatasında BOŞ liste döner ve hiçbir soruyu düşürmez
+        # (COST_REDUCTION_PLAN §3.2'deki arıza modu). Bu durumda sorular "denetlendi,
+        # geçti" DEĞİL, "hiç denetlenmedi" sayılmalı — aksi halde depo damgası (§3c)
+        # yanlış bilgiyi kalıcı hâle getirir. None = hiç critic çağrısı yapılmadı;
+        # True = en az bir çağrı verdict ÜRETTİ ve henüz hiçbiri boş dönmedi;
+        # False = en az bir çağrı (sorular varken) boş döndü → bir daha ASLA
+        # True'ya dönmez (şüphe varsa NULL/fail-CLOSED — bkz. damga blokları).
+        critic_verdicts_ok: bool | None = None
+
+        # Critic bağlamı (non-math RAG) tek generate() içinde DEĞİŞMEZ → bir kez
+        # topla, tüm critic geçişlerinde (pool-first dahil) yeniden kullan.
+        _critic_ctx_cache: dict[str, str] = {}
+
+        def _critic_context() -> str:
+            if "v" not in _critic_ctx_cache:
+                _critic_ctx_cache["v"] = _collect_critic_context(
+                    subject, grade, kazanimlar
+                )
+            return _critic_ctx_cache["v"]
+
+        def _apply_post_filters(qs: list, embs: list) -> tuple[list, list, int, int, list]:
+            """math_verifier + critic uygular → (kalan, embedding, math_red,
+            critic_red, critic_reddettiği_sorular). Critic token'ı toplam maliyete
+            eklenir. Son eleman (§3c tembel damga): critic'in SPESİFİK olarak
+            reddettiği `Question` nesneleri — math_verifier'ın elediği sorular
+            BURADA yer almaz (deterministik/LLM-siz, damga bunları kapsamaz;
+            bir dahaki serviste yeniden ve ucuza denetlenirler)."""
+            nonlocal total_prompt_tokens, total_completion_tokens, total_cost_usd
+            nonlocal critic_verdicts_ok
+            m_rej = c_rej = 0
+            critic_rejected_qs: list = []
+            if settings.enable_math_verifier and is_math and qs:
+                verdicts_v = verify_math_batch(qs)
+                drop_v = {
+                    v.question_index for v in verdicts_v
+                    if v.is_verifiable and not v.is_valid
+                }
+                if drop_v:
+                    qs = [q for i, q in enumerate(qs) if i not in drop_v]
+                    if embs:
+                        embs = [e for i, e in enumerate(embs) if i not in drop_v]
+                    m_rej = len(drop_v)
+            if settings.enable_critic and qs:
+                _critic = self._get_critic(subject)
+                if _critic is not None:
+                    _raw_verdicts_c = _critic.evaluate(
+                        qs, kazanimlar, difficulty, context=_critic_context()
+                    )
+                    # Fail-open izleyicisi (MUST-FIX 2) — ana geçişteki mantıkla AYNI.
+                    if _raw_verdicts_c:
+                        if critic_verdicts_ok is not False:
+                            critic_verdicts_ok = True
+                    else:
+                        critic_verdicts_ok = False
+                    verdicts_c = _raw_verdicts_c or []
+                    _cu = getattr(_critic, "_last_usage", None)
+                    if _cu is not None:
+                        total_prompt_tokens += _cu.input_tokens
+                        total_completion_tokens += _cu.output_tokens
+                        total_cost_usd += _cu.estimated_cost_usd
+                    drop_c = {
+                        v.question_index for v in verdicts_c
+                        if (
+                            not v.is_valid
+                            and v.confidence >= settings.critic_min_confidence
+                            and 0 <= v.question_index < len(qs)
+                        )
+                    }
+                    if drop_c:
+                        critic_rejected_qs = [q for i, q in enumerate(qs) if i in drop_c]
+                        qs = [q for i, q in enumerate(qs) if i not in drop_c]
+                        if embs:
+                            embs = [e for i, e in enumerate(embs) if i not in drop_c]
+                        c_rej = len(drop_c)
+            return qs, embs, m_rej, c_rej, critic_rejected_qs
+
+        # ── Depo (spare pool): BİRİNCİL servis yolu (Faz 2, §3b/§3c) ────────
+        # Hedef akış: `cache → DEPO (istenen sayının TAMAMI) → yalnız EKSİK
+        # kadar LLM`. Kural (kullanıcı kararı, §3b): çapraz-kullanıcı tekrar
+        # SERBEST (doluluk eşiği yok, depoda ne varsa verilir); tek kısıt aynı
+        # kullanıcıya tekrar (history_seen → exclude_norms). Seçim used_count
+        # ASC + `_select_rows`'un critic_pass=1 önceliği (bedava sorular önce
+        # tükensin).
+        #
+        # Tembel damga (§3c): `critic_pass == 1` satırlar filtrelerden HİÇ
+        # geçirilmeden servis edilir (LLM görmez, marjinal maliyet ~0).
+        # `critic_pass is None` satırlar BİR KEZ `_apply_post_filters`'tan
+        # (math_verifier + critic) geçirilir; sonuç `SPARE_POOL.stamp()` ile
+        # satıra yazılır — FAIL-CLOSED: critic bu turda fail-open olduysa
+        # (`critic_verdicts_ok` False/None) hiçbir şey damgalanmaz, satır NULL
+        # kalır ve bir sonraki serviste yeniden (ve ucuza) denetlenir.
+        #
+        # Tip-farkında seçim (SHOULD-FIX, Opus denetimi 2026-07-28): kovanın
+        # İÇİNDEKİ tip karışımı eskiden gözetilmiyordu — `_select_rows` yalnız
+        # used_count'a bakıyordu, kovada BASKIN tek tip (ör. yalnız `islem`)
+        # kağıdın TAMAMINI ele geçirebilirdi (soru tipi çeşitliliği bir ürün
+        # özelliği, Sprint 12-A). Fix: `pool_first_respect_type_mix=True` iken
+        # hedef dağılım (`distribute_question_types`, OVERSHOOT'SUZ — gerçek
+        # hedef) pool-first'ten ÖNCE hesaplanır ve her tip YALNIZ KENDİ kotası
+        # kadar depodan çekilir; bir tipte havuz yetmezse eksik o tipin LLM
+        # hedefine (`type_deficit`) devredilir — `llm_target`/`distribution`
+        # aşağıda bu eksiklerin TOPLAMINA göre kurulur (bkz. altta).
+        pool_questions: list[Question] = []
+        pool_embeddings: list[list[float]] = []
+        _pool_exclude = set(history_seen)
+        _POOL_FIRST_MAX_ROUNDS = 3  # BEST-EFFORT tavan — pool küçükse hızlı pes et
+
+        def _pool_first_fill(target_n: int, qtype: "QuestionType | None") -> int:
+            """`qtype` (None ise tüm tipler) için depodan en fazla `target_n`
+            soru çeker; `pool_questions`/`pool_embeddings`'e EKLER, doldurulan
+            sayıyı döner. `pool_math_rejected`/`pool_critic_rejected`'ı
+            artırır (TAZE üretim sayaçlarından AYRI — Küçük 1)."""
+            nonlocal pool_math_rejected, pool_critic_rejected, critic_verdicts_ok
+            filled = 0
+            rounds = 0
+            qtype_value = getattr(qtype, "value", None) if qtype is not None else None
+            while filled < target_n and rounds < _POOL_FIRST_MAX_ROUNDS:
+                rounds += 1
+                need = target_n - filled
+                try:
+                    items = SPARE_POOL.take_for_serving(
+                        pool_key, need, exclude_norms=_pool_exclude,
+                        question_type=qtype_value,
+                    )
+                except Exception as exc:  # noqa: BLE001 — havuz BEST-EFFORT
+                    logger.warning("Havuz okuması (pool-first) başarısız (yutuldu): %s", exc)
+                    break
+                if not items:
+                    break
+                exhausted = len(items) < need
+                verified = [it for it in items if it.critic_pass == 1]
+                unverified = [it for it in items if it.critic_pass is None]
+                for it in verified:
+                    if filled >= target_n:
+                        break
+                    pool_questions.append(it.question)
+                    pool_embeddings.append([])
+                    _pool_exclude.add(normalize_question(it.question.question))
+                    filled += 1
+                for it in unverified:
+                    _pool_exclude.add(normalize_question(it.question.question))
+                if unverified and filled < target_n:
+                    u_qs = [it.question for it in unverified]
+                    u_embs: list = [[] for _ in u_qs]
+                    kept, kept_embs, m_rej, c_rej, critic_rej_qs = _apply_post_filters(
+                        u_qs, u_embs
+                    )
+                    pool_math_rejected += m_rej
+                    pool_critic_rejected += c_rej
+                    if critic_verdicts_ok:
+                        if kept:
+                            try:
+                                SPARE_POOL.stamp(
+                                    pool_key,
+                                    [normalize_question(q.question) for q in kept],
+                                    critic_pass=1,
+                                    verifier_model=settings.critic_model,
+                                )
+                            except Exception as exc:  # noqa: BLE001
+                                logger.warning("Havuz damgalama (geçti) başarısız: %s", exc)
+                        if critic_rej_qs:
+                            try:
+                                SPARE_POOL.stamp(
+                                    pool_key,
+                                    [normalize_question(q.question) for q in critic_rej_qs],
+                                    critic_pass=0,
+                                    verifier_model=settings.critic_model,
+                                )
+                            except Exception as exc:  # noqa: BLE001
+                                logger.warning("Havuz damgalama (reddetti) başarısız: %s", exc)
+                    for q in kept:
+                        if filled >= target_n:
+                            break
+                        pool_questions.append(q)
+                        pool_embeddings.append([])
+                        filled += 1
+                if exhausted:
+                    break
+            return filled
+
+        type_deficit: dict[QuestionType, int] = {}
+        if settings.enable_pool_first_serving and settings.enable_spare_pool:
+            if settings.pool_first_respect_type_mix:
+                _pool_target_distribution = distribute_question_types(
+                    question_count, difficulty, topic_id=dist_topic,
+                    allowed_types=allowed_set, yeni_nesil=yeni_nesil,
+                )
+                for _qt, _target_n in _pool_target_distribution.items():
+                    _filled = _pool_first_fill(_target_n, _qt)
+                    _deficit = _target_n - _filled
+                    if _deficit > 0:
+                        type_deficit[_qt] = _deficit
+            else:
+                # Eski (tip-farkında OLMAYAN) davranış: toplam sayı hedefiyle çek,
+                # tip karışımı tesadüfe kalır.
+                _pool_first_fill(question_count, None)
+
+        pool_hit_count = len(pool_questions)
+        self._last_pool_hit_count = pool_hit_count
+        llm_target = question_count - pool_hit_count
+
+        if llm_target <= 0:
+            # Depo TAMAMINI karşıladı — LLM'e HİÇ gidilmez: few-shot/textbook
+            # retrieval'ı da atlanır (onlar da maliyet — RAG embedding çağrısı).
+            questions = [
+                q.model_copy(update={"number": i + 1})
+                for i, q in enumerate(pool_questions[:question_count])
+            ]
+            accepted_embeddings = pool_embeddings[:question_count]
+            self._last_few_shot_source = "pool"
+            self._last_few_shot_count = 0
+            self._last_textbook_count = 0
+            self._last_retrieval_avg_distance = None
+            self._last_model_used = "pool"
+            self._last_provider = "pool"
+            self._last_temperature = 0.0
+            self._last_final_temperature = 0.0
+            self._last_seed = seed
+            self._last_retry_rounds = 0
+            self._last_dedup_rejected_string = 0
+            self._last_dedup_rejected_semantic = 0
+            # math_rejected/critic_rejected TAZE üretimi sayar — bu yolda hiç
+            # LLM üretimi olmadığından 0 (bkz. math_rejected/critic_rejected init).
+            self._last_math_verifier_rejected = math_rejected
+            self._last_critic_rejected = critic_rejected
+            self._last_pool_math_rejected = pool_math_rejected
+            self._last_pool_critic_rejected = pool_critic_rejected
+            self._last_requested_count = question_count
+            self._last_delivered_count = len(questions)
+            self._last_cache_hit = False
+            self._last_prompt_tokens = total_prompt_tokens
+            self._last_completion_tokens = total_completion_tokens
+            self._last_cost_usd = total_cost_usd
+            for q in questions:
+                GENERATION_HISTORY.record(
+                    history_key,
+                    normalize_question(q.question),
+                    extract_context_tokens(q.question),
+                    embedding=None,
+                )
+            logger.info(
+                "Depo tamamını karşıladı — LLM çağrısı atlandı (%d soru, pool_hit=%d).",
+                len(questions), pool_hit_count,
+            )
+            return questions
+
+        # ── Buradan itibaren yalnız EKSİK (`llm_target`) kadar üretim yapılır ──
+        # Over-generation (latency): ilk batch'i hedeften fazla iste ki math/critic
+        # elemeleri seri top-up turu açmadan absorbe edilsin. Eleme oranı ~%41
+        # üretimde >0; overshoot bunları tek çağrıda karşılar. `llm_target`
+        # (depo düşüldükten sonra KALAN gerçek hedef) retry/top-up durdurma
+        # koşulu ve sondaki kırpma için korunur; yalnızca İLK çağrının
+        # dağıtım+prompt hedefi büyür.
+        from math import ceil as _ceil
+        _overshoot = settings.generation_overshoot_ratio or 1.0
+        if (
+            settings.enable_pool_first_serving and settings.enable_spare_pool
+            and settings.pool_first_respect_type_mix and type_deficit
+        ):
+            # Tip-bazlı eksik ZATEN biliniyor (§ yukarıda) — `distribute_question_types`'ı
+            # TEKRAR çağırıp ağırlık şemasından yeni bir dağılım türetmek yerine
+            # (ki bu, eksik OLMAYAN bir tipe pay ayırıp kağıdı yine dengesiz
+            # bırakabilirdi) doğrudan eksik dict'i (overshoot ile ölçeklenmiş)
+            # dağıtım olarak kullanılır — toplamı `llm_target`'a en yakın (overshoot
+            # payıyla biraz üstünde) tutulur.
+            if _overshoot > 1.0:
+                distribution = {qt: _ceil(n * _overshoot) for qt, n in type_deficit.items()}
+            else:
+                distribution = dict(type_deficit)
+            gen_target = sum(distribution.values())
+        else:
+            gen_target = _ceil(llm_target * _overshoot) if _overshoot > 1.0 else llm_target
+            distribution = distribute_question_types(
+                gen_target, difficulty, topic_id=dist_topic, allowed_types=allowed_set,
+                yeni_nesil=yeni_nesil,
+            )
 
         if not is_math:
             # Non-math: RAG yok (Chroma'da ders dökümanı yok) → gerçek MEB/LGS few-shot.
@@ -720,19 +1020,27 @@ class GeminiAgent:
             "Few-shot kaynağı: %s (%s örnek) | textbook chunks: %s",
             few_shot_source, len(few_shot), len(textbook_chunks),
         )
-        # history_key yukarıda cache lookup için tanımlandı (cache devredeyken).
-        # Cache devre dışıysa burada üret (selection_key = unit_id veya topic_id).
-        if not settings.enable_generation_cache:
-            history_key = (
-                tenant_id or DEFAULT_TENANT,
-                grade,
-                selection_key,
-                kazanim_kod or "__AUTO__",
-                difficulty.value,
-            )
-        history_seen = GENERATION_HISTORY.seen_questions(history_key)
+        # history_key/history_seen yukarıda (cache lookup + pool-first için) TEK
+        # sefer hesaplandı — burada tekrar hesaplanmaz.
         history_contexts = GENERATION_HISTORY.context_exclusions(history_key)
         history_embeddings = GENERATION_HISTORY.seen_embeddings(history_key)
+        # NOT (Faz 2, §3b — İş 3, docs/COST_QUALITY_V2_PLAN.md): `context_exclusions`/
+        # `seen_embeddings` hâlâ `GENERATION_HISTORY`'nin `capacity_per_key=30`'luk
+        # SINIRLI belleğine dayanır (bilinçli — prompt token'ı/RAM freni, `seen_questions()`
+        # gibi tavansız DEĞİL). Depo birincil yol olunca aynı kovadan çok daha fazla
+        # soru akacak (çapraz-kullanıcı serbest tekrar kullanım), ama bu iki mekanizmanın
+        # penceresi bilerek dar kalmaya devam ediyor — biri "neden dedup/bağlam penceresi
+        # bu kadar dar" diye şaşırırsa diye not: bu bir eksiklik değil, kasıtlı ödün.
+        if pool_questions:
+            # Bağlam çakışmasını azalt: depodan servis edilen soruların bağlam
+            # kelimeleri de prompt'un context_exclusions'ına katılır — AMA mevcut
+            # SINIRLI (capped, max 15) mekanizma korunur, tavan KALDIRILMAZ
+            # (prompt şişmesi = girdi maliyeti artışı, Faz 1'de bilinçli korunmuştu).
+            _pool_ctx_tokens: set[str] = set()
+            for _pq in pool_questions:
+                _pool_ctx_tokens.update(extract_context_tokens(_pq.question))
+            if _pool_ctx_tokens:
+                history_contexts = sorted(set(history_contexts) | _pool_ctx_tokens)[:15]
 
         user_prompt = build_user_prompt(
             grade=grade,
@@ -751,6 +1059,10 @@ class GeminiAgent:
 
         dedup = BatchDeduplicator()
         dedup.prime(history_seen)
+        # Depodan servis edilenler de dedup'a girer (§3b, İş 1 nokta 4): yeni
+        # üretilen sorular pool-delivered sorunun YAPISAL kopyası olmasın.
+        for _pq in pool_questions:
+            dedup.add(_pq.question)
 
         semantic_dedup: SemanticDeduplicator | None = None
         embedder: GeminiEmbedder | None = None
@@ -763,15 +1075,17 @@ class GeminiAgent:
                 semantic_dedup.prime(history_embeddings)
 
         # Sorulardan kabul edilenlerin embedding'lerini topla — history kaydı için.
+        # (Yalnız BU LLM üretim/top-up geçişinin embedding'leri; depo sorularının
+        # embedding'i yok — `pool_embeddings` ile en sonda AYRI birleştirilir.)
         accepted_embeddings: list[list[float]] = []
 
         valid_kazanim_codes = {k["kod"] for k in kazanimlar}
         fallback_kazanim = kazanimlar[0]["kod"]
 
-        # Cost metering — bu generate() boyunca tüm LLM call'ların token toplamı.
-        total_prompt_tokens = 0
-        total_completion_tokens = 0
-        total_cost_usd = 0.0
+        # total_prompt_tokens/total_completion_tokens/total_cost_usd/critic_verdicts_ok
+        # yukarıda (pool-first bloğundan ÖNCE) tanımlandı — burada TEKRAR
+        # sıfırlanmaz (aksi halde pool-first'ün critic maliyeti/fail-open bayrağı
+        # kaybolurdu).
 
         # İlk üretim — provider chain (Gemini → Anthropic) ile.
         try:
@@ -812,11 +1126,11 @@ class GeminiAgent:
         retry_round = 0
         retry_temperature = temperature
         while (
-            len(questions) < question_count
+            len(questions) < llm_target
             and retry_round < max_retry_rounds
             and batch.questions  # ilk çağrı tamamen boşsa retry etme
         ):
-            missing = question_count - len(questions)
+            missing = llm_target - len(questions)
             retry_temperature = _clamp_temp(retry_temperature + RETRY_TEMPERATURE_BOOST)
             # Hangi tipten kaç eksik kaldığını hesapla — model bu dağılımı hedeflesin.
             produced_by_type: dict[QuestionType, int] = {}
@@ -887,24 +1201,23 @@ class GeminiAgent:
             accepted_embeddings.extend(more_embs[: len(take)])
             retry_round += 1
 
-        # Hedef sayıyı aşmasın. FAZLALAR ATILMAZ: overshoot (1.8) ile üretilip
-        # kırpılan geçerli sorular `spare_candidates`'a alınır; post-filter
-        # eksiği önce BURADAN, sonra kalıcı havuzdan karşılanır — LLM top-up
-        # çağrısı (ölçüm: 19-24K çıktı token'ı) ancak ikisi de yetmezse atılır.
-        spare_candidates = questions[question_count:]
-        spare_embeddings = accepted_embeddings[question_count:]
-        questions = questions[:question_count]
+        # Hedef sayıyı (llm_target — depo düşüldükten sonraki KALAN hedef) aşmasın.
+        # FAZLALAR ATILMAZ: overshoot (1.8) ile üretilip kırpılan geçerli sorular
+        # `spare_candidates`'a alınır; post-filter eksiği önce BURADAN, sonra
+        # kalıcı havuzdan karşılanır — LLM top-up çağrısı (ölçüm: 19-24K çıktı
+        # token'ı) ancak ikisi de yetmezse atılır. `pool_key` yukarıda (pool-first
+        # bloğundan önce) zaten hesaplandı, burada tekrar hesaplanmaz.
+        spare_candidates = questions[llm_target:]
+        spare_embeddings = accepted_embeddings[llm_target:]
+        questions = questions[:llm_target]
         accepted_embeddings = accepted_embeddings[: len(questions)]
-        pool_key = _pool_key(
-            grade, selection_key, kazanim_kod, difficulty.value,
-            allowed_types, yeni_nesil,
-        )
 
         # Deterministic math verifier: SymPy ile aritmetik doğrulama.
         # Critic'ten ÖNCE çalışır — ucuz, hızlı, yanılma payı yok.
         # Non-math'te SymPy math_verifier ATLANIR (aritmetik doğrulama math'e özel;
         # sözel/fen soruları verifiable değil → no-op olurdu, netlik için atlanır).
-        math_rejected = 0
+        # NOT: `math_rejected` burada SIFIRLANMAZ — pool-first bloğunun (varsa)
+        # katkısı korunur, bu geçiş yalnız ÜSTÜNE EKLER (+=, aşağıda).
         if settings.enable_math_verifier and questions and is_math:
             verdicts = verify_math_batch(questions)
             drop_indices: set[int] = set()
@@ -931,22 +1244,14 @@ class GeminiAgent:
                     emb if emb is not None else []
                     for _, emb in kept_pairs
                 ]
-                math_rejected = len(drop_indices)
+                math_rejected += len(drop_indices)
 
-        # Critic bağlamı (non-math RAG) tek generate() içinde DEĞİŞMEZ → bir kez
-        # topla, tüm critic geçişlerinde yeniden kullan. Eskiden her top-up turu
-        # yeniden çağırıyordu (her çağrı = embedding API isteği).
-        _critic_ctx_cache: dict[str, str] = {}
-
-        def _critic_context() -> str:
-            if "v" not in _critic_ctx_cache:
-                _critic_ctx_cache["v"] = _collect_critic_context(
-                    subject, grade, kazanimlar
-                )
-            return _critic_ctx_cache["v"]
+        # `_critic_ctx_cache`/`_critic_context()` yukarıda (pool-first bloğundan
+        # önce) tanımlandı — burada tekrar tanımlanmaz, aynı cache paylaşılır
+        # (bağlam tek generate() içinde değişmez, tekrar RAG çağrısı yapılmaz).
 
         # Critic geçişi: matematik doğruluğu + kazanım/zorluk uyumu kontrolü.
-        critic_rejected = 0
+        # NOT: `critic_rejected` burada SIFIRLANMAZ (pool-first katkısı korunur).
         if settings.enable_critic and questions:
             # DÜZELTME: subject'i geçir — Fen soruları ana geçişte de bilimsel-
             # doğruluk prompt'uyla denetlensin (önceden math critic'ine düşüyordu).
@@ -957,6 +1262,14 @@ class GeminiAgent:
                 verdicts = critic.evaluate(
                     questions, kazanimlar, difficulty, context=_critic_context()
                 )
+                # Fail-open izleyicisi (MUST-FIX 2): sorular vardı, verdict
+                # gelmediyse critic aslında hiçbir şeyi denetlemedi (parse/API
+                # hatası best-effort yutulmuş olabilir) → bir daha True olamaz.
+                if verdicts:
+                    if critic_verdicts_ok is not False:
+                        critic_verdicts_ok = True
+                else:
+                    critic_verdicts_ok = False
                 _cu = getattr(critic, "_last_usage", None)
                 if _cu is not None:
                     total_prompt_tokens += _cu.input_tokens
@@ -992,7 +1305,7 @@ class GeminiAgent:
                             emb if emb is not None else []
                             for _, emb in kept_pairs
                         ]
-                        critic_rejected = len(drop_indices)
+                        critic_rejected += len(drop_indices)
 
         # ── Post-filter doldurma ────────────────────────────────────────────
         # math_verifier/critic soru düşürdüyse eksiği kapat. SIRA (maliyet):
@@ -1000,47 +1313,8 @@ class GeminiAgent:
         #   2) kalıcı yedek havuzu                  → BEDAVA (önceki istekler)
         #   3) LLM top-up çağrısı                   → PAHALI (son çare)
         # Eskiden yalnız (3) vardı ve fazlalar çöpe gidiyordu.
-        def _apply_post_filters(qs: list, embs: list) -> tuple[list, list, int, int]:
-            """math_verifier + critic uygular → (kalan, embedding, math_red, critic_red).
-            Critic token'ı toplam maliyete eklenir."""
-            nonlocal total_prompt_tokens, total_completion_tokens, total_cost_usd
-            m_rej = c_rej = 0
-            if settings.enable_math_verifier and is_math and qs:
-                verdicts_v = verify_math_batch(qs)
-                drop_v = {
-                    v.question_index for v in verdicts_v
-                    if v.is_verifiable and not v.is_valid
-                }
-                if drop_v:
-                    qs = [q for i, q in enumerate(qs) if i not in drop_v]
-                    if embs:
-                        embs = [e for i, e in enumerate(embs) if i not in drop_v]
-                    m_rej = len(drop_v)
-            if settings.enable_critic and qs:
-                _critic = self._get_critic(subject)
-                if _critic is not None:
-                    verdicts_c = _critic.evaluate(
-                        qs, kazanimlar, difficulty, context=_critic_context()
-                    ) or []
-                    _cu = getattr(_critic, "_last_usage", None)
-                    if _cu is not None:
-                        total_prompt_tokens += _cu.input_tokens
-                        total_completion_tokens += _cu.output_tokens
-                        total_cost_usd += _cu.estimated_cost_usd
-                    drop_c = {
-                        v.question_index for v in verdicts_c
-                        if (
-                            not v.is_valid
-                            and v.confidence >= settings.critic_min_confidence
-                            and 0 <= v.question_index < len(qs)
-                        )
-                    }
-                    if drop_c:
-                        qs = [q for i, q in enumerate(qs) if i not in drop_c]
-                        if embs:
-                            embs = [e for i, e in enumerate(embs) if i not in drop_c]
-                        c_rej = len(drop_c)
-            return qs, embs, m_rej, c_rej
+        # `_apply_post_filters` yukarıda (pool-first bloğundan önce) zaten
+        # tanımlandı — burada tekrar tanımlanmaz, AYNI closure kullanılır.
 
         # Havuz BEST-EFFORT: yazma/okuma hatası üretimi ASLA düşürmemeli.
         # Prod'da havuz Turso'ya yazar ve mixed modda 3 bucket PARALEL thread'te
@@ -1048,11 +1322,31 @@ class GeminiAgent:
         # `except Exception`'ı HAZIR SORULARI çöpe atar (canlıda 5 istenen kağıtta
         # orta bucket'ın 3 sorusu böyle kayboldu → 2/5 teslim). `llm_cache.put`
         # de aynı sözleşmeyi kullanıyor ("Cache yazımı başarısız (yutuldu)").
-        def _pool_add(qs: list) -> None:
+        def _pool_add(
+            qs: list,
+            *,
+            source: str = "live-overshoot",
+            critic_pass: int | None = None,
+            verifier_model: str | None = None,
+        ) -> None:
+            # source varsayılanı 'live-overshoot': bu yardımcı bugüne kadar yalnız
+            # kırpılan/kullanılmayan fazlalar için çağrılıyordu (§3d — sorgulanabilir
+            # `source` alanı). Teslim edilenler generate() sonunda AYRI parametrelerle
+            # çağırır (source='live-delivered', bkz. aşağı).
             if not (settings.enable_spare_pool and qs):
                 return
             try:
-                SPARE_POOL.add_many(pool_key, qs)
+                SPARE_POOL.add_many(
+                    pool_key,
+                    qs,
+                    subject=getattr(subject, "value", str(subject)),
+                    grade=grade,
+                    unit_id=selection_key,
+                    difficulty=difficulty.value,
+                    source=source,
+                    critic_pass=critic_pass,
+                    verifier_model=verifier_model,
+                )
             except Exception as exc:  # noqa: BLE001
                 logger.warning("Havuz yazımı başarısız (yutuldu): %s", exc)
 
@@ -1068,7 +1362,7 @@ class GeminiAgent:
         def _accept(new_qs: list, new_embs: list) -> int:
             """Kabul edilenleri `questions`'a ekler (numaraları sıkı tutar). Eklenen sayı."""
             nonlocal questions, accepted_embeddings
-            take_n = question_count - len(questions)
+            take_n = llm_target - len(questions)
             if take_n <= 0 or not new_qs:
                 return 0
             base_no = len(questions)
@@ -1082,7 +1376,7 @@ class GeminiAgent:
             return len(taken)
 
         # (1)+(2): LLM'siz kaynaklar.
-        if len(questions) < question_count:
+        if len(questions) < llm_target:
             free_qs: list = list(spare_candidates)
             # Embedding listesi soru listesiyle HİZALI olmalı: `_apply_post_filters`
             # elemeyi index'e göre yapıyor. Semantic dedup kapalıysa embedding
@@ -1092,9 +1386,9 @@ class GeminiAgent:
                 if len(spare_embeddings) == len(spare_candidates)
                 else [[] for _ in spare_candidates]
             )
-            if len(free_qs) < (question_count - len(questions)):
+            if len(free_qs) < (llm_target - len(questions)):
                 drawn = _pool_take(
-                    (question_count - len(questions) - len(free_qs)) * 2
+                    (llm_target - len(questions) - len(free_qs)) * 2
                 )
                 # Havuzdan gelenler bu batch'te tekrar olmasın.
                 for q in drawn:
@@ -1103,7 +1397,7 @@ class GeminiAgent:
                         free_qs.append(q)
                         free_embs.append([])
             if free_qs:
-                kept, kept_embs, m_rej, c_rej = _apply_post_filters(free_qs, free_embs)
+                kept, kept_embs, m_rej, c_rej, _cr_qs = _apply_post_filters(free_qs, free_embs)
                 math_rejected += m_rej
                 critic_rejected += c_rej
                 filled = _accept(kept, kept_embs)
@@ -1114,7 +1408,7 @@ class GeminiAgent:
                     logger.info(
                         "Post-filter eksiği LLM'siz kapatıldı: +%d soru "
                         "(yedek=%d havuz-dahil, kalan eksik=%d)",
-                        filled, len(free_qs), question_count - len(questions),
+                        filled, len(free_qs), llm_target - len(questions),
                     )
             else:
                 _pool_add(spare_candidates)
@@ -1126,10 +1420,10 @@ class GeminiAgent:
         post_filter_rounds = 0
         POST_FILTER_MAX_RETRIES = 2
         while (
-            len(questions) < question_count
+            len(questions) < llm_target
             and post_filter_rounds < POST_FILTER_MAX_RETRIES
         ):
-            missing = question_count - len(questions)
+            missing = llm_target - len(questions)
             retry_temperature = _clamp_temp(retry_temperature + RETRY_TEMPERATURE_BOOST)
             retry_prompt = build_retry_prompt(
                 original_user_prompt=user_prompt,
@@ -1180,7 +1474,7 @@ class GeminiAgent:
                 post_filter_rounds += 1
                 continue
 
-            new_questions, new_embs, _m, _c = _apply_post_filters(new_questions, new_embs)
+            new_questions, new_embs, _m, _c, _cr_qs = _apply_post_filters(new_questions, new_embs)
             math_rejected += _m
             critic_rejected += _c
             if not new_questions:
@@ -1193,6 +1487,22 @@ class GeminiAgent:
                 _pool_add(new_questions[filled:])
             post_filter_rounds += 1
 
+        # ── Depo + üretim birleştirme (§3b) ─────────────────────────────────
+        # `questions` şu ana kadar YALNIZ bu LLM geçişinin (üretim+retry+top-up)
+        # sonucuydu (`llm_target`'a göre sınırlı); pool-first bloğunun getirdiği
+        # `pool_questions` (varsa) şimdi BAŞA eklenir ve numaralandırma 1..N olarak
+        # yeniden sıkıştırılır (mevcut `_accept`/math-critic filtrelerindeki
+        # `model_copy(update={"number": ...})` kalıbı). Toplam `question_count`'u
+        # aşmaz (savunma amaçlı kırpma — normalde zaten aşmaz).
+        if pool_questions:
+            _merged = list(pool_questions) + list(questions)
+            _merged_embs = list(pool_embeddings) + list(accepted_embeddings)
+            questions = [
+                q.model_copy(update={"number": i + 1})
+                for i, q in enumerate(_merged[:question_count])
+            ]
+            accepted_embeddings = _merged_embs[:question_count]
+
         # Trace bilgilerini sakla.
         self._last_dedup_rejected_string = dedup.rejected_count
         self._last_dedup_rejected_semantic = (
@@ -1200,12 +1510,16 @@ class GeminiAgent:
         )
         self._last_math_verifier_rejected = math_rejected
         self._last_critic_rejected = critic_rejected
+        self._last_pool_math_rejected = pool_math_rejected
+        self._last_pool_critic_rejected = pool_critic_rejected
         self._last_retry_rounds = retry_round
         self._last_temperature = temperature  # initial (jitter sonrası)
         self._last_final_temperature = retry_temperature if retry_round > 0 else temperature
         self._last_seed = seed
         self._last_requested_count = question_count
         self._last_delivered_count = len(questions)
+        # self._last_pool_hit_count zaten pool-first bloğunun hemen sonrasında
+        # atandı (bu birleştirmeden ETKİLENMEZ — pool_hit_count sabit kalır).
         # Embedding maliyeti (semantic dedup) — küçük ama "gerçek toplam" için dahil.
         if self._embedder is not None:
             _eu = getattr(self._embedder, "_last_usage", None)
@@ -1255,6 +1569,44 @@ class GeminiAgent:
             except Exception as exc:
                 logger.warning("Cache yazımı başarısız (yutuldu): %s", exc)
 
+        # Depo (Faz 1, §3b-1): TESLİM EDİLEN sorular da havuza yazılır — eskiden
+        # yalnız `spare_candidates` (kırpılan artık) yazılıyordu, teslim edilenler
+        # depoya HİÇ girmiyordu; bu yüzden X kullanıcısına verilen sorular Y
+        # kullanıcısına asla servis edilemiyordu. Elenenler zaten bu noktaya kadar
+        # `questions`'a hiç girmedi (math_verifier/critic önceden düşürdü) →
+        # depo çöp biriktirmez. "Bedava damga" (§3c): bu sorular ZATEN
+        # `_apply_post_filters`/critic geçişinden geçti (enable_critic açıksa) →
+        # tekrar servis edilirken critic'i tekrar ödemesin.
+        #
+        # FAIL-CLOSED (MUST-FIX 2, denetim 2026-07-28): `critic_verdicts_ok`
+        # False/None ise critic ya hiç çalışmadı ya da fail-open modda (boş
+        # verdict) hiçbir şeyi denetlemedi — bu durumda `critic_pass=1` YALAN
+        # olurdu (denetlenmemiş soru sonsuza dek "temiz" damgalanırdı, Faz 2'nin
+        # tembel damgası onu bir daha asla denetlemez). Şüphe varsa NULL bırak.
+        # Pool-origin sorular (varsa) BU HAVUZDA zaten var — `add_many`'nin
+        # INSERT OR IGNORE'u onlar için no-op olurdu (unique index çarpar) ama
+        # gereksiz bir DB round-trip'i olmasın diye burada AYIKLANIR; onların
+        # damgası zaten pool-first bloğunda (bedava geçti ya da tembel
+        # damgalandı) yazıldı.
+        _llm_delivered = questions
+        if pool_questions:
+            _pool_norms = {normalize_question(pq.question) for pq in pool_questions}
+            _llm_delivered = [
+                q for q in questions if normalize_question(q.question) not in _pool_norms
+            ]
+        if settings.enable_spare_pool and _llm_delivered:
+            _delivered_critic_pass = (
+                1 if (settings.enable_critic and critic_verdicts_ok) else None
+            )
+            _pool_add(
+                _llm_delivered,
+                source="live-delivered",
+                critic_pass=_delivered_critic_pass,
+                verifier_model=(
+                    settings.critic_model if _delivered_critic_pass else None
+                ),
+            )
+
         return questions
 
     @property
@@ -1292,6 +1644,9 @@ class GeminiAgent:
             prompt_tokens=getattr(self, "_last_prompt_tokens", 0),
             completion_tokens=getattr(self, "_last_completion_tokens", 0),
             estimated_cost_usd=getattr(self, "_last_cost_usd", 0.0),
+            pool_hit_count=getattr(self, "_last_pool_hit_count", 0),
+            pool_math_rejected=getattr(self, "_last_pool_math_rejected", 0),
+            pool_critic_rejected=getattr(self, "_last_pool_critic_rejected", 0),
         )
 
     @staticmethod

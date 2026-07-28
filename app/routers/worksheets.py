@@ -167,6 +167,16 @@ def _merge_traces(traces: list):
         # cache_hit yalnız TÜM bucket'lar cache'ten geldiyse true. Aksi halde en
         # az bir bucket üretildi (yavaş) → "cache hit" demek yanıltıcı olur.
         "cache_hit": all(t.cache_hit for t in traces),
+        # Depo isabeti (Faz 2, §3b, docs/COST_QUALITY_V2_PLAN.md) — her bucket
+        # kendi pool_key'inden BAĞIMSIZ çeker; toplam olmadan mixed/progressive
+        # (üretimin en yaygın modu) için depo tasarrufu ÖLÇÜLEMEZ.
+        "pool_hit_count": sum(t.pool_hit_count for t in traces),
+        # Pool-first'in ESKİ havuz satırlarını denetleyip elediği sayaçlar —
+        # `math_verifier_rejected`/`critic_rejected`'tan AYRI tutulur (Küçük 1,
+        # Opus denetimi): aksi halde mixed modda "kalite düştü" ile "havuz
+        # temizliği" ayırt edilemezdi.
+        "pool_math_rejected": sum(t.pool_math_rejected for t in traces),
+        "pool_critic_rejected": sum(t.pool_critic_rejected for t in traces),
     })
 
 

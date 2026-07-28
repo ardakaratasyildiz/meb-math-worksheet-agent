@@ -13,6 +13,23 @@ import pytest
 from app.config import settings
 from app.models.enums import Difficulty, QuestionType, SubjectId
 from app.models.schemas import GenerateWorksheetRequest, Question
+from app.services.llm_cache import SPARE_POOL
+
+
+@pytest.fixture(autouse=True)
+def _clean_pool():
+    """Faz 2 (§3b, docs/COST_QUALITY_V2_PLAN.md) sonrası GEREKLİ: pool-first
+    serving artık HER `generate()` çağrısının BAŞINDA depoyu okur (eskiden
+    yalnız post-filter eksiğinde okunuyordu). Bu dosyanın testleri gerçek
+    `GeminiAgent.generate()`'i çağırıp sonunda teslim edilen soruları depoya
+    yazıyor (`source='live-delivered'`, Faz 1'den beri); depo GERÇEK/kalıcı
+    `knowledge_base/history.sqlite3` dosyasına yazdığından, temizlenmezse bir
+    test kendi ÖNCEKİ koşusunun artığını "depo zaten dolu" sanıp fake LLM
+    zincirini hiç çağırmadan yanlışlıkla geçebilir (ya da başka bir testin
+    sorularını görebilir)."""
+    SPARE_POOL.clear()
+    yield
+    SPARE_POOL.clear()
 
 
 def _q(n: int) -> Question:
