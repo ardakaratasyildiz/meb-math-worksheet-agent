@@ -417,6 +417,21 @@ class GenerationTrace(BaseModel):
     prompt_tokens: int = 0
     completion_tokens: int = 0
     estimated_cost_usd: float = 0.0
+    # Depo (soru havuzu) isabet sayısı — Faz 2, §3b (docs/COST_QUALITY_V2_PLAN.md).
+    # Teslim edilen N sorudan kaçının depodan (LLM'siz) geldiği. requested_count'a
+    # eşitse LLM'e HİÇ gidilmedi demektir (model_used/provider="pool", cost=0);
+    # 0 < pool_hit_count < requested_count ise karışık (depo + üretim) servis.
+    # Bu alan olmadan §3b'nin tasarrufu ölçülemez.
+    pool_hit_count: int = 0
+    # Pool-first bloğunun (§3c tembel damga) denetlediği/elediği ESKİ havuz
+    # satırları — Opus denetimi (2026-07-28, Küçük 1): `math_verifier_rejected`/
+    # `critic_rejected` bunları da sayarsa "üretim kalitesi düştü" ile "havuz
+    # temizliği yapıldı" ayırt edilemez (plan §7 ölçüm disiplinini bozar).
+    # Bu iki alan YALNIZ pool-first'in denetlediği (damgasız → damgalı/reddedilmiş
+    # olan) eski satırları sayar; `math_verifier_rejected`/`critic_rejected`
+    # ARTIK yalnız TAZE (bu istekte LLM'den gelen) üretimi sayar.
+    pool_math_rejected: int = 0
+    pool_critic_rejected: int = 0
 
 
 class WorksheetMetadata(BaseModel):

@@ -108,7 +108,37 @@ class Settings(BaseSettings):
     # YERİNE kullanılır (2026-07-26 ölçümü: 20 soruluk kağıt için 36 soru
     # üretiliyor, ~12'si atılıyordu; top-up çağrıları 19-24K çıktı token'ı).
     enable_spare_pool: bool = True
-    spare_pool_max_per_key: int = 60
+    # 60 → 300 (Opus denetimi 2026-07-28, MUST-FIX): 60, havuzun yalnız post-filter
+    # yedeği olduğu Faz 1 için yeterliydi. Faz 2'de depo BİRİNCİL servis yolu
+    # olunca kova başına 60 çok az kalır (20 soruluk 3 kağıt tek kullanıcıyı
+    # tüketir → çeşitlilik biter, aynı sorular hızla tekrar sıraya girer).
+    # 300 × ~700 kova (ders×sınıf×ünite×kazanım×tip×zorluk, bkz. plan §0b) ×
+    # ~2KB/soru ≈ 400MB tavan — Turso free-tier 9GB'ın altında, ve pratikte
+    # yalnız GERÇEKTEN aktif kovalar dolar (tavana hiç yaklaşmayan yüzlerce
+    # kova boş/az kalır). Trim artık `used_count`'a göre DEĞİL damga durumuna
+    # göre çalışıyor (bkz. llm_cache.SpareQuestionPool.add_many) — kapasite
+    # büyüklüğü artık "hangi soru silinir" kararını bozmuyor, yalnızca ne kadar
+    # çeşitlilik biriktirebileceğimizi belirliyor.
+    spare_pool_max_per_key: int = 300
+    # Depoyu BİRİNCİL servis yolu yapar (Faz 2, §3b, docs/COST_QUALITY_V2_PLAN.md):
+    # eskiden akış `cache → LLM üret → filtre → (yedek/havuz) → top-up` idi — havuz
+    # yalnız post-filter EKSİĞİNİ kapatıyordu, LLM her zaman baştan çağrılıyordu.
+    # True iken akış `cache → DEPO (istenen sayının TAMAMI) → yalnız EKSİK kadar LLM`
+    # olur: depo isteneni tam karşılarsa LLM'e (few-shot/textbook retrieval dahil)
+    # HİÇ gidilmez. Tek kısıt aynı kullanıcıya tekrar (history exclude_norms);
+    # çapraz-kullanıcı tekrar kullanıcı kararıyla SERBEST (doluluk eşiği yok).
+    # False → bugünkü davranış birebir (LLM her zaman önce çağrılır, havuz yalnız
+    # eksik kapatma/top-up alternatifi olarak devrede kalır) — redeploy'suz geri
+    # alma: env `ENABLE_POOL_FIRST_SERVING=false`.
+    enable_pool_first_serving: bool = True
+    # Tip-farkında pool-first (Opus denetimi 2026-07-28, SHOULD-FIX): açıkken
+    # pool-first hedef soru TİPİ dağılımını (`distribute_question_types`) da
+    # gözetir — kovada baskın olan tek tip (ör. yalnız `islem`) kağıdın tamamını
+    # ele geçiremez, her tip yalnız KENDİ kotası kadar depodan çekilir, kalanı
+    # LLM'in hedefine (tip-bazlı eksik) devredilir. Kapalıysa (eski/basit
+    # davranış) pool-first yalnız TOPLAM sayıya bakar, tip karışımı tesadüfe
+    # kalır — redeploy'suz geri alma: env `POOL_FIRST_RESPECT_TYPE_MIX=false`.
+    pool_first_respect_type_mix: bool = True
     # ÜRETİM ÇIKTI TAVANI — "format-drop" israfının panzehiri (2026-07-26 ölçümü):
     # üretici modelin çıktı tavanı yoktu; g5 kağıdında 2.5-flash YOZLAŞIP 65.012
     # token/237 sn yazdı, 64K tavanına dayandı, JSON kesildi ("şemaya uymadı"),
@@ -126,6 +156,15 @@ class Settings(BaseSettings):
 
     enable_history_persist: bool = True
     history_db_path: str = "knowledge_base/history.sqlite3"
+    # Kalıcı görülmüş-set (Soru deposu Faz 1, §3a): `seen_questions()` eskiden
+    # `deque(maxlen=30)`'a dayanıyordu → 3. kağıtta 1. kağıdın soruları "hiç
+    # görülmemiş" sayılıp TEKRAR gelebiliyordu (kullanıcının "aynı soruyu
+    # görmesin" beklentisi bu yüzden çalışmıyordu). True → dışlama kümesi
+    # anahtar başına DB'den tembel yüklenir ve TAVANSIZ tutulur (yalnız
+    # normalize metin, ucuz). `context_exclusions`/`seen_embeddings` bilinçli
+    # olarak SINIRLI KALIR (prompt token'ı / RAM-CPU maliyeti). False → eski
+    # 30'luk pencere davranışına döner (redeploy'suz geri alma).
+    history_seen_unbounded: bool = True
 
     # Kullanıcı (tenant) bazlı çalışma kağıdı geçmişi — /api/worksheets/history
     enable_worksheet_history: bool = True

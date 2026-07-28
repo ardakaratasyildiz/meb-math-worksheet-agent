@@ -25,6 +25,7 @@ from app.services.structured import (  # noqa: E402
     SOLVABLE_TYPES,
     count_blanks,
     derive_structured_fields,
+    reference_integrity_issue,
     structured_content_issue,
     validate_structured,
 )
@@ -243,6 +244,75 @@ def test_structured_content_issue() -> None:
     )
 
 
+# ── Madde imli (bullet) öğe listesi — kalite terazisi yanlış-alarm fix'i ──────
+# 2026-07-28: quality_bench.py altın setinde (gerçek MEB/ÖDSGM soruları) 2 yanlış-
+# alarm bulundu — her ikisi de "•" madde imi kullanıyor, `_has_enum_items` yalnız
+# numaralı/Roman öğe tanıyordu (bullet YOK) → gerçek geçerli soru elenirdi. Kaynak:
+# knowledge_base/eval/gold/gold_questions.json gold-0176 (sosyal, siralama) ve
+# gold-0122 (sosyal, coktan_secmeli) — metinler BİREBİR kopyalandı.
+_GOLD_0176_SIRALAMA = (
+    "Aşağıdaki cümleler olayların oluşuna göre sıralanacaktır:\n"
+    "• Temizlediği çaydanlığı, yanan ocağa sürdü.\n"
+    "• Çadırın önüne taşlardan ilkel bir ocak yaptı.\n"
+    "• Seher vaktinde harman yerine yükünü devirip çadırını kurdu.\n"
+    "• Çay suyunun kaynamasını beklerken karşıdaki dağları seyre koyuldu.\n"
+    "Bu cümleler doğru sıralandığında 'Ocağa doldurduğu çalı çırpıları, kuşağına "
+    "gizlediği kibritle tutuşturdu.' cümlesi baştan kaçıncı sırada yer alır?\n\n"
+    "A) 2.\nB) 3.\nC) 4.\nD) 5."
+)
+_GOLD_0122_COKTAN_SECMELI = (
+    "• Barbaros Hayrettin Paşa öncülüğündeki Osmanlı donanması ile Andrea Dorya "
+    "komutasındaki Haçlı donanması arasında 27 Eylül 1538'de yapılmıştır.\n"
+    "• Osmanlı'nın galibiyetiyle Akdeniz'deki üstünlük Osmanlı'ya geçmiştir.\n"
+    "• Günümüzde 'Deniz Kuvvetleri Günü' olarak kutlanır.\n"
+    "Özellikleri verilen olay aşağıdakilerden hangisidir?\n\n"
+    "A) İnebahtı Deniz Savaşı\nB) Rodos'un Fethi\nC) Preveze Deniz Savaşı\nD) Girit'in Fethi"
+)
+
+
+def test_bullet_item_regression() -> None:
+    print("madde imli (bullet) öğe listesi — yanlış-alarm regresyonu")
+    # gold-0176: bullet'li sıralama öğe listesi VAR → artık düşürülmemeli.
+    check(
+        structured_content_issue(QuestionType.SIRALAMA, _GOLD_0176_SIRALAMA) is None,
+        "bullet'li sıralama (gold-0176) artık KORUNUYOR (önceden yanlış-alarm)",
+    )
+    # gold-0122: "öncül" alt-dizesi var ("öncülüğündeki") ama bullet'li öğe listesi
+    # de var → artık düşürülmemeli.
+    check(
+        reference_integrity_issue(_GOLD_0122_COKTAN_SECMELI) is None,
+        "bullet'li öncül-atıflı MCQ (gold-0122) artık KORUNUYOR (önceden yanlış-alarm)",
+    )
+    # Regresyon: düzeltme YAKALAMAYI gevşetmemeli — öğe listesi HİÇ olmayan (bullet
+    # dahil) sıralama/eşleştirme hâlâ düşürülmeli.
+    check(
+        structured_content_issue(QuestionType.SIRALAMA, "Olayları sıralayınız.") is not None,
+        "gerçekten boş sıralama (öğe yok) hâlâ düşürülüyor",
+    )
+    check(
+        structured_content_issue(QuestionType.ESLESTIRME, "Aşağıdaki kavramları eşleştiriniz.")
+        is not None,
+        "gerçekten boş eşleştirme (öğe yok) hâlâ düşürülüyor",
+    )
+    # Tek bullet (< 2 öğe) liste SAYILMAMALI — tek bir madde imli cümle yanlışlıkla
+    # "öğe listesi var" saymamalı.
+    check(
+        structured_content_issue(QuestionType.SIRALAMA, "Sırala:\n• Tek madde burada.")
+        is not None,
+        "tek bullet (< 2 öğe) hâlâ düşürülüyor",
+    )
+    # "-" ile başlayan normal bir cümle (madde imi DEĞİL, tire) yanlış öğe saymamalı;
+    # ama gerçek 2+ tire-bullet listesi tanınmalı.
+    check(
+        structured_content_issue(
+            QuestionType.SIRALAMA,
+            "Olaylar:\n- Su kaynadı.\n- Çay demlendi.\nSırasıyla hangisi önce olur?",
+        )
+        is None,
+        "tire (-) ile madde imli 2+ öğe listesi tanınıyor",
+    )
+
+
 def main() -> int:
     for fn in (
         test_numeric_equivalent,
@@ -252,6 +322,7 @@ def main() -> int:
         test_numeric_validate,
         test_non_solvable_passthrough,
         test_structured_content_issue,
+        test_bullet_item_regression,
     ):
         fn()
     print()
