@@ -157,15 +157,24 @@ _ROMAN_ANSWER_RE = re.compile(r"\b(?:I|II|III|IV|V)\b\s*(?:,|ve|-)\s*\b(?:I|II|I
 # Roman öğe işaretçileri (kelime-içi harfi saymamak için sınır guard'ı).
 _ROMAN_ITEM_RE = re.compile(r"(?<![A-Za-zÇĞİÖŞÜçğıöşü])(I{1,3}|IV|V)\s*[.\)]")
 _NUM_ITEM_RE = re.compile(r"(?<!\d)([1-9])\s*[.\)]\s")
+# Madde imli (bullet) öğe listesi — GERÇEK MEB/ÖDSGM formatı (kalite terazisi
+# ölçümü: 138 sözel few-shot örneğinin %11'i (15/138) bullet kullanıyor). Yalnız
+# SATIR BAŞINDA (yalnız boşluk öncesinde) + imden sonra boşluk + içerik olmalı,
+# yoksa "e-posta" gibi kelime-içi tireler veya "2020-2021" gibi aralıklar yanlışlıkla
+# öğe sayılır. En az 2 madde şartı (tek satır liste sayılmaz) burada da korunur.
+_BULLET_ITEM_RE = re.compile(r"^[ \t]*[•‣▪\*]\s+\S|^[ \t]*[-–—]\s+\S", re.MULTILINE)
 
 
 def _has_enum_items(text: str) -> bool:
-    """Metinde en az iki ardışık numaralı/Roman öğe var mı (I. II. / 1. 2.)?"""
+    """Metinde en az iki ardışık numaralı/Roman/madde-imli (bullet) öğe var mı
+    (I. II. / 1. 2. / • • )?"""
     romans = set(_ROMAN_ITEM_RE.findall(text))
     if "I" in romans and "II" in romans:
         return True
     nums = set(_NUM_ITEM_RE.findall(text))
-    return "1" in nums and "2" in nums
+    if "1" in nums and "2" in nums:
+        return True
+    return len(_BULLET_ITEM_RE.findall(text)) >= 2
 # Görsel atfı — Türkçe ünsüz yumuşaması/ünlü düşmesi için yaygın çekimli biçimler
 # AÇIKÇA sayılır (yanlış-eleme riskini düşürür). "bu/aşağıdaki ŞEKİLDE" ZARFI dahil
 # DEĞİL (şekle/şekildeki gibi net isim kullanımları dahil).
