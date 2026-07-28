@@ -177,42 +177,153 @@ Sıra, (tasarruf × güvenlik) çarpımına göre.
    değerlendirilmeli. Ara kazanç: havuz sayesinde küçük bucket'ların overshoot
    fazlaları da artık stoğa gidiyor.
 
-### Faz 2 — model/thinking kalibrasyonu (tahmini −%30, A/B şart)
-8. **Geometri A/B'sini YENİLE** (§3.3): geometrinin 3.5-flash'a alınma gerekçesi
-   "2.5 SVG'yi tutturamıyor"du. Artık şekiller `{{geo:...}}` direktifiyle
-   **deterministik** üretiliyor → gerekçe büyük ölçüde geçersiz. 2.5-flash +
-   direktif vs 3.5-flash karşılaştırılsın; 2.5 geçerse o kalemde **−%72**.
-9. **Güçlü modelde thinking'e tavan** (§3.3): dinamik (−1) yerine 4096-8192.
-   NOT: 2026-07-23 A/B'sinde tavan REDDEDİLMİŞTİ, ama o deney *ucuz* modeli
-   512/1024/2048 ile test etti; güçlü modelde 17K thinking'e 6-8K tavan farklı
-   bir rejim. Kalite eşiği tutmazsa geri alınır.
+### Faz 2 — geometri model/thinking kalibrasyonu (tek karar, ~−%30 toplam)
 
-### Faz 3 — yapısal çözüm: soru havuzu (asıl kaldıraç, −%70+)
-10. **Soru-bazlı havuz (question bank)** — `llm_cache`'in set-bazlı yapısını
-    (§3.9) soru-bazlı envanterle değiştir: her critic'ten geçmiş soru
-    (ders, sınıf, ünite, kazanım, zorluk, tip, kalite skoru, kullanım sayısı)
-    tek tek saklanır. Kağıt = havuzdan kompozisyon (kullanıcı-bazlı tekrar
-    engeli için mevcut `GENERATION_HISTORY` zaten var) + yalnız **eksik kadar**
-    üretim.
-    - Overshoot fazlaları, top-up fazlaları, iptal edilen kağıtlar → hepsi stok.
-    - Doluluk arttıkça maliyet/kağıt **0'a** yaklaşır; %70 isabetle ~1.2 TL.
-11. **Havuzu gece Batch API ile doldur** (Gemini Batch = **%50 indirim**):
-    (sınıf × ünite × zorluk) başına N soru bir kez üretilir. Bu, kaliteyi
-    **yükselten** hamle: pahalı model + yüksek thinking + sıkı critic yalnız
-    havuz inşasında kullanılır (bir kez, ucuza, çevrimdışı), kullanıcıya servis
-    bedava olur. "Kaliteyi düşürmeden ucuzlatmak" yerine **kaliteyi artırıp
-    ucuzlatmak** bu maddeyle olur.
-12. **Havuz kalite döngüsü**: /coz cevap istatistikleri + kullanıcı "soruyu
-    bildir" sinyali ile kötü soruları ayıkla → havuz zamanla iyileşir
-    (bugün her istek sıfırdan kumar atıyor).
+**Hedef:** geometri kağıdı 7.99 → ~2.5 TL. Faz 1 sonrası ortalamanın baskın
+kalemi tek başına bu (diğer senaryolar 1.0-2.0 TL bandında).
 
-### Faz 4 — koruma bandı
-13. **Defter zenginleştirme**: ders, `difficulty_mode`, plan, thinking token'ı,
-    üretilen-vs-teslim sayısı, başarısız çağrı token'ı → plan başına gerçek
-    "TL/kağıt" panosu.
-14. **Günlük harcama alarmı** (2026-07-10'da tek günde $9.06 patlaması olmuştu)
-    + **tenant başına aylık maliyet tavanı**: eşiği aşan kullanıcı havuz-only
-    servise düşer (kota vaadi bozulmaz, marj korunur).
+**Neden şimdi mümkün:** geometri 3.5-flash'a 2026-07 A/B'siyle alındı, gerekçe
+"2.5 geometri SVG'sinde zorlanıyor"du (GEMINI_COST_POLICY §3). O tarihte model
+`<svg>`'yi ELLE çiziyordu. Bugün 8 şekil `{{geo:...}}` direktifiyle geliyor
+(`svg_utils.process_geo_directives`: right_triangle, triangle, rectangle, square,
+circle, parallelogram, trapezoid, angle) ve SVG'yi KOD üretiyor; modelin işi
+~30 karakterlik direktif yazmak. `oruntu_sekil` de `{{pattern:...}}`'a geçmiş
+(§6'daki plan tamamlanmış). **3.5'in gerekçesi büyük ölçüde ortadan kalkmış
+olabilir — ölçmeden bilinemez.**
+
+Ayrıca: 2026-07-23 thinking-tavanı A/B'si **REDDEDİLMİŞTİ**, ama
+`scripts/eval/thinking_ab.py:TEST_MODEL = "gemini-2.5-flash"` → o deney *ucuz*
+modeli 512/1024/2048 ile test etti. 17.257 thinking token'ının yandığı
+**3.5-flash hiç test edilmedi.** Farklı rejim, yeniden ölçülmeli.
+
+**Deney kolları:**
+
+| Kol | Model | Thinking | Test ettiği soru |
+|---|---|---|---|
+| A (kontrol) | 3.5-flash | −1 (dinamik) | bugünkü prod |
+| B | 3.5-flash | 4096 | thinking'in ne kadarı gerçekten gerekli |
+| C | 2.5-flash | −1 | direktif çağında güçlü model gerekli mi (çıktı fiyatı 3.6× düşük) |
+| D | 2.5-flash | 2048 | en ucuz kol (C geçerse dene) |
+
+**Harness:** `scripts/eval/thinking_ab.py` yeniden kullanılır (LEVELS bütçe
+haritası, RunRow token+maliyet+soru dökümü, JSON+özet çıktısı hazır). İki
+eksiği var: (1) `TEST_MODEL` sabit → **`--models` ekseni parametreleştirilmeli**;
+(2) senaryolar grade 8 sabit → geometri 6 ve 7 de eklenmeli. ~30 satır.
+
+**Örneklem ve maliyet:** 3 geometri senaryosu (g6, g7, g8 `M.8.4.1.4`) × 4 kol ×
+**5 iterasyon**, qcount=10. Neden 5: ölçülen koşu-arası varyans **±%15** —
+2 iterasyonla %8'lik fark ayırt edilemez (kısa-çözüm dersi, §3.5). Tahmini
+maliyet **~$6 (~210 TL)**. Erken kesme: önce A vs C 3 iterasyon; fark bariz ise
+D'ye geç, değilse tam matrisi koş.
+
+**Kalite metrikleri (otomatik):** `delivered/requested` · `critic_rejected` ·
+`math_verifier_rejected` · **figürlü oran** (`<svg` içeren soru %'si — geometri
+kağıdının asıl vaadi) · **direktif ihlali** (direktif yerine ham `<svg>` yazma).
+Otomatikle ölçülemeyen: şekil-soru tutarlılığı → her koldan 10 soru göz denetimi.
+
+**Karar eşiği (ÖNCEDEN yazılı — sonradan yorumla esnetilmeyecek):**
+- C, A'ya göre eleme oranı **≤ +5 puan** VE figürlü oran **≥ %90** VE göz
+  denetiminde şekil-soru tutarsızlığı yoksa → **geometri ucuz modele döner.**
+- C düşer, B ≈ A ise → `gemini_thinking_budget_strong = 4096`.
+- İkisi de düşerse → geometri pahalı KALIR; kaldıraç Faz 3'e devredilir (geometri
+  sorusunu bir kez üret, sonsuza kadar yeniden kullan).
+
+**Uygulama:** karar tek config satırı. Geri alma kolaylığı için `model_for`'daki
+geometri dalına bayrak (`geometry_uses_strong_model: bool = True`) eklenmeli —
+env ile redeploy'suz açılıp kapanabilsin.
+
+### Faz 3 — soru havuzunu servise açmak (asıl yapısal kaldıraç, −%70+)
+
+Faz 1'de havuz (`SpareQuestionPool`) inşa edildi ama **yalnız post-filter
+eksiğini** kapatıyor. Faz 3 = havuzu **birincil servis yolu** yapmak.
+
+**3a. Havuzu üretimin ÖNÜNE al (en büyük tek kazanç)**
+- Bugünkü akış: cache → LLM üret → filtre → (yedek/havuz) → top-up.
+- Hedef akış: cache → **havuz (istenen sayının tamamı)** → yalnız eksik kadar LLM.
+- Tekrar engeli hazır: `GENERATION_HISTORY.seen_questions()` +
+  `SPARE_POOL.take(exclude_norms=...)`.
+- **Çeşitlilik riski:** iki kullanıcı aynı üniteyi seçince aynı 20 soruyu alır.
+  Önlem: havuz ≥ 3× istenen sayı olduğunda `used_count ASC` + rastgele
+  karıştırma; havuz doluluğu eşik altındaysa yine üret (havuzu büyütmek için).
+- **Ayrıca çözülmesi gereken:** `GENERATION_HISTORY` FIFO `capacity_per_key=30`
+  → havuz kalıcı ama tekrar-engeli hafızası sınırlı; uzun vadede kullanıcı eski
+  soruyu yeniden görür. Kapasite/politika Faz 3'te gözden geçirilmeli.
+
+**3b. Gece Batch API ile ön-doldurma (%50 indirim)**
+- Gemini Batch: aynı model, asenkron, **yarı fiyat**. ÖNCE doğrulanmalı
+  (2.5-flash batch desteği + kota + `google-genai` SDK yolu).
+- Kapsam: (ders × sınıf × ünite × zorluk) ≈ 5 ders × 4-8 sınıf × ~6 ünite × 3
+  zorluk ≈ **500-700 kova**; kova başına 20 soru ≈ 12K soru.
+- Tek seferlik maliyet: 12K × ~0.06 TL (ucuz model, batch %50) ≈ **700-800 TL**.
+  Karşılığı: ilk ~12K soru servisi bedava, sonrası marjinal.
+- **Asıl nokta kalite:** ön-doldurma ÇEVRİMDIŞI olduğu için pahalı ayarlar burada
+  kullanılabilir — güçlü model + yüksek thinking + sıkı critic + çift geçiş.
+  Servis bedava olduğundan bu, "kaliteyi düşürmeden ucuzlatma" değil
+  **kaliteyi YÜKSELTİP ucuzlatma** hamlesidir.
+- Sıra: `usage_ledger`'daki grade/topic dağılımına göre en çok kullanılan
+  kovalar önce (kör doldurma değil).
+
+**3c. Havuz kalite döngüsü**
+- **Sinyal 1 (mevcut, bedava):** `attempts.answers_json` soru-bazlı doğru/yanlış
+  taşıyor → yanlış oranı anormal yüksek (ör. çok denemede %100 yanlış) soru =
+  cevap anahtarı bozuk şüphesi. Bağlamak için havuz sorusuna kalıcı
+  `question_id` + quiz sorusundan ona referans gerekiyor (bugün YOK).
+- **Sinyal 2 (küçük iş):** "soruyu bildir" — bugün YOK (kodda hiç yok). Web+mobil
+  tek dokunuş → havuzda `flagged_count`.
+- **Sinyal 3:** critic'i havuz üzerinde periyodik yeniden koş (model
+  güncellendiğinde eski stoğu yeniden denetle).
+- **Eylem:** `quality_score` (kabul geçmişi − bayrak − yanlış-oranı anomalisi) →
+  eşik altı havuzdan çıkar. Üst dilim "altın havuz" → few-shot besleme adayı
+  (bugün few-shot 133 statik gerçek MEB sorusu; havuz onu büyütebilir).
+
+**3d. Şema ve mimari işleri**
+- `spare_questions` bugün: `pool_key, norm_question, question_json, used_count,
+  created_at`. Eklenecek: `question_id` (kalıcı referans), `subject`, `grade`,
+  `unit_id`, `kazanim_kod`, `question_type` (bugün pool_key string'inin İÇİNDE
+  gömülü → sorgulanamaz), `quality_score`, `flagged_count`, `critic_pass`,
+  `source` (live-overshoot | batch-prewarm).
+- `generation_cache` (set-bazlı, `q{count}` anahtarlı, isabet oranı düşük) uzun
+  vadede **gereksizleşir** → havuz yerini alır; geçişte bir arada yaşarlar,
+  sonra cache kaldırılır (kod sadeleşir).
+- Turso boyutu: 12K soru × ~2KB ≈ 25MB — sorun değil.
+- Overshoot oranı (1.8) artık İSRAF DEĞİL: fazlalar stoğa gidiyor → düşürmeye
+  gerek yok, hatta havuzu besliyor.
+
+### Faz 4 — koruma bandı (ölçüm + tavan)
+
+Faz 1'de canlıda ısıran iki gözlemlenebilirlik boşluğu da buraya ait.
+
+**4a. Defter zenginleştirme** — `usage_ledger` bugün: tenant, model, tokens,
+cost, grade, topic, question_count, cache_hit. Eklenecek: `subject`,
+`difficulty_mode`, `plan` (free/pro/pro-plus/trial), `thinking_tokens` (ayrı),
+`generated_count` vs `delivered_count`, `wasted_cost_usd` (Faz 1'de ölçülüyor
+ama kolonu yok), `pool_hit_count`, `source`. Kazanç: **plan başına gerçek
+TL/kağıt** panosu → marj kararları tahminle değil veriyle.
+
+**4b. Kısmi teslim görünürlüğü (Faz 1'de canlıda ısırdı)**
+mixed modda bucket hatası `except Exception` ile yutuluyor → kullanıcı sessizce
+2/5 soru alıyor, biz göremiyoruz. Canlı arızayı ancak `trace.requested_count`'un
+yalnız BAŞARILI bucket'ları toplamasından çıkarabildim. Yapılacak: bucket
+hatalarını metadata'ya taşı (`bucket_errors`), Sentry'ye ayrı event, **teslim <
+istenen** durumunda uyarı logu + defter alanı.
+
+**4c. Günlük harcama alarmı** — 2026-07-10'da tek günde **$9.06** patlaması
+olmuş (GEMINI_COST_POLICY §2), bugün alarm YOK. `usage_ledger` günlük toplamı +
+eşik (ör. $2/gün) → e-posta/Sentry; mevcut keepalive workflow kalıbıyla cron.
+
+**4d. Tenant başına maliyet tavanı** — kota birimi "kağıt" (MONETIZATION_PLAN §2)
+ama kağıt maliyeti **10× değişiyor** (sözel 1.16 vs geometri 8 TL) → aynı kotayı
+kullanan iki abone çok farklı maliyet üretir. Öneri: kota kağıt olarak KALSIN
+(kullanıcıya anlaşılır), arkada maliyet tavanı olsun — tenant aylık LLM maliyeti
+eşiği aşarsa (ör. Pro'da 60 TL) **havuz-only** servise düşer (kalite aynı, üretim
+yok). Kota vaadi bozulmaz, marj korunur. **Faz 3 olmadan uygulanamaz** → sıra: 3 → 4d.
+
+### Önerilen sıra
+
+`Faz 2` (küçük, tek karar, ~%30) → `3a` (havuzu servise al) → `4a`+`4b` (ölçüm
+ve görünürlük) → `3b` (batch ön-doldurma) → `3c` (kalite döngüsü) → `4c`+`4d`
+(alarm + tavan). Ertelenen: `mixed` tek-çağrı birleştirme (§3.7 — soru-başına
+zorluk etiketini modele bırakmak kalite riski; Faz 2 A/B'siyle birlikte bakılmalı).
 
 ## 5. Faz 0+1 SONRASI — aynı senaryolarla yeniden ölçüm
 
