@@ -147,6 +147,14 @@ def _format_distribution(distribution: dict[QuestionType, int]) -> str:
     lines = ["Soru Tipi Dağılımı (toplam soru sayısına eşit olmak ZORUNDA):"]
     for qt, n in distribution.items():
         lines.append(f"  - {qt.value}: {n} adet")
+    # ÖLÇÜLDÜ (2026-07-29, canlı 7. sınıf Sosyal kağıtları): dağılım listelenmesine
+    # rağmen model listede OLMAYAN tipler yazıyordu (sosyal soruya matematiğe özel
+    # `salt_islem`). O tip MC sayılmadığı için 4-şık kapısı atlanıp soru ŞIKSIZ
+    # teslim ediliyordu. Yasak açıkça yazılmadığı için modele bırakılmış bir boşluktu.
+    lines.append(
+        "  ⛔ YALNIZ yukarıda listelenen tipleri kullan. Listede olmayan bir "
+        "`question_type` yazmak YASAK (soru elenir)."
+    )
     return "\n".join(lines)
 
 

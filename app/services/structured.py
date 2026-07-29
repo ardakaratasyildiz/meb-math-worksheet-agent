@@ -205,6 +205,88 @@ _TABLE_EXCLUDE_RE = re.compile(r"periyodik\s+tablo|çarp[ıi]m\s+tablo", re.IGNO
 # Markdown tablo: en az bir "| ... |" satırı.
 _MD_TABLE_RE = re.compile(r"\|[^\n|]*\|")
 
+# İŞLENMEMİŞ direktif kalıntısı — `{{table:...}}` / `{{chart:...}}` / `{{geo:...}}`.
+# ÖLÇÜLDÜ (2026-07-29, canlı kağıt): model `{{table:...}}` içinde SATIR AYRACI `;;`
+# koymayınca `process_table_directives` bozuk kabul edip metni AYNEN geri veriyor
+# (svg_utils.py:573 no-op) ve öğrenci ham `{{table:Yıl|Teknolojik Gelişme|...}}`
+# kodunu görüyor. Daha kötüsü: direktifin içindeki `|` işaretleri `_MD_TABLE_RE`'yi
+# kandırdığı için `reference_integrity_issue`'nun "tablo atfı var ama tablo yok"
+# kapısı da AÇILIYOR — yani bozuk direktif, hiç tablo olmamasından KÖTÜ.
+_LEFTOVER_DIRECTIVE_RE = re.compile(r"\{\{\s*(table|chart|geo|pattern)\b", re.IGNORECASE)
+
+
+def leftover_directive_issue(question: str) -> str | None:
+    """Metinde İŞLENMEMİŞ `{{...}}` direktifi kaldıysa neden döner (ham kod
+    kullanıcıya gösterilmemeli → elenir, top-up doldurur). Emin değilse None.
+
+    Bilinçli olarak ONARMAYA ÇALIŞMIYORUZ: hücre sayısından sütun sayısını tahmin
+    etmek (18 hücre → 3×6 mu 2×9 mu?) yanlış hizalanmış bir tablo üretebilir ve
+    sessizce yanlış veri göstermek, eksik sorudan daha zararlıdır.
+    """
+    if not question:
+        return None
+    m = _LEFTOVER_DIRECTIVE_RE.search(question)
+    if m:
+        return f"işlenmemiş {{{{{m.group(1).lower()}}}}} direktifi metinde kaldı"
+    return None
+
+
+# Kesik soru kökü. ÖLÇÜLDÜ (2026-07-29, canlı kağıt): "…fethedilen yerlerdeki halka
+# gösterilen" — cümle ortasında bitmiş, şıksız, cevaplanamaz. Kalite terazisinde
+# `truncated_stem` 0/5 yakalanıyordu; sebebi basit: kodda hiç kontrol YOKTU.
+#
+# Ölçüt bilinçli olarak DAR. Her yanlış-eleme yedek havuzundan bir soru yakar ve
+# yedek tükenirse top-up turu = GERÇEK PARA; bu yüzden şüphede kalınca GEÇİRİLİR.
+# Testler sırasında yakalanan iki yanlış-eleme (bkz. tests/test_unanswerable_gates.py):
+#   - `$$12 + 7 = ?$$` → LaTeX ayracı `$` ile bittiği için "kesik" sanılıyordu.
+#     Bu haliyle kural TÜM matematik kağıtlarını toplu eleyebilirdi.
+#   - `Sıralayınız: I. Kuruluş II. Yükselme III. Gerileme` → meşru sıralama gövdesi
+#     son öğeyle bitiyor, noktalama yok.
+# Muafiyetler: şık satırı, tablo satırı, kapanan etiket, noktalama, RAKAM ile bitiş
+# (matematik ifadesi/ölçü), numaralı-öğe listesi, ve ≤2 harflik son sözcük (cm, kg, TL).
+_STEM_END_OK_RE = re.compile(r"[?!.:;…\"'»)\]_]\s*$")
+_OPTION_LINE_RE = re.compile(r"^\s*[A-Da-d]\s*[\)\.]\s*\S")
+_TABLE_LINE_RE = re.compile(r"^\s*\|.*\|\s*$")
+# Biçim ayraçları — bitiş kontrolünden ÖNCE soyulur ($$…$$, `kod`, *vurgu*).
+_TRAILING_MARKUP_RE = re.compile(r"[$`*\s]+$")
+_LAST_WORD_RE = re.compile(r"([^\W\d_]+)$", flags=re.UNICODE)
+# Cümle SONUNDA bulunamayacak bağlaç/edatlar — kısa oldukları için harf-sayısı
+# eşiğine takılmazlar, o yüzden açıkça listelenir.
+_DANGLING_WORDS = frozenset({
+    "ve", "ya", "ile", "veya", "ki", "de", "da", "mi", "mı", "ama", "ise",
+})
+
+
+def truncated_stem_issue(question: str) -> str | None:
+    """Soru metni cümle ortasında kesildiyse neden döner. Emin değilse None."""
+    if not question:
+        return None
+    # SVG/HTML bloklarını at: `</svg>` ile biten meşru metinler yanlış işaretlenmesin.
+    text = re.sub(r"<svg\b.*?</svg>", " ", question, flags=re.DOTALL | re.IGNORECASE)
+    lines = [ln for ln in text.splitlines() if ln.strip()]
+    if not lines:
+        return None
+    last = lines[-1].rstrip()
+    if _OPTION_LINE_RE.match(last) or _TABLE_LINE_RE.match(last):
+        return None
+    if last.endswith(">"):  # kapanan bir HTML/SVG etiketi
+        return None
+    # Numaralı/Roman öğe listesiyle biten gövde (sıralama/öncül) meşrudur.
+    if _has_enum_items(last):
+        return None
+    stripped = _TRAILING_MARKUP_RE.sub("", last)
+    if not stripped or _STEM_END_OK_RE.search(stripped):
+        return None
+    if stripped[-1].isdigit():  # matematik ifadesi / ölçü değeri
+        return None
+    m = _LAST_WORD_RE.search(stripped)
+    if not m:
+        return None
+    word = m.group(1)
+    if len(word) <= 2 and word.lower() not in _DANGLING_WORDS:
+        return None  # "cm", "kg", "TL" gibi birimler
+    return "soru kökü noktalama olmadan bitiyor (kesik)"
+
 
 def reference_integrity_issue(question: str) -> str | None:
     """Soru bir öğeye ("öncül", "görsel/grafik", "tablo") atıf yapıp o öğeyi
