@@ -546,6 +546,7 @@ class GeminiAgent:
         yeni_nesil: bool = False,
         unit_id: str | None = None,
         subject: SubjectId = SubjectId.MATEMATIK,
+        variation_key: str | None = None,
     ) -> list[Question]:
         # Seed jitter: aynı parametrelerle yapılan art arda çağrılar farklı sonuç versin.
         if seed is None:
@@ -605,8 +606,15 @@ class GeminiAgent:
             allowed_set = set(content.DEFAULT_TYPES)
         # History anahtarı — hem cache lookup hem depo/dedup hem üretim sonrası
         # kayıt için. selection_key (unit_id veya topic_id) namespace'i ayırır.
+        #
+        # `variation_key` (anonim çeşitlilik kovası, bkz. app/services/anon_bucket.py):
+        # tenant_id YOKSA devreye girer. Eskiden anonim isteklerin TAMAMI
+        # `DEFAULT_TENANT`'ı paylaşıyordu → teslim edilen her soru ortak "görülmüş"
+        # kümesine yazılıyor, cache'teki her set o kümeyle çakıştığı için ATLANIYOR
+        # ve anonim trafikte cache pratikte hiç tutmuyordu. Sıra ÖNEMLİ: giriş
+        # yapmış kullanıcıda tenant_id her zaman kazanır (kimlik zayıflatılmaz).
         history_key: HistoryKey = (
-            tenant_id or DEFAULT_TENANT,
+            tenant_id or variation_key or DEFAULT_TENANT,
             grade,
             selection_key,
             kazanim_kod or "__AUTO__",
