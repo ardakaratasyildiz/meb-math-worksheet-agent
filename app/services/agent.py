@@ -31,8 +31,10 @@ from app.services.llm_cache import GENERATION_CACHE, SPARE_POOL, _pool_key
 from app.services.structured import (
     _answer_letter,
     _parse_mcq,
+    leftover_directive_issue,
     reference_integrity_issue,
     structured_content_issue,
+    truncated_stem_issue,
 )
 from app.services.llm_providers import (
     AnthropicProvider,
@@ -1123,7 +1125,8 @@ class GeminiAgent:
         if not isinstance(batch, GeneratedBatch):
             raise AgentError("Provider beklenmedik tip döndürdü.")
         candidates = self._process_batch(
-            batch, dedup, valid_kazanim_codes, fallback_kazanim, starting_number=1
+            batch, dedup, valid_kazanim_codes, fallback_kazanim, starting_number=1,
+            allowed_types=allowed_set,
         )
         questions, new_embs = self._apply_semantic_dedup(
             candidates, embedder, semantic_dedup
@@ -1198,6 +1201,7 @@ class GeminiAgent:
                 valid_kazanim_codes,
                 fallback_kazanim,
                 starting_number=len(questions) + 1,
+                allowed_types=allowed_set,
             )
             more, more_embs = self._apply_semantic_dedup(
                 more_candidates, embedder, semantic_dedup
@@ -1474,6 +1478,7 @@ class GeminiAgent:
             new_candidates = self._process_batch(
                 batch_pf, dedup, valid_kazanim_codes,
                 fallback_kazanim, starting_number=len(questions) + 1,
+                allowed_types=allowed_set,
             )
             new_questions, new_embs = self._apply_semantic_dedup(
                 new_candidates, embedder, semantic_dedup
@@ -1664,8 +1669,14 @@ class GeminiAgent:
         valid_kazanim_codes: set[str],
         fallback_kazanim: str,
         starting_number: int = 1,
+        allowed_types: set[QuestionType] | None = None,
     ) -> list[Question]:
-        """Ham batch'i numaralanmış Question listesine çevirir; dedup paylaşımlı."""
+        """Ham batch'i numaralanmış Question listesine çevirir; dedup paylaşımlı.
+
+        allowed_types: dersin/kullanıcının izin verdiği tipler. Model bunun DIŞINDA
+            bir tip döndürebiliyor ve bu sessiz bir felakete yol açıyordu — bkz.
+            aşağıdaki tip-kaçağı bloğu. None → kontrol yapılmaz (matematik yolu).
+        """
         # Şekilli tipte figür ZORUNLU: model "görseldeki ölçüye göre" deyip şekil
         # üretmezse soru cevaplanamaz → ele. (grafik_okuma direktifi bu aşamada
         # process_chart_directives ile SVG'ye dönüşmüş olur.)
@@ -1678,6 +1689,34 @@ class GeminiAgent:
         for raw in batch.questions:
             if dedup.is_duplicate(raw.question):
                 continue
+            # ── Tip kaçağı (ÖLÇÜLDÜ 2026-07-29, canlı 7. sınıf Sosyal kağıtları) ──
+            # Model, istenen dağılımın DIŞINDA bir tip döndürebiliyor: sosyal
+            # sorulara matematiğe özel `salt_islem` etiketi kondu (sosyal
+            # DEFAULT_TYPES'ta böyle bir tip YOK). `salt_islem` `_MC_TYPES`'ta
+            # olmadığı için 4-şık kapısı ATLANDI ve "…aşağıdakilerden hangisi
+            # değildir?" soruları ŞIKSIZ teslim edildi — cevaplanamaz, cevap
+            # anahtarında "A" yazıyor ama şık yok. Prompt de yalnız dağılımı
+            # listeliyor, "listede olmayan tip YASAK" demiyordu (o da düzeltildi).
+            #
+            # Sıra önemli: ÖNCE kurtarmayı dene (şıklar varsa MC gibi işle, bedava),
+            # ancak kurtarılamıyorsa ele. `qt` bundan sonra raw.question_type
+            # YERİNE kullanılır — aksi halde kurtarma yarıda kalırdı.
+            qt = raw.question_type
+            if allowed_types and qt not in allowed_types:
+                _opts = [o.strip() for o in (raw.options or []) if o and o.strip()]
+                _inline, _ = _parse_mcq(raw.question, raw.answer)
+                if len(_opts) >= 4 or (_inline and len(_inline) >= 4):
+                    logger.info(
+                        "Tip kaçağı kurtarıldı (%s → coktan_secmeli): %s",
+                        qt.value, raw.question[:70],
+                    )
+                    qt = QuestionType.COKTAN_SECMELI
+                else:
+                    logger.info(
+                        "İzinsiz tip atıldı (%s, şık yok): %s",
+                        qt.value, raw.question[:70],
+                    )
+                    continue
             q_text = process_geo_directives(
                 process_table_directives(
                     process_pattern_directives(
@@ -1687,10 +1726,10 @@ class GeminiAgent:
                     )
                 )
             )
-            if raw.question_type in _figure_types and "<svg" not in q_text:
+            if qt in _figure_types and "<svg" not in q_text:
                 logger.info(
                     "Şekilsiz görsel-tip sorusu atıldı (%s): %s",
-                    raw.question_type.value, raw.question[:70],
+                    qt.value, raw.question[:70],
                 )
                 continue
             # SVG geçerlilik: şekilli tipte gömülü SVG bloğu/bloklarının HER BİRİ geçerli
@@ -1698,7 +1737,7 @@ class GeminiAgent:
             # <svg> bloğunu doğrula (is_valid_svg girdinin <svg ile başlamasını şart koşar →
             # tüm metin verilirse geçerli figür de yanlışlıkla elenirdi). {{geo}}/{{chart}}/
             # {{pattern}} direktifleri bu aşamada zaten deterministik SVG'ye dönüşmüş olur.
-            if raw.question_type in _figure_types and "<svg" in q_text:
+            if qt in _figure_types and "<svg" in q_text:
                 _blocks = extract_svg_blocks(q_text)
                 _bad = next(
                     (is_valid_svg(s)[1] for _, _, s in _blocks if not is_valid_svg(s)[0]),
@@ -1707,7 +1746,7 @@ class GeminiAgent:
                 if not _blocks or _bad:
                     logger.info(
                         "Bozuk SVG atıldı (%s, %s): %s",
-                        raw.question_type.value, _bad or "svg bloğu yok", raw.question[:70],
+                        qt.value, _bad or "svg bloğu yok", raw.question[:70],
                     )
                     continue
             # Çoktan seçmeli — YAPISAL şıklar (D1). Model `options` alanına 4 şık yazar
@@ -1716,7 +1755,7 @@ class GeminiAgent:
             # geriye-uyumlu). Alan boşsa (eski-format model) gömülü metinden parse edilir.
             mc_options: list[str] | None = None
             mc_correct_index: int | None = None
-            if raw.question_type in _MC_TYPES:
+            if qt in _MC_TYPES:
                 opts = [o.strip() for o in (raw.options or []) if o and o.strip()]
                 if len(opts) < 4:
                     parsed, _ = _parse_mcq(q_text, raw.answer)  # geriye-uyum: gömülü metin
@@ -1724,7 +1763,7 @@ class GeminiAgent:
                         opts = [o.strip() for o in parsed[:4] if o.strip()]
                 if len(opts) != 4:
                     logger.info("Yapısal şıksız/eksik MC atıldı (%s, %d şık): %s",
-                                raw.question_type.value, len(opts), raw.question[:70])
+                                qt.value, len(opts), raw.question[:70])
                     continue
                 letter = _answer_letter(raw.answer)
                 if not letter or letter not in ("A", "B", "C", "D"):
@@ -1738,6 +1777,27 @@ class GeminiAgent:
                     q_text = q_text.rstrip() + "\n\n" + "\n".join(
                         f"{L}) {o}" for L, o in zip(("A", "B", "C", "D"), opts)
                     )
+            # İşlenmemiş `{{...}}` direktifi: model satır ayracını (`;;`) atlayınca
+            # process_table_directives bozuk kabul edip metni AYNEN geri veriyor →
+            # öğrenci ham kodu görüyor (canlı kağıtta ölçüldü). DİKKAT: bu kontrol
+            # reference_integrity_issue'dan ÖNCE gelmeli — ham direktifin içindeki
+            # `|` işaretleri oradaki markdown-tablo dedektörünü kandırıp "tablo atfı
+            # var ama tablo yok" kapısını sessizce açıyor.
+            directive_issue = leftover_directive_issue(q_text)
+            if directive_issue:
+                logger.info(
+                    "İşlenmemiş direktif atıldı (%s): %s", directive_issue, raw.question[:70]
+                )
+                continue
+            # Kesik kök: cümle ortasında biten soru cevaplanamaz (canlı kağıtta
+            # ölçüldü: "…fethedilen yerlerdeki halka gösterilen"). Kalite terazisinde
+            # `truncated_stem` 0/5 yakalanıyordu — kontrol hiç yoktu.
+            trunc_issue = truncated_stem_issue(q_text)
+            if trunc_issue:
+                logger.info(
+                    "Kesik kök atıldı (%s): %s", trunc_issue, raw.question[:70]
+                )
+                continue
             # Atıf bütünlüğü: "öncüllere/görsele/tabloya göre" deyip o öğeyi İÇERMEYEN
             # soru cevaplanamaz → ele (top-up doldurur). WS-5.27.
             ref_issue = reference_integrity_issue(q_text)
@@ -1748,7 +1808,7 @@ class GeminiAgent:
                 continue
             # Eşleştirme/sıralama: gövde yalnız yönerge, öğe/şık listesi yok →
             # cevaplanamaz (WS: sosyal PDF boş eşleştirme/sıralama) → ele, top-up doldurur.
-            content_issue = structured_content_issue(raw.question_type, q_text)
+            content_issue = structured_content_issue(qt, q_text)
             if content_issue:
                 logger.info(
                     "Yapısal içerik eksik (%s): %s", content_issue, raw.question[:70]
@@ -1777,7 +1837,7 @@ class GeminiAgent:
                     answer=repair_latex_control_chars(raw.answer).strip(),
                     solution_steps=steps,
                     kazanim_kod=kod,
-                    question_type=raw.question_type,
+                    question_type=qt,
                     options=mc_options,
                     correct_index=mc_correct_index,
                 )
