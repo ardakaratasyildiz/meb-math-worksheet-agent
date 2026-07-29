@@ -32,6 +32,7 @@ from app.services.agent import (
 from app.services.anon_bucket import anon_variation_key
 from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.pdf_renderer import render_worksheet_pdf
+from app.services.usage_ledger import STATUS_FAILED as LEDGER_FAILED
 from app.services.usage_ledger import USAGE_LEDGER
 from app.services.worksheet_history import WORKSHEET_HISTORY
 
@@ -231,6 +232,43 @@ def _build_worksheet(
         # yaratır → izole (fresh) instance. Tek modda cache'li yeterli.
         return GeminiAgent(model=model, thinking_budget=tb) if fresh else _agent_for_model(model, tb)
 
+    # ── Boşa giden harcamanın deftere yazılması (ÖLÇÜLDÜ 2026-07-29) ──────────
+    # Defter YALNIZ başarı yolunda yazıldığı için faturanın %25-40'ı hiçbir yere
+    # düşmüyordu (26 Tem ₺22,5 · 28 Tem ₺10,9). Canlıda birebir görüldü: 23,6 sn
+    # süren, tam bedeli ödenmiş bir 502 defterde YOK. Sızıntı KAYITTAN ÖNCEKİ
+    # `raise` noktalarında; kayıttan SONRAKİ hatalar (PDF/geçmiş) zaten kayıtlı.
+    #
+    # `status='failed'` satırlar KOTADAN SAYILMAZ (usage_ledger) — kullanıcı
+    # almadığı kağıdın kotasını ödemez, maliyeti biz üstlenir ama GÖRÜRÜZ.
+    def _record_failed(trace) -> None:
+        """Teslim edilmeyen üretimin bedelini deftere yazar. Best-effort.
+
+        trace None ise (üretim `generate()` içinde çöktü) maliyet bu katmanda
+        GÖZLENEMİYOR → 0 yazılır; satır yine de atılır ki başarısızlık SIKLIĞI
+        ölçülebilsin. Kısmi harcamayı da yakalamak `generate()`'in token
+        birikimini artımlı yayımlamasını gerektirir — ayrı iş.
+        """
+        try:
+            USAGE_LEDGER.record(
+                tenant_id=req.tenant_id,
+                model=(trace.model_used if trace is not None else "unknown"),
+                prompt_tokens=(trace.prompt_tokens if trace is not None else 0),
+                completion_tokens=(trace.completion_tokens if trace is not None else 0),
+                cost_usd=(trace.estimated_cost_usd if trace is not None else 0.0),
+                grade=req.grade,
+                topic=display_name,
+                question_count=0,  # teslim edilen soru YOK
+                cache_hit=False,
+                status=LEDGER_FAILED,
+            )
+            logger.warning(
+                "Boşa giden üretim deftere yazıldı (grade=%s topic=%s cost=%s)",
+                req.grade, display_name,
+                (trace.estimated_cost_usd if trace is not None else "bilinmiyor"),
+            )
+        except Exception as exc:  # noqa: BLE001 — kayıt hatası asıl hatayı gölgelemesin
+            logger.warning("Başarısız üretim kaydı yazılamadı (yutuldu): %s", exc)
+
     def _gen(agent: GeminiAgent, diff: _Diff, count: int) -> list:
         return agent.generate(
             grade=req.grade,
@@ -252,6 +290,9 @@ def _build_worksheet(
         try:
             questions = _gen(agent, req.difficulty, req.question_count)
         except AgentError as exc:
+            # Üretim `generate()` içinde çöktü → harcama bu katmanda gözlenemiyor,
+            # yine de satır atılır (başarısızlık sıklığı ölçülebilsin).
+            _record_failed(None)
             raise HTTPException(status_code=502, detail=str(exc)) from exc
         trace_for_meta = agent.build_last_trace()
         worksheet_difficulty = req.difficulty
@@ -314,7 +355,9 @@ def _build_worksheet(
                 bucket_errors.append(err)
 
         if not collected:
-            # Hiçbir bucket başarılı olmadı — gerçek hata.
+            # Hiçbir bucket başarılı olmadı — gerçek hata. Başarılı ama SORU
+            # ÜRETMEYEN bucket'ların trace'i varsa harcaması BİLİNİYOR → yazılır.
+            _record_failed(_merge_traces(bucket_traces) if bucket_traces else None)
             detail = "Üretim başarısız (tüm zorluk grupları hata verdi). "
             if bucket_errors:
                 detail += "Sebep: " + " | ".join(bucket_errors[:3])
@@ -333,6 +376,10 @@ def _build_worksheet(
         worksheet_difficulty = req.difficulty
 
     if not questions:
+        # ASIL SIZINTI (canlıda ölçüldü): üretim TAMAMLANDI, tüm bedeli ödendi,
+        # ama filtrelerden geçen soru kalmadı → trace DOLU, maliyet BİLİNİYOR.
+        # Eskiden burada defter hiç yazılmadan 502 dönüyordu.
+        _record_failed(trace_for_meta)
         raise HTTPException(
             status_code=502,
             detail="Üretim sonucu boş geldi; lütfen tekrar deneyin.",

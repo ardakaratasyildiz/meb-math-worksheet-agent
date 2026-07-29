@@ -43,6 +43,8 @@ from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.grading import grade_quiz
 from app.services.quiz_store import QUIZ_STORE
 from app.services.structured import derive_structured_fields, validate_structured
+from app.services.usage_ledger import STATUS_FAILED as LEDGER_FAILED
+from app.services.usage_ledger import STATUS_OK as LEDGER_OK
 from app.services.usage_ledger import USAGE_LEDGER
 
 logger = logging.getLogger(__name__)
@@ -57,6 +59,7 @@ def _record_gen_cost(
     grade: int,
     topic: str,
     question_count: int,
+    status: str = LEDGER_OK,
 ) -> None:
     """Quiz üretiminin Gemini maliyetini deftere yazar (worksheet akışıyla aynı kaynak).
 
@@ -86,6 +89,7 @@ def _record_gen_cost(
         topic=topic,
         question_count=question_count,
         cache_hit=cache_hit,
+        status=status,
     )
 
 # Adım 0'da desteklenen 4 çözülebilir tip — üretim dağıtımına allowed_types olarak
@@ -334,12 +338,16 @@ def create_quiz(
     questions, topic_name, traces = _generate_solvable(req)
     # Gemini maliyet defteri — quiz üretimi de gerçek token yakar (worksheet ile
     # aynı kaynak). question_count teslim edilen soru = quota tüketimi.
+    # Boş sonuç = para harcandı, quiz teslim EDİLMEDİ → 'failed'. Bu satır zaten
+    # yazılıyordu (kayıt 502'den ÖNCE) ama 'ok' sayıldığı için hem "teslim edilen
+    # üretim" sayımını şişiriyor hem de kağıt-bazlı kotadan bir kağıt yiyordu.
     _record_gen_cost(
         traces,
         tenant_id=req.tenant_id,
         grade=req.grade,
         topic=topic_name,
         question_count=len(questions),
+        status=LEDGER_OK if questions else LEDGER_FAILED,
     )
     if not questions:
         # Üretilenlerin hiçbiri yapısal doğrulamadan geçmedi (nadir) → tekrar deneyin.
