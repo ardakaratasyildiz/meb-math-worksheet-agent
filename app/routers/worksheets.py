@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 from datetime import datetime, timezone
-from functools import lru_cache
+from functools import lru_cache, partial
 from typing import AsyncIterator
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -29,6 +29,7 @@ from app.services.agent import (
     GeminiAgent,
     model_and_thinking_for,
 )
+from app.services.anon_bucket import anon_variation_key
 from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.pdf_renderer import render_worksheet_pdf
 from app.services.usage_ledger import USAGE_LEDGER
@@ -180,8 +181,14 @@ def _merge_traces(traces: list):
     })
 
 
-def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, WorksheetMetadata]:
+def _build_worksheet(
+    req: GenerateWorksheetRequest, *, variation_key: str | None = None
+) -> tuple[Worksheet, WorksheetMetadata]:
     """Ortak üretim mantığı: hem JSON hem PDF endpoint'leri kullanır.
+
+    variation_key: anonim isteklerde ziyaretçi-bazlı history kovası
+        (`app/services/anon_bucket.anon_variation_key`). None → eski ortak kova.
+        tenant_id varsa YOK SAYILIR (agent'ta tenant_id öncelikli).
 
     Sprint 12-A toggle paketi (2026-05-19):
         difficulty_mode = "single"     → tek difficulty ile mevcut akış
@@ -237,6 +244,7 @@ def _build_worksheet(req: GenerateWorksheetRequest) -> tuple[Worksheet, Workshee
             yeni_nesil=entitlements.yeni_nesil_for_bucket(req.tenant_id, diff),
             unit_id=req.unit_id,
             subject=req.subject,
+            variation_key=variation_key,
         )
 
     if req.difficulty_mode == "single":
@@ -417,7 +425,7 @@ def generate_worksheet(
     _api_key: str = Depends(require_api_key),
 ) -> GenerateWorksheetResponse:
     entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
-    worksheet, metadata = _build_worksheet(req)
+    worksheet, metadata = _build_worksheet(req, variation_key=anon_variation_key(request))
     return GenerateWorksheetResponse(worksheet=worksheet, metadata=metadata)
 
 
@@ -480,7 +488,7 @@ def generate_worksheet_pdf(
 ) -> Response:
     """Üretim + PDF render tek call'da. Rate limit + auth uygulanır (LLM çağrısı yapar)."""
     entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
-    worksheet, _ = _build_worksheet(req)
+    worksheet, _ = _build_worksheet(req, variation_key=anon_variation_key(request))
     return _pdf_response(
         worksheet,
         include_answer_key=req.include_answer_key,
@@ -701,6 +709,7 @@ def regenerate_question(
 
 async def _stream_worksheet_events(
     req: GenerateWorksheetRequest,
+    variation_key: str | None = None,
 ) -> AsyncIterator[str]:
     """SSE event akışı üretir. Format:
         event: meta        — başlangıç (request echo)
@@ -731,7 +740,9 @@ async def _stream_worksheet_events(
     # bir SSE yorumu (": keepalive") akıtıyoruz: byte aktığı için bağlantı canlı
     # kalır, yorum satırı olduğu için istemci onu yok sayar (event tetiklemez).
     HEARTBEAT_SECONDS = 10.0
-    gen_task = asyncio.ensure_future(asyncio.to_thread(_build_worksheet, req))
+    gen_task = asyncio.ensure_future(
+        asyncio.to_thread(partial(_build_worksheet, req, variation_key=variation_key))
+    )
     while not gen_task.done():
         # wait timeout'ta task'ı İPTAL ETMEZ; sadece beklemeyi bırakır → güvenli.
         await asyncio.wait({gen_task}, timeout=HEARTBEAT_SECONDS)
@@ -773,7 +784,7 @@ def generate_worksheet_stream(
     # Kota kapısı stream BAŞLAMADAN uygulanır (aşımda 402, akış hiç açılmaz).
     entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
     return StreamingResponse(
-        _stream_worksheet_events(req),
+        _stream_worksheet_events(req, anon_variation_key(request)),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache, no-transform",

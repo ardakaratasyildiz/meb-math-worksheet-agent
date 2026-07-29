@@ -180,6 +180,25 @@ class Settings(BaseSettings):
     # bedava çeşitlilik → cache hit oranı artar, taze (pahalı) üretim azalır.
     generation_cache_max_per_key: int = 30
 
+    # --- Anonim çeşitlilik kovası (2026-07-29 ölçümü) --------------------------
+    # ÖLÇÜLDÜ: anonim üretimlerin TAMAMI tek `__shared__` history kovasını
+    # paylaşıyordu. Teslim edilen her soru o kovaya "görülmüş" olarak yazılıyor ve
+    # `GenerationCache.get()` bir cached set'te TEK BİR görülmüş soru bulursa seti
+    # tamamen atlıyor → anonim trafikte cache yazılıyor ama BİR DAHA ASLA
+    # okunamıyordu (canlı: 97 üretimde 3 isabet). `history_seen_unbounded`
+    # bunu kalıcı hale getirdi.
+    #
+    # True → anonim istekler istemci IP'sinden türetilen kovaya ayrılır: aynı
+    # ziyaretçi çeşitlilik görmeye devam eder, FARKLI ziyaretçiler birbirinin
+    # cache'inden okuyabilir. False → eski `__shared__` davranışı (redeploy'suz
+    # geri alma). Giriş yapmış kullanıcı ETKİLENMEZ (tenant_id her zaman kazanır).
+    anon_variation_bucket: bool = True
+    # IP hash tuzu. Ham IP HİÇBİR YERE yazılmaz, yalnız HMAC'in 12 hex'i kovada
+    # görünür. Tuzu değiştirmek tüm anonim kovaları sıfırlar (zararsız: yalnız
+    # çeşitlilik penceresi resetlenir). Boş → aşağıdaki sabit varsayılan; çok
+    # örnekli (multi-instance) kurulumda AYNI değer olmalı, yoksa kovalar ayrışır.
+    anon_variation_salt: str = ""
+
     # Sentry error tracking (Sprint 6) — DSN boşsa Sentry off
     sentry_dsn: str = ""
     sentry_environment: str = "development"
