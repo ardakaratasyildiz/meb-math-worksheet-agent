@@ -248,5 +248,68 @@ def test_happy_path_writes_exactly_one_ok_row(monkeypatch, ledger):
     assert ledger.summary()["total"]["failed_generations"] == 0
 
 
+# ───────────────────── `status` kolonu YOKKEN dereceli yetenek kaybı
+#
+# CANLI INCIDENT (2026-07-30): kolon varlığı `PRAGMA table_info` ile yoklanıyordu.
+# Turso/libSQL yolunda PRAGMA beklenen satırları vermeyince migrasyon sessizce
+# atlandı ve `status`'a bakan HER sorgu hataya düştü. Fonksiyonlar fail-open
+# olduğu için `/admin/costs/summary` HTTP 200 ile boş `{}` döndü — yani arıza
+# görünmez kaldı. Aşağıdaki testler o senaryoyu kilitliyor: kolon olmasa da
+# defter YAZAR, OKUR ve kotayı DOĞRU sayar; yalnız failed/ok ayrımı düşer.
+
+
+@pytest.fixture
+def ledger_no_status(ledger):
+    """`status` kolonu sorgulanamıyor gibi davranan defter."""
+    ledger._has_status = False
+    return ledger
+
+
+def test_record_works_without_status_column(ledger_no_status):
+    """En kritik: kolon yoksa INSERT ona DOKUNMAMALI. Aksi halde `record()`
+    best-effort olduğu için TÜM maliyet kaydı sessizce düşerdi."""
+    ledger_no_status.record(
+        tenant_id="user_1", model="gemini-2.5-flash", prompt_tokens=100,
+        completion_tokens=50, cost_usd=0.03, grade=5, topic="Kesirler",
+        question_count=10, status=STATUS_FAILED,
+    )
+    items = ledger_no_status.recent()
+    assert len(items) == 1, "kolon yokken kayıt düştü — canlı incident bu"
+    assert items[0]["cost_usd"] == pytest.approx(0.03)
+    assert items[0]["status"] == STATUS_OK, "ayrım yapılamıyor → 'ok' varsayılır"
+
+
+def test_summary_not_empty_without_status_column(ledger_no_status):
+    """INCIDENT REGRESYONU: summary() boş `{}` DÖNMEMELİ (endpoint 200 verip
+    boş gövde döndürdüğü için arıza fark edilmemişti)."""
+    ledger_no_status.record(tenant_id="u", model="m", prompt_tokens=10,
+                            completion_tokens=5, cost_usd=0.5, question_count=3)
+    s = ledger_no_status.summary()
+    assert s["total"], "summary boş döndü — fail-open sessiz arızası"
+    assert s["total"]["generations"] == 1
+    assert s["total"]["cost_usd"] == pytest.approx(0.5)
+    assert s["total"]["failed_cost_usd"] == 0.0, "ayrım yok → 0"
+    assert s["by_model"] and s["by_day"]
+
+
+def test_quota_still_correct_without_status_column(ledger_no_status):
+    """Kolon olmasa bile kota doğru sayılmalı: `question_count>0` şartı
+    başarısız/yeniden-üret satırlarını zaten dışarıda tutuyor."""
+    ledger_no_status.record(tenant_id="u", model="m", prompt_tokens=1,
+                            completion_tokens=1, cost_usd=0.1, question_count=10)
+    ledger_no_status.record(tenant_id="u", model="m", prompt_tokens=1,
+                            completion_tokens=1, cost_usd=0.1, question_count=0,
+                            status=STATUS_FAILED)
+    assert ledger_no_status.worksheets_used_since("u", 0) == 1
+    assert ledger_no_status.questions_used_since("u", 0) == 10
+
+
+def test_status_probe_does_not_rely_on_pragma(ledger):
+    """`_status_available` kolonu DOĞRUDAN okuyarak yoklar (PRAGMA'ya güvenmez) —
+    incident'in kök nedeni PRAGMA'ya güvenmekti."""
+    assert ledger._has_status is True
+    assert ledger._status_available() is True
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-v"]))
