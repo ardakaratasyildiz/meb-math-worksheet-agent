@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Footer } from "@/components/Footer";
 import { PageHeader } from "@/components/PageHeader";
 
@@ -8,6 +10,9 @@ export type LegalSection = {
   heading: string;
   paragraphs?: string[];
   bullets?: string[];
+  /** Bölüm sonunda gösterilecek dahili link (ör. hesap silme sayfasına). */
+  linkHref?: string;
+  linkLabel?: string;
 };
 
 export function LegalDocument({
@@ -52,6 +57,16 @@ export function LegalDocument({
                     <li key={j}>{b}</li>
                   ))}
                 </ul>
+              ) : null}
+              {s.linkHref ? (
+                <p className="text-sm leading-relaxed">
+                  <Link
+                    href={s.linkHref}
+                    className="font-medium text-foreground underline-offset-2 hover:underline"
+                  >
+                    {s.linkLabel ?? s.linkHref}
+                  </Link>
+                </p>
               ) : null}
             </div>
           ))}

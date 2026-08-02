@@ -939,6 +939,54 @@ export async function setEmailPrefs(
   });
 }
 
+// ---- Hesap silme (/api/me/account/delete) -------------------------------
+
+export interface DeleteAccountResponse {
+  deleted: boolean;
+  removed: Record<string, unknown>;
+  clerk_deleted: boolean;
+}
+
+/**
+ * Silme isteğinin başarısız uçları farklı davranır (bkz. backend sözleşmesi):
+ * 400 = onay metni yanlış · 401 = oturum yok · 502 = veri silindi ama hesap
+ * kapatılamadı (tekrar denenmeli) · 503 = sunucu yapılandırması eksik.
+ * Çağıran tarafın bu ayrımı yapabilmesi için `status` taşıyan özel hata sınıfı.
+ */
+export class DeleteAccountError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "DeleteAccountError";
+    this.status = status;
+  }
+}
+
+/**
+ * Hesabı ve TÜM verilerini kalıcı olarak siler (GERİ ALINAMAZ). Giriş şart;
+ * onay metni birebir "HESABIMI SIL" olmalı (backend de doğrular). Başarıda
+ * Clerk kullanıcısı sunucu tarafında silinmiş olur → çağıran signOut() yapmalı.
+ * request() yerine ham fetch: ekranın 502'yi (kısmi silinme, tekrar dene)
+ * diğer hatalardan `status` üzerinden ayırt edebilmesi gerekiyor.
+ */
+export async function deleteAccount(): Promise<DeleteAccountResponse> {
+  const auth = await authHeader();
+  const res = await fetch(`${BASE}/api/me/account/delete`, {
+    method: "POST",
+    headers: { ...headers(), ...auth },
+    body: JSON.stringify({ confirm: "HESABIMI SIL" }),
+  });
+  const fallback = `${res.status} ${res.statusText}`;
+  let json: unknown = null;
+  try {
+    json = await res.json();
+  } catch {
+    // gövde JSON değilse status metni kalır
+  }
+  if (!res.ok) throw new DeleteAccountError(parseErrorDetail(json, fallback), res.status);
+  return json as DeleteAccountResponse;
+}
+
 export function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");

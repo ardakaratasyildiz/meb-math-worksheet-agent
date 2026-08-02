@@ -40,6 +40,7 @@ export function Footer() {
               { label: "KVKK Aydınlatma Metni", href: "/legal/kvkk" },
               { label: "Kullanım Koşulları", href: "/legal/terms" },
               { label: "Gizlilik Politikası", href: "/legal/privacy" },
+              { label: "Hesabımı Sil", href: "/hesap/sil" },
             ]}
           />
           <FooterColumn

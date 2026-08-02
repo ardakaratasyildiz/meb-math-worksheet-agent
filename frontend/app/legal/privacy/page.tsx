@@ -79,6 +79,14 @@ const SECTIONS: LegalSection[] = [
     ],
   },
   {
+    heading: "Hesabınızı ve Verilerinizi Silme",
+    paragraphs: [
+      "Hesabınızı ve tüm verilerinizi istediğiniz zaman kalıcı olarak silebilirsiniz. Bu işlem geri alınamaz.",
+    ],
+    linkHref: "/hesap/sil",
+    linkLabel: "Hesabımı ve verilerimi sil",
+  },
+  {
     heading: "Değişiklikler ve İletişim",
     paragraphs: [
       "Bu Gizlilik Politikası güncellenebilir; güncel sürüm, “son güncelleme” tarihiyle birlikte bu sayfada yayımlanır.",

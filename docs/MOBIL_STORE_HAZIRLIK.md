@@ -154,7 +154,23 @@ bunu `tenant_id` ile eşler → abonelik iyzico ile ortak depoya yazılır.
 
 ---
 
-## 4) Çıkmadan önce doğrulama
+## 4) Hesap silme (Apple 5.1.1(v) / Play veri-silme)
+
+Üye olunabilen her uygulamada **uygulama içi** hesap silme zorunlu; yoksa inceleme reddeder.
+
+- Uç: `POST /api/me/account/delete`, gövde `{"confirm": "HESABIMI SIL"}`, strict Clerk
+  oturumu (client `tenant_id`'si hiç okunmaz). Yerel veri silinir → sonra Clerk kullanıcısı
+  kapatılır. Ön koşul: Render'da **`CLERK_SECRET_KEY` set** olmalı, aksi halde uç 503 döner.
+- Mobil yol: Profil → Ayarlar → "Hesabımı sil" (`app/delete-account.tsx`).
+- Play konsoluna verilecek **veri silme URL'si**: `https://soruatolyesi.com/hesap/sil`
+  (oturumsuz da açılır — Play'in gereği bu).
+- `usage_ledger` ve `billing_events` silinmez, `tenant_id` geri döndürülemez takma adla
+  değiştirilir (VUK saklama). Play "Veri güvenliği" formunda bunu "silme talebi üzerine
+  veriler silinir, muhasebe kayıtları anonimleştirilerek saklanır" olarak beyan et.
+
+---
+
+## 5) Çıkmadan önce doğrulama
 
 - [ ] `eas env:list --environment production` üç EXPO_PUBLIC değişkeni gösteriyor.
 - [ ] `eas build --profile preview --platform android` → kurulan APK'da **giriş çalışıyor**
@@ -163,3 +179,5 @@ bunu `tenant_id` ile eşler → abonelik iyzico ile ortak depoya yazılır.
 - [ ] Sandbox hesabıyla `pro-aylik` satın alınıyor → RevenueCat panosunda olay görünüyor →
       `/api/me/entitlements` `plan: pro` dönüyor.
 - [ ] `REVENUECAT_WEBHOOK_AUTH` set (yanlış header ile istek 401 alıyor).
+- [ ] Render'da `CLERK_SECRET_KEY` set → test hesabıyla Profil → "Hesabımı sil" akışı
+      hesabı gerçekten kapatıyor (aynı e-postayla yeniden kayıt olunabiliyor).
