@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { AlertTriangle, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,10 @@ function errorMessage(e: unknown): string {
 }
 
 export function DeleteAccountView() {
-  const { signOut } = useAuth();
+  // Repo genelinde Clerk `useAuth()` ile kullanılıyor (SignedIn/SignedOut kontrol
+  // bileşenleri @clerk/nextjs v7'de dışa aktarılmıyor). `isLoaded` beklenmezse
+  // sayfa bir an "giriş yap" gösterip sonra forma atlıyor.
+  const { isLoaded, isSignedIn, signOut } = useAuth();
   const router = useRouter();
   const [confirmText, setConfirmText] = React.useState("");
   const [busy, setBusy] = React.useState(false);
@@ -109,36 +112,41 @@ export function DeleteAccountView() {
           <CardTitle className="text-base">Onayla</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <SignedIn>
-            <p className="text-sm text-muted-foreground">
-              Devam etmek için aşağıya tam olarak <span className="font-semibold text-foreground">{CONFIRM_PHRASE}</span> yaz.
-            </p>
-            <Input
-              value={confirmText}
-              onChange={(e) => setConfirmText(e.target.value)}
-              placeholder={CONFIRM_PHRASE}
-              autoComplete="off"
-              disabled={busy}
-            />
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
-            <Button
-              variant="destructive"
-              disabled={!canSubmit}
-              onClick={() => void onDelete()}
-              className="gap-1.5"
-            >
-              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Hesabımı kalıcı olarak sil
-            </Button>
-          </SignedIn>
-          <SignedOut>
-            <p className="text-sm text-muted-foreground">
-              Hesabını silmek için önce giriş yapmalısın.
-            </p>
-            <Button asChild>
-              <Link href="/sign-in">Giriş yap</Link>
-            </Button>
-          </SignedOut>
+          {!isLoaded ? (
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          ) : isSignedIn ? (
+            <>
+              <p className="text-sm text-muted-foreground">
+                Devam etmek için aşağıya tam olarak <span className="font-semibold text-foreground">{CONFIRM_PHRASE}</span> yaz.
+              </p>
+              <Input
+                value={confirmText}
+                onChange={(e) => setConfirmText(e.target.value)}
+                placeholder={CONFIRM_PHRASE}
+                autoComplete="off"
+                disabled={busy}
+              />
+              {error ? <p className="text-sm text-destructive">{error}</p> : null}
+              <Button
+                variant="destructive"
+                disabled={!canSubmit}
+                onClick={() => void onDelete()}
+                className="gap-1.5"
+              >
+                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                Hesabımı kalıcı olarak sil
+              </Button>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-muted-foreground">
+                Hesabını silmek için önce giriş yapmalısın.
+              </p>
+              <Button asChild>
+                <Link href="/sign-in">Giriş yap</Link>
+              </Button>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
