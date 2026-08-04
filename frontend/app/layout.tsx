@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import { AuthTokenBridge } from "@/components/AuthTokenBridge";
 import { BackendWarmup } from "@/components/BackendWarmup";
 import { CookieConsent } from "@/components/CookieConsent";
+import { LoginEvent } from "@/components/LoginEvent";
 import { RoleGate } from "@/components/RoleGate";
 import { RoleSync } from "@/components/RoleSync";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -201,6 +202,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <CookieConsent />
               <BackendWarmup />
               <AuthTokenBridge />
+              <LoginEvent />
             </div>
           </ThemeProvider>
         </body>
