@@ -5,6 +5,7 @@ LLM çağrısı yok (saf sayım) → rate limit yok, yalnız auth.
 """
 from __future__ import annotations
 
+import logging
 import time
 from datetime import date, datetime, timedelta, timezone
 
@@ -14,6 +15,8 @@ from app.models.schemas import (
     AttemptDetail,
     AttemptHistoryItem,
     AttemptHistoryResponse,
+    DeleteAccountRequest,
+    DeleteAccountResponse,
     EmailPrefsResponse,
     EntitlementsResponse,
     GamificationResponse,
@@ -41,8 +44,10 @@ from app.models.schemas import (
 )
 from pydantic import BaseModel
 
+from app.config import settings
 from app.security import limiter, require_api_key
-from app.services import clerk_roles, entitlements
+from app.services import account_delete, clerk_admin, clerk_roles, entitlements
+from app.services.admin_audit import ADMIN_AUDIT
 from app.services.billing_store import BILLING_STORE
 from app.services.clerk_auth import (
     require_verified_tenant_id,
@@ -58,6 +63,8 @@ from app.services.progress import build_daily_trend, build_progress
 from app.services.quiz_store import QUIZ_STORE
 from app.services.study_plan import build_study_plan
 from app.services.study_plan_store import STUDY_PLAN_STORE
+
+logger = logging.getLogger(__name__)
 
 _IST = timezone(timedelta(hours=3))
 
@@ -451,3 +458,58 @@ def set_email_prefs(
         newsletter_optin=req.newsletter_optin,
         email=req.email,
     )
+
+
+# ── Hesap silme (Apple 5.1.1(v) / Google Play veri-silme zorunluluğu) ───────
+
+
+@router.post("/account/delete", response_model=DeleteAccountResponse)
+@limiter.limit("10/hour")
+def delete_my_account(
+    request: Request,
+    req: DeleteAccountRequest,
+    tenant_id: str = Depends(require_verified_tenant_id),
+    _api_key: str = Depends(require_api_key),
+) -> DeleteAccountResponse:
+    """Kullanıcının KENDİ hesabını TAMAMEN siler (App Store 5.1.1(v) / Play zorunluluğu).
+
+    `tenant_id` STRICT doğrulanmış oturumdan gelir — client-supplied bir tenant_id
+    hiç okunmaz (IDOR koruması: başkasının hesabı bu uçtan silinemez). `confirm`
+    alanı tam olarak "HESABIMI SIL" olmalı, aksi halde 400 (yanlışlıkla tetiklemeyi
+    önler). Dar rate limit (saatte 10) — geri döndürülemez bir işlem, ama 502
+    (Clerk adımı düştü) halinde kullanıcının tekrar denemesi ŞART olduğu için
+    tavan kilitleyecek kadar alçak tutulmuyor.
+
+    Sıra:
+    1. `clerk_secret_key` boşsa → 503, HİÇBİR ŞEY silinmeden en başta kesilir.
+    2. Yerel veriler silinir/anonimleştirilir (idempotent — oturum hâlâ kullanıcının
+       elinde, hata olursa tekrar deneyebilir; bkz. account_delete.purge_tenant).
+    3. Clerk Backend API ile hesap silinir; başarısız olursa 502 (yerel veri zaten
+       gitti — kullanıcıya tekrar denemesi söylenir).
+    """
+    if req.confirm != "HESABIMI SIL":
+        raise HTTPException(status_code=400, detail="Onay metni hatalı.")
+    if not settings.clerk_secret_key.strip():
+        raise HTTPException(
+            status_code=503,
+            detail="Hesap silme yapılandırılmamış (Clerk secret yok).",
+        )
+
+    removed = account_delete.purge_tenant(tenant_id)
+
+    try:
+        clerk_admin.delete_clerk_user(tenant_id)
+    except RuntimeError as exc:
+        logger.warning("Clerk hesap silme başarısız (tenant=%s): %s", tenant_id, exc)
+        raise HTTPException(
+            status_code=502,
+            detail="Verileriniz silindi ancak hesap kapatılamadı. Lütfen tekrar deneyin.",
+        )
+
+    ADMIN_AUDIT.record(
+        action="account_deleted",
+        clerk_user_id=None,
+        target=account_delete.anon_tenant_id(tenant_id),
+    )
+
+    return DeleteAccountResponse(deleted=True, removed=removed, clerk_deleted=True)

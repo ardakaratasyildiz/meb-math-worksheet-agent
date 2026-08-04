@@ -185,6 +185,8 @@ export default function ProfileScreen() {
             <LinkRow label="Kullanım Koşulları" onPress={open('/kosullar')} />
             <View style={styles.divider} />
             <LinkRow label="Yardım & İletişim" onPress={open('/iletisim')} />
+            <View style={styles.divider} />
+            <LinkRow label="Hesabımı sil" onPress={() => router.push('/delete-account')} danger />
           </Card>
 
           <PrimaryButton label="Çıkış Yap" variant="soft" color={colors.danger} onPress={() => void signOut()} />
@@ -206,11 +208,20 @@ function MiniStat({ icon, value, label }: { icon: React.ReactNode; value: string
   );
 }
 
-function LinkRow({ label, onPress }: { label: string; onPress: () => void }) {
+function LinkRow({
+  label,
+  onPress,
+  danger = false,
+}: {
+  label: string;
+  onPress: () => void;
+  /** Tehlike tonu (ör. hesap silme) — kırmızı metin + ok. */
+  danger?: boolean;
+}) {
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.linkRow, pressed && styles.pressed]}>
-      <Text style={styles.linkLabel}>{label}</Text>
-      <IconChevron size={16} color={colors.textFaint} />
+      <Text style={[styles.linkLabel, danger && styles.linkLabelDanger]}>{label}</Text>
+      <IconChevron size={16} color={danger ? colors.danger : colors.textFaint} />
     </Pressable>
   );
 }
@@ -277,6 +288,7 @@ const styles = StyleSheet.create({
   divider: { height: 1, backgroundColor: colors.border },
   linkRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.md },
   linkLabel: { fontFamily: fonts.bodyMedium, fontSize: fontSize.md, color: colors.text },
+  linkLabelDanger: { color: colors.danger },
 
   version: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textFaint, textAlign: 'center', marginTop: spacing.sm },
 });

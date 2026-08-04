@@ -92,6 +92,14 @@ const SECTIONS: LegalSection[] = [
       "Yukarıdaki haklarınıza ilişkin taleplerinizi destek@soruatolyesi.com adresine iletebilirsiniz. Başvurularınız, KVKK ve ilgili mevzuatta öngörülen süre içinde (en geç 30 gün) sonuçlandırılır.",
     ],
   },
+  {
+    heading: "Hesabınızı ve Verilerinizi Silme",
+    paragraphs: [
+      "Silme talebinizi Platform üzerinden, hesabınızla giriş yaparak doğrudan da gerçekleştirebilirsiniz. Bu işlem geri alınamaz; hesabınıza ait tüm veriler kalıcı olarak silinir.",
+    ],
+    linkHref: "/hesap/sil",
+    linkLabel: "Hesabımı ve verilerimi sil",
+  },
 ];
 
 export default function KvkkPage() {

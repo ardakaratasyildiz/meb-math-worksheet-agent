@@ -654,6 +654,63 @@ export async function getAssignmentWorksheet(
   return r.worksheet;
 }
 
+// ── Hesap silme (/api/me/account/delete) ─────────────────────────────────────
+export interface DeleteAccountResponse {
+  deleted: boolean;
+  removed: Record<string, unknown>;
+  clerk_deleted: boolean;
+}
+
+/**
+ * Silme isteğinin başarısız uçları farklı davranır (bkz. backend sözleşmesi):
+ * 400 = onay metni yanlış · 401 = oturum yok · 502 = veri silindi ama hesap
+ * kapatılamadı (tekrar denenmeli) · 503 = sunucu yapılandırması eksik.
+ * Ekranın bu ayrımı yapabilmesi için `status` taşıyan özel bir hata sınıfı.
+ */
+export class DeleteAccountError extends Error {
+  readonly status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "DeleteAccountError";
+    this.status = status;
+  }
+}
+
+/**
+ * Hesabı ve TÜM verilerini kalıcı olarak siler (GERİ ALINAMAZ). Giriş şart;
+ * onay metni birebir "HESABIMI SIL" olmalı (backend de doğrular). Başarıda
+ * Clerk kullanıcısı sunucu tarafında silinmiş olur → çağıran signOut() yapmalı.
+ * apiRequest yerine ham fetch kullanır: ekranın 502'yi (kısmi silinme, tekrar
+ * dene) diğer hatalardan `status` üzerinden ayırt edebilmesi gerekiyor.
+ */
+export async function deleteAccount(): Promise<DeleteAccountResponse> {
+  const auth = await authHeader();
+  let res: Response;
+  try {
+    res = await fetch(`${ENV.apiUrl}/api/me/account/delete`, {
+      method: "POST",
+      headers: { ...baseHeaders(), ...auth },
+      body: JSON.stringify({ confirm: "HESABIMI SIL" }),
+    });
+  } catch {
+    throw new DeleteAccountError(
+      "İnternet bağlantısı yok. Bağlantını kontrol edip tekrar dene.",
+      0,
+    );
+  }
+  let detail = `${res.status} ${res.statusText}`;
+  let json: unknown = null;
+  try {
+    json = await res.json();
+    const d = (json as { detail?: unknown } | null)?.detail;
+    if (typeof d === "string" && d) detail = d;
+  } catch {
+    // gövde JSON değil — status metni kalır
+  }
+  if (!res.ok) throw new DeleteAccountError(detail, res.status);
+  return json as DeleteAccountResponse;
+}
+
 /** Backend uyandırma ping'i (Render free-tier cold start). Hata yutulur. */
 export function pingHealth(): void {
   try {

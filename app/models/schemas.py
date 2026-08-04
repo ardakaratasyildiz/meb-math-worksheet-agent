@@ -1185,3 +1185,16 @@ class SetEmailPrefsRequest(BaseModel):
         if not v:
             raise ValueError("boş olamaz")
         return v
+
+
+# ── Hesap silme (Apple 5.1.1(v) / Google Play veri-silme zorunluluğu) ───────
+
+
+class DeleteAccountRequest(BaseModel):
+    confirm: str  # tam olarak "HESABIMI SIL" olmalı — yanlışlıkla tetiklemeyi önler
+
+
+class DeleteAccountResponse(BaseModel):
+    deleted: bool
+    removed: dict[str, int]  # tablo adı → silinen/anonimleştirilen satır sayısı
+    clerk_deleted: bool
