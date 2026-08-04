@@ -39,7 +39,8 @@ const SECTIONS: LegalSection[] = [
       "Clerk — kimlik doğrulama ve oturum yönetimi,",
       "Google (Gemini) ve Anthropic (Claude) — çalışma kağıdı içeriğinin üretilmesi,",
       "Render ve Vercel — uygulamanın barındırılması,",
-      "Turso — veritabanı hizmeti.",
+      "Turso — veritabanı hizmeti,",
+      "Google Tag Manager / Google Analytics — kullanım istatistiklerinin ölçülmesi.",
     ],
   },
   {
@@ -51,7 +52,7 @@ const SECTIONS: LegalSection[] = [
   {
     heading: "Çerezler",
     paragraphs: [
-      "Platform; yalnızca oturum yönetimi ve kimlik doğrulama için gerekli olan çerezleri kullanır (bu çerezler kimlik doğrulama sağlayıcısı tarafından yerleştirilir). Pazarlama veya üçüncü taraf reklam çerezi kullanılmaz.",
+      "Platform; oturum yönetimi ve kimlik doğrulama için gerekli olan çerezleri (kimlik doğrulama sağlayıcısı tarafından yerleştirilir) ve kullanım istatistiklerini ölçmek için analitik çerezleri kullanır. Analitik ölçüm Google Tag Manager / Google Analytics üzerinden yapılır. Pazarlama veya üçüncü taraf reklam çerezi kullanılmaz.",
     ],
   },
   {
