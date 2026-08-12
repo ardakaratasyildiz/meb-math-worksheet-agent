@@ -25,6 +25,7 @@ os.environ.setdefault("GEMINI_API_KEY", "fake-key-for-tests")
 from app.config import settings  # noqa: E402
 from app.services import entitlements, revenuecat  # noqa: E402
 from app.services.billing_store import BillingStore  # noqa: E402
+from app.services.top_up_store import TopUpStore  # noqa: E402
 
 _failures: list[str] = []
 
@@ -64,9 +65,12 @@ def _ev(
 
 # Geçici DB + test store'una bağla
 _TMP = tempfile.mkdtemp()
-STORE = BillingStore(db_path=str(Path(_TMP) / "rc_test.sqlite3"))
+_DB = str(Path(_TMP) / "rc_test.sqlite3")
+STORE = BillingStore(db_path=_DB)
+TOPUP = TopUpStore(db_path=_DB)
 revenuecat.BILLING_STORE = STORE
 entitlements.BILLING_STORE = STORE
+entitlements.TOP_UP_STORE = TOPUP
 settings.premium_all = False
 settings.premium_tenant_ids = ""
 
@@ -178,12 +182,97 @@ def test_malformed() -> None:
     )
 
 
+def test_topup_does_not_touch_subscription() -> None:
+    """REGRESYON: ek paket (consumable) aboneliği silmemeli, krediye gitmeli.
+
+    Eski davranış: NON_RENEWING_PURCHASE `_ACTIVATING` içindeydi → abonelik satırının
+    ÜZERİNE yazıyordu; consumable'da bitiş tarihi olmadığı için satır erişim vermez
+    hale geliyordu. Ek paket yalnız aktif aboneye satıldığı için bu, ₺89'luk paket alan
+    Pro abonesinin aboneliğini kaybetmesi demekti (kredi de eklenmiyordu).
+    """
+    print("test_topup_does_not_touch_subscription")
+    settings.revenuecat_product_map = "pro-aylik:pro,proplus-aylik:pro-plus"
+    settings.topup_products = "topup-25:25,topup-75:75"
+    u = "u_topup_rc"
+
+    revenuecat.process_webhook(
+        _ev("INITIAL_PURCHASE", user=u, product="pro-aylik", eid="evt_sub_topup")
+    )
+    check(STORE.get_active(u) is not None, "önce: Pro aboneliği aktif")
+
+    r = revenuecat.process_webhook(
+        _ev("NON_RENEWING_PURCHASE", user=u, product="topup-25", eid="evt_topup_1")
+    )
+    check(r["status"] == "ok" and r.get("credited") == 25, "topup-25 → +25 kağıt kredi")
+    check(STORE.get_active(u) is not None, "ek paket aboneliği BOZMADI")
+    check(entitlements.plan_of(u) == "pro", "plan hâlâ pro (satır ezilmedi)")
+    check(TOPUP.balance(u) == 25, "kredi bakiyeye yazıldı")
+
+    # Aynı olay tekrar gelirse (RevenueCat retry) kredi iki kez eklenmemeli
+    r2 = revenuecat.process_webhook(
+        _ev("NON_RENEWING_PURCHASE", user=u, product="topup-25", eid="evt_topup_1")
+    )
+    check(r2["status"] == "duplicate" and TOPUP.balance(u) == 25,
+          "aynı olay tekrar → duplicate, bakiye 25'te kaldı")
+
+    # Aboneliği olmayan kullanıcı: kredi yazılır ama abonelik satırı AÇILMAZ
+    r3 = revenuecat.process_webhook(
+        _ev("NON_RENEWING_PURCHASE", user="u_topup_solo", product="topup-75", eid="evt_topup_2")
+    )
+    check(r3.get("credited") == 75, "abonesiz kullanıcı → 75 kredi")
+    check(STORE.get("u_topup_solo") is None, "abonesiz kullanıcıda abonelik satırı AÇILMADI")
+
+    # Bilinmeyen consumable → eski abonelik yoluna düşer (davranış korunur)
+    r4 = revenuecat.process_webhook(
+        _ev("NON_RENEWING_PURCHASE", user="u_nonrenew", product="ozel_paket", eid="evt_nr_1")
+    )
+    check(r4.get("subscription_status") == "active",
+          "topup listesinde OLMAYAN non-renewing ürün → abonelik yolu (değişmedi)")
+
+
+def test_sandbox_gate() -> None:
+    """Sandbox (test) satın alması: test döneminde işlenir, canlıda reddedilir."""
+    print("test_sandbox_gate")
+    settings.revenuecat_product_map = "pro-aylik:pro"
+    settings.topup_products = "topup-25:25,topup-75:75"
+
+    def _sandbox_ev(eid: str, user: str, product: str = "pro-aylik") -> dict:
+        ev = _ev("INITIAL_PURCHASE", user=user, product=product, eid=eid)
+        ev["event"]["environment"] = "SANDBOX"
+        return ev
+
+    # Canlı ayar (allow_sandbox=False) → abonelik AÇILMAZ
+    settings.revenuecat_allow_sandbox = False
+    r = revenuecat.process_webhook(_sandbox_ev("evt_sbx_1", "u_sbx_block"))
+    check(r["status"] == "ignored" and r.get("reason") == "sandbox",
+          "allow_sandbox=False → sandbox olayı reddedildi")
+    check(STORE.get("u_sbx_block") is None, "reddedilen sandbox → abonelik satırı açılmadı")
+
+    # Sandbox ek paket de kredi yazmamalı
+    tu = _sandbox_ev("evt_sbx_topup", "u_sbx_topup", product="topup-25")
+    tu["event"]["type"] = "NON_RENEWING_PURCHASE"
+    revenuecat.process_webhook(tu)
+    check(TOPUP.balance("u_sbx_topup") == 0, "reddedilen sandbox ek paket → kredi yazılmadı")
+
+    # PRODUCTION olayı aynı ayarda normal işlenir
+    r2 = revenuecat.process_webhook(_ev("INITIAL_PURCHASE", user="u_sbx_prod", eid="evt_prod_1"))
+    check(r2.get("subscription_status") == "active",
+          "environment yok/PRODUCTION → normal işlenir (allow_sandbox=False iken bile)")
+
+    # Test dönemi ayarı (allow_sandbox=True) → sandbox işlenir
+    settings.revenuecat_allow_sandbox = True
+    r3 = revenuecat.process_webhook(_sandbox_ev("evt_sbx_2", "u_sbx_ok"))
+    check(r3.get("subscription_status") == "active" and STORE.get_active("u_sbx_ok") is not None,
+          "allow_sandbox=True → sandbox satın alma uçtan uca işlenir (test için)")
+
+
 def _run() -> int:
     for fn in [
         test_plan_for, test_initial_purchase, test_trial_period,
         test_renewal_updates_period, test_cancellation_grace, test_expiration,
         test_billing_issue, test_idempotency, test_anonymous_skipped,
         test_ignored_and_unmapped, test_malformed,
+        test_topup_does_not_touch_subscription, test_sandbox_gate,
     ]:
         fn()
     print()

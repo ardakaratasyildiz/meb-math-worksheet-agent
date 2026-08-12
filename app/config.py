@@ -276,8 +276,16 @@ class Settings(BaseSettings):
     free_monthly_worksheets: int = 10
     pro_monthly_worksheets: int = 50
     pro_plus_monthly_worksheets: int = 120
-    # 7g reverse trial süresi (gün) + trial kotası (tam-Pro deneyim → pro-plus tavanı).
+    # Ücretsiz kademede GÜNLÜK tavan (kağıt/gün, Türkiye günü). Aylık 10 hakkın ilk iki
+    # günde tüketilip kullanıcının 28 gün boş kalmasını engeller; aynı zamanda ücretsiz
+    # trafiğin günlük maliyet tavanını belirler. 0 → günlük tavan kapalı.
+    free_daily_worksheets: int = 2
+    # 7g reverse trial süresi (gün) + trial kotası (kağıt).
+    # Trial Pro+ KALİTESİ verir (yeni_nesil vb.) ama ADEDİ ayrıdır: 120 kağıtlık Pro+
+    # tavanı denemede ~180 TL üretim maliyeti demekti — bir aylık Pro gelirinden fazla.
+    # Değer göstermeye 20 kağıt yeter (KARAR 2026-08-12).
     trial_days: int = 7
+    trial_worksheets: int = 20
     billing_enabled: bool = False
     # Ek kağıt paketi (top-up) — tüketilebilir IAP; abonelik üstü, süreli (MONETIZATION_PLAN §2).
     topup_expiry_days: int = 30
@@ -294,8 +302,16 @@ class Settings(BaseSettings):
     #     doğrulama atlanır + uyarı loglanır (yalnız sandbox/dev; PROD'da MUTLAKA set et).
     #   revenuecat_product_map: "product_id:plan_code" çiftleri (virgülle). Eşleşme
     #     yoksa ürün/entitlement adında "plus" geçerse pro-plus, aksi halde pro (fallback).
+    #   revenuecat_allow_sandbox: sandbox (test) satın almaları GERÇEK abonelik/kredi
+    #     sayılsın mı. RevenueCat sandbox olayları için de webhook gönderir ve olay
+    #     `environment: SANDBOX` taşır. Test döneminde True olmalı (uçtan uca doğrulama:
+    #     satın al → webhook → /api/me/entitlements). CANLIYA ÇIKARKEN Render'da
+    #     REVENUECAT_ALLOW_SANDBOX=false yap — aksi halde davet ettiğin sandbox/lisans
+    #     test hesapları bedavaya Pro yazdırmaya devam eder. Reddedilen olay yine
+    #     billing_events'e kaydedilir (iz kalsın), yalnız abonelik/krediye işlenmez.
     revenuecat_webhook_auth: str = ""
     revenuecat_product_map: str = ""
+    revenuecat_allow_sandbox: bool = True
 
     # Ders (subject) ekseni — çok-ders geçişi (docs/FEN_BILIMLERI_PLAN.md).
     # KALİTE KAPISI feature-flag'leri. Kalite paritesi doğrulandıktan sonra

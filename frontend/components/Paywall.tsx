@@ -31,6 +31,9 @@ export function Paywall({
   info: QuotaInfo | null;
 }) {
   const limit = info?.limit ?? null;
+  // Günlük tavan GEÇİCİ (yarın açılır) — "hakkın bitti, satın al" demek yanlış olur.
+  const daily = info?.error === "daily_limit_reached";
+  const dailyLimit = info?.daily_limit ?? null;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -39,21 +42,32 @@ export function Paywall({
             <Sparkles className="h-6 w-6" />
           </div>
           <DialogTitle className="text-center text-xl">
-            Bu ayki ücretsiz hakkın doldu
+            {daily ? "Bugünlük hakkın doldu" : "Bu ayki ücretsiz hakkın doldu"}
           </DialogTitle>
           <DialogDescription className="text-center">
-            {limit
-              ? `Aylık ${limit} soruluk ücretsiz üretim hakkını kullandın.`
-              : "Aylık ücretsiz üretim hakkını kullandın."}{" "}
-            Pro ile kaldığın yerden devam et — üretimin durmasın.
+            {daily ? (
+              <>
+                {dailyLimit
+                  ? `Ücretsiz planda günde ${dailyLimit} çalışma kağıdı üretebilirsin.`
+                  : "Günlük ücretsiz üretim hakkını kullandın."}{" "}
+                Hakkın yarın yenilenir — beklemek istemezsen Pro ile hemen devam edebilirsin.
+              </>
+            ) : (
+              <>
+                {limit
+                  ? `Aylık ${limit} çalışma kağıdı hakkını kullandın.`
+                  : "Aylık ücretsiz üretim hakkını kullandın."}{" "}
+                Pro ile kaldığın yerden devam et — üretimin durmasın.
+              </>
+            )}
           </DialogDescription>
         </DialogHeader>
 
         <ul className="mx-auto space-y-2 py-2 text-sm text-foreground">
           {[
-            "Pro ₺189/ay — aylık 1.000 soru",
-            "Pro+ ₺249/ay — sınırsız + veli/öğretmen takibi",
-            "Yeni nesil kalite + filigransız (white-label) PDF",
+            "Pro ₺199/ay — ayda 50 çalışma kağıdı",
+            "Pro+ ₺349/ay — ayda 120 kağıt + veli/öğretmen takibi",
+            "Günlük sınır yok · yeni nesil kalite + filigransız PDF",
           ].map((f) => (
             <li key={f} className="flex items-start gap-2">
               <Check className="mt-0.5 h-4 w-4 shrink-0 text-mint" />

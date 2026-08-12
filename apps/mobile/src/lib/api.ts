@@ -78,6 +78,13 @@ export interface Quota {
   limit: number | null;
   used: number;
   remaining: number | null;
+  /**
+   * Günlük tavan — YALNIZ ücretsiz kademede dolu, diğer planlarda null.
+   * Aylık hak dururken de bitebilir; o durumda engel GEÇİCİ (yarın yenilenir).
+   */
+  daily_limit: number | null;
+  used_today: number;
+  daily_remaining: number | null;
 }
 export interface Entitlements {
   plan: "free" | "trial" | "pro" | "pro-plus";

@@ -6,7 +6,8 @@ kararını verir. Karar HER ZAMAN sunucu tarafında; çağıranlar client'tan ge
 bayrağa/tenant'a ASLA güvenmez (bkz. clerk_auth doğrulaması).
 
 Model (MONETIZATION_PLAN §2, 2026-07-24 — kağıt-bazlı + AİLE PAYLAŞIMLI havuz):
-  free (10 kağıt/ay) · trial (7g kartsız tam Pro+) · pro (50 kağıt/ay) · pro-plus (120 kağıt/ay).
+  free (10 kağıt/ay, günde en çok 2) · trial (7g kartsız, 20 kağıt, Pro+ kalitesi) ·
+  pro (50 kağıt/ay) · pro-plus (120 kağıt/ay).
   Kota birimi = ÇALIŞMA KAĞIDI (soru değil); açık sayı (gizli tavan yok). Çocuk, PREMIUM
   velisinin planını miras alır ve aile TEK kota havuzunu paylaşır (_billing_owner/_family_tenants).
 
@@ -37,6 +38,13 @@ def _month_start_ts() -> float:
     """İçinde bulunulan takvim ayının başı (Türkiye saati) → unix saniye."""
     now = datetime.now(_IST)
     start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    return start.timestamp()
+
+
+def _day_start_ts() -> float:
+    """İçinde bulunulan günün başı (Türkiye saati) → unix saniye. Günlük tavan için."""
+    now = datetime.now(_IST)
+    start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     return start.timestamp()
 
 
@@ -144,14 +152,30 @@ def yeni_nesil_for_bucket(tenant_id: str | None, difficulty) -> bool:
 
 
 def quota_limit(plan: str) -> int:
-    """Plana göre aylık ÇALIŞMA KAĞIDI kotası (açık sayı; MONETIZATION_PLAN §2, 2026-07-24).
-    trial = tam Pro+ deneyimi → pro-plus kotası."""
+    """Plana göre aylık ÇALIŞMA KAĞIDI kotası (açık sayı; MONETIZATION_PLAN §2).
+
+    trial = Pro+ KALİTESİ (yeni_nesil vb. wants_yeni_nesil'den gelir) ama KENDİ adedi
+    (`trial_worksheets`) — Pro+ tavanı verilirse deneme, ödeyen müşteriden pahalıya gelir.
+    """
     if plan == PLAN_FREE:
         return settings.free_monthly_worksheets
+    if plan == PLAN_TRIAL:
+        return settings.trial_worksheets
     if plan == PLAN_PRO:
         return settings.pro_monthly_worksheets
-    # pro-plus + trial
     return settings.pro_plus_monthly_worksheets
+
+
+def daily_limit(plan: str) -> int | None:
+    """Plana göre GÜNLÜK kağıt tavanı; tavansız planlarda None.
+
+    Yalnız ücretsiz kademede var (KARAR 2026-08-12): aylık hak ilk günlerde tükenmesin
+    + ücretsiz trafiğin günlük maliyeti öngörülebilir olsun. Deneme/ücretli planlarda
+    tavan YOK — denemede 7 gün × 2 = 14 < 20 olur, kullanıcı hakkını kullanamazdı.
+    """
+    if plan != PLAN_FREE:
+        return None
+    return settings.free_daily_worksheets or None
 
 
 def ensure_trial(tenant_id: str | None) -> None:
@@ -202,14 +226,29 @@ def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
     if not q["allowed"]:
         from fastapi import HTTPException  # local import — entitlements'ı saf tut
 
+        daily_block = q.get("block_reason") == "daily"
+        if daily_block:
+            d = q.get("daily_limit") or 0
+            message = (
+                f"Bugünlük ücretsiz hakkın doldu (günde {d} kağıt). Yarın yenilenir — "
+                "beklemeden devam etmek istersen Pro'ya geçebilirsin."
+            )
+        else:
+            message = "Bu ayki çalışma kağıdı hakkın doldu. Pro'ya geç ya da ek paket al."
+
         raise HTTPException(
             status_code=402,
             detail={
-                "error": "quota_exceeded",
-                "message": "Bu ayki çalışma kağıdı hakkın doldu. Pro'ya geç ya da ek paket al.",
+                # İki ayrı durum: günlük tavan GEÇİCİ (yarın açılır), aylık kota kalıcı.
+                # İstemci buna göre farklı mesaj/CTA gösterir — günlük engelde "Pro'ya geç"
+                # tek başına yanlış olur (kullanıcı yarın zaten devam edecek).
+                "error": "daily_limit_reached" if daily_block else "quota_exceeded",
+                "message": message,
                 "plan": q["plan"],
                 "limit": q["limit"],
                 "used": q["used"],
+                "daily_limit": q.get("daily_limit"),
+                "daily_remaining": q.get("daily_remaining"),
                 "topup_balance": q.get("topup_balance", 0),
             },
         )
@@ -238,6 +277,21 @@ def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
     plan_remaining = max(0, limit - used)
     topup = TOP_UP_STORE.balance(owner)              # ek paket kredisi (havuz sahibinde, süreli)
     remaining = plan_remaining + topup
+
+    # Günlük tavan (yalnız ücretsiz) — aylık hakla AYRI bir kapı; havuz aile geneli.
+    d_limit = daily_limit(plan)
+    used_today = (
+        USAGE_LEDGER.worksheets_used_since(family, _day_start_ts()) if d_limit else 0
+    )
+    daily_remaining = max(0, d_limit - used_today) if d_limit else None
+
+    need = max(requested, 1)
+    monthly_ok = remaining >= need
+    daily_ok = daily_remaining is None or daily_remaining >= need
+    # Aylık bitmişse ONU söyle (yükseltme mesajı doğru olsun); yalnız aylık hak varken
+    # günlük tavana takılıyorsa "yarın devam" mesajı gider.
+    block_reason = None if (monthly_ok and daily_ok) else ("monthly" if not monthly_ok else "daily")
+
     return {
         "plan": plan,
         "limit": limit,
@@ -245,6 +299,10 @@ def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
         "plan_remaining": plan_remaining,
         "topup_balance": topup,
         "remaining": remaining,
+        "daily_limit": d_limit,
+        "used_today": used_today,
+        "daily_remaining": daily_remaining,
         "owner": owner,
-        "allowed": remaining >= max(requested, 1),
+        "allowed": monthly_ok and daily_ok,
+        "block_reason": block_reason,
     }

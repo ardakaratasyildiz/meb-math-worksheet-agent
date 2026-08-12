@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { IconSpark, IconStar } from '@/components/icons';
@@ -48,6 +48,15 @@ const TIERS = [
     popular: true,
   },
 ] as const;
+
+/**
+ * Yasal sayfalar — mağaza incelemesi bu linkleri TIKLAR, kırık olamaz.
+ * (Eski `/gizlilik` ve `/kosullar` yolları sitede yok, 404 dönüyordu.)
+ */
+const LEGAL = {
+  terms: 'https://soruatolyesi.com/legal/terms',
+  privacy: 'https://soruatolyesi.com/legal/privacy',
+} as const;
 
 /** Ek kağıt paketleri (tüketilebilir; yalnız aktif aboneye) — top-up. */
 const TOPUPS = [
@@ -141,10 +150,18 @@ export default function PaywallScreen() {
             </View>
           </Card>
 
+          {/* Günlük tavan GEÇİCİ (yarın yenilenir), aylık kota kalıcı → ayrı mesaj. */}
           {reason === 'quota' ? (
             <View style={styles.quotaBanner}>
               <Text style={styles.quotaText}>
                 Bu ayki kotan doldu. Devam etmek için bir plan seç ya da ek paket al.
+              </Text>
+            </View>
+          ) : reason === 'daily' ? (
+            <View style={styles.quotaBanner}>
+              <Text style={styles.quotaText}>
+                Bugünlük ücretsiz hakkın doldu — yarın yenilenir. Beklemek istemezsen
+                planlardan biriyle hemen devam edebilirsin (günlük sınır yok).
               </Text>
             </View>
           ) : null}
@@ -172,7 +189,7 @@ export default function PaywallScreen() {
                   </View>
                 </View>
                 <PrimaryButton
-                  label={isCurrent ? 'Mevcut planın' : '7 gün ücretsiz dene'}
+                  label={isCurrent ? 'Mevcut planın' : `${t.name} ol · ${price}/ay`}
                   color={t.color}
                   variant={isCurrent ? 'soft' : 'solid'}
                   disabled={isCurrent}
@@ -212,10 +229,31 @@ export default function PaywallScreen() {
 
           {/* Güven şeridi */}
           <View style={styles.trustRow}>
-            <Trust icon={<IconSpark size={16} />} text="7 gün ücretsiz" />
+            <Trust icon={<IconSpark size={16} />} text="Reklamsız" />
             <Trust icon={<IconStar size={16} />} text="İstediğin an iptal" />
           </View>
-          <Text style={styles.trustFine}>Ödeme App Store / Google Play üzerinden · reklamsız</Text>
+          <Text style={styles.trustFine}>Ödeme App Store / Google Play üzerinden</Text>
+
+          {/*
+            Otomatik yenileme beyanı + yasal linkler — App Store 3.1.2 ve Play abonelik
+            politikası bunları ÖDEME EKRANINDA görünür ister; yoksa inceleme reddeder.
+          */}
+          <Text style={styles.legalNote}>
+            Abonelikler aylıktır ve otomatik yenilenir. Ödeme, satın almayı onayladığında App
+            Store / Google Play hesabından tahsil edilir; dönem bitiminden en az 24 saat önce
+            iptal etmezsen aynı ücretle yenilenir. Aboneliğini cihazının mağaza hesabı
+            ayarlarından yönetebilir ya da iptal edebilirsin. Ek kağıt paketleri tek seferlik
+            ödemedir, otomatik yenilenmez.
+          </Text>
+          <View style={styles.legalRow}>
+            <Pressable hitSlop={8} onPress={() => void Linking.openURL(LEGAL.terms)}>
+              <Text style={styles.legalLink}>Kullanım Koşulları</Text>
+            </Pressable>
+            <Text style={styles.legalSep}>·</Text>
+            <Pressable hitSlop={8} onPress={() => void Linking.openURL(LEGAL.privacy)}>
+              <Text style={styles.legalLink}>Gizlilik Politikası</Text>
+            </Pressable>
+          </View>
 
           {msg ? (
             <Text style={[styles.msg, msgOk ? styles.msgOk : styles.msgErr]}>{msg}</Text>
@@ -309,6 +347,22 @@ const styles = StyleSheet.create({
   trust: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   trustText: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.text },
   trustFine: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textFaint, textAlign: 'center' },
+
+  legalNote: {
+    fontFamily: fonts.body,
+    fontSize: fontSize.xs,
+    lineHeight: 17,
+    color: colors.textFaint,
+    textAlign: 'center',
+  },
+  legalRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: spacing.sm },
+  legalLink: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: fontSize.xs,
+    color: colors.brand,
+    textDecorationLine: 'underline',
+  },
+  legalSep: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textFaint },
 
   msg: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, textAlign: 'center' },
   msgOk: { color: colors.success },

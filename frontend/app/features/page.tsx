@@ -196,8 +196,9 @@ export default function FeaturesPage() {
               Sistemi denemek için
             </h2>
             <p className="text-base text-muted-foreground">
-              Erken kullanım dönemindeki tüm hesaplara aylık 100 soru kotası
-              tanınmaktadır. Hesap açmak için yalnızca e-posta yeterlidir.
+              Erken kullanım dönemindeki tüm hesaplara ayda 10 çalışma kağıdı
+              kotası tanınmaktadır (günde en çok 2). Hesap açmak için yalnızca
+              e-posta yeterlidir.
             </p>
             <Button asChild size="lg" className="gap-2 px-8">
               <Link href="/sign-up">

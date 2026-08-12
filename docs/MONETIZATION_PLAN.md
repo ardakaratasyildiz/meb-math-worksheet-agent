@@ -192,7 +192,24 @@ mevcut `entitlements` ilkesi korunur).
 - **Kurumsal (okul/dershane) = AYRI, teklif-bazlı, faturalı, Faz 2** (yüksek-WTP'yi yakalar; IAP değil).
 - **Marj doğrulandı:** net-gelir/kağıt (Pro ₺2.40 / Pro+ ₺1.75 / +25 ₺2.14 / +75 ₺1.59) > maliyet
   ~₺1.5 ([[gen-cost-quality-2026-07]] ölçümü). 7g reverse trial, ayrı intro-indirim yok, yalnız aylık.
-- Açık: yıllık plan (sonra), fair-use günlük hız-limiti değeri (anti-bot), WTP ile fiyat iterasyonu.
+- Açık: yıllık plan (sonra), WTP ile fiyat iterasyonu.
+
+**✅ KESİN — deneme kotası + günlük tavan (2026-08-12):**
+- **Deneme = 7 gün, 20 kağıt, Pro+ KALİTESİ** (`trial_worksheets`). Eskiden deneme Pro+'ın
+  120 kağıdını alıyordu → sonuna kadar kullanan bir deneme kullanıcısı ~₺180 üretim maliyeti
+  demekti; Pro'nun aylık net geliri (~₺141, KDV %20 + mağaza komisyonu düşülmüş) bunun ALTINDA.
+  Yani deneme, ödeyen müşteriden pahalıya geliyordu. Kalite kısılmadı, yalnız adet.
+- **Ücretsiz kademede günlük tavan: 2 kağıt/gün** (`free_daily_worksheets`). Aylık 10 hakkın ilk
+  iki günde tükenip kullanıcının 28 gün boş kalmasını engeller + ücretsiz trafiğin günlük maliyeti
+  öngörülebilir olur. Deneme/ücretli planlarda günlük tavan YOK (7g × 2 = 14 < 20 olurdu).
+- **Mağaza tarafında ücretsiz deneme (introductory offer) TANIMLANMAZ.** Deneme bizde tutulur
+  (kartsız, `ensure_trial`). Mağaza denemesi kart ister + "yakında ücretlendirileceksin"
+  bildirimi gönderir → iptal/iade sürtünmesi. Paywall metni de denemeyi satın alma vaadi
+  olarak sunmaz (App Store 3.1.2: mağazada tanımlı olmayan deneme = yanıltıcı beyan).
+- **Sonuç (istemci):** 402 iki ayrı kod döner — `quota_exceeded` (aylık, kalıcı → yükseltme) ve
+  `daily_limit_reached` (günlük, geçici → "yarın yenilenir"). Web + mobil paywall metinleri ayrışır.
+- **Not:** reverse trial ilk üretimde otomatik başladığı için günlük tavan pratikte ancak deneme
+  bittikten sonra hissedilir. Kasıtlı: yeni kullanıcı ilk gün sınıra çarpmaz.
 
 **✅ Kapandı (2026-07-10):**
 - **Persona:** hibrit — öğretmen **ve** veli ana persona.

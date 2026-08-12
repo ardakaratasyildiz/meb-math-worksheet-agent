@@ -8,6 +8,9 @@ iyzico ile ORTAK depo; `entitlements` yalnız oraya bakar (provider-agnostik).
 Sözleşme:
   - app_user_id = Clerk userId (mobil, RevenueCat appUserID'yi böyle set eder) = tenant_id.
     Anonim ("$RCAnonymousID:...") → henüz kimliğe bağlı değil, atlanır.
+  - İki AYRI yol: abonelik olayları `subscriptions` satırına yazılır; ek paket (top-up,
+    consumable) satırına HİÇ dokunmaz, `top_up_store` kredisine gider. Ürün kimliği
+    `settings.topup_product_credits` içindeyse ek paket sayılır.
   - Idempotency: event.id → billing_store.record_event (tekrar gelen atlanır; RevenueCat
     retry güvenliği).
   - Karar HER ZAMAN sunucuda; client bayrağına asla güvenilmez.
@@ -20,6 +23,7 @@ import logging
 from datetime import datetime, timezone
 
 from app.config import settings
+from app.services.entitlements import credit_topup
 from app.services.billing_store import (
     BILLING_STORE,
     STATUS_ACTIVE,
@@ -114,6 +118,39 @@ def process_webhook(body: dict) -> dict:
     if event_type in _IGNORED:
         BILLING_STORE.mark_event_processed(str(event_id))
         return {"status": "ignored", "event_type": event_type}
+
+    # ── Sandbox (test) satın alması ───────────────────────────────────────────
+    # RevenueCat sandbox olayları için de webhook gönderir; olay `environment` taşır.
+    # Test döneminde işlenir (uçtan uca doğrulama), canlıda REVENUECAT_ALLOW_SANDBOX=false
+    # ile reddedilir — yoksa davet edilen sandbox/lisans test hesapları bedava Pro yazar.
+    # Olay yine billing_events'e kaydedildi (yukarıda), yalnız işlenmez.
+    if str(event.get("environment") or "").upper() == "SANDBOX" and not settings.revenuecat_allow_sandbox:
+        BILLING_STORE.mark_event_processed(str(event_id))
+        logger.info(
+            "RevenueCat: SANDBOX olayı reddedildi (tenant=%s type=%s) — "
+            "revenuecat_allow_sandbox=False", tenant_id, event_type,
+        )
+        return {"status": "ignored", "reason": "sandbox", "event_type": event_type}
+
+    # ── Ek paket (top-up / consumable) — ABONELİK DEĞİL, kredi ────────────────
+    # Ürün kimliği topup listesindeyse olay türüne bakmadan buraya düşer. Aksi halde
+    # NON_RENEWING_PURCHASE `_ACTIVATING`'e girip abonelik satırının ÜZERİNE yazıyordu:
+    # tüketilebilir üründe bitiş tarihi olmadığı için satır erişim vermez hale geliyor,
+    # yani ek paket alan Pro abonesi hem kredisini alamıyor hem aboneliğini kaybediyordu.
+    # (Ek paket zaten yalnız aktif aboneye satılıyor → senaryo istisna değil, kural.)
+    product_id = str(event.get("product_id") or "")
+    if product_id in settings.topup_product_credits:
+        credited = credit_topup(
+            tenant_id,
+            product_id,
+            provider_ref=str(event.get("transaction_id") or event.get("id") or ""),
+        )
+        BILLING_STORE.mark_event_processed(str(event_id))
+        logger.info(
+            "RevenueCat top-up: tenant=%s ürün=%s → +%s kağıt", tenant_id, product_id, credited
+        )
+        return {"status": "ok", "tenant_id": tenant_id, "topup_product": product_id,
+                "credited": credited}
 
     is_trial = str(event.get("period_type") or "").upper() == "TRIAL"
     status = _status_for(event_type, is_trial)

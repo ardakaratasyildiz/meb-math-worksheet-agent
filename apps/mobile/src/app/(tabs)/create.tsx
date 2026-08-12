@@ -30,7 +30,8 @@ export default function CreateScreen() {
   const { userId } = useAuth();
   const { user } = useUser();
   const router = useRouter();
-  const { entitlements, quotaExhausted, refresh: refreshEntitlements } = useEntitlements();
+  const { entitlements, quotaExhausted, dailyExhausted, refresh: refreshEntitlements } =
+    useEntitlements();
   const sober = !isPlayfulRole(effectiveRole(user));
   const [phase, setPhase] = useState<Phase>('setup');
   const [busy, setBusy] = useState(false);
@@ -58,8 +59,12 @@ export default function CreateScreen() {
         return;
       }
       // Soft-gate: kota bittiyse paywall'a yönlendir (gerçek enforce sunucuda).
-      if (quotaExhausted) {
-        router.push({ pathname: '/paywall', params: { reason: 'quota' } });
+      // Aylık kota ile günlük tavan AYRI sebepler — paywall metni buna göre değişir.
+      if (quotaExhausted || dailyExhausted) {
+        router.push({
+          pathname: '/paywall',
+          params: { reason: quotaExhausted ? 'quota' : 'daily' },
+        });
         return;
       }
       setParams(p);
@@ -106,7 +111,7 @@ export default function CreateScreen() {
         void refreshEntitlements(); // kota tüketildi → göstergeyi güncelle
       }
     },
-    [userId, quotaExhausted, router, refreshEntitlements],
+    [userId, quotaExhausted, dailyExhausted, router, refreshEntitlements],
   );
 
   const onSubmitQuiz = useCallback(async () => {
@@ -183,6 +188,9 @@ export default function CreateScreen() {
                 <Pressable onPress={() => router.push('/paywall')} style={styles.quotaChip}>
                   <Text style={styles.quotaChipText}>
                     Bu ay: {entitlements.quota.used}/{entitlements.quota.limit} kağıt
+                    {entitlements.quota.daily_limit
+                      ? ` · bugün: ${entitlements.quota.used_today}/${entitlements.quota.daily_limit}`
+                      : ''}
                   </Text>
                   <Text style={styles.quotaChipCta}>Yükselt</Text>
                 </Pressable>
