@@ -16,7 +16,7 @@ import { PricingInterestButton } from "@/components/PricingInterestButton";
 export const metadata = {
   title: "Fiyatlandırma · Soru Atölyesi",
   description:
-    "Ücretsiz plan aylık 100 soru (kalıcı) + 7 gün Pro deneme. Pro ₺189/ay (1.000 soru), Pro+ ₺249/ay (sınırsız + veli/öğretmen takibi). Fiyatlar KDV dahil.",
+    "Ücretsiz plan ayda 10 çalışma kağıdı (günde 2) + kayıtta 7 gün kartsız deneme. Pro ₺199/ay (50 kağıt), Pro+ ₺349/ay (120 kağıt + veli/öğretmen takibi). Fiyatlar KDV dahil.",
 };
 
 interface Plan {
@@ -41,8 +41,8 @@ const PLANS: Plan[] = [
     icon: <Sparkles className="h-5 w-5" />,
     cta: "signup",
     features: [
-      "Ayda 100 soru üretim hakkı (Kalıcı ücretsiz)",
-      "Kayıt anında 7 günlük Pro denemesi",
+      "Ayda 10 çalışma kağıdı (kalıcı ücretsiz) — günde en çok 2",
+      "Kayıt anında 7 günlük kartsız deneme: 20 kağıt, Pro+ kalitesi",
       "1'den 8. sınıfa kadar + LGS için kazanım bazlı üretim",
       "Cevap anahtarı ve adım adım çözüm içeren PDF'ler",
       "Çöz & Geliş modülü ve temel sınıf/veli takibi",
@@ -52,12 +52,12 @@ const PLANS: Plan[] = [
     slug: "pro",
     name: "Pro",
     audience: "Veli ve Öğrenciler için ideal",
-    price: "₺189",
+    price: "₺199",
     priceNote: "/ay · KDV dahil",
     icon: <User className="h-5 w-5" />,
     cta: "interest",
     features: [
-      "Ayda 1.000 soru üretim hakkı",
+      "Ayda 50 çalışma kağıdı · günlük sınır yok",
       "Yeni nesil (senaryo bazlı) soru kalitesi",
       "Filigransız PDF — Kendi logonuzu ekleyin",
       "Çöz & Geliş: Sınırsız pratik ve oyunlaştırma",
@@ -68,14 +68,15 @@ const PLANS: Plan[] = [
     slug: "pro-plus",
     name: "Pro+",
     audience: "Öğretmenler ve yoğun kullanım için",
-    price: "₺249",
+    price: "₺349",
     priceNote: "/ay · KDV dahil",
     icon: <GraduationCap className="h-5 w-5" />,
     featured: true,
     cta: "interest",
     features: [
       "Pro planındaki her şeye ek olarak:",
-      "Sınırsız soru üretimi",
+      "Ayda 120 çalışma kağıdı",
+      "Aile paylaşımı: tek havuz, 3 çocuğa kadar",
       "Çoklu sınıf yönetimi, ödev verme ve sonuç panosu",
       "Detaylı kazanım analitiği ile tam takip",
       "Öncelikli müşteri desteği",
@@ -105,13 +106,13 @@ export default function PricingPage() {
       <PageHeader
         eyebrow="Fiyatlandırma"
         title="Sana En Uygun Planı Seç"
-        body="Ücretsiz planımız yayında! Kayıt olan herkese anında 7 günlük kartsız Pro denemesi hediye ediyoruz. Pro ve Pro+ paketlerimiz çok yakında aktif olacak; aşağıdan ilgilendiğini belirt, açıldığında ilk senin haberin olsun."
+        body="Ücretsiz planımız yayında! Kayıt olan herkese anında 7 günlük kartsız deneme (20 çalışma kağıdı, Pro+ kalitesi) hediye ediyoruz. Pro ve Pro+ paketlerimiz çok yakında aktif olacak; aşağıdan ilgilendiğini belirt, açıldığında ilk senin haberin olsun."
       />
 
       {/* Kampanya şeridi */}
       <div className="container">
         <div className="mx-auto max-w-5xl rounded-xl border border-primary/20 bg-accent/40 px-5 py-3 text-center text-sm text-foreground">
-          🎁 <span className="font-semibold">Üye olana 7 gün kartsız tam-Pro deneme</span> ·
+          🎁 <span className="font-semibold">Üye olana 7 gün kartsız deneme — 20 kağıt, Pro+ kalitesi</span> ·
           <span className="font-semibold">İstediğin an iptal</span>
         </div>
       </div>

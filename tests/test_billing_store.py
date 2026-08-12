@@ -205,10 +205,20 @@ def test_quota_limits() -> None:
     settings.free_monthly_worksheets = 10
     settings.pro_monthly_worksheets = 50
     settings.pro_plus_monthly_worksheets = 120
+    settings.trial_worksheets = 20
+    settings.free_daily_worksheets = 2
     check(entitlements.quota_limit("free") == 10, "free kota 10 kağıt")
     check(entitlements.quota_limit("pro") == 50, "pro kota 50 kağıt")
     check(entitlements.quota_limit("pro-plus") == 120, "pro-plus kota 120 kağıt")
-    check(entitlements.quota_limit("trial") == 120, "trial → pro-plus kotası (120)")
+    check(entitlements.quota_limit("trial") == 20, "trial KENDİ kotası (20), pro-plus'ın 120'si DEĞİL")
+
+    # Günlük tavan yalnız ücretsizde (denemede olsaydı 7g × 2 = 14 < 20 → hak kullanılamazdı)
+    check(entitlements.daily_limit("free") == 2, "free günlük tavan 2")
+    check(entitlements.daily_limit("trial") is None, "trial günlük tavansız")
+    check(entitlements.daily_limit("pro") is None, "pro günlük tavansız")
+    settings.free_daily_worksheets = 0
+    check(entitlements.daily_limit("free") is None, "free_daily_worksheets=0 → tavan kapalı")
+    settings.free_daily_worksheets = 2
 
 
 def test_check_quota() -> None:
@@ -217,6 +227,7 @@ def test_check_quota() -> None:
     settings.premium_tenant_ids = ""
     settings.free_monthly_worksheets = 100
     settings.pro_monthly_worksheets = 1000
+    settings.free_daily_worksheets = 0  # günlük tavan ayrı testte (test_daily_cap)
 
     # Anonim → kotasız
     q = entitlements.check_quota(None)
@@ -308,13 +319,15 @@ def test_enforce_quota() -> None:
     settings.premium_all = False
     settings.premium_tenant_ids = ""
     settings.free_monthly_worksheets = 100
+    settings.free_daily_worksheets = 0  # günlük tavan ayrı testte (test_daily_cap)
 
     class _FakeLedger:
         used = 100
         def worksheets_used_since(self, tenant_ids, since_ts):  # noqa: ARG002
             return self.used
 
-    entitlements.USAGE_LEDGER = _FakeLedger()
+    fake = _FakeLedger()
+    entitlements.USAGE_LEDGER = fake
 
     # billing KAPALI → dolu olsa bile no-op (bugünkü davranış)
     settings.billing_enabled = False
@@ -335,11 +348,131 @@ def test_enforce_quota() -> None:
     entitlements.enforce_quota(None, 50)
     check(True, "anonim → enforce_quota no-op (SEO kotasız)")
 
-    # yeni tenant → ensure_trial trial açar → fair-use → bloklanmaz
+    # yeni tenant → ensure_trial trial açar → bloklanmaz.
+    # Sıfır kullanım: gerçek yeni kullanıcı bu ay hiç üretmemiştir. (Deneme kotası 20'ye
+    # inince yukarıdaki sahte 100'lük kullanım denemeyi de aşıyor — senaryo tutarsızdı.)
+    fake.used = 0
     entitlements.enforce_quota("u_fresh_eq", 5)
     fresh = STORE.get("u_fresh_eq")
     check(fresh is not None and fresh["status"] == "trialing",
-          "yeni tenant enforce → trial başlar, bloklanmaz (tam-Pro 7g)")
+          "yeni tenant enforce → 7g deneme başlar, bloklanmaz")
+
+    settings.billing_enabled = False
+    entitlements.USAGE_LEDGER = LEDGER
+
+
+def test_daily_cap() -> None:
+    """Ücretsiz kademede GÜNLÜK tavan (KARAR 2026-08-12): aylık hak dursa da günlük biter.
+
+    Aylık/günlük sayaçları ayırmak için `_month_start_ts`/`_day_start_ts` sabitlenir —
+    aksi halde ayın 1'inde ikisi eşit olur ve test tarihe göre zıplardı.
+    """
+    print("test_daily_cap")
+    from fastapi import HTTPException
+
+    settings.premium_all = False
+    settings.premium_tenant_ids = ""
+    settings.free_monthly_worksheets = 10
+    settings.free_daily_worksheets = 2
+
+    orig_month, orig_day = entitlements._month_start_ts, entitlements._day_start_ts
+    entitlements._month_start_ts = lambda: 1000.0
+    entitlements._day_start_ts = lambda: 2000.0
+
+    class _SplitLedger:
+        month = 0
+        day = 0
+        def worksheets_used_since(self, tenant_ids, since_ts):  # noqa: ARG002
+            return self.day if since_ts == 2000.0 else self.month
+
+    led = _SplitLedger()
+    entitlements.USAGE_LEDGER = led
+
+    # u_texp = süresi geçmiş trial → free (yeni tenant kullanılsa ensure_trial trial açardı)
+    t = "u_texp"
+
+    led.month, led.day = 4, 0
+    q = entitlements.check_quota(t)
+    check(q["allowed"] is True and q["daily_remaining"] == 2 and q["daily_limit"] == 2,
+          "free 4/10 aylık, bugün 0/2 → izin, günlük kalan 2")
+
+    led.month, led.day = 5, 1
+    q = entitlements.check_quota(t)
+    check(q["allowed"] is True and q["daily_remaining"] == 1, "bugün 1/2 → hâlâ 1 hak")
+
+    led.month, led.day = 6, 2
+    q = entitlements.check_quota(t)
+    check(q["allowed"] is False and q["block_reason"] == "daily",
+          "aylık hak var (6/10) ama bugün 2/2 → günlük tavana takılır")
+
+    # Aylık da dolduysa AYLIK sebep kazanır → yükseltme mesajı doğru olsun
+    led.month, led.day = 10, 0
+    q = entitlements.check_quota(t)
+    check(q["allowed"] is False and q["block_reason"] == "monthly",
+          "aylık dolu + günlük boş → sebep 'monthly' (öncelik)")
+
+    # 402 ayrımı: günlük engel GEÇİCİ → farklı error kodu + farklı mesaj
+    settings.billing_enabled = True
+    led.month, led.day = 6, 2
+    try:
+        entitlements.enforce_quota(t, 1)
+        check(False, "günlük tavan dolu → 402 beklenir")
+    except HTTPException as e:
+        d = e.detail if isinstance(e.detail, dict) else {}
+        check(e.status_code == 402 and d.get("error") == "daily_limit_reached"
+              and d.get("daily_limit") == 2 and "Yarın" in d.get("message", ""),
+              "günlük tavan → 402 daily_limit_reached + 'yarın yenilenir' mesajı")
+
+    led.month, led.day = 10, 0
+    try:
+        entitlements.enforce_quota(t, 1)
+        check(False, "aylık kota dolu → 402 beklenir")
+    except HTTPException as e:
+        d = e.detail if isinstance(e.detail, dict) else {}
+        check(d.get("error") == "quota_exceeded",
+              "aylık kota dolu → 402 quota_exceeded (günlükle karışmaz)")
+
+    # Ücretli/deneme planında günlük tavan YOK
+    STORE.upsert(tenant_id="u_dc_pro", plan_code="pro", status="active",
+                 current_period_end=_iso_in(20))
+    settings.pro_monthly_worksheets = 50
+    led.month, led.day = 5, 9
+    q = entitlements.check_quota("u_dc_pro")
+    check(q["allowed"] is True and q["daily_limit"] is None,
+          "pro: günde 9 kağıt üretmiş olsa da günlük tavan yok")
+
+    settings.billing_enabled = False
+    entitlements._month_start_ts, entitlements._day_start_ts = orig_month, orig_day
+    entitlements.USAGE_LEDGER = LEDGER
+
+
+def test_trial_daily_and_reverse_trial() -> None:
+    """Deneme: 20 kağıt, günlük tavansız. Ve ilk üretim ücretsizi denemeye çevirir."""
+    print("test_trial_daily_and_reverse_trial")
+    settings.premium_all = False
+    settings.premium_tenant_ids = ""
+    settings.trial_worksheets = 20
+    settings.free_daily_worksheets = 2
+    settings.billing_enabled = True
+
+    class _FakeLedger:
+        used = 3
+        def worksheets_used_since(self, tenant_ids, since_ts):  # noqa: ARG002
+            return self.used
+
+    entitlements.USAGE_LEDGER = _FakeLedger()
+
+    STORE.upsert(tenant_id="u_tr_q", plan_code="pro", status="trialing", trial_end=_iso_in(5))
+    q = entitlements.check_quota("u_tr_q")
+    check(q["plan"] == "trial" and q["limit"] == 20 and q["daily_limit"] is None,
+          "trial → 20 kağıt, günlük tavansız (3/20 kullanılmış)")
+
+    # Reverse trial: hiç aboneliği olmayan kullanıcının İLK üretimi denemeyi başlatır →
+    # günlük tavan ancak deneme bittikten sonra devreye girer. (Ürün kararı, bug değil.)
+    entitlements.enforce_quota("u_rev_new", 1)
+    sub = STORE.get("u_rev_new")
+    check(sub is not None and sub["status"] == "trialing",
+          "ücretsiz kullanıcının ilk üretimi → 7g deneme başlar (günlük tavan sonraya kalır)")
 
     settings.billing_enabled = False
     entitlements.USAGE_LEDGER = LEDGER
@@ -392,7 +525,8 @@ def _run() -> int:
         test_past_due_grace, test_canceled_and_expired, test_upsert_preserves_created_at,
         test_cancel_flag, test_event_idempotency, test_plan_premium_all,
         test_plan_resolution, test_allowlist_dev, test_quota_limits, test_check_quota,
-        test_family_shared_quota, test_ensure_trial, test_enforce_quota, test_topup,
+        test_family_shared_quota, test_ensure_trial, test_enforce_quota,
+        test_daily_cap, test_trial_daily_and_reverse_trial, test_topup,
     ]:
         fn()
     print()

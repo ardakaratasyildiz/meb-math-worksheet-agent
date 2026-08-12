@@ -129,6 +129,14 @@ export interface QuotaInfo {
   limit?: number | null;
   used?: number;
   message?: string;
+  /**
+   * "quota_exceeded" = aylık hak bitti (kalıcı, yükseltme çözer) ·
+   * "daily_limit_reached" = ücretsiz kademenin GÜNLÜK tavanı (geçici, yarın açılır).
+   * Paywall metni buna göre değişir — günlük engelde tek çare yükseltme değil.
+   */
+  error?: string;
+  daily_limit?: number | null;
+  daily_remaining?: number | null;
 }
 
 /**
@@ -145,17 +153,23 @@ export class QuotaExceededError extends Error {
   }
 }
 
-/** 402 + quota_exceeded ise QuotaExceededError fırlatır; aksi halde no-op. */
+/** Kota kaynaklı 402 kodları — ikisi de paywall'a düşer, metin farklıdır. */
+const QUOTA_ERRORS = new Set(["quota_exceeded", "daily_limit_reached"]);
+
+/** 402 + kota hatası ise QuotaExceededError fırlatır; aksi halde no-op. */
 function throwIfQuotaExceeded(status: number, json: unknown): void {
   if (status !== 402) return;
   const d = (json as { detail?: unknown } | null)?.detail;
-  if (d && typeof d === "object" && (d as { error?: string }).error === "quota_exceeded") {
+  if (d && typeof d === "object" && QUOTA_ERRORS.has((d as { error?: string }).error ?? "")) {
     const q = d as QuotaInfo & { error: string };
     throw new QuotaExceededError({
       plan: q.plan,
       limit: q.limit,
       used: q.used,
       message: q.message,
+      error: q.error,
+      daily_limit: q.daily_limit,
+      daily_remaining: q.daily_remaining,
     });
   }
 }

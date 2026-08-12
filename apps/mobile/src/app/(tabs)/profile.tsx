@@ -180,11 +180,11 @@ export default function ProfileScreen() {
               />
             </View>
             <View style={styles.divider} />
-            <LinkRow label="Gizlilik & KVKK" onPress={open('/gizlilik')} />
+            <LinkRow label="Gizlilik & KVKK" onPress={open('/legal/privacy')} />
             <View style={styles.divider} />
-            <LinkRow label="Kullanım Koşulları" onPress={open('/kosullar')} />
+            <LinkRow label="Kullanım Koşulları" onPress={open('/legal/terms')} />
             <View style={styles.divider} />
-            <LinkRow label="Yardım & İletişim" onPress={open('/iletisim')} />
+            <LinkRow label="Yardım & İletişim" onPress={open('/faq')} />
             <View style={styles.divider} />
             <LinkRow label="Hesabımı sil" onPress={() => router.push('/delete-account')} danger />
           </Card>

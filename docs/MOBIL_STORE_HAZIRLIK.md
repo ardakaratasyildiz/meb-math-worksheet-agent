@@ -118,6 +118,11 @@ Eksik olan yalnız **hesap/ürün kurulumu ve anahtarlar**.
 
 App Store Connect ve Play Console'da **aynı kimliklerle** oluştur.
 
+> **Ücretsiz deneme (introductory offer) TANIMLAMA.** Deneme bizim tarafımızda, kartsız
+> çalışıyor (7 gün / 20 kağıt — `ensure_trial`, MONETIZATION_PLAN §2 2026-08-12 kararı).
+> Mağaza denemesi kart ister ve "yakında ücretlendirileceksin" bildirimi gönderir → iptal
+> ve iade sürtünmesi getirir. Ürünleri **düz aylık abonelik** olarak aç.
+
 ### 3.3 RevenueCat panosu
 1. Project oluştur → iOS ve Android app'lerini ekle (bundle/package: `com.soruatolyesi.app`).
 2. Products: yukarıdaki 4 ürünü içeri aktar.

@@ -922,11 +922,18 @@ class AttemptDetail(BaseModel):
 
 
 class QuotaInfo(BaseModel):
-    """Aylık soru kotası durumu. limit/remaining None = kotasız (anonim/fair-use)."""
+    """Aylık kağıt kotası + günlük tavan. limit/remaining None = kotasız (anonim/fair-use).
+
+    daily_* yalnız ücretsiz kademede dolar (diğer planlarda None = günlük tavan yok);
+    istemci "bu ay X/Y" yanında "bugün Z hakkın kaldı" gösterebilsin diye ayrı taşınır.
+    """
 
     limit: int | None = None
     used: int = 0
     remaining: int | None = None
+    daily_limit: int | None = None
+    used_today: int = 0
+    daily_remaining: int | None = None
 
 
 class EntitlementsResponse(BaseModel):

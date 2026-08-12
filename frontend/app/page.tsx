@@ -147,7 +147,7 @@ function Hero() {
             </Button>
           </div>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-            <TrustBullet>Aylık 100 soru ücretsiz</TrustBullet>
+            <TrustBullet>Ayda 10 çalışma kağıdı ücretsiz</TrustBullet>
             <TrustBullet>Kayıt için yalnızca e-posta</TrustBullet>
             <TrustBullet>Ödeme bilgisi alınmaz</TrustBullet>
           </div>
@@ -745,8 +745,9 @@ function PricingTeaser() {
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base opacity-90">
           Soru Atölyesi şu anda erken kullanım dönemindedir. Tüm hesaplara
-          aylık 100 soruluk ücretsiz kullanım hakkı tanınmaktadır. Pro
-          abonelik seçenekleri ileriki aşamada duyurulacaktır.
+          ayda 10 çalışma kağıdı ücretsiz verilir (günde en çok 2); kayıt
+          olanlara ayrıca 7 günlük kartsız deneme tanımlanır. Pro abonelik
+          seçenekleri ileriki aşamada duyurulacaktır.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button
@@ -847,7 +848,7 @@ function FinalCta() {
           </h2>
           <p className="text-base text-muted-foreground">
             Hesap açmak için yalnızca e-posta yeterli, ödeme bilgisi istenmez.
-            Aylık 100 soru tüm kullanıcılara ücretsiz.
+            Ayda 10 çalışma kağıdı tüm kullanıcılara ücretsiz.
           </p>
           <Button asChild size="lg" className="gap-2 px-8">
             <Link href="/sign-up">

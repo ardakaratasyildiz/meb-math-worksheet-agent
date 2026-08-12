@@ -135,7 +135,14 @@ def get_my_entitlements(
         trial_end=sub.get("trial_end") if sub else None,
         current_period_end=sub.get("current_period_end") if sub else None,
         cancel_at_period_end=bool(sub["cancel_at_period_end"]) if sub else False,
-        quota=QuotaInfo(limit=q["limit"], used=q["used"], remaining=q["remaining"]),
+        quota=QuotaInfo(
+            limit=q["limit"],
+            used=q["used"],
+            remaining=q["remaining"],
+            daily_limit=q.get("daily_limit"),
+            used_today=q.get("used_today", 0),
+            daily_remaining=q.get("daily_remaining"),
+        ),
     )
 
 
