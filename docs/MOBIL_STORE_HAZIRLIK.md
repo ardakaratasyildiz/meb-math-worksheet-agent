@@ -150,6 +150,13 @@ Anahtar dolunca `purchasesSupported()` true olur ve paywall "yakında" modundan 
 |---|---|
 | `REVENUECAT_WEBHOOK_AUTH` | Rastgele uzun sır — RevenueCat webhook ayarındaki `Authorization` başlığıyla **birebir aynı** |
 | `REVENUECAT_PRODUCT_MAP` | `pro-aylik:pro,proplus-aylik:pro-plus` |
+| `REVENUECAT_ALLOW_SANDBOX` | Test döneminde `true` (varsayılan), **canlıya çıkarken `false`** |
+
+> **Sandbox kapısı.** RevenueCat sandbox satın almaları için de webhook gönderir ve olay
+> `environment: SANDBOX` taşır. Test dönemi boyunca bunlar işlenmeli (uçtan uca doğrulama:
+> satın al → webhook → `/api/me/entitlements`). Yayına çıkarken `REVENUECAT_ALLOW_SANDBOX=false`
+> yapılmazsa, davet ettiğin sandbox / Play lisans-testi hesapları bedavaya Pro yazdırmaya
+> devam eder. Reddedilen olaylar yine `billing_events`'e kaydedilir (iz kalır).
 
 RevenueCat → Integrations → Webhooks → URL `https://api.soruatolyesi.com/api/billing/revenuecat/webhook`,
 Authorization header = yukarıdaki sır.
@@ -184,5 +191,6 @@ bunu `tenant_id` ile eşler → abonelik iyzico ile ortak depoya yazılır.
 - [ ] Sandbox hesabıyla `pro-aylik` satın alınıyor → RevenueCat panosunda olay görünüyor →
       `/api/me/entitlements` `plan: pro` dönüyor.
 - [ ] `REVENUECAT_WEBHOOK_AUTH` set (yanlış header ile istek 401 alıyor).
+- [ ] **Yayın günü:** `REVENUECAT_ALLOW_SANDBOX=false` (test hesapları bedava Pro yazmasın).
 - [ ] Render'da `CLERK_SECRET_KEY` set → test hesabıyla Profil → "Hesabımı sil" akışı
       hesabı gerçekten kapatıyor (aynı e-postayla yeniden kayıt olunabiliyor).

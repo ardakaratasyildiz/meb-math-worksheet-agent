@@ -302,8 +302,16 @@ class Settings(BaseSettings):
     #     doğrulama atlanır + uyarı loglanır (yalnız sandbox/dev; PROD'da MUTLAKA set et).
     #   revenuecat_product_map: "product_id:plan_code" çiftleri (virgülle). Eşleşme
     #     yoksa ürün/entitlement adında "plus" geçerse pro-plus, aksi halde pro (fallback).
+    #   revenuecat_allow_sandbox: sandbox (test) satın almaları GERÇEK abonelik/kredi
+    #     sayılsın mı. RevenueCat sandbox olayları için de webhook gönderir ve olay
+    #     `environment: SANDBOX` taşır. Test döneminde True olmalı (uçtan uca doğrulama:
+    #     satın al → webhook → /api/me/entitlements). CANLIYA ÇIKARKEN Render'da
+    #     REVENUECAT_ALLOW_SANDBOX=false yap — aksi halde davet ettiğin sandbox/lisans
+    #     test hesapları bedavaya Pro yazdırmaya devam eder. Reddedilen olay yine
+    #     billing_events'e kaydedilir (iz kalsın), yalnız abonelik/krediye işlenmez.
     revenuecat_webhook_auth: str = ""
     revenuecat_product_map: str = ""
+    revenuecat_allow_sandbox: bool = True
 
     # Ders (subject) ekseni — çok-ders geçişi (docs/FEN_BILIMLERI_PLAN.md).
     # KALİTE KAPISI feature-flag'leri. Kalite paritesi doğrulandıktan sonra

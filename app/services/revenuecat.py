@@ -119,6 +119,19 @@ def process_webhook(body: dict) -> dict:
         BILLING_STORE.mark_event_processed(str(event_id))
         return {"status": "ignored", "event_type": event_type}
 
+    # ── Sandbox (test) satın alması ───────────────────────────────────────────
+    # RevenueCat sandbox olayları için de webhook gönderir; olay `environment` taşır.
+    # Test döneminde işlenir (uçtan uca doğrulama), canlıda REVENUECAT_ALLOW_SANDBOX=false
+    # ile reddedilir — yoksa davet edilen sandbox/lisans test hesapları bedava Pro yazar.
+    # Olay yine billing_events'e kaydedildi (yukarıda), yalnız işlenmez.
+    if str(event.get("environment") or "").upper() == "SANDBOX" and not settings.revenuecat_allow_sandbox:
+        BILLING_STORE.mark_event_processed(str(event_id))
+        logger.info(
+            "RevenueCat: SANDBOX olayı reddedildi (tenant=%s type=%s) — "
+            "revenuecat_allow_sandbox=False", tenant_id, event_type,
+        )
+        return {"status": "ignored", "reason": "sandbox", "event_type": event_type}
+
     # ── Ek paket (top-up / consumable) — ABONELİK DEĞİL, kredi ────────────────
     # Ürün kimliği topup listesindeyse olay türüne bakmadan buraya düşer. Aksi halde
     # NON_RENEWING_PURCHASE `_ACTIVATING`'e girip abonelik satırının ÜZERİNE yazıyordu:
