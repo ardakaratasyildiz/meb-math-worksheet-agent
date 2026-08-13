@@ -13,6 +13,29 @@ export function formatDate(iso: string): string {
   return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+/**
+ * Denemenin bitmesine kalan GÜN sayısı (bugün biterse 0). Geçmiş/geçersiz → null.
+ *
+ * Deneme sunucuda tutuluyor (kartsız reverse trial) ve kullanıcı bunu hiçbir yerde
+ * görmüyordu: 7 gün Pro+ kalitesi alıp bittiğinde neden kısıtlandığını anlamıyordu.
+ * Bu yüzden kalan süre ekranlarda gösterilir.
+ */
+export function trialDaysLeft(trialEnd: string | null | undefined): number | null {
+  if (!trialEnd) return null;
+  const end = new Date(trialEnd).getTime();
+  if (Number.isNaN(end)) return null;
+  const diffMs = end - Date.now();
+  if (diffMs <= 0) return null;
+  return Math.max(0, Math.ceil(diffMs / 86_400_000));
+}
+
+/** "3 gün kaldı" / "bugün bitiyor" — kalan güne göre okunur metin. */
+export function trialLeftLabel(daysLeft: number | null): string | null {
+  if (daysLeft === null) return null;
+  if (daysLeft <= 1) return "bugün bitiyor";
+  return `${daysLeft} gün kaldı`;
+}
+
 /** Doğru/toplam → yüzde (tam sayı, 0'a bölme güvenli). */
 export function scorePct(score: number, total: number): number {
   return Math.round((score / Math.max(total, 1)) * 100);

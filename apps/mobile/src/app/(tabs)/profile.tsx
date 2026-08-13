@@ -1,5 +1,5 @@
 import { useAuth, useUser } from '@clerk/expo';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,6 +9,8 @@ import { Mascot } from '@/components/mascot';
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { getGamification, getParentCode, type GamificationResponse } from '@/lib/api';
+import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
+import { DEFAULT_HOUR, getReminderPrefs, setReminder } from '@/lib/notifications';
 import { effectiveRole, isPlayfulRole, roleLabel } from '@/lib/roles';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/theme/tokens';
 
@@ -46,7 +48,9 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { entitlements } = useEntitlements();
   const [game, setGame] = useState<GamificationResponse | null>(null);
-  const [notify, setNotify] = useState(true);
+  const [notify, setNotify] = useState(false);
+  const [notifyHour, setNotifyHour] = useState(DEFAULT_HOUR);
+  const [notifyBusy, setNotifyBusy] = useState(false);
   const [parentCode, setParentCode] = useState<string | null>(null);
   const [codeBusy, setCodeBusy] = useState(false);
   const [codeError, setCodeError] = useState(false);
@@ -59,6 +63,7 @@ export default function ProfileScreen() {
   }, [userId]);
 
   const g = game ?? DEMO;
+  const trialLeft = entitlements.plan === 'trial' ? trialDaysLeft(entitlements.trial_end) : null;
   const role = effectiveRole(user);
   const playful = isPlayfulRole(role);
   const name = user?.firstName ?? user?.username ?? 'Kullanıcı';
@@ -66,6 +71,28 @@ export default function ProfileScreen() {
   const initial = name.charAt(0).toUpperCase();
 
   const open = useCallback((path: string) => () => void Linking.openURL(`${SITE}${path}`), []);
+
+  // Bildirim tercihi cihazda tutulur; ekrana her dönüşte gerçek durumu okuruz
+  // (kullanıcı ayarlar ekranından ya da sistem ayarlarından değiştirmiş olabilir).
+  useFocusEffect(
+    useCallback(() => {
+      void (async () => {
+        const p = await getReminderPrefs();
+        setNotify(p.enabled === true);
+        setNotifyHour(p.hour);
+      })();
+    }, []),
+  );
+
+  const toggleNotify = useCallback(async (next: boolean) => {
+    setNotifyBusy(true);
+    setNotify(next); // iyimser; izin reddedilirse aşağıda geri alınır
+    const actual = await setReminder(next, notifyHour, 0);
+    setNotify(actual);
+    setNotifyBusy(false);
+    // Açmak istedi ama izin verilmedi → çözümün olduğu ekrana gönder
+    if (next && !actual) router.push('/notifications');
+  }, [notifyHour, router]);
 
   const revealCode = useCallback(async () => {
     if (!userId || codeBusy) return;
@@ -150,9 +177,17 @@ export default function ProfileScreen() {
                 <Text style={styles.planName}>{PLAN_LABEL[entitlements.plan] ?? 'Ücretsiz'}</Text>
                 <Text style={styles.planSub}>
                   {entitlements.quota.limit !== null
-                    ? `${entitlements.quota.used}/${entitlements.quota.limit} kağıt · bu ay`
+                    ? `${entitlements.quota.used}/${entitlements.quota.limit} kağıt${trialLeft !== null ? '' : ' · bu ay'}`
                     : 'Sınırsız · fair-use'}
                 </Text>
+                {/* Deneme sunucuda kartsız işliyor; bitiş tarihi görünür olmalı. */}
+                {trialLeft !== null ? (
+                  <Text style={styles.planTrial}>Denemen {trialLeftLabel(trialLeft)}</Text>
+                ) : entitlements.quota.daily_limit ? (
+                  <Text style={styles.planSub}>
+                    Bugün: {entitlements.quota.used_today}/{entitlements.quota.daily_limit}
+                  </Text>
+                ) : null}
               </View>
               {entitlements.is_premium ? (
                 <View style={styles.planPill}>
@@ -170,11 +205,23 @@ export default function ProfileScreen() {
 
           {/* Ayarlar */}
           <Card style={styles.listCard}>
+            {/*
+              Anahtar gerçek planlamayı kurar/kaldırır (lib/notifications). Saat seçimi
+              ve izin-reddedildi durumu ayrı ekranda → satıra basınca oraya gidilir.
+            */}
             <View style={styles.settingRow}>
-              <Text style={styles.settingLabel}>Bildirimler</Text>
+              <Pressable style={styles.settingLabelWrap} onPress={() => router.push('/notifications')}>
+                <Text style={styles.settingLabel}>Bildirimler</Text>
+                <Text style={styles.settingHint}>
+                  {notify
+                    ? `Günlük hatırlatma ${String(notifyHour).padStart(2, '0')}:00`
+                    : 'Günlük hatırlatma kapalı'}
+                </Text>
+              </Pressable>
               <Switch
                 value={notify}
-                onValueChange={setNotify}
+                disabled={notifyBusy}
+                onValueChange={(v) => void toggleNotify(v)}
                 trackColor={{ true: colors.brand, false: colors.track }}
                 thumbColor="#FFFFFF"
               />
@@ -274,6 +321,7 @@ const styles = StyleSheet.create({
   planInfo: { flex: 1 },
   planName: { fontFamily: fonts.bodyHeavy, fontSize: fontSize.md, color: colors.text },
   planSub: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted, marginTop: 1 },
+  planTrial: { fontFamily: fonts.bodyMedium, fontSize: fontSize.xs, color: colors.magic, marginTop: 1 },
   planPill: { backgroundColor: colors.tintGreen, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: 5 },
   planPillText: { fontFamily: fonts.bodyBold, fontSize: fontSize.xs, color: colors.success },
 
@@ -284,7 +332,9 @@ const styles = StyleSheet.create({
 
   listCard: { paddingVertical: spacing.xs },
   settingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.md },
+  settingLabelWrap: { flex: 1, gap: 2 },
   settingLabel: { fontFamily: fonts.bodyMedium, fontSize: fontSize.md, color: colors.text },
+  settingHint: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted },
   divider: { height: 1, backgroundColor: colors.border },
   linkRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.md },
   linkLabel: { fontFamily: fonts.bodyMedium, fontSize: fontSize.md, color: colors.text },

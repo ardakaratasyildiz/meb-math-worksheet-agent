@@ -1,5 +1,5 @@
 import { useAuth, useUser } from "@clerk/expo";
-import { useRouter, type Href } from "expo-router";
+import { useFocusEffect, useRouter, type Href } from "expo-router";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,6 +25,7 @@ import { Mascot } from "@/components/mascot";
 import { Card, ProgressBar, SpeechBubble, StatChip } from "@/components/ui";
 import { getGamification, getProgress, pingHealth, type GamificationResponse } from "@/lib/api";
 import { badgeGlyph, badgeVariant, computeBadges, tierLabel } from "@/lib/badges";
+import { getReminderPrefs, syncReminderOnLaunch } from "@/lib/notifications";
 import { effectiveRole } from "@/lib/roles";
 import { colors, fonts, fontSize, radius, shadow, spacing } from "@/theme/tokens";
 
@@ -72,6 +73,8 @@ export default function HomeScreen() {
   const router = useRouter();
   const [game, setGame] = useState<GamificationResponse | null>(null);
   const [progress, setProgress] = useState<ProgressResponse | null>(null);
+  // Kullanıcı bildirim tercihini hiç belirtmediyse çanda nokta göster (tek seferlik nudge).
+  const [notifUndecided, setNotifUndecided] = useState(false);
 
   const load = useCallback(async () => {
     if (!userId) return;
@@ -87,6 +90,17 @@ export default function HomeScreen() {
     pingHealth();
     void load();
   }, [load]);
+
+  // Tercih AÇIK ama planlama kaybolduysa (yeniden kurulum vb.) sessizce geri kur;
+  // hiç seçim yapılmadıysa çandaki noktayı yak.
+  useFocusEffect(
+    useCallback(() => {
+      void (async () => {
+        await syncReminderOnLaunch();
+        setNotifUndecided((await getReminderPrefs()).enabled === null);
+      })();
+    }, []),
+  );
 
   const g = game ?? DEMO;
   const firstName = user?.firstName ?? "Arda";
@@ -118,8 +132,19 @@ export default function HomeScreen() {
               <Text style={styles.hello}>Merhaba, {firstName} 👋</Text>
               <Text style={styles.subtitle}>Bugün yeni şeyler öğrenme zamanı!</Text>
             </View>
-            <Pressable style={styles.bell} hitSlop={10} onPress={() => {}}>
-              <IconBell size={26} dot />
+            {/*
+              Çan → bildirim ayarları. Nokta YALNIZ kullanıcı henüz seçim yapmadıysa
+              yanar (kurulacak bir şey var demek); açıp kapattıktan sonra söner.
+              Sürekli yanan sahte bildirim rozeti kullanmıyoruz.
+            */}
+            <Pressable
+              style={styles.bell}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel="Bildirim ayarları"
+              onPress={() => router.push('/notifications')}
+            >
+              <IconBell size={26} dot={notifUndecided} />
             </Pressable>
             <View style={styles.mascotWrap} pointerEvents="none">
               <Mascot variant="full" size={150} />

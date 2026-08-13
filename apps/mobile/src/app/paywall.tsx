@@ -7,6 +7,7 @@ import { IconSpark, IconStar } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
 import { Card, PrimaryButton } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
+import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
 import {
   PurchasesUnavailableError,
   fetchProducts,
@@ -79,6 +80,7 @@ export default function PaywallScreen() {
 
   const currentPlan = entitlements.plan;
   const isPremium = entitlements.is_premium;
+  const trialLeft = currentPlan === 'trial' ? trialDaysLeft(entitlements.trial_end) : null;
 
   useEffect(() => {
     if (!supported) return;
@@ -149,6 +151,21 @@ export default function PaywallScreen() {
               </Text>
             </View>
           </Card>
+
+          {/*
+            Deneme durumu — kullanıcı kartsız 7g denemede olduğunu bilmiyorsa yükseltme
+            kararını da veremez. Kalan gün + kalan kağıt açıkça yazılır.
+          */}
+          {trialLeft !== null ? (
+            <View style={styles.trialBanner}>
+              {/* Ücretsiz planın rakamları burada TEKRARLANMAZ — sunucu ayarı değişince
+                  metin sessizce yanlışa döner. Kalan gün/kağıt zaten yeterli bilgi. */}
+              <Text style={styles.trialText}>
+                Denemen {trialLeftLabel(trialLeft)} · {entitlements.quota.remaining ?? 0} kağıt
+                hakkın kaldı. Bitince ücretsiz plana dönersin.
+              </Text>
+            </View>
+          ) : null}
 
           {/* Günlük tavan GEÇİCİ (yarın yenilenir), aylık kota kalıcı → ayrı mesaj. */}
           {reason === 'quota' ? (
@@ -304,6 +321,9 @@ const styles = StyleSheet.create({
 
   quotaBanner: { backgroundColor: colors.tintYellow, borderRadius: radius.card, padding: spacing.lg },
   quotaText: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.rewardDark },
+
+  trialBanner: { backgroundColor: colors.tintPurple, borderRadius: radius.card, padding: spacing.lg },
+  trialText: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.magic, lineHeight: 19 },
 
   tier: { gap: spacing.lg },
   badge: {
