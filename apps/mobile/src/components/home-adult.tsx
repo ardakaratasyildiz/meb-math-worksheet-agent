@@ -65,11 +65,16 @@ export function AdultHome({ role, name }: { role: 'teacher' | 'parent'; name: st
                 onPress={go('/create')}
               />
             )}
+            {/*
+              Üçüncü sekme artık yetişkinlerde kişisel gelişim panosu DEĞİL
+              (öğretmen → Sınıfım, veli → Çocuklarım). Bu kart eskiden "Gelişim"
+              deyip oraya gidiyordu; etiket varış noktasıyla uyuşmuyordu.
+            */}
             <MiniCard
               icon={<IconChart size={28} />}
-              title="Gelişim"
-              sub={teacher ? 'Kendi denemelerin' : 'Özet'}
-              onPress={go('/progress')}
+              title={teacher ? 'Ödevler' : 'Gelişim'}
+              sub={teacher ? 'Atadıkların' : 'Çocuğunun özeti'}
+              onPress={go(teacher ? '/assignments' : '/children')}
             />
           </View>
 

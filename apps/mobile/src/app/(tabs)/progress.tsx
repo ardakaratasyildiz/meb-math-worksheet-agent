@@ -1,4 +1,4 @@
-import { useAuth } from '@clerk/expo';
+import { useAuth, useUser } from '@clerk/expo';
 import {
   SUBJECT_COLORS,
   type KazanimProgress,
@@ -9,12 +9,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ChildrenView } from '@/components/children-view';
+import { ClassroomsView } from '@/components/classrooms-view';
 import { HexBadge, IconCalendar, IconChevron, IconFire, IconPencil, IconSpark, IconStar } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
 import { SkeletonList } from '@/components/skeleton';
 import { Card, PrimaryButton, ProgressBar, ScreenHeader } from '@/components/ui';
 import { getGamification, getProgress, type GamificationResponse } from '@/lib/api';
 import { badgeGlyph, badgeVariant, computeBadges, tierLabel, type TopicBadge } from '@/lib/badges';
+import { effectiveRole } from '@/lib/roles';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/theme/tokens';
 
 function pct(v: number): number {
@@ -29,7 +32,55 @@ function levelTitle(level: number): string {
   return 'Üstat';
 }
 
-export default function ProgressScreen() {
+/**
+ * Üçüncü sekme ROLE GÖRE değişir (2026-08-13 kararı):
+ *   öğrenci → kişisel gelişim panosu (aşağıdaki StudentProgress)
+ *   öğretmen → Sınıfım · veli → Çocuklarım
+ * Öncesinde herkese öğrencinin kişisel panosu gösteriliyordu; öğretmene kendi XP'sini
+ * göstermek anlamsızdı ve sınıf yönetimi yalnız ana ekrandaki karttan ulaşılabiliyordu.
+ */
+export default function ProgressTab() {
+  const { user } = useUser();
+  const role = effectiveRole(user);
+
+  if (role === 'teacher') {
+    return (
+      <View style={styles.root}>
+        <SafeAreaView style={styles.safe} edges={['top']}>
+          <ClassroomsView
+            header={
+              <ScreenHeader
+                title="Sınıfım"
+                subtitle="Sınıflarını yönet, ödev ata, sonuçları izle"
+              />
+            }
+          />
+        </SafeAreaView>
+      </View>
+    );
+  }
+
+  if (role === 'parent') {
+    return (
+      <View style={styles.root}>
+        <SafeAreaView style={styles.safe} edges={['top']}>
+          <ChildrenView
+            header={
+              <ScreenHeader
+                title="Çocuklarım"
+                subtitle="Çocuğunu ekle, gelişimini takip et"
+              />
+            }
+          />
+        </SafeAreaView>
+      </View>
+    );
+  }
+
+  return <StudentProgress />;
+}
+
+function StudentProgress() {
   const { userId } = useAuth();
   const router = useRouter();
   const [data, setData] = useState<ProgressResponse | null>(null);
