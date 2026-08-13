@@ -8,6 +8,7 @@
  * expo-router <Tabs>'a `tabBar={(p) => <TabBar {...p} />}` ile bağlanır. Sistem-
  * varsayılan bar yerine bunu çizer; ikonlar özel SVG (icons.tsx), emoji değil.
  */
+import { useUser } from "@clerk/expo";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -20,6 +21,7 @@ import {
 } from "@/components/icons";
 import { Mascot } from "@/components/mascot";
 import { requestGenEntry } from "@/lib/gen-entry";
+import { effectiveRole, type Role } from "@/lib/roles";
 import { colors, fonts, radius, shadow } from "@/theme/tokens";
 
 type ItemDef = {
@@ -35,11 +37,27 @@ const ITEMS: Record<string, ItemDef> = {
   profile: { name: "profile", label: "Profil", render: (c) => <IconUser size={25} color={c} /> },
 };
 
+/**
+ * Üçüncü sekmenin YÜZÜ role göre değişir — ekran da (tabs)/progress içinde aynı
+ * ayrımı yapıyor. Öğretmene "Gelişim" deyip kendi XP'sini göstermek anlamsızdı.
+ */
+function itemFor(name: string, role: Role | null): ItemDef {
+  const item = ITEMS[name];
+  if (name !== "progress") return item;
+  if (role === "teacher")
+    return { ...item, label: "Sınıfım", render: (c) => <IconUser size={25} color={c} /> };
+  if (role === "parent")
+    return { ...item, label: "Çocuklarım", render: (c) => <IconUser size={25} color={c} /> };
+  return item;
+}
+
 const LEFT = ["index", "create"];
 const RIGHT = ["progress", "profile"];
 
 export function TabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
+  const { user } = useUser();
+  const role = effectiveRole(user);
 
   const activeName = state.routes[state.index]?.name;
 
@@ -69,7 +87,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
   };
 
   const renderTab = (name: string) => {
-    const item = ITEMS[name];
+    const item = itemFor(name, role);
     if (!item) return null;
     const focused = activeName === name;
     const color = focused ? colors.brand : colors.textMuted;
