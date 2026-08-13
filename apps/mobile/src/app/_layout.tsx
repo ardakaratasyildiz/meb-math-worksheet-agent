@@ -95,7 +95,20 @@ export default function RootLayout() {
       <ClerkProvider publishableKey={ENV.clerkPublishableKey} tokenCache={tokenCache}>
         <AuthTokenBridge />
         <SafeAreaProvider>
-          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }} />
+          {/*
+            headerBackTitle: iOS geri düğmesi varsayılan olarak ÖNCEKİ ekranın
+            başlığını yazar; sekme kabuğunun rota adı "(tabs)" olduğu için geri
+            düğmesinde "(tabs)" görünüyordu. Sabit "Geri" ile her ekranda düzgün.
+          */}
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              headerBackTitle: 'Geri',
+              contentStyle: { backgroundColor: colors.bg },
+            }}
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Soru Atölyesi' }} />
+          </Stack>
         </SafeAreaProvider>
       </ClerkProvider>
     </RootErrorBoundary>

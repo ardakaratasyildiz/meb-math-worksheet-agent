@@ -212,7 +212,11 @@ export default function CreateScreen() {
                   <Text style={styles.quotaChipCta}>Yükselt</Text>
                 </Pressable>
               ) : null}
+              {/* key: giriş modu değişince sihirbaz SIFIRDAN kurulsun. Aksi halde
+                  ekran zaten bağlı olduğu için eski adım/mod korunuyor ve kullanıcı
+                  "Çalışma Kağıdı"na basınca hâlâ çöz akışında kalıyordu. */}
               <GeneratorSetup
+                key={presetMode ?? 'ask'}
                 busy={busy}
                 onSubmit={onGenerate}
                 sober={sober}
