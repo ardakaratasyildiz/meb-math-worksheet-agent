@@ -1,7 +1,7 @@
 import { useAuth, useUser } from '@clerk/expo';
 import type { AttemptResult, QuizPublic, SubmittedAnswer, Worksheet } from '@soruatolyesi/shared';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useRouter } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,6 +16,7 @@ import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { createQuiz, generateWorksheet, submitAttempt } from '@/lib/api';
 import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
+import { consumeGenEntry, subscribeGenEntry } from '@/lib/gen-entry';
 import { previewWorksheetPdf, shareWorksheetPdf } from '@/lib/pdf';
 import { effectiveRole, isPlayfulRole } from '@/lib/roles';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
@@ -31,12 +32,17 @@ export default function CreateScreen() {
   const { userId } = useAuth();
   const { user } = useUser();
   const router = useRouter();
-  // Ana ekrandaki "Alıştırma Çöz" / "Çalışma Kağıdı" kartları modu buradan geçirir →
-  // sihirbaz "Ne yapmak istersin?" adımını atlar. Öncesinde her iki kart da aynı
-  // soruyu tekrar soruyordu; kullanıcı "butona bastım ama bir yere gitmedim" diyordu.
-  const { mode: modeParam } = useLocalSearchParams<{ mode?: string }>();
-  const presetMode: GenMode | undefined =
-    modeParam === 'solve' || modeParam === 'pdf' ? modeParam : undefined;
+  /**
+   * Giriş niyeti (lib/gen-entry): ana ekran kartları modu ön-seçer, sekme/FAB ise
+   * "ask" gönderip mod sorusuna döndürür. Route parametresi KULLANILMIYOR — parametre
+   * sekmeye yapışıyor ve odaktaki sekmede güncellenmiyordu (bkz. gen-entry.ts).
+   * `nonce` her yeni girişte artar → GeneratorSetup key ile sıfırdan kurulur.
+   */
+  const [entry, setEntry] = useState<{ mode: GenMode | undefined; nonce: number }>(() => {
+    const req = consumeGenEntry();
+    return { mode: req === 'solve' || req === 'pdf' ? req : undefined, nonce: 0 };
+  });
+  const presetMode = entry.mode;
   const { entitlements, quotaExhausted, dailyExhausted, refresh: refreshEntitlements } =
     useEntitlements();
   // Denemedeyse kalan gün — kota çipi "Bu ay" yerine "Deneme" der (kullanıcı 7 günlük
@@ -45,6 +51,22 @@ export default function CreateScreen() {
     entitlements.plan === 'trial' ? trialDaysLeft(entitlements.trial_end) : null;
   const sober = !isPlayfulRole(effectiveRole(user));
   const [phase, setPhase] = useState<Phase>('setup');
+
+  // Yeni giriş isteği geldiğinde (kart / sekme / FAB) akışı sıfırla — ekran zaten
+  // bağlıyken de çalışır; odak değişimine veya route parametresine bağlı değil.
+  useEffect(
+    () =>
+      subscribeGenEntry(() => {
+        const req = consumeGenEntry();
+        if (!req) return;
+        setPhase('setup');
+        setEntry((prev) => ({
+          mode: req === 'ask' ? undefined : req,
+          nonce: prev.nonce + 1,
+        }));
+      }),
+    [],
+  );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [params, setParams] = useState<GeneratorParams | null>(null);
@@ -216,7 +238,7 @@ export default function CreateScreen() {
                   ekran zaten bağlı olduğu için eski adım/mod korunuyor ve kullanıcı
                   "Çalışma Kağıdı"na basınca hâlâ çöz akışında kalıyordu. */}
               <GeneratorSetup
-                key={presetMode ?? 'ask'}
+                key={entry.nonce}
                 busy={busy}
                 onSubmit={onGenerate}
                 sober={sober}
