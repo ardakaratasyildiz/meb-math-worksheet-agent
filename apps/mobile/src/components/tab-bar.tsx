@@ -42,10 +42,25 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
 
   const activeName = state.routes[state.index]?.name;
 
-  const onPress = (name: string) => {
+  /**
+   * `params` GEREKLİ: React Navigation `navigate` çağrısında parametre vermezsen
+   * rotanın MEVCUT parametrelerini korur. Ana ekrandan "Alıştırma Çöz" ile bir kez
+   * `/create?mode=solve`e gidildiğinde mod sekmeye yapışıyordu → "Ne yapmak
+   * istersin?" adımı bir daha hiç görünmüyordu. Sekmeden/FAB'dan girişte modu
+   * açıkça "ask"e çekiyoruz (= kullanıcı henüz seçmedi).
+   */
+  // `navigate`in tipi (rota adı × parametre) birleşimini çözemiyor; iki argümanlı
+  // çağrı `never` çakışması veriyor. Tek noktada daraltıp çağırıyoruz.
+  const navigateWithParams = (name: string, params?: Record<string, string>) =>
+    (navigation.navigate as unknown as (n: string, p?: Record<string, string>) => void)(
+      name,
+      params,
+    );
+
+  const onPress = (name: string, params?: Record<string, string>) => {
     const route = state.routes.find((r) => r.name === name);
     if (!route) {
-      navigation.navigate(name as never);
+      navigateWithParams(name, params);
       return;
     }
     const isFocused = activeName === name;
@@ -55,9 +70,12 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
       canPreventDefault: true,
     });
     if (!isFocused && !event.defaultPrevented) {
-      navigation.navigate(name as never);
+      navigateWithParams(name, params);
     }
   };
+
+  /** Sekme/FAB girişinde mod sıfırlanmalı; diğer sekmelerin parametresi yok. */
+  const paramsFor = (name: string) => (name === "create" ? { mode: "ask" } : undefined);
 
   const renderTab = (name: string) => {
     const item = ITEMS[name];
@@ -69,7 +87,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
         key={name}
         style={styles.tab}
         hitSlop={8}
-        onPress={() => onPress(name)}
+        onPress={() => onPress(name, paramsFor(name))}
         accessibilityRole="button"
         accessibilityLabel={item.label}
         accessibilityState={{ selected: focused }}
@@ -102,7 +120,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
       {/* Maskot FAB — bar üstüne taşan, hero kısayolu (Oluştur akışı). */}
       <Pressable
         style={[styles.fab, shadow.fab, { bottom: Math.max(insets.bottom, 8) + 22 }]}
-        onPress={() => onPress("create")}
+        onPress={() => onPress("create", { mode: "ask" })}
         accessibilityRole="button"
         accessibilityLabel="Yeni oluştur"
       >

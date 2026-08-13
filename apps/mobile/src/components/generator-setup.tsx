@@ -133,7 +133,9 @@ export function GeneratorSetup({
   initialMode?: GenMode;
 }) {
   // Mod dışarıdan geldiyse (initialMode) ya da pdfOnly ise mod adımı listeden çıkar.
-  const modePreset = pdfOnly || !!initialMode;
+  // DONDURULUR: prop akış ortasında değişirse stepKeys uzunluğu kayar ve stepIdx
+  // yanlış adımı gösterir. Giriş modu değişince ekran zaten `key` ile remount ediliyor.
+  const [modePreset] = useState(() => pdfOnly || !!initialMode);
   const stepKeys: StepKey[] = modePreset
     ? ['subject', 'grade', 'unit', 'settings']
     : ['mode', 'subject', 'grade', 'unit', 'settings'];
