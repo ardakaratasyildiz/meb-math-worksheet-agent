@@ -52,6 +52,23 @@ def _match_blank(submitted: str, expected: str) -> bool:
     return _normalize_text(submitted) == _normalize_text(expected)
 
 
+# Cümle içinde geçen kısa cevabı kabul etmek için üst sınır: "12 elma", "222",
+# "asit" gibi anahtarlar. Uzun anahtarlarda kapsama testi anlamsız/riskli olur.
+_MAX_CONTAINS_LEN = 24
+
+
+def _contains_answer(sub_norm: str, exp_norm: str) -> bool:
+    """Öğrenci cevabı anahtarı CÜMLE İÇİNDE tam sözcük olarak barındırıyor mu?
+
+    Öğrenci "cevap 222" ya da "222 sayfa" yazdığında da doğru saymak için. Sözcük
+    sınırı şart (aksi halde "222" değeri "1222" içinde eşleşirdi). 1 karakterlik
+    anahtarlarda uygulanmaz — "2" neredeyse her cümlede bulunur.
+    """
+    if len(exp_norm) < 2 or len(exp_norm) > _MAX_CONTAINS_LEN:
+        return False
+    return re.search(rf"(?<!\w){re.escape(exp_norm)}(?!\w)", sub_norm) is not None
+
+
 def _match_free_text(submitted: SubmittedAnswer | None, expected: str) -> bool:
     """Serbest-metin cevabı → cevap anahtarına normalize/sayısal eşleştir.
 
@@ -66,7 +83,10 @@ def _match_free_text(submitted: SubmittedAnswer | None, expected: str) -> bool:
     guess = submitted.texts[0]
     if not guess or not guess.strip():
         return False
-    return _match_blank(guess, expected)
+    if _match_blank(guess, expected):
+        return True
+    # Cümleyle yazılmış kısa cevap ("cevap 222", "222 sayfa") haksız yanlış olmasın.
+    return _contains_answer(_normalize_text(guess), _normalize_text(expected))
 
 
 def grade_question(
@@ -113,18 +133,14 @@ def grade_question(
     # Açık uçlu (sozel_problem) — Çöz&Geliş'te ÖZ-DEĞERLENDİRME (öğrenci cevabı görüp
     # "doğru bildim" = bool_answer=True der). Worksheet ödevinde ise self-eval yerine
     # cevap anahtarına metin-eşleştirme (open_ended_text_match).
+    # Açık uçlu (sozel_problem): CEVAP YAZILIR, sunucu anahtara eşleştirir — her iki
+    # modda aynı (KULLANICI KARARI 2026-08-13). Eskiden Çöz&Geliş'te öz-değerlendirme
+    # vardı ("cevabı gör → kendini işaretle"); kaldırıldı. Geriye uyum: yalnız metin
+    # HİÇ gelmediyse eski istemcinin bool_answer'ı okunur.
     if t == QuestionType.SOZEL_PROBLEM:
-        if open_ended_text_match:
+        if submitted.texts and any((s or "").strip() for s in submitted.texts):
             return _match_free_text(submitted, stored.answer)
-        # Öz-değerlendirme YAPILDIYSA öğrencinin kendi kararı geçerlidir (hem "bildim"
-        # hem "bilemedim" ona ait).
-        if submitted.bool_answer is not None:
-            return submitted.bool_answer is True
-        # Yapılmadıysa ve cevap YAZILMIŞSA anahtara eşleştir. Eskiden burada koşulsuz
-        # False vardı: self-eval göndermeyen istemcide doğru cevap yazan öğrenci bile
-        # yanlış sayılıyordu (mobilde ÖLÇÜLDÜ — "222 yazdım, yanlış dedi"). Bu dal
-        # yalnız false-negative'i azaltır; doğru işaretlenmiş cevabı asla bozmaz.
-        return _match_free_text(submitted, stored.answer)
+        return submitted.bool_answer is True
 
     # Diğer yapılandırılmamış tipler (tablo, okuma pasajı, eşleştirme, sıralama, görsel
     # geometri…): Çöz&Geliş üretiminde bu tipler havuza girmez (quizzes._SOLVABLE_TYPES),

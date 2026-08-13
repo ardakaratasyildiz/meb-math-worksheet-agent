@@ -157,21 +157,32 @@ def test_open_ended_text_match() -> None:
         grade_question(open_q, _a(1, bool_answer=True)) is True,
         "quiz: açık uçlu self-eval doğru bildim",
     )
-    check(
-        grade_question(open_q, _a(1, bool_answer=False)) is False,
-        "quiz: açık uçlu self-eval 'bilemedim' → yanlış (öğrencinin kararı geçerli)",
-    )
-    # DEĞİŞTİ (2026-08-13): self-eval GÖNDERİLMEMİŞSE metin anahtarla eşleştirilir.
-    # Eskiden koşulsuz False'tu → self-eval arayüzü olmayan istemcide (mobil) doğru
-    # cevap yazan öğrenci yanlış sayılıyordu. Bu dal yalnız false-negative azaltır.
+    # KULLANICI KARARI (2026-08-13): Çöz&Geliş'te de cevap YAZILIR ve anahtara
+    # eşleştirilir; öz-değerlendirme kaldırıldı. bool_answer yalnız metin hiç
+    # gelmediğinde (eski istemci) okunur.
     check(
         grade_question(open_q, _a(1, texts=["12 elma"])) is True,
-        "quiz: self-eval yoksa yazılan doğru cevap kabul edilir",
+        "quiz: yazılan doğru cevap kabul edilir",
     )
     check(
         grade_question(open_q, _a(1, texts=["5 elma"])) is False,
-        "quiz: self-eval yoksa yanlış metin yanlış kalır",
+        "quiz: yanlış metin yanlış kalır",
     )
+    check(
+        grade_question(open_q, _a(1, texts=["cevap 12 elma olur"])) is True,
+        "quiz: cümle içinde geçen kısa cevap kabul (tam sözcük)",
+    )
+    check(
+        grade_question(open_q, _a(1, bool_answer=False, texts=["12 elma"])) is True,
+        "quiz: metin varsa bool_answer'a bakılmaz (metin otoriter)",
+    )
+
+    # Sayısal cevap — asıl saha vakası ("222 yazdım, yanlış dedi")
+    num_q = _q(9, QuestionType.SOZEL_PROBLEM, "222")
+    check(grade_question(num_q, _a(9, texts=["222"])) is True, "quiz: 222 → doğru")
+    check(grade_question(num_q, _a(9, texts=[" 222 "])) is True, "quiz: boşluklu 222 → doğru")
+    check(grade_question(num_q, _a(9, texts=["222 sayfa"])) is True, "quiz: '222 sayfa' → doğru")
+    check(grade_question(num_q, _a(9, texts=["1222"])) is False, "quiz: 1222 → yanlış (sözcük sınırı)")
 
     # Yapılandırılmamış tip (tablo): quiz üretiminde havuza girmez ama gelirse
     # cevabı yok saymak yerine anahtara eşleştirilir.
