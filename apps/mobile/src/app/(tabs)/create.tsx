@@ -16,7 +16,7 @@ import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { createQuiz, generateWorksheet, submitAttempt } from '@/lib/api';
 import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
-import { consumeGenEntry, subscribeGenEntry } from '@/lib/gen-entry';
+import { consumeGenEntry, subscribeGenEntry, type GenPrefill } from '@/lib/gen-entry';
 import { previewWorksheetPdf, shareWorksheetPdf } from '@/lib/pdf';
 import { effectiveRole, isPlayfulRole } from '@/lib/roles';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
@@ -38,9 +38,17 @@ export default function CreateScreen() {
    * sekmeye yapışıyor ve odaktaki sekmede güncellenmiyordu (bkz. gen-entry.ts).
    * `nonce` her yeni girişte artar → GeneratorSetup key ile sıfırdan kurulur.
    */
-  const [entry, setEntry] = useState<{ mode: GenMode | undefined; nonce: number }>(() => {
+  const [entry, setEntry] = useState<{
+    mode: GenMode | undefined;
+    prefill: GenPrefill | undefined;
+    nonce: number;
+  }>(() => {
     const req = consumeGenEntry();
-    return { mode: req === 'solve' || req === 'pdf' ? req : undefined, nonce: 0 };
+    return {
+      mode: req?.mode === 'solve' || req?.mode === 'pdf' ? req.mode : undefined,
+      prefill: req?.prefill,
+      nonce: 0,
+    };
   });
   const presetMode = entry.mode;
   const { entitlements, quotaExhausted, dailyExhausted, refresh: refreshEntitlements } =
@@ -61,7 +69,8 @@ export default function CreateScreen() {
         if (!req) return;
         setPhase('setup');
         setEntry((prev) => ({
-          mode: req === 'ask' ? undefined : req,
+          mode: req.mode === 'ask' ? undefined : req.mode,
+          prefill: req.prefill,
           nonce: prev.nonce + 1,
         }));
       }),
@@ -244,6 +253,7 @@ export default function CreateScreen() {
                 sober={sober}
                 pdfOnly={sober}
                 initialMode={presetMode}
+                prefill={entry.prefill}
               />
               {/* Boş iskelet 60 sn boyunca "takıldı mı?" hissi veriyordu → web'deki
                   "Bunu biliyor muydun?" bekleme ekranının mobil karşılığı. */}

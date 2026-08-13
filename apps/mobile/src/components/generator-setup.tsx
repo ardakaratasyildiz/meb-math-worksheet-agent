@@ -9,7 +9,7 @@ import {
   type QuestionType,
   type SubjectSlug,
 } from '@soruatolyesi/shared';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -26,6 +26,7 @@ import { Chip } from '@/components/pickers';
 import { PrimaryButton } from '@/components/ui';
 import { useUnits } from '@/hooks/useUnits';
 import { listKazanimlarByUnit } from '@/lib/api';
+import type { GenPrefill } from '@/lib/gen-entry';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/theme/tokens';
 
 export type GenMode = 'solve' | 'pdf';
@@ -116,6 +117,7 @@ export function GeneratorSetup({
   sober = false,
   pdfOnly = false,
   initialMode,
+  prefill,
 }: {
   onSubmit: (p: GeneratorParams) => void;
   busy: boolean;
@@ -131,6 +133,12 @@ export function GeneratorSetup({
    * moda basarak yine değiştirebilir.
    */
   initialMode?: GenMode;
+  /**
+   * Ana ekrandaki "Önce bunu çalış" kartından gelen ÖN SEÇİM: ders/sınıf hemen
+   * uygulanır, ünite adı listede eşleşirse o da seçilip doğrudan ayarlar adımına
+   * atlanır. Kullanıcı önerilen konuyu tekrar tıklamak zorunda kalmasın.
+   */
+  prefill?: GenPrefill;
 }) {
   // Mod dışarıdan geldiyse (initialMode) ya da pdfOnly ise mod adımı listeden çıkar.
   // DONDURULUR: prop akış ortasında değişirse stepKeys uzunluğu kayar ve stepIdx
@@ -140,11 +148,16 @@ export function GeneratorSetup({
     ? ['subject', 'grade', 'unit', 'settings']
     : ['mode', 'subject', 'grade', 'unit', 'settings'];
 
-  const [stepIdx, setStepIdx] = useState(0);
+  // Ön seçim varsa ders/sınıf adımları atlanır → doğrudan ünite adımından başla.
+  const [stepIdx, setStepIdx] = useState(() =>
+    prefill?.subject && prefill?.grade ? stepKeys.indexOf('unit') : 0,
+  );
   const [mode, setMode] = useState<GenMode>(pdfOnly ? 'pdf' : (initialMode ?? 'solve'));
   const [modeChosen, setModeChosen] = useState(modePreset);
-  const [subject, setSubject] = useState<SubjectSlug>('matematik');
-  const [grade, setGrade] = useState(5);
+  const [subject, setSubject] = useState<SubjectSlug>(
+    (prefill?.subject as SubjectSlug) || 'matematik',
+  );
+  const [grade, setGrade] = useState(prefill?.grade || 5);
   const { units, loading: unitsLoading, error } = useUnits(grade, subject);
   const [unitId, setUnitId] = useState<string | null>(null);
   const [unitName, setUnitName] = useState('');
@@ -163,6 +176,24 @@ export function GeneratorSetup({
   const [kazanimlar, setKazanimlar] = useState<KazanimInfo[]>([]);
 
   const key = stepKeys[stepIdx];
+
+  /**
+   * Ön seçimdeki ünite adını (progress ucu kazanım kodundan çözüyor) listede bul ve
+   * seç → kullanıcı doğrudan ayarlar adımına düşer. Ad eşleşmezse (eski M.* kodları)
+   * ünite adımında kalır; ders/sınıf yine hazır gelir. Yalnız BİR kez uygulanır.
+   */
+  const prefillApplied = useRef(false);
+  useEffect(() => {
+    if (prefillApplied.current || !prefill?.topicName || unitId || !units.length) return;
+    const want = prefill.topicName.trim().toLocaleLowerCase('tr');
+    const hit = units.find((u) => u.name.trim().toLocaleLowerCase('tr') === want);
+    prefillApplied.current = true;
+    if (!hit) return;
+    setUnitId(hit.unit_id);
+    setUnitName(hit.name);
+    setKazanimKod(prefill.kazanimKod ?? null);
+    setStepIdx(stepKeys.indexOf('settings'));
+  }, [units, prefill, unitId, stepKeys]);
 
   // Ünite seçilince o ünitenin kazanımlarını yükle (gelişmiş → kazanım seçimi).
   useEffect(() => {
