@@ -1,6 +1,6 @@
 import { useAuth, useUser } from '@clerk/expo';
 import type { AttemptResult, QuizPublic, SubmittedAnswer, Worksheet } from '@soruatolyesi/shared';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -281,7 +281,14 @@ export default function CreateScreen() {
 
           {phase === 'result' && result && (
             <>
-              <ResultView result={result} onRestart={restart} sober={sober} />
+              <ResultView
+                result={result}
+                onRestart={restart}
+                sober={sober}
+                onReview={() =>
+                  router.push(`/attempt/${encodeURIComponent(result.attempt_id)}` as Href)
+                }
+              />
               {quiz ? (
                 <PrimaryButton
                   label="Bu testi arkadaşlarınla paylaş"

@@ -1,4 +1,9 @@
-import type { AttemptResult, QuizQuestionPublic, SubmittedAnswer } from '@soruatolyesi/shared';
+import type {
+  AttemptResult,
+  QuestionResult,
+  QuizQuestionPublic,
+  SubmittedAnswer,
+} from '@soruatolyesi/shared';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { IconSpark } from '@/components/icons';
@@ -35,15 +40,19 @@ export function ResultView({
   onRestart,
   restartLabel = 'Yeni Oluştur',
   sober = false,
+  onReview,
 }: {
   result: AttemptResult;
   onRestart: () => void;
   restartLabel?: string;
   sober?: boolean;
+  /** "Soru soru incele" — verilmezse düğme gizlenir (ör. detay ucu yoksa). */
+  onReview?: () => void;
 }) {
   const ratio = result.score / Math.max(result.total, 1);
   const passed = ratio >= 0.5;
   const pct = Math.round(ratio * 100);
+  const wrong = result.results.filter((r) => !r.is_correct);
   return (
     <>
       {sober ? (
@@ -101,9 +110,56 @@ export function ResultView({
         </Card>
       )}
 
+      {/*
+        "Hangi soruları yanlış yaptım?" — skor tek başına öğretmiyordu. Burada kısa
+        özet var; soru metni + kendi cevabın + çözüm zaten /attempt/[id] ekranında
+        (AttemptDetailView) duruyor, oraya bağlanıyoruz — ikinci bir kopya yazmıyoruz.
+      */}
+      {wrong.length > 0 ? (
+        <Card>
+          <Text style={styles.cardTitle}>Yanlış yaptıkların ({wrong.length})</Text>
+          <View style={styles.wrongList}>
+            {wrong.map((r) => (
+              <View key={r.number} style={styles.wrongRow}>
+                <View style={styles.wrongNo}>
+                  <Text style={styles.wrongNoText}>{r.number}</Text>
+                </View>
+                <View style={styles.wrongBody}>
+                  <Text style={styles.wrongLabel}>Doğru cevap</Text>
+                  <Text style={styles.wrongAnswer} numberOfLines={3}>
+                    {correctAnswerText(r)}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
+          {onReview ? (
+            <PrimaryButton label="Soru soru incele" variant="soft" onPress={onReview} />
+          ) : null}
+        </Card>
+      ) : (
+        <Card style={styles.allRightCard}>
+          <Text style={styles.allRightText}>Hepsi doğru! 🎉</Text>
+        </Card>
+      )}
+
       <PrimaryButton label={restartLabel} onPress={onRestart} icon={<IconSpark size={22} />} />
     </>
   );
+}
+
+/** Doğru cevabı okunur metne çevirir (çoktan seçmelide harf + şık metni). */
+function correctAnswerText(r: QuestionResult): string {
+  if (r.options?.length && r.correct_index != null && r.correct_index >= 0) {
+    const opt = r.options[r.correct_index];
+    return `${String.fromCharCode(65 + r.correct_index)}) ${opt ?? ''}`.trim();
+  }
+  if (r.question_type === 'dogru_yanlis') {
+    const a = (r.correct_answer || '').toLowerCase();
+    if (a === 'true' || a === 'doğru') return 'Doğru';
+    if (a === 'false' || a === 'yanlış') return 'Yanlış';
+  }
+  return r.correct_answer || '—';
 }
 
 // ── Çözülebilir soru kartı (çoktan seçmeli / doğru-yanlış / boşluk / metin) ────
@@ -206,6 +262,24 @@ export function QuestionCard({
 
 const styles = StyleSheet.create({
   cardTitle: { fontSize: fontSize.lg, fontFamily: fonts.heading, color: colors.text },
+
+  wrongList: { gap: spacing.sm, marginTop: spacing.sm, marginBottom: spacing.md },
+  wrongRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md },
+  wrongNo: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    // Tema paletinde danger için tint yok (danger "yalnız hata" rengi) → yumuşak zemin.
+    backgroundColor: '#FDECEC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wrongNoText: { fontFamily: fonts.bodyBold, fontSize: fontSize.sm, color: colors.danger },
+  wrongBody: { flex: 1 },
+  wrongLabel: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted },
+  wrongAnswer: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.text },
+  allRightCard: { alignItems: 'center' },
+  allRightText: { fontFamily: fonts.bodyBold, fontSize: fontSize.md, color: colors.success },
 
   qcCard: { gap: spacing.md, padding: spacing.lg },
   qcHead: { flexDirection: 'row', gap: spacing.md },

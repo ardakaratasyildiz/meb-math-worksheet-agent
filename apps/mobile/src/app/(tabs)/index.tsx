@@ -580,11 +580,14 @@ const styles = StyleSheet.create({
     color: colors.onBrand,
     opacity: 0.92,
     marginTop: spacing.xs,
+    marginBottom: spacing.sm, // ok ile metin arasında nefes payı
   },
+  // Ok eskiden position:absolute ile sağ-alta sabitlenmişti → alt yazının son
+  // satırının ÜSTÜNE biniyor ve "üret" yarım görünüyordu. Artık normal akışta,
+  // marginTop:auto ile kartın altına itiliyor; metinle asla çakışmaz.
   actionChevron: {
-    position: "absolute",
-    right: spacing.lg,
-    bottom: spacing.lg,
+    alignSelf: "flex-end",
+    marginTop: "auto",
     width: 30,
     height: 30,
     borderRadius: 15,

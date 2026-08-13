@@ -39,7 +39,7 @@ export default function HistoryScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <Stack.Screen options={{ headerShown: true, title: 'Deneme Geçmişi' }} />
+      <Stack.Screen options={{ headerShown: true, title: 'Çözdüğüm Quizler' }} />
       <ScrollView contentContainerStyle={styles.content}>
         {items === null ? (
           <SkeletonList count={5} />
@@ -48,7 +48,7 @@ export default function HistoryScreen() {
         ) : items.length === 0 ? (
           <View style={styles.empty}>
             <Mascot variant="reading" size={128} />
-            <Text style={styles.emptyTitle}>Henüz çözülmüş deneme yok</Text>
+            <Text style={styles.emptyTitle}>Henüz çözülmüş quiz yok</Text>
             <Text style={styles.emptyText}>
               Bir alıştırma çözünce buraya düşer; geçmişini tek tek gözden geçirebilirsin.
             </Text>

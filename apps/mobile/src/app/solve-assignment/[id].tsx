@@ -1,6 +1,6 @@
 import { useAuth } from '@clerk/expo';
 import type { AttemptResult, QuizPublic, SubmittedAnswer } from '@soruatolyesi/shared';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -84,7 +84,14 @@ export default function SolveAssignmentScreen() {
           ) : error && !quiz ? (
             <Text style={styles.error}>{error}</Text>
           ) : result ? (
-            <ResultView result={result} onRestart={() => router.back()} restartLabel="Ödevlerime dön" />
+            <ResultView
+              result={result}
+              onRestart={() => router.back()}
+              restartLabel="Ödevlerime dön"
+              onReview={() =>
+                router.push(`/attempt/${encodeURIComponent(result.attempt_id)}` as Href)
+              }
+            />
           ) : quiz ? (
             <>
               {quiz.questions.map((q) => (
