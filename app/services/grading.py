@@ -116,14 +116,21 @@ def grade_question(
     if t == QuestionType.SOZEL_PROBLEM:
         if open_ended_text_match:
             return _match_free_text(submitted, stored.answer)
-        return submitted.bool_answer is True
+        # Öz-değerlendirme YAPILDIYSA öğrencinin kendi kararı geçerlidir (hem "bildim"
+        # hem "bilemedim" ona ait).
+        if submitted.bool_answer is not None:
+            return submitted.bool_answer is True
+        # Yapılmadıysa ve cevap YAZILMIŞSA anahtara eşleştir. Eskiden burada koşulsuz
+        # False vardı: self-eval göndermeyen istemcide doğru cevap yazan öğrenci bile
+        # yanlış sayılıyordu (mobilde ÖLÇÜLDÜ — "222 yazdım, yanlış dedi"). Bu dal
+        # yalnız false-negative'i azaltır; doğru işaretlenmiş cevabı asla bozmaz.
+        return _match_free_text(submitted, stored.answer)
 
     # Diğer yapılandırılmamış tipler (tablo, okuma pasajı, eşleştirme, sıralama, görsel
-    # geometri…): Çöz&Geliş'te bu havuza girmezler (yanlış). Worksheet ödevinde öğrenci
-    # cevabını metin kutusuna yazar → cevap anahtarına eşleştirilir.
-    if open_ended_text_match:
-        return _match_free_text(submitted, stored.answer)
-    return False
+    # geometri…): Çöz&Geliş üretiminde bu tipler havuza girmez (quizzes._SOLVABLE_TYPES),
+    # ama eski/harici kayıtlar için cevabı yok saymak yerine anahtara eşleştiriyoruz —
+    # öğrencinin doğru yazdığı cevabı sessizce yanlış saymak en kötü davranış.
+    return _match_free_text(submitted, stored.answer)
 
 
 def grade_quiz(
