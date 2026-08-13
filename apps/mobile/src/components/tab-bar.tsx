@@ -19,6 +19,7 @@ import {
   IconUser,
 } from "@/components/icons";
 import { Mascot } from "@/components/mascot";
+import { requestGenEntry } from "@/lib/gen-entry";
 import { colors, fonts, radius, shadow } from "@/theme/tokens";
 
 type ItemDef = {
@@ -43,24 +44,17 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
   const activeName = state.routes[state.index]?.name;
 
   /**
-   * `params` GEREKLİ: React Navigation `navigate` çağrısında parametre vermezsen
-   * rotanın MEVCUT parametrelerini korur. Ana ekrandan "Alıştırma Çöz" ile bir kez
-   * `/create?mode=solve`e gidildiğinde mod sekmeye yapışıyordu → "Ne yapmak
-   * istersin?" adımı bir daha hiç görünmüyordu. Sekmeden/FAB'dan girişte modu
-   * açıkça "ask"e çekiyoruz (= kullanıcı henüz seçmedi).
+   * "Oluştur" sekmesine/FAB'a basmak üretim akışını SIFIRLAR (mod sorusuna döner).
+   * Niyet route parametresiyle değil `lib/gen-entry` üzerinden bildirilir: parametre
+   * sekmeye yapışıyor ve sekme zaten odaktayken güncellenmiyordu (bkz. gen-entry.ts).
+   * Bildirim navigate'ten ÖNCE gider — ekran zaten bağlıysa da haberi alır.
    */
-  // `navigate`in tipi (rota adı × parametre) birleşimini çözemiyor; iki argümanlı
-  // çağrı `never` çakışması veriyor. Tek noktada daraltıp çağırıyoruz.
-  const navigateWithParams = (name: string, params?: Record<string, string>) =>
-    (navigation.navigate as unknown as (n: string, p?: Record<string, string>) => void)(
-      name,
-      params,
-    );
+  const onPress = (name: string) => {
+    if (name === "create") requestGenEntry("ask");
 
-  const onPress = (name: string, params?: Record<string, string>) => {
     const route = state.routes.find((r) => r.name === name);
     if (!route) {
-      navigateWithParams(name, params);
+      navigation.navigate(name as never);
       return;
     }
     const isFocused = activeName === name;
@@ -69,17 +63,10 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
       target: route.key,
       canPreventDefault: true,
     });
-    if (event.defaultPrevented) return;
-    // Parametre taşıyan sekmede (create) AYNI sekmeye tekrar basmak da akışı
-    // sıfırlamalı: eskiden isFocused olunca hiç navigate edilmiyordu → mod
-    // "solve"da takılı kalıyor ve "Ne yapmak istersin?" adımı yine açılmıyordu.
-    if (!isFocused || params) {
-      navigateWithParams(name, params);
+    if (!isFocused && !event.defaultPrevented) {
+      navigation.navigate(name as never);
     }
   };
-
-  /** Sekme/FAB girişinde mod sıfırlanmalı; diğer sekmelerin parametresi yok. */
-  const paramsFor = (name: string) => (name === "create" ? { mode: "ask" } : undefined);
 
   const renderTab = (name: string) => {
     const item = ITEMS[name];
@@ -91,7 +78,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
         key={name}
         style={styles.tab}
         hitSlop={8}
-        onPress={() => onPress(name, paramsFor(name))}
+        onPress={() => onPress(name)}
         accessibilityRole="button"
         accessibilityLabel={item.label}
         accessibilityState={{ selected: focused }}
@@ -124,7 +111,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
       {/* Maskot FAB — bar üstüne taşan, hero kısayolu (Oluştur akışı). */}
       <Pressable
         style={[styles.fab, shadow.fab, { bottom: Math.max(insets.bottom, 8) + 22 }]}
-        onPress={() => onPress("create", { mode: "ask" })}
+        onPress={() => onPress("create")}
         accessibilityRole="button"
         accessibilityLabel="Yeni oluştur"
       >

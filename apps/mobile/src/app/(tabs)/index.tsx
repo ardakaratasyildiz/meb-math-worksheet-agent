@@ -25,6 +25,7 @@ import { Mascot } from "@/components/mascot";
 import { Card, ProgressBar, SpeechBubble, StatChip } from "@/components/ui";
 import { getGamification, getProgress, pingHealth, type GamificationResponse } from "@/lib/api";
 import { badgeGlyph, badgeVariant, computeBadges, tierLabel } from "@/lib/badges";
+import { requestGenEntry } from "@/lib/gen-entry";
 import { getReminderPrefs, syncReminderOnLaunch } from "@/lib/notifications";
 import { effectiveRole } from "@/lib/roles";
 import { colors, fonts, fontSize, radius, shadow, spacing } from "@/theme/tokens";
@@ -233,7 +234,12 @@ export default function HomeScreen() {
 
           {/* ── Devam Et (hero) ────────────────────────────────────────────── */}
           {/* Hero "çalışmaya devam et" vaadi veriyor → doğrudan çöz akışı. */}
-          <Pressable onPress={() => router.push({ pathname: "/create", params: { mode: "solve" } })}>
+          <Pressable
+            onPress={() => {
+              requestGenEntry("solve");
+              router.push("/create");
+            }}
+          >
             <Card floating style={styles.continueCard}>
               <View style={styles.continueIcon}>
                 <IconWorksheet size={40} tone="#FFFFFF" />
@@ -264,23 +270,28 @@ export default function HomeScreen() {
           {/* ── Aksiyon kartları: Çalışma Kağıdı + Alıştırma Çöz ──────────── */}
           <View style={styles.dualRow}>
             {/*
-              Mod parametresi ŞART: ikisi de parametresiz /create'e gidince sihirbaz
-              "Ne yapmak istersin?" diye tekrar soruyordu → kullanıcı "Alıştırma Çöz"e
-              basıp çözme ekranına ulaşamıyordu. Artık adım atlanıyor.
+              Mod ÖNCE bildirilir, sonra gidilir (lib/gen-entry): route parametresi
+              sekmeye yapışıp güncellenmediği için o yöntem cihazda çalışmadı.
             */}
             <ActionCard
               bg={colors.brand}
               icon={<IconWorksheet size={44} tone="#FFFFFF" />}
               title={"Çalışma\nKağıdı"}
               sub="Yapay zekâ ile kendi kağıdını üret"
-              onPress={() => router.push({ pathname: "/create", params: { mode: "pdf" } })}
+              onPress={() => {
+                requestGenEntry("pdf");
+                router.push("/create");
+              }}
             />
             <ActionCard
               bg={colors.success}
               icon={<IconPencil size={44} />}
               title={"Alıştırma\nÇöz"}
               sub="Alıştırma çöz, puan kazan!"
-              onPress={() => router.push({ pathname: "/create", params: { mode: "solve" } })}
+              onPress={() => {
+                requestGenEntry("solve");
+                router.push("/create");
+              }}
             />
           </View>
 
