@@ -69,7 +69,11 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
       target: route.key,
       canPreventDefault: true,
     });
-    if (!isFocused && !event.defaultPrevented) {
+    if (event.defaultPrevented) return;
+    // Parametre taşıyan sekmede (create) AYNI sekmeye tekrar basmak da akışı
+    // sıfırlamalı: eskiden isFocused olunca hiç navigate edilmiyordu → mod
+    // "solve"da takılı kalıyor ve "Ne yapmak istersin?" adımı yine açılmıyordu.
+    if (!isFocused || params) {
       navigateWithParams(name, params);
     }
   };
