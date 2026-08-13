@@ -186,10 +186,8 @@ function StudentProgress() {
                   <IconCalendar size={26} />
                 </View>
                 <View style={styles.linkBody}>
-                  {/* "Deneme" sınav çağrışımı yapıyordu; liste aslında çözülen
-                      quizler. Çalışma kağıdı (PDF) geçmişi mobilde henüz yok. */}
-                  <Text style={styles.linkTitle}>Çözdüğüm quizler</Text>
-                  <Text style={styles.linkSub}>Geçmiş quizlerin ve sonuçları</Text>
+                  <Text style={styles.linkTitle}>Geçmişim</Text>
+                  <Text style={styles.linkSub}>Çözdüğün quizler ve ürettiğin kağıtlar</Text>
                 </View>
                 <IconChevron size={18} color={colors.textFaint} />
               </Pressable>

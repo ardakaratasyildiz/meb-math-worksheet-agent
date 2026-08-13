@@ -158,13 +158,26 @@ def test_open_ended_text_match() -> None:
         "quiz: açık uçlu self-eval doğru bildim",
     )
     check(
-        grade_question(open_q, _a(1, texts=["12 elma"])) is False,
-        "quiz: açık uçlu metin self-eval'siz sayılmaz (Çöz&Geliş korunur)",
+        grade_question(open_q, _a(1, bool_answer=False)) is False,
+        "quiz: açık uçlu self-eval 'bilemedim' → yanlış (öğrencinin kararı geçerli)",
+    )
+    # DEĞİŞTİ (2026-08-13): self-eval GÖNDERİLMEMİŞSE metin anahtarla eşleştirilir.
+    # Eskiden koşulsuz False'tu → self-eval arayüzü olmayan istemcide (mobil) doğru
+    # cevap yazan öğrenci yanlış sayılıyordu. Bu dal yalnız false-negative azaltır.
+    check(
+        grade_question(open_q, _a(1, texts=["12 elma"])) is True,
+        "quiz: self-eval yoksa yazılan doğru cevap kabul edilir",
+    )
+    check(
+        grade_question(open_q, _a(1, texts=["5 elma"])) is False,
+        "quiz: self-eval yoksa yanlış metin yanlış kalır",
     )
 
-    # Yapılandırılmamış tip (tablo) — quiz modunda hep yanlış, worksheet'te metin-eşleşir
+    # Yapılandırılmamış tip (tablo): quiz üretiminde havuza girmez ama gelirse
+    # cevabı yok saymak yerine anahtara eşleştirilir.
     tbl = _q(2, QuestionType.TABLO_SORUSU, "45")
-    check(grade_question(tbl, _a(2, texts=["45"])) is False, "quiz: tablo tipi puanlanmaz (yanlış)")
+    check(grade_question(tbl, _a(2, texts=["45"])) is True, "quiz: tablo tipinde doğru metin kabul")
+    check(grade_question(tbl, _a(2, texts=["9"])) is False, "quiz: tablo tipinde yanlış metin yanlış")
     check(
         grade_question(tbl, _a(2, texts=["45"]), open_ended_text_match=True) is True,
         "worksheet: tablo sayısal eşleşir",

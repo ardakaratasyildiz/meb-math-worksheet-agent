@@ -4,6 +4,7 @@ import type {
   QuizQuestionPublic,
   SubmittedAnswer,
 } from '@soruatolyesi/shared';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { IconSpark } from '@/components/icons';
@@ -167,11 +168,19 @@ export function QuestionCard({
   q,
   answer,
   onChange,
+  answerMode = 'quiz',
 }: {
   q: QuizQuestionPublic;
   answer?: SubmittedAnswer;
   onChange: (patch: Partial<SubmittedAnswer>) => void;
+  /**
+   * 'quiz' (Çöz&Geliş) → açık uçluda öz-değerlendirme · 'worksheet' (sınıf ödevi)
+   * → metin kutusu (sunucu cevap anahtarına eşleştirir). QuizPublic.answer_mode.
+   */
+  answerMode?: string;
 }) {
+  // Açık uçlu + Çöz&Geliş = sunucu bool_answer bekliyor → metin kutusu yerine self-eval.
+  const selfEval = q.question_type === 'sozel_problem' && answerMode !== 'worksheet';
   return (
     <Card style={styles.qcCard}>
       <View style={styles.qcHead}>
@@ -247,6 +256,8 @@ export function QuestionCard({
             />
           ))}
         </View>
+      ) : selfEval ? (
+        <SelfEvalAnswer q={q} answer={answer} onChange={onChange} />
       ) : (
         <TextInput
           style={styles.input}
@@ -257,6 +268,66 @@ export function QuestionCard({
         />
       )}
     </Card>
+  );
+}
+
+/**
+ * Açık uçlu (sozel_problem) ÖZ-DEĞERLENDİRME — yalnız Çöz&Geliş'te.
+ *
+ * Sunucu bu tipi `bool_answer` ile puanlıyor (kâğıda çöz → cevabı gör → kendini
+ * işaretle). Mobil bunun yerine düz metin kutusu gösteriyordu; yazılan cevap
+ * puanlamada HİÇ kullanılmadığı için doğru cevap yazan öğrenci bile yanlış
+ * sayılıyordu ("222 yazdım, yanlış dedi"). Web'deki akışın (QuizSolver) karşılığı.
+ */
+function SelfEvalAnswer({
+  q,
+  answer,
+  onChange,
+}: {
+  q: QuizQuestionPublic;
+  answer?: SubmittedAnswer;
+  onChange: (patch: Partial<SubmittedAnswer>) => void;
+}) {
+  const [revealed, setRevealed] = useState(false);
+  const marked = answer?.bool_answer;
+
+  return (
+    <View style={styles.selfEval}>
+      <Text style={styles.selfEvalHint}>
+        Soruyu kâğıda çöz; sonra cevabı görüp kendini değerlendir.
+      </Text>
+
+      {!revealed ? (
+        <Pressable style={styles.revealBtn} onPress={() => setRevealed(true)}>
+          <Text style={styles.revealBtnText}>Cevabı gör</Text>
+        </Pressable>
+      ) : (
+        <>
+          <View style={styles.revealBox}>
+            <Text style={styles.revealLabel}>Doğru cevap</Text>
+            <QuestionText text={q.reveal_answer || '—'} />
+          </View>
+          <View style={styles.selfEvalRow}>
+            <Pressable
+              onPress={() => onChange({ bool_answer: true })}
+              style={[styles.selfBtn, marked === true && styles.selfBtnRight]}
+            >
+              <Text style={[styles.selfBtnText, marked === true && styles.selfBtnTextOn]}>
+                ✓ Doğru bildim
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => onChange({ bool_answer: false })}
+              style={[styles.selfBtn, marked === false && styles.selfBtnWrong]}
+            >
+              <Text style={[styles.selfBtnText, marked === false && styles.selfBtnTextOn]}>
+                ✕ Bilemedim
+              </Text>
+            </Pressable>
+          </View>
+        </>
+      )}
+    </View>
   );
 }
 
@@ -278,6 +349,37 @@ const styles = StyleSheet.create({
   wrongBody: { flex: 1 },
   wrongLabel: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted },
   wrongAnswer: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.text },
+  selfEval: { gap: spacing.sm },
+  selfEvalHint: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted },
+  revealBtn: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.pill,
+    backgroundColor: colors.tintBlue,
+  },
+  revealBtnText: { fontFamily: fonts.bodyBold, fontSize: fontSize.sm, color: colors.brandDark },
+  revealBox: {
+    backgroundColor: colors.tintBlue,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    gap: 2,
+  },
+  revealLabel: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted },
+  selfEvalRow: { flexDirection: 'row', gap: spacing.sm },
+  selfBtn: {
+    flex: 1,
+    paddingVertical: spacing.md,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+  },
+  selfBtnRight: { backgroundColor: colors.success, borderColor: colors.success },
+  selfBtnWrong: { backgroundColor: colors.danger, borderColor: colors.danger },
+  selfBtnText: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.text },
+  selfBtnTextOn: { color: '#FFFFFF' },
+
   allRightCard: { alignItems: 'center' },
   allRightText: { fontFamily: fonts.bodyBold, fontSize: fontSize.md, color: colors.success },
 

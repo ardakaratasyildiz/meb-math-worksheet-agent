@@ -266,6 +266,7 @@ export default function CreateScreen() {
                   q={q}
                   answer={answers[q.number]}
                   onChange={(patch) => setAnswer(q.number, patch)}
+                  answerMode={quiz.answer_mode}
                 />
               ))}
               {error ? <Text style={styles.error}>{error}</Text> : null}
