@@ -51,6 +51,8 @@ async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
     }
     throw new Error(detail);
   }
+  // 204 No Content: gövde YOK → res.json() burada patlardı (silme uçları 204 döner).
+  if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
 }
 
@@ -381,6 +383,50 @@ export interface AttemptDetail {
   per_kazanim: KazanimBreakdown[];
   review: AttemptReviewItem[];
   has_detail: boolean;
+}
+
+// ── Çalışma kağıdı geçmişi (üretilen PDF'ler) ────────────────────────────────
+
+/**
+ * Hesaba kayıtlı bir çalışma kağıdı. `response.worksheet` TAM kağıdı taşır →
+ * geçmişten PDF yeniden üretilebilir, model çağrısı GEREKMEZ (maliyet yok).
+ * Web'deki `frontend/lib/history.ts::HistoryItem` ile aynı yapı.
+ */
+export interface WorksheetHistoryItem {
+  id: string;
+  saved_at: string;
+  request: {
+    grade: number;
+    unit_id?: string | null;
+    topic_id?: string | null;
+    kazanim_kod: string | null;
+    difficulty: string;
+    question_count: number;
+    subject?: string | null;
+  };
+  response: GenerateWorksheetResponse;
+}
+
+/** Kullanıcının ürettiği çalışma kağıtları — en yeni önce. */
+export async function listWorksheetHistory(
+  tenantId: string,
+  limit = 50,
+): Promise<WorksheetHistoryItem[]> {
+  const r = await apiRequest<{ items: WorksheetHistoryItem[] }>(
+    `/api/worksheets/history?tenant_id=${encodeURIComponent(tenantId)}&limit=${limit}`,
+  );
+  return r.items;
+}
+
+/** Tek bir kağıt kaydını siler (sunucu kimliği doğrulanmış oturumdan türetir). */
+export async function deleteWorksheetHistoryItem(
+  itemId: string,
+  tenantId: string,
+): Promise<void> {
+  await apiRequest<void>(
+    `/api/worksheets/history/${encodeURIComponent(itemId)}?tenant_id=${encodeURIComponent(tenantId)}`,
+    { method: 'DELETE' },
+  );
 }
 
 /** Kullanıcının geçmiş çözüm denemeleri — en yeni önce. */
