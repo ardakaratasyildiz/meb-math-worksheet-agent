@@ -1,0 +1,54 @@
+name: mobile-ci
+
+# apps/mobile için tip kontrolü + bundle smoke.
+# Neden: mobil tarafta bugüne dek hiçbir otomatik kontrol yoktu — tsc elle
+# çalıştırılıyordu, unutulunca kırık tip main'e girebiliyordu.
+#
+# `expo export` neden var: tsc yalnız tipleri görür; eksik/yanlış bir import ya da
+# bozuk bir route yapısı ancak paketleme sırasında patlar. Export, uygulamayı gerçekten
+# derleyerek bunu yakalar (native derleme DEĞİL, yalnız JS bundle → hızlı ve ücretsiz).
+
+on:
+  pull_request:
+    paths:
+      - "apps/mobile/**"
+      - "packages/**"
+      - ".github/workflows/mobile-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/mobile/**"
+      - "packages/**"
+
+# Aynı dal için yeni push gelirse öncekini iptal et (CI dakikası harcamayalım).
+concurrency:
+  group: mobile-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    name: Tip kontrolü + bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Monorepo kökünden kur (workspaces: apps/mobile + packages/shared).
+      # `npm ci` lock dosyasına birebir uyar — yerelde geçip CI'da kayan sürüm olmasın.
+      - name: Bağımlılıklar
+        run: npm ci
+
+      - name: TypeScript
+        working-directory: apps/mobile
+        run: npx tsc --noEmit -p tsconfig.json
+
+      # Bundle smoke: JS paketlenebiliyor mu (kırık import / route hatası yakalar).
+      # EXPO_PUBLIC_* değerleri gerekmez — bundle içeriği değil, derlenebilirliği test edilir.
+      - name: Expo export (bundle smoke)
+        working-directory: apps/mobile
+        run: npx expo export --platform ios --output-dir "$RUNNER_TEMP/expo-export"

@@ -37,6 +37,13 @@
         }
       ],
       "@clerk/expo",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/android-icon-monochrome.png",
+          "color": "#2679E7"
+        }
+      ],
       "expo-secure-store",
       "expo-font",
       "expo-web-browser"

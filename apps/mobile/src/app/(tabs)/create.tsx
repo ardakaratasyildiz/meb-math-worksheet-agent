@@ -15,6 +15,7 @@ import { QuestionCard, ResultView, stripInlineOptions } from '@/components/solve
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { createQuiz, generateWorksheet, submitAttempt } from '@/lib/api';
+import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
 import { previewWorksheetPdf, shareWorksheetPdf } from '@/lib/pdf';
 import { effectiveRole, isPlayfulRole } from '@/lib/roles';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
@@ -32,6 +33,10 @@ export default function CreateScreen() {
   const router = useRouter();
   const { entitlements, quotaExhausted, dailyExhausted, refresh: refreshEntitlements } =
     useEntitlements();
+  // Denemedeyse kalan gün — kota çipi "Bu ay" yerine "Deneme" der (kullanıcı 7 günlük
+  // kartsız denemede olduğunu ve ne zaman biteceğini görmeliydi; hiçbir yerde yazmıyordu).
+  const trialLeft =
+    entitlements.plan === 'trial' ? trialDaysLeft(entitlements.trial_end) : null;
   const sober = !isPlayfulRole(effectiveRole(user));
   const [phase, setPhase] = useState<Phase>('setup');
   const [busy, setBusy] = useState(false);
@@ -185,12 +190,18 @@ export default function CreateScreen() {
             <>
               {error ? <Text style={styles.error}>{error}</Text> : null}
               {userId && entitlements.quota.limit !== null ? (
-                <Pressable onPress={() => router.push('/paywall')} style={styles.quotaChip}>
-                  <Text style={styles.quotaChipText}>
-                    Bu ay: {entitlements.quota.used}/{entitlements.quota.limit} kağıt
-                    {entitlements.quota.daily_limit
-                      ? ` · bugün: ${entitlements.quota.used_today}/${entitlements.quota.daily_limit}`
-                      : ''}
+                <Pressable
+                  onPress={() => router.push('/paywall')}
+                  style={[styles.quotaChip, trialLeft !== null && styles.quotaChipTrial]}
+                >
+                  <Text style={[styles.quotaChipText, trialLeft !== null && styles.quotaChipTextTrial]}>
+                    {trialLeft !== null ? 'Deneme: ' : 'Bu ay: '}
+                    {entitlements.quota.used}/{entitlements.quota.limit} kağıt
+                    {trialLeft !== null
+                      ? ` · ${trialLeftLabel(trialLeft)}`
+                      : entitlements.quota.daily_limit
+                        ? ` · bugün: ${entitlements.quota.used_today}/${entitlements.quota.daily_limit}`
+                        : ''}
                   </Text>
                   <Text style={styles.quotaChipCta}>Yükselt</Text>
                 </Pressable>
@@ -327,7 +338,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
   },
+  quotaChipTrial: { backgroundColor: colors.tintPurple },
   quotaChipText: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.brand },
+  quotaChipTextTrial: { color: colors.magic },
   quotaChipCta: { fontFamily: fonts.bodyBold, fontSize: fontSize.sm, color: colors.brandDark },
   loadingWrap: { alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.md },
 
