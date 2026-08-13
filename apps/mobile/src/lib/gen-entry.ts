@@ -15,14 +15,32 @@
  */
 
 /** 'ask' = mod sorusu sorulsun (ön seçim yok). */
-export type GenEntry = 'solve' | 'pdf' | 'ask';
+export type GenEntryMode = 'solve' | 'pdf' | 'ask';
+
+/**
+ * Sihirbaza taşınan ÖN SEÇİM. Ana ekrandaki "Önce bunu çalış" kartı zayıf kazanımı
+ * biliyor; kullanıcıyı ders/sınıf/ünite adımlarını yeniden tıklatmaya zorlamak yerine
+ * doğrudan o konuya kadar ilerletiyoruz. `topicName` = ünite adı (progress ucu
+ * kazanım kodundan çözüyor) → ünite listesinde adla eşleşir.
+ */
+export interface GenPrefill {
+  subject?: string;
+  grade?: number | null;
+  kazanimKod?: string | null;
+  topicName?: string | null;
+}
+
+export interface GenEntry {
+  mode: GenEntryMode;
+  prefill?: GenPrefill;
+}
 
 let pending: GenEntry | null = null;
 const listeners = new Set<() => void>();
 
 /** Girişi kaydeder ve bağlı ekrana haber verir (ekran henüz yoksa mount'ta okunur). */
-export function requestGenEntry(entry: GenEntry): void {
-  pending = entry;
+export function requestGenEntry(mode: GenEntryMode, prefill?: GenPrefill): void {
+  pending = { mode, prefill };
   // Kopya üzerinde gez: dinleyici içinde abonelik değişirse döngü bozulmasın.
   [...listeners].forEach((l) => l());
 }

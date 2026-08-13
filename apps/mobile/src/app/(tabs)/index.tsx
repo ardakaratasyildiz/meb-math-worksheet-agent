@@ -233,10 +233,24 @@ export default function HomeScreen() {
           </View>
 
           {/* ── Devam Et (hero) ────────────────────────────────────────────── */}
-          {/* Hero "çalışmaya devam et" vaadi veriyor → doğrudan çöz akışı. */}
+          {/*
+            Hero "önce bunu çalış" diyor → yalnız çöz akışını değil, ÖNERİLEN KONUYU da
+            taşır: ders/sınıf/ünite hazır gelir, kullanıcı tekrar seçmez. Öneri yoksa
+            (weakest null) sade çöz akışı.
+          */}
           <Pressable
             onPress={() => {
-              requestGenEntry("solve");
+              requestGenEntry(
+                "solve",
+                weakest
+                  ? {
+                      subject: weakest.subject,
+                      grade: weakest.grade,
+                      kazanimKod: weakest.kazanim_kod,
+                      topicName: weakest.topic_name,
+                    }
+                  : undefined,
+              );
               router.push("/create");
             }}
           >
