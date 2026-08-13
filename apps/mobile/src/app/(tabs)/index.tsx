@@ -146,6 +146,24 @@ export default function HomeScreen() {
             >
               <IconBell size={26} dot={notifUndecided} />
             </Pressable>
+
+            {/*
+              Balon HEADER'IN İÇİNDE: maskotla dikey olarak örtüşsün ve kuyruğu
+              maskota denk gelsin. Önce çiplerin ALTINDAydı → maskottan kopuk
+              duruyordu, "maskot konuşuyor" hissi vermiyordu.
+            */}
+            <SpeechBubble style={styles.bubble}>
+              <Text style={styles.bubbleText}>
+                {dailyDone >= DAILY_GOAL ? (
+                  <>Bugünkü hedefini tamamladın! 🎉</>
+                ) : (
+                  <>
+                    Hedefe <Text style={styles.bubbleAccent}>{DAILY_GOAL - dailyDone} soru</Text> kaldı! 🎯
+                  </>
+                )}
+              </Text>
+            </SpeechBubble>
+
             <View style={styles.mascotWrap} pointerEvents="none">
               <Mascot variant="full" size={150} />
             </View>
@@ -158,10 +176,12 @@ export default function HomeScreen() {
               value={`${g.streak_current} gün`}
               label="Seri"
             />
+            {/* "Seviye 3" üç çipin dar alanında "Seviy.." diye kırpılıyordu →
+                kısa unvan üstte, seviye numarası altta. */}
             <StatChip
               icon={<IconStar size={26} />}
-              value={`Seviye ${g.level}`}
-              label={levelTitle(g.level)}
+              value={levelTitle(g.level)}
+              label={`Seviye ${g.level}`}
             />
             <StatChip
               icon={<IconSpark size={24} />}
@@ -169,19 +189,6 @@ export default function HomeScreen() {
               label="Puanın"
             />
           </View>
-
-          {/* ── Maskot konuşma balonu ─────────────────────────────────────── */}
-          <SpeechBubble style={styles.bubble}>
-            <Text style={styles.bubbleText}>
-              {dailyDone >= DAILY_GOAL ? (
-                <>Bugünkü hedefini tamamladın! 🎉</>
-              ) : (
-                <>
-                  Hedefe <Text style={styles.bubbleAccent}>{DAILY_GOAL - dailyDone} soru</Text> kaldı! 🎯
-                </>
-              )}
-            </Text>
-          </SpeechBubble>
 
           {/* ── Günlük Hedef + Serini koru ─────────────────────────────────── */}
           <View style={styles.dualRow}>
@@ -225,7 +232,8 @@ export default function HomeScreen() {
           </View>
 
           {/* ── Devam Et (hero) ────────────────────────────────────────────── */}
-          <Pressable onPress={go("/create")}>
+          {/* Hero "çalışmaya devam et" vaadi veriyor → doğrudan çöz akışı. */}
+          <Pressable onPress={() => router.push({ pathname: "/create", params: { mode: "solve" } })}>
             <Card floating style={styles.continueCard}>
               <View style={styles.continueIcon}>
                 <IconWorksheet size={40} tone="#FFFFFF" />
@@ -255,19 +263,24 @@ export default function HomeScreen() {
 
           {/* ── Aksiyon kartları: Çalışma Kağıdı + Alıştırma Çöz ──────────── */}
           <View style={styles.dualRow}>
+            {/*
+              Mod parametresi ŞART: ikisi de parametresiz /create'e gidince sihirbaz
+              "Ne yapmak istersin?" diye tekrar soruyordu → kullanıcı "Alıştırma Çöz"e
+              basıp çözme ekranına ulaşamıyordu. Artık adım atlanıyor.
+            */}
             <ActionCard
               bg={colors.brand}
               icon={<IconWorksheet size={44} tone="#FFFFFF" />}
               title={"Çalışma\nKağıdı"}
               sub="Yapay zekâ ile kendi kağıdını üret"
-              onPress={go("/create")}
+              onPress={() => router.push({ pathname: "/create", params: { mode: "pdf" } })}
             />
             <ActionCard
               bg={colors.success}
               icon={<IconPencil size={44} />}
               title={"Alıştırma\nÇöz"}
               sub="Alıştırma çöz, puan kazan!"
-              onPress={go("/create")}
+              onPress={() => router.push({ pathname: "/create", params: { mode: "solve" } })}
             />
           </View>
 
@@ -390,7 +403,7 @@ const styles = StyleSheet.create({
   },
 
   // Header (maskot sağda; chip satırı bunun altında → örtüşme yok)
-  headerRow: { minHeight: 158, justifyContent: "flex-start" },
+  headerRow: { minHeight: 170, justifyContent: "flex-start" },
   headerText: { paddingRight: 120 },
   hello: {
     fontFamily: fonts.heading,
@@ -422,7 +435,9 @@ const styles = StyleSheet.create({
   chipRow: { flexDirection: "row", gap: spacing.sm },
 
   // Bubble
-  bubble: { maxWidth: "82%", marginTop: spacing.xs },
+  // Maskot sağda ~136px yer kaplıyor (mascotWrap right:-14, size 150) → balon
+  // %58'i geçmemeli, yoksa maskotun üstüne biner ve kuyruk hedefini şaşırır.
+  bubble: { maxWidth: "58%", marginTop: spacing.md },
   bubbleText: {
     fontFamily: fonts.bodyBold,
     fontSize: fontSize.md,

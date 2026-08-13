@@ -62,9 +62,13 @@ const USER_GROUPS: { key: UserGroupKey; label: string }[] = [
 function flattenTypes(groups: Record<UserGroupKey, boolean>): QuestionType[] | null {
   const on = USER_GROUPS.map((g) => g.key).filter((k) => groups[k]);
   if (on.length === USER_GROUPS.length) return null;
-  const out: QuestionType[] = [...TYPE_GROUPS.visual];
+  // Görsel tipler (salt_islem/tablo/grafik/örüntü) cevap formatı olarak AÇIK UÇLUDUR,
+  // şıkları yoktur. Eskiden kullanıcı ne seçerse seçsin havuza ekleniyorlardı →
+  // "Çoktan seçmeli" seçen kullanıcıya şıksız sorular geliyordu (canlı ölçüm: 6
+  // sorunun 3'ü şıksız). Artık yalnız açık uçlu da isteniyorsa ekleniyorlar.
+  const out: QuestionType[] = groups.open_ended ? [...TYPE_GROUPS.visual] : [];
   for (const k of on) out.push(...TYPE_GROUPS[k]);
-  return out;
+  return out.length ? out : null;
 }
 
 export interface GeneratorParams {
@@ -111,6 +115,7 @@ export function GeneratorSetup({
   counts = [5, 10, 15, 20],
   sober = false,
   pdfOnly = false,
+  initialMode,
 }: {
   onSubmit: (p: GeneratorParams) => void;
   busy: boolean;
@@ -119,14 +124,23 @@ export function GeneratorSetup({
   sober?: boolean;
   /** Öğretmen/veli: yalnız PDF üretimi; mod seçme adımı atlanır. */
   pdfOnly?: boolean;
+  /**
+   * Mod dışarıdan seçilmişse (ana ekrandaki "Alıştırma Çöz" / "Çalışma Kağıdı"
+   * kartları) mod adımı atlanır — kullanıcı zaten kararını vermiş, tekrar sormak
+   * "butona bastım ama bir yere gitmedim" hissi yaratıyordu. Ekmek kırıntısındaki
+   * moda basarak yine değiştirebilir.
+   */
+  initialMode?: GenMode;
 }) {
-  const stepKeys: StepKey[] = pdfOnly
+  // Mod dışarıdan geldiyse (initialMode) ya da pdfOnly ise mod adımı listeden çıkar.
+  const modePreset = pdfOnly || !!initialMode;
+  const stepKeys: StepKey[] = modePreset
     ? ['subject', 'grade', 'unit', 'settings']
     : ['mode', 'subject', 'grade', 'unit', 'settings'];
 
   const [stepIdx, setStepIdx] = useState(0);
-  const [mode, setMode] = useState<GenMode>(pdfOnly ? 'pdf' : 'solve');
-  const [modeChosen, setModeChosen] = useState(pdfOnly);
+  const [mode, setMode] = useState<GenMode>(pdfOnly ? 'pdf' : (initialMode ?? 'solve'));
+  const [modeChosen, setModeChosen] = useState(modePreset);
   const [subject, setSubject] = useState<SubjectSlug>('matematik');
   const [grade, setGrade] = useState(5);
   const { units, loading: unitsLoading, error } = useUnits(grade, subject);
@@ -250,7 +264,16 @@ export function GeneratorSetup({
       {stepIdx > 0 ? (
         <View style={styles.crumbs}>
           {!pdfOnly ? (
-            <Crumb label={mode === 'solve' ? '✏️ Çöz' : '📄 PDF'} onPress={() => setStepIdx(0)} />
+            <Crumb
+              label={mode === 'solve' ? '✏️ Çöz' : '📄 PDF'}
+              // Mod adımı listede yoksa (dışarıdan seçildi) o adıma dönemeyiz —
+              // kırıntıya basmak modu doğrudan çevirir.
+              onPress={
+                modePreset
+                  ? () => setMode((m) => (m === 'solve' ? 'pdf' : 'solve'))
+                  : () => setStepIdx(0)
+              }
+            />
           ) : null}
           {stepKeys.indexOf('subject') < stepIdx ? (
             <Crumb

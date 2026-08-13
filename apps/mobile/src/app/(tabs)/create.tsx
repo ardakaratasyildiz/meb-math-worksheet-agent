@@ -1,16 +1,16 @@
 import { useAuth, useUser } from '@clerk/expo';
 import type { AttemptResult, QuizPublic, SubmittedAnswer, Worksheet } from '@soruatolyesi/shared';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { GeneratorSetup, type GeneratorParams } from '@/components/generator-setup';
+import { GeneratorSetup, type GenMode, type GeneratorParams } from '@/components/generator-setup';
 import { IconDocSimple, IconSpark, IconWorksheet } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
 import { QuestionText } from '@/components/question-text';
 import { ShareSheet } from '@/components/share-sheet';
-import { SkeletonList } from '@/components/skeleton';
+import { GeneratingState } from '@/components/generating-state';
 import { QuestionCard, ResultView, stripInlineOptions } from '@/components/solve';
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
@@ -31,6 +31,12 @@ export default function CreateScreen() {
   const { userId } = useAuth();
   const { user } = useUser();
   const router = useRouter();
+  // Ana ekrandaki "Alıştırma Çöz" / "Çalışma Kağıdı" kartları modu buradan geçirir →
+  // sihirbaz "Ne yapmak istersin?" adımını atlar. Öncesinde her iki kart da aynı
+  // soruyu tekrar soruyordu; kullanıcı "butona bastım ama bir yere gitmedim" diyordu.
+  const { mode: modeParam } = useLocalSearchParams<{ mode?: string }>();
+  const presetMode: GenMode | undefined =
+    modeParam === 'solve' || modeParam === 'pdf' ? modeParam : undefined;
   const { entitlements, quotaExhausted, dailyExhausted, refresh: refreshEntitlements } =
     useEntitlements();
   // Denemedeyse kalan gün — kota çipi "Bu ay" yerine "Deneme" der (kullanıcı 7 günlük
@@ -206,15 +212,21 @@ export default function CreateScreen() {
                   <Text style={styles.quotaChipCta}>Yükselt</Text>
                 </Pressable>
               ) : null}
-              <GeneratorSetup busy={busy} onSubmit={onGenerate} sober={sober} pdfOnly={sober} />
+              <GeneratorSetup
+                busy={busy}
+                onSubmit={onGenerate}
+                sober={sober}
+                pdfOnly={sober}
+                initialMode={presetMode}
+              />
+              {/* Boş iskelet 60 sn boyunca "takıldı mı?" hissi veriyordu → web'deki
+                  "Bunu biliyor muydun?" bekleme ekranının mobil karşılığı. */}
               {busy ? (
-                <>
-                  <View style={styles.loadingWrap}>
-                    {sober ? null : <Mascot variant="thinking" size={80} />}
-                    <Text style={styles.muted}>Sorular hazırlanıyor — 30-90 saniye sürebilir…</Text>
-                  </View>
-                  <SkeletonList count={3} />
-                </>
+                <GeneratingState
+                  subject={params?.subject ?? 'matematik'}
+                  questionCount={params?.count ?? 10}
+                  sober={sober}
+                />
               ) : null}
             </>
           )}
@@ -342,7 +354,6 @@ const styles = StyleSheet.create({
   quotaChipText: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.brand },
   quotaChipTextTrial: { color: colors.magic },
   quotaChipCta: { fontFamily: fonts.bodyBold, fontSize: fontSize.sm, color: colors.brandDark },
-  loadingWrap: { alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.md },
 
   // PDF soru kartı
   qCard: { flexDirection: 'row', gap: spacing.md, padding: spacing.lg },
