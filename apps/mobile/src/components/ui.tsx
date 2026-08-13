@@ -57,11 +57,12 @@ export function StatChip({
   return (
     <View style={[styles.chip, shadow.card]}>
       {icon}
+      {/* Üç çip yan yana dar kalıyor; uzun metin kırpılmak yerine hafifçe küçülsün. */}
       <View style={styles.chipText}>
-        <Text style={styles.chipValue} numberOfLines={1}>
+        <Text style={styles.chipValue} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
           {value}
         </Text>
-        <Text style={styles.chipLabel} numberOfLines={1}>
+        <Text style={styles.chipLabel} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
           {label}
         </Text>
       </View>

@@ -140,8 +140,11 @@ const KAZANIM_AUTO = "__AUTO__";
 function flattenTypeGroups(
   groups: Record<TypeGroupKey, boolean>,
 ): QuestionType[] | null {
-  // Görsel grubu her zaman havuzda (sunucu oranı uygular); kullanıcı seçemez.
-  const effective: Record<TypeGroupKey, boolean> = { ...groups, visual: true };
+  // Görsel tipler (salt_islem/tablo/grafik/örüntü) cevap formatı olarak AÇIK UÇLUDUR,
+  // şıkları yoktur. Eskiden `visual: true` sabitti → "Çoktan seçmeli" seçen kullanıcıya
+  // şıksız sorular geliyordu (canlı ölçüm: 6 sorunun 3'ü şıksız). Artık görsel havuz
+  // yalnız açık uçlu da isteniyorsa açılıyor; kullanıcı yine doğrudan seçemiyor.
+  const effective: Record<TypeGroupKey, boolean> = { ...groups, visual: groups.open_ended };
   const enabledKeys = (Object.keys(effective) as TypeGroupKey[]).filter(
     (k) => effective[k],
   );

@@ -28,7 +28,7 @@ type ItemDef = {
 };
 
 const ITEMS: Record<string, ItemDef> = {
-  index: { name: "index", label: "Ana", render: (c) => <IconHome size={25} color={c} /> },
+  index: { name: "index", label: "Ana Sayfa", render: (c) => <IconHome size={25} color={c} /> },
   create: { name: "create", label: "Oluştur", render: (c) => <IconMagic size={25} color={c} /> },
   progress: { name: "progress", label: "Gelişim", render: (c) => <IconTrend size={25} color={c} /> },
   profile: { name: "profile", label: "Profil", render: (c) => <IconUser size={25} color={c} /> },
@@ -77,7 +77,16 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
         <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
           {item.render(color)}
         </View>
-        <Text style={[styles.label, { color }]}>{item.label}</Text>
+        {/* "Ana Sayfa" iki kelime — dar sekmede sarmasın/kırpılmasın diye tek satır
+            + gerekirse hafif küçülme. */}
+        <Text
+          style={[styles.label, { color }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.8}
+        >
+          {item.label}
+        </Text>
       </Pressable>
     );
   };
