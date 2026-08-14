@@ -59,6 +59,33 @@ const LEGAL = {
   privacy: 'https://soruatolyesi.com/legal/privacy',
 } as const;
 
+/**
+ * Ücretli planın ücretsizden farkları — hepsi SUNUCUDA fiilen uygulanan farklar.
+ * Doğrulanamayan pazarlama vaadi eklenmez (bkz. paywall'daki yorum).
+ */
+const DIFFERENCES = [
+  {
+    title: 'Çok daha fazla çalışma kağıdı',
+    sub: 'Ücretsizde ayda 10; Pro’da 50, Pro+’ta 120.',
+  },
+  {
+    title: 'Günlük sınır yok',
+    sub: 'Ücretsiz planda günde en çok 2 kağıt üretilebilir; abonelikte tavan kalkar.',
+  },
+  {
+    title: 'Yeni nesil soru kalitesi',
+    sub: 'Senaryo bazlı, gerçek hayattan sorular her zorlukta açık.',
+  },
+  {
+    title: 'Aile paylaşımı',
+    sub: 'Çocukların senin planını devralır; kota tek havuzdan paylaşılır (3 çocuğa kadar).',
+  },
+  {
+    title: 'Ek kağıt paketi alabilme',
+    sub: 'Kotan biterse +25 veya +75 kağıtlık paket ekleyebilirsin.',
+  },
+] as const;
+
 /** Ek kağıt paketleri (tüketilebilir; yalnız aktif aboneye) — top-up. */
 const TOPUPS = [
   { sku: 'topup-25', papers: 25, price: '₺89' },
@@ -221,6 +248,31 @@ export default function PaywallScreen() {
             Tüm özellikler her iki kademede de açık — fark yalnız aylık kağıt sayısı.
           </Text>
 
+          {/*
+            "Ücretsizden farkı ne?" — kullanıcı neye para verdiğini görmeden karar
+            veremiyordu. YALNIZ sunucuda gerçekten uygulanan farklar listeleniyor
+            (kota/günlük tavan: entitlements.daily_limit · yeni nesil kalite:
+            wants_yeni_nesil · aile havuzu: _family_tenants · ek paket: yalnız abone).
+            Filigransız PDF gibi doğrulanamayan vaatler BİLİNÇLİ olarak yok.
+          */}
+          <Card style={styles.diffCard}>
+            <Text style={styles.diffTitle}>Ücretsiz plandan farkı</Text>
+            {DIFFERENCES.map((d) => (
+              <View key={d.title} style={styles.diffRow}>
+                <View style={styles.diffCheck}>
+                  <Text style={styles.diffCheckText}>✓</Text>
+                </View>
+                <View style={styles.diffBody}>
+                  <Text style={styles.diffRowTitle}>{d.title}</Text>
+                  <Text style={styles.diffRowSub}>{d.sub}</Text>
+                </View>
+              </View>
+            ))}
+            <Text style={styles.diffFree}>
+              Ücretsiz plan: ayda 10 çalışma kağıdı, günde en çok 2.
+            </Text>
+          </Card>
+
           {/* Ek paket — yalnız aktif abone */}
           {isPremium ? (
             <Card style={styles.topupCard}>
@@ -347,6 +399,31 @@ const styles = StyleSheet.create({
   tierPeriod: { fontFamily: fonts.body, fontSize: fontSize.sm, color: colors.textMuted, marginLeft: 2 },
 
   allNote: { fontFamily: fonts.body, fontSize: fontSize.sm, color: colors.textMuted, textAlign: 'center' },
+
+  diffCard: { gap: spacing.md },
+  diffTitle: { fontFamily: fonts.heading, fontSize: fontSize.lg, color: colors.text },
+  diffRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md },
+  diffCheck: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: colors.tintGreen,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 1,
+  },
+  diffCheckText: { fontFamily: fonts.bodyBold, fontSize: fontSize.sm, color: colors.success },
+  diffBody: { flex: 1, gap: 1 },
+  diffRowTitle: { fontFamily: fonts.bodyBold, fontSize: fontSize.md, color: colors.text },
+  diffRowSub: { fontFamily: fonts.body, fontSize: fontSize.sm, color: colors.textMuted, lineHeight: 19 },
+  diffFree: {
+    fontFamily: fonts.body,
+    fontSize: fontSize.xs,
+    color: colors.textFaint,
+    borderTopWidth: 1,
+    borderTopColor: colors.track,
+    paddingTop: spacing.sm,
+  },
 
   topupCard: { gap: spacing.sm },
   topupTitle: { fontFamily: fonts.heading, fontSize: fontSize.lg, color: colors.text },

@@ -148,11 +148,15 @@ export default function HomeScreen() {
               <IconBell size={26} dot={notifUndecided} />
             </Pressable>
 
-            {/*
-              Balon HEADER'IN İÇİNDE: maskotla dikey olarak örtüşsün ve kuyruğu
-              maskota denk gelsin. Önce çiplerin ALTINDAydı → maskottan kopuk
-              duruyordu, "maskot konuşuyor" hissi vermiyordu.
-            */}
+          </View>
+
+          {/*
+            Maskot + balon AYNI SATIRDA, yan yana: balon solda (üste hizalı, kuyruğu
+            sağa bakıyor), maskot sağda. Böylece kuyruk maskotun baş hizasına denk
+            gelir ve "maskot konuşuyor" okunur. Önceki iki deneme (çiplerin altında,
+            sonra header içinde mutlak konumlu maskotun yanında) hizayı tutturamıyordu.
+          */}
+          <View style={styles.speechRow}>
             <SpeechBubble style={styles.bubble}>
               <Text style={styles.bubbleText}>
                 {dailyDone >= DAILY_GOAL ? (
@@ -164,10 +168,7 @@ export default function HomeScreen() {
                 )}
               </Text>
             </SpeechBubble>
-
-            <View style={styles.mascotWrap} pointerEvents="none">
-              <Mascot variant="full" size={150} />
-            </View>
+            <Mascot variant="full" size={128} />
           </View>
 
           {/* ── Status chip'leri: seri / seviye / XP ──────────────────────── */}
@@ -428,8 +429,10 @@ const styles = StyleSheet.create({
   },
 
   // Header (maskot sağda; chip satırı bunun altında → örtüşme yok)
-  headerRow: { minHeight: 170, justifyContent: "flex-start" },
-  headerText: { paddingRight: 120 },
+  // Maskot artık header'ın üstünde yüzmüyor (kendi satırında) → yükseklik dayatması
+  // ve geniş sağ boşluk gerekmiyor; sağda yalnız çan var.
+  headerRow: { justifyContent: "flex-start" },
+  headerText: { paddingRight: 56 },
   hello: {
     fontFamily: fonts.heading,
     fontSize: fontSize.display,
@@ -450,19 +453,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  mascotWrap: {
-    position: "absolute",
-    right: -14,
-    top: 8,
+  // Balon üste hizalı: SpeechBubble'ın kuyruğu üstten 22px'te, maskotun baş
+  // hizasına denk gelsin diye (alignItems: flex-start).
+  speechRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: spacing.sm,
+    marginTop: spacing.xs,
   },
 
   // Chips
   chipRow: { flexDirection: "row", gap: spacing.sm },
 
   // Bubble
-  // Maskot sağda ~136px yer kaplıyor (mascotWrap right:-14, size 150) → balon
-  // %58'i geçmemeli, yoksa maskotun üstüne biner ve kuyruk hedefini şaşırır.
-  bubble: { maxWidth: "58%", marginTop: spacing.md },
+  // Satırda kalan tüm genişliği kaplar; maskot sabit 128px.
+  bubble: { flex: 1 },
   bubbleText: {
     fontFamily: fonts.bodyBold,
     fontSize: fontSize.md,
