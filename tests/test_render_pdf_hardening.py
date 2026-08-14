@@ -133,8 +133,63 @@ def test_render_endpoint_oversized_returns_422_not_500() -> None:
     check(r_ok.status_code == 200, f"2 soru → 200 PDF (got {r_ok.status_code})")
 
 
+def test_footer_promo_gated_by_paid() -> None:
+    """Filigran (site etiketi + QR) YALNIZ ücretsiz kademede basılır.
+
+    MONETIZATION_PLAN'daki "filigransız PDF" vaadi bugüne dek kodda karşılıksızdı —
+    alt bilgi koşulsuz basılıyordu. Ödeyen kullanıcı kağıdını kendi sınıfına
+    dağıtırken bizim etiketimizi taşımasın; ücretsiz kağıt ise büyüme döngüsünü
+    sürdürsün (etiket + QR).
+    """
+    print("PDF filigranı — yalnız ücretsiz kademede")
+    from app.models.enums import Difficulty, QuestionType  # noqa: PLC0415
+    from app.services.pdf_renderer import render_worksheet_pdf  # noqa: PLC0415
+
+    q = Question(
+        number=1,
+        question="2+2 kaç eder?",
+        question_type=QuestionType.SALT_ISLEM,
+        answer="4",
+        kazanim_kod="MAT.5.1.1",
+        difficulty=Difficulty.KOLAY,
+        solution_steps="2+2=4",
+    )
+    w = Worksheet(
+        title="Test",
+        grade=5,
+        topic="Sayılar",
+        difficulty=Difficulty.KOLAY,
+        question_count=1,
+        questions=[q],
+        answer_key=[],
+    )
+
+    free_pdf = render_worksheet_pdf(w, show_footer_promo=True)
+    paid_pdf = render_worksheet_pdf(w, show_footer_promo=False)
+
+    check(len(free_pdf) > 0 and len(paid_pdf) > 0, "iki varyant da PDF üretiyor")
+    # QR bir vektör çizim → ücretsiz PDF belirgin biçimde daha büyük olur.
+    check(len(paid_pdf) < len(free_pdf), "abone PDF'i daha küçük (etiket + QR yok)")
+
+    try:
+        from pypdf import PdfReader  # noqa: PLC0415
+
+        def _text(b: bytes) -> str:
+            import io  # noqa: PLC0415
+
+            return "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(b)).pages)
+
+        free_txt, paid_txt = _text(free_pdf), _text(paid_pdf)
+        check("ile üretildi" in free_txt, "ücretsiz PDF'te site etiketi var")
+        check("ile üretildi" not in paid_txt, "abone PDF'inde site etiketi YOK")
+        check("- 1 -" in paid_txt, "abone PDF'inde sayfa numarası korunuyor")
+    except ImportError:
+        print("  not  pypdf yok → metin doğrulaması atlandı (boyut kontrolü yapıldı)")
+
+
 def _run() -> int:
     test_svg_ssrf_external_href_blocked()
+    test_footer_promo_gated_by_paid()
     test_worksheet_question_count_capped()
     test_question_field_length_capped()
     test_render_endpoint_registered_and_limited()

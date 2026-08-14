@@ -506,14 +506,21 @@ def _pdf_response(
     brand_name: str | None = None,
     brand_subtitle: str | None = None,
     brand_logo: str | None = None,
+    *,
+    paid: bool = False,
 ) -> Response:
+    """PDF yanıtı. `paid` = GERÇEK abonelik/deneme (sunucuda belirlenir, client'tan
+    GELMEZ). Ücretsizde alt bilgi + QR basılır (büyüme döngüsü); abonede kaldırılır
+    ve white-label marka alanları uygulanır — ücretsiz kullanıcı brand_* göndererek
+    etiketi kaldıramaz."""
     pdf_bytes = render_worksheet_pdf(
         worksheet,
         include_answer_key=include_answer_key,
         include_solutions=include_solutions,
-        brand_name=brand_name,
-        brand_subtitle=brand_subtitle,
-        brand_logo=brand_logo,
+        brand_name=brand_name if paid else None,
+        brand_subtitle=brand_subtitle if paid else None,
+        brand_logo=brand_logo if paid else None,
+        show_footer_promo=not paid,
     )
     filename = _build_pdf_filename(worksheet)
     return Response(
@@ -540,6 +547,7 @@ def generate_worksheet_pdf(
         worksheet,
         include_answer_key=req.include_answer_key,
         include_solutions=req.include_solutions,
+        paid=entitlements.has_paid_access(verified),
     )
 
 
@@ -601,6 +609,7 @@ _MAX_RENDER_BODY_BYTES = 8 * 1024 * 1024  # 8 MB
 @limiter.limit("30/minute;200/hour")
 async def render_existing_worksheet(
     request: Request,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> Response:
     """Önceden üretilmiş bir worksheet JSON'unu PDF'e çevirir.
@@ -631,6 +640,7 @@ async def render_existing_worksheet(
     # Modeller ELLE kurulur (gövde parse dallanması) → Pydantic ValidationError
     # otomatik 422'ye çevrilmez, aksi halde 500 olur. Girdi sınırı ihlali (≤60 soru,
     # alan max_length) burada temiz 422 döner — hem DoS kapısı hem net hata.
+    paid = entitlements.has_paid_access(verified)
     try:
         if isinstance(body, dict) and "worksheet" in body:
             # Yeni format — gövde-model.
@@ -642,6 +652,7 @@ async def render_existing_worksheet(
                 brand_name=req.brand_name,
                 brand_subtitle=req.brand_subtitle,
                 brand_logo=req.brand_logo,
+                paid=paid,
             )
 
         # Eski format — gövde doğrudan Worksheet, marka/toggle query parametrelerinde.
@@ -652,6 +663,7 @@ async def render_existing_worksheet(
             include_solutions=qp.get("include_solutions") != "false",
             brand_name=qp.get("brand_name"),
             brand_subtitle=qp.get("brand_subtitle"),
+            paid=paid,
         )
     except ValidationError as exc:
         raise HTTPException(

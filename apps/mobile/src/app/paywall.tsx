@@ -77,6 +77,10 @@ const DIFFERENCES = [
     sub: 'Senaryo bazlı, gerçek hayattan sorular her zorlukta açık.',
   },
   {
+    title: 'Filigransız PDF',
+    sub: 'Kağıdın altındaki “Soru Atölyesi ile üretildi” etiketi ve QR kalkar.',
+  },
+  {
     title: 'Aile paylaşımı',
     sub: 'Çocukların senin planını devralır; kota tek havuzdan paylaşılır (3 çocuğa kadar).',
   },
