@@ -124,6 +124,16 @@ def is_premium_for_model(tenant_id: str | None) -> bool:
     return False
 
 
+def has_paid_access(tenant_id: str | None) -> bool:
+    """GERÇEK abonelik/deneme var mı — `premium_all` dark-launch bayrağını YOK SAYAR.
+
+    Parayla açılan çıktı farkları (filigransız PDF / white-label) bunu kullanmalı:
+    `is_premium()` dark-launch'ta herkese True döner ve ücretsiz kağıtlardaki
+    büyüme etiketini de sessizce kaldırırdı.
+    """
+    return is_premium_for_model(tenant_id)
+
+
 def wants_yeni_nesil(tenant_id: str | None) -> bool:
     """'Yeni nesil / senaryo' üretim modu açılsın mı? (gizli kalite kaldıracı.)
 

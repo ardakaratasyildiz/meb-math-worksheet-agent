@@ -691,12 +691,16 @@ def _page_furniture(
     brand_name: str | None = None,
     brand_subtitle: str | None = None,
     brand_logo: str | None = None,
+    show_footer_promo: bool = True,
 ):
     """Her sayfaya çizilen onPage callback'i üretir.
 
     Üst bilgi (white-label, opsiyonel): kurum/öğretmen logosu (sol) + adı + alt
     satır (sağ). brand_* boşsa header çizilmez → mevcut davranış korunur.
-    Alt bilgi (büyüme döngüsü): site etiketi + sayfa no + QR.
+    Alt bilgi: sayfa no HER ZAMAN; site etiketi + QR yalnız `show_footer_promo`
+    ise (ücretsiz kademe — büyüme döngüsü). Ödeyen kullanıcı kağıdını kendi
+    sınıfına dağıtırken bizim etiketimizi taşımak zorunda kalmaz (filigransız PDF,
+    MONETIZATION_PLAN'da vaat edilen fark).
     """
     logo_reader = _decode_logo(brand_logo)
 
@@ -735,14 +739,17 @@ def _page_furniture(
             canvas.setStrokeColor(colors.HexColor("#d0d7e2"))
             canvas.setLineWidth(0.5)
             canvas.line(2 * cm, top_y - 0.45 * cm, A4[0] - 2 * cm, top_y - 0.45 * cm)
-        # --- Alt bilgi: site + sayfa no + QR ---
+        # --- Alt bilgi: sayfa no her zaman; site etiketi + QR yalnız ücretsizde ---
         canvas.setFont(_BODY_FONT, 7)
         canvas.setFillColor(colors.grey)
+        canvas.drawCentredString(A4[0] / 2.0, 1.0 * cm, f"- {doc.page} -")
+        if not show_footer_promo:
+            canvas.restoreState()
+            return
         canvas.drawString(
             2 * cm, 1.0 * cm,
             f"{_SITE_LABEL} ile üretildi — ücretsiz MEB matematik çalışma kağıdı",
         )
-        canvas.drawCentredString(A4[0] / 2.0, 1.0 * cm, f"- {doc.page} -")
         qr_size = 1.1 * cm
         try:
             renderPDF.draw(
@@ -765,6 +772,7 @@ def render_worksheet_pdf(
     brand_name: str | None = None,
     brand_subtitle: str | None = None,
     brand_logo: str | None = None,
+    show_footer_promo: bool = True,
 ) -> bytes:
     """Bir Worksheet'i PDF byte'larına render eder.
 
@@ -814,6 +822,6 @@ def render_worksheet_pdf(
         flow.append(PageBreak())
         flow.extend(_solutions_section(worksheet.questions, styles))
 
-    furniture = _page_furniture(brand_name, brand_subtitle, brand_logo)
+    furniture = _page_furniture(brand_name, brand_subtitle, brand_logo, show_footer_promo)
     doc.build(flow, onFirstPage=furniture, onLaterPages=furniture)
     return buf.getvalue()
