@@ -104,6 +104,11 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
               headerBackTitle: 'Geri',
+              // 'minimal' = geri düğmesinde HİÇBİR metin gösterilmez, yalnız ok.
+              // headerBackTitle tek başına yetmiyordu (iOS önceki ekranın başlığını
+              // alan-durumuna göre yazabiliyor) → "(tabs)" görünmeye devam etti.
+              // Bu seçenek başlık çözümlemesinden tamamen bağımsız.
+              headerBackButtonDisplayMode: 'minimal',
               contentStyle: { backgroundColor: colors.bg },
             }}
           >
