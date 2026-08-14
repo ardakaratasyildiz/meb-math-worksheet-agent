@@ -111,6 +111,8 @@ export default function PaywallScreen() {
 
   const currentPlan = entitlements.plan;
   const isPremium = entitlements.is_premium;
+  /** Gerçek abonelik/deneme kaydı var mı (dark-launch `premium_all` bunu doldurmaz). */
+  const hasRealSubscription = !!entitlements.status;
   const trialLeft = currentPlan === 'trial' ? trialDaysLeft(entitlements.trial_end) : null;
 
   useEffect(() => {
@@ -216,7 +218,11 @@ export default function PaywallScreen() {
 
           {/* Kademeler */}
           {TIERS.map((t) => {
-            const isCurrent = currentPlan === t.plan;
+            // "Mevcut planın" YALNIZ gerçek abonelikte gösterilir. Sunucuda dark-launch
+            // bayrağı (premium_all) herkesi pro-plus sayıyor; buna bakılsaydı hiç kimse
+            // satın alma düğmesine basamazdı (cihazda görüldü: plan Pro+, düğmeler kapalı).
+            // Gerçek abonelikte `status` dolu gelir (trialing/active/…), dark-launch'ta null.
+            const isCurrent = hasRealSubscription && currentPlan === t.plan;
             const price = storePrice[t.sku] ?? t.price;
             return (
               <Card key={t.sku} floating={t.popular} style={[styles.tier, t.popular && { borderColor: t.color, borderWidth: 2 }]}>
@@ -277,8 +283,9 @@ export default function PaywallScreen() {
             </Text>
           </Card>
 
-          {/* Ek paket — yalnız aktif abone */}
-          {isPremium ? (
+          {/* Ek paket — yalnız GERÇEK abone (dark-launch premium'a gösterilmez:
+              sunucu ek paketi yalnız abonelik kaydı olana kredi olarak yazıyor). */}
+          {hasRealSubscription && isPremium ? (
             <Card style={styles.topupCard}>
               <Text style={styles.topupTitle}>Kağıdın mı bitti?</Text>
               <Text style={styles.topupHint}>Ek paket bu ay geçerli (30 gün).</Text>
