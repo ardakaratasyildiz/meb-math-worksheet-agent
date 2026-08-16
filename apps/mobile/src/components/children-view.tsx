@@ -1,6 +1,6 @@
 import { useAuth } from '@clerk/expo';
-import { useRouter, type Href } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect, useRouter, type Href } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -49,9 +49,13 @@ export function ChildrenView({ header }: { header?: React.ReactNode }) {
     }
   }, [userId]);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  // Ekrana her dönüşte tazele — çocuk ekranından geri gelindiğinde liste eski kalmasın
+  // (sınıf listesindeki senkron sorununun aynısı).
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
 
   const onLink = useCallback(async () => {
     if (!userId || linking || code.trim().length < 4) return;

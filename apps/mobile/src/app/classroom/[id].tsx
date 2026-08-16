@@ -1,21 +1,40 @@
 import { useAuth } from '@clerk/expo';
 import { Stack, useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { IconChevron } from '@/components/icons';
 import { Card, PrimaryButton } from '@/components/ui';
 import {
+  assignPdf,
   assignQuiz,
   deleteClassroom,
   getClassroom,
   leaveClassroom,
   listMyQuizzes,
+  listWorksheetHistory,
   type ClassroomDetail,
   type MyQuizItem,
+  type WorksheetHistoryItem,
 } from '@/lib/api';
+import { requestGenEntry } from '@/lib/gen-entry';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
+
+/** Katılma kodunu sistem paylaşım sayfasıyla gönder (WhatsApp, mesaj, e-posta…). */
+async function shareJoinCode(className: string, code: string): Promise<void> {
+  try {
+    await Share.share({
+      message:
+        `"${className}" sınıfına katıl!\n\n` +
+        `Katılma kodu: ${code}\n\n` +
+        `Soru Atölyesi uygulamasını aç → Sınıflarım → koda gir.\n` +
+        `soruatolyesi.com`,
+    });
+  } catch {
+    // kullanıcı vazgeçti / paylaşım açılamadı — sessiz geç
+  }
+}
 
 export default function ClassroomDetailScreen() {
   const { userId } = useAuth();
@@ -27,7 +46,10 @@ export default function ClassroomDetailScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const [showAssign, setShowAssign] = useState(false);
+  /** Ödev kaynağı: çözülebilir quiz mi, PDF çalışma kağıdı mı (web'deki iki yol). */
+  const [source, setSource] = useState<'quiz' | 'sheet'>('quiz');
   const [myQuizzes, setMyQuizzes] = useState<MyQuizItem[] | null>(null);
+  const [sheets, setSheets] = useState<WorksheetHistoryItem[] | null>(null);
   const [assigning, setAssigning] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -51,14 +73,40 @@ export default function ClassroomDetailScreen() {
 
   const openAssign = useCallback(async () => {
     setShowAssign((v) => !v);
-    if (myQuizzes === null && userId) {
+    if (!userId) return;
+    if (myQuizzes === null) {
       try {
         setMyQuizzes(await listMyQuizzes(userId));
       } catch {
         setMyQuizzes([]);
       }
     }
-  }, [myQuizzes, userId]);
+    if (sheets === null) {
+      try {
+        setSheets(await listWorksheetHistory(userId));
+      } catch {
+        setSheets([]);
+      }
+    }
+  }, [myQuizzes, sheets, userId]);
+
+  /** Kağıt geçmişindeki bir kağıdı PDF ödevi olarak ata (yeniden üretim YOK). */
+  const onAssignSheet = useCallback(
+    async (item: WorksheetHistoryItem) => {
+      if (!userId || !id || assigning) return;
+      setAssigning(item.id);
+      try {
+        await assignPdf(id, userId, item.response.worksheet);
+        setShowAssign(false);
+        await load();
+      } catch (e) {
+        setError((e as Error).message);
+      } finally {
+        setAssigning(null);
+      }
+    },
+    [userId, id, assigning, load],
+  );
 
   const onAssign = useCallback(
     async (quizId: string) => {
@@ -127,6 +175,14 @@ export default function ClassroomDetailScreen() {
                   <Text style={styles.codeLabel}>Katılma kodu</Text>
                   <Text style={styles.code}>{detail.join_code}</Text>
                   <Text style={styles.codeHint}>Öğrenciler bu kodla sınıfa katılır.</Text>
+                  {/* Kodu elle yazdırmak yerine paylaş: WhatsApp, mesaj, e-posta… */}
+                  <View style={styles.codeActions}>
+                    <PrimaryButton
+                      label="Kodu paylaş"
+                      variant="soft"
+                      onPress={() => void shareJoinCode(detail.name, detail.join_code!)}
+                    />
+                  </View>
                 </Card>
               ) : null}
 
@@ -164,6 +220,75 @@ export default function ClassroomDetailScreen() {
 
                 {showAssign ? (
                   <View style={styles.quizPicker}>
+                    {/* Kaynak seçimi: çözülebilir quiz mi, PDF çalışma kağıdı mı.
+                        Web'de (ClassroomDetailView) ikisi de var; mobilde yalnız quiz
+                        vardı → öğretmen ürettiği kağıtları ödev olarak atayamıyordu. */}
+                    <View style={styles.srcTabs}>
+                      <Pressable
+                        style={[styles.srcTab, source === 'quiz' && styles.srcTabOn]}
+                        onPress={() => setSource('quiz')}
+                      >
+                        <Text style={[styles.srcTabText, source === 'quiz' && styles.srcTabTextOn]}>
+                          Quizler
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        style={[styles.srcTab, source === 'sheet' && styles.srcTabOn]}
+                        onPress={() => setSource('sheet')}
+                      >
+                        <Text style={[styles.srcTabText, source === 'sheet' && styles.srcTabTextOn]}>
+                          Çalışma kağıtları
+                        </Text>
+                      </Pressable>
+                    </View>
+
+                    {source === 'sheet' ? (
+                      <>
+                        <Text style={styles.pickerHint}>
+                          Ürettiğin kağıtlardan birini ödev olarak ata (öğrenci PDF olarak indirir):
+                        </Text>
+                        {sheets === null ? (
+                          <ActivityIndicator color={colors.brand} />
+                        ) : sheets.length === 0 ? (
+                          <Text style={styles.muted}>
+                            Henüz çalışma kağıdın yok. Aşağıdan yeni bir tane oluşturabilirsin.
+                          </Text>
+                        ) : (
+                          sheets.map((it) => (
+                            <Pressable
+                              key={it.id}
+                              disabled={assigning !== null}
+                              onPress={() => void onAssignSheet(it)}
+                              style={({ pressed }) => [styles.quizRow, pressed && styles.pressed]}
+                            >
+                              <View style={styles.quizBody}>
+                                <Text style={styles.quizTitle} numberOfLines={1}>
+                                  {it.response.worksheet.title || it.response.worksheet.topic}
+                                </Text>
+                                <Text style={styles.quizMeta}>
+                                  {it.response.worksheet.grade}. sınıf ·{' '}
+                                  {it.response.worksheet.question_count} soru
+                                </Text>
+                              </View>
+                              {assigning === it.id ? (
+                                <ActivityIndicator color={colors.brand} />
+                              ) : (
+                                <Text style={styles.assignBtn}>Ata</Text>
+                              )}
+                            </Pressable>
+                          ))
+                        )}
+                        <PrimaryButton
+                          label="+ Yeni çalışma kağıdı oluştur"
+                          variant="soft"
+                          onPress={() => {
+                            requestGenEntry('pdf');
+                            router.push('/create');
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <>
                     <Text style={styles.pickerHint}>Ödev atamak için kendi quizlerinden birini seç:</Text>
                     {myQuizzes === null ? (
                       <ActivityIndicator color={colors.brand} />
@@ -195,6 +320,8 @@ export default function ClassroomDetailScreen() {
                           )}
                         </Pressable>
                       ))
+                    )}
+                      </>
                     )}
                   </View>
                 ) : null}
@@ -246,6 +373,20 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: fontSize.lg, fontFamily: fonts.heading, color: colors.text, marginBottom: spacing.md },
 
   codeCard: { alignItems: 'center', gap: spacing.xs, backgroundColor: colors.tintBlue },
+  codeActions: { alignSelf: 'stretch', marginTop: spacing.sm },
+
+  // Ödev kaynağı sekmeleri (quiz / çalışma kağıdı)
+  srcTabs: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.xs },
+  srcTab: {
+    flex: 1,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+  },
+  srcTabOn: { backgroundColor: colors.brand },
+  srcTabText: { fontFamily: fonts.bodyMedium, fontSize: fontSize.sm, color: colors.textMuted },
+  srcTabTextOn: { color: '#FFFFFF' },
   codeLabel: { fontFamily: fonts.bodyBold, fontSize: fontSize.xs, color: colors.brand, letterSpacing: 0.5, textTransform: 'uppercase' },
   code: { fontFamily: fonts.heading, fontSize: 40, color: colors.brand, letterSpacing: 4 },
   codeHint: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textMuted },

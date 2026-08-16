@@ -1,6 +1,6 @@
 import { useAuth } from '@clerk/expo';
-import { useRouter, type Href } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect, useRouter, type Href } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -51,9 +51,16 @@ export function ClassroomsView({ header }: { header?: React.ReactNode }) {
     }
   }, [userId]);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  /**
+   * Ekrana her DÖNÜŞTE tazele (mount'ta bir kez değil). Sınıf detayında silme/ayrılma
+   * yapıp geri gelindiğinde liste eski haliyle kalıyordu: silinmiş sınıf listede
+   * duruyor, üstüne basınca "Sınıf bulunamadı" hatası çıkıyordu (sahada görüldü).
+   */
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
 
   const onCreate = useCallback(async () => {
     if (!userId || creating || name.trim().length < 1) return;
