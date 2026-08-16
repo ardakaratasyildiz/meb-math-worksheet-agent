@@ -36,6 +36,9 @@ class UsageLedger:
         self._db_path = db_path or settings.history_db_path
         self._lock = threading.Lock()
         self._db = None
+        # `status` kolonu sorgulanabilir mi (bkz. _migrate_schema). False ise tüm
+        # SQL, kolona hiç dokunmayan sürümüne düşer → sessiz toplu arıza olmaz.
+        self._has_status = False
         self._init_db()
 
     def _init_db(self) -> None:
@@ -68,26 +71,51 @@ class UsageLedger:
         )
         self._db.commit()
 
-    def _migrate_schema(self) -> None:
-        """`status` kolonunu mevcut tablolara ekler — idempotent, BEST-EFFORT.
+    def _status_available(self) -> bool:
+        """`status` kolonu GERÇEKTEN sorgulanabiliyor mu — backend'den bağımsız test.
 
-        Migrasyon öncesi satırların hepsi başarılı üretimdir (defter yalnız başarı
-        yolunda yazılıyordu) → DEFAULT 'ok' doğru geçmişi verir.
+        DİKKAT (canlı incident 2026-07-30): ilk sürüm varlığı `PRAGMA table_info`
+        ile yokluyordu. Turso/libSQL yolunda PRAGMA beklenen satırları vermeyince
+        migrasyon sessizce atlandı, ardından `status`'a bakan HER sorgu hataya
+        düştü ve fonksiyonlar fail-open olduğu için `/admin/costs/summary` boş
+        `{}` döndü (endpoint 200 verdiği için sorun görünmez kaldı). PRAGMA'ya
+        güvenmek yerine kolonu DOĞRUDAN okuyoruz: her backend'de aynı cevabı verir.
         """
         assert self._db is not None
         try:
-            cols = {r[1] for r in self._db.execute("PRAGMA table_info(usage_ledger)")}
-        except Exception as exc:  # noqa: BLE001 — okunamazsa migrasyonu atla
-            logger.warning("Defter şeması okunamadı: %s", exc)
-            return
-        if "status" in cols:
+            self._db.execute("SELECT status FROM usage_ledger LIMIT 1").fetchone()
+            return True
+        except Exception:  # noqa: BLE001 — kolon yok demektir
+            return False
+
+    def _migrate_schema(self) -> None:
+        """`status` kolonunu ekler ve GERÇEKTEN eklenip eklenmediğini doğrular.
+
+        Migrasyon öncesi satırların hepsi başarılı üretimdir (defter yalnız başarı
+        yolunda yazılıyordu) → DEFAULT 'ok' doğru geçmişi verir.
+
+        Kolon eklenemezse (yetki/backend kısıtı) `self._has_status=False` kalır ve
+        TÜM sorgular `status`'a HİÇ dokunmayan sürümlerine düşer → defter yazmaya
+        ve okumaya devam eder, yalnız başarısız-üretim ayrımı yapılamaz. Sessiz
+        toplu arıza yerine dereceli yetenek kaybı.
+        """
+        assert self._db is not None
+        if self._status_available():
+            self._has_status = True
             return
         try:
             self._db.execute(
                 "ALTER TABLE usage_ledger ADD COLUMN status TEXT NOT NULL DEFAULT 'ok'"
             )
+            self._db.commit()
         except Exception as exc:  # noqa: BLE001 — idempotent: kolon zaten olabilir
             logger.debug("Defter `status` kolonu eklenemedi/zaten var: %s", exc)
+        self._has_status = self._status_available()
+        if not self._has_status:
+            logger.warning(
+                "usage_ledger.status kolonu YOK ve eklenemedi → başarısız-üretim "
+                "ayrımı devre dışı (defter yazma/okuma çalışmaya devam eder)."
+            )
 
     def record(
         self,
@@ -111,26 +139,35 @@ class UsageLedger:
             worksheets_used_since) — kullanıcı almadığı kağıdın kotasını ödemez.
         """
         try:
+            cols = (
+                "id, tenant_id, model, prompt_tokens, completion_tokens, cost_usd, "
+                "grade, topic, question_count, cache_hit, created_at"
+            )
+            values = [
+                uuid.uuid4().hex,
+                tenant_id or ANON_TENANT,
+                model or "unknown",
+                int(prompt_tokens or 0),
+                int(completion_tokens or 0),
+                float(cost_usd or 0.0),
+                grade,
+                topic,
+                int(question_count or 0),
+                1 if cache_hit else 0,
+                time.time(),
+            ]
+            # Kolon yoksa ona HİÇ dokunmayan INSERT — aksi halde TÜM maliyet
+            # kaydı sessizce düşerdi (record best-effort'tur, hatayı yutar).
+            if self._has_status:
+                cols += ", status"
+                values.append(
+                    status if status in (STATUS_OK, STATUS_FAILED) else STATUS_OK
+                )
+            placeholders = ",".join("?" * len(values))
             with self._lock:
                 self._db.execute(
-                    "INSERT INTO usage_ledger (id, tenant_id, model, prompt_tokens, "
-                    "completion_tokens, cost_usd, grade, topic, question_count, cache_hit, "
-                    "created_at, status) "
-                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                    (
-                        uuid.uuid4().hex,
-                        tenant_id or ANON_TENANT,
-                        model or "unknown",
-                        int(prompt_tokens or 0),
-                        int(completion_tokens or 0),
-                        float(cost_usd or 0.0),
-                        grade,
-                        topic,
-                        int(question_count or 0),
-                        1 if cache_hit else 0,
-                        time.time(),
-                        status if status in (STATUS_OK, STATUS_FAILED) else STATUS_OK,
-                    ),
+                    f"INSERT INTO usage_ledger ({cols}) VALUES ({placeholders})",
+                    tuple(values),
                 )
                 self._db.commit()
         except Exception as exc:  # noqa: BLE001 — maliyet kaydı üretimi bozmasın
@@ -149,11 +186,16 @@ class UsageLedger:
         if not tenant_id:
             return 0
         try:
+            status_sql = " AND status=?" if self._has_status else ""
+            params: list = [tenant_id]
+            if self._has_status:
+                params.append(STATUS_OK)
+            params.append(since_ts)
             with self._lock:
                 row = self._db.execute(
                     "SELECT COALESCE(SUM(question_count),0) FROM usage_ledger "
-                    "WHERE tenant_id=? AND cache_hit=0 AND status=? AND created_at>=?",
-                    (tenant_id, STATUS_OK, since_ts),
+                    f"WHERE tenant_id=? AND cache_hit=0{status_sql} AND created_at>=?",
+                    tuple(params),
                 ).fetchone()
             return int(row[0] or 0)
         except Exception as exc:  # noqa: BLE001 — kota sayımı üretimi bozmasın
@@ -182,12 +224,17 @@ class UsageLedger:
             return 0
         try:
             placeholders = ",".join("?" * len(ids))
+            status_sql = " AND status=?" if self._has_status else ""
+            params: list = list(ids)
+            if self._has_status:
+                params.append(STATUS_OK)
+            params.append(since_ts)
             with self._lock:
                 row = self._db.execute(
                     f"SELECT COUNT(*) FROM usage_ledger "
-                    f"WHERE tenant_id IN ({placeholders}) AND cache_hit=0 "
-                    f"AND status=? AND question_count>0 AND created_at>=?",
-                    (*ids, STATUS_OK, since_ts),
+                    f"WHERE tenant_id IN ({placeholders}) AND cache_hit=0"
+                    f"{status_sql} AND question_count>0 AND created_at>=?",
+                    tuple(params),
                 ).fetchone()
             return int(row[0] or 0)
         except Exception as exc:  # noqa: BLE001 — kağıt sayımı üretimi bozmasın
@@ -210,9 +257,13 @@ class UsageLedger:
         params.append(limit)
         try:
             with self._lock:
+                # Kolon yoksa sabit 'ok' seçilir → satır şekli DEĞİŞMEZ, çağıran
+                # taraf (admin paneli) tek bir sürüm görür.
+                status_col = "status" if self._has_status else f"'{STATUS_OK}'"
                 rows = self._db.execute(
                     f"SELECT id, tenant_id, model, prompt_tokens, completion_tokens, "
-                    f"cost_usd, grade, topic, question_count, cache_hit, created_at, status "
+                    f"cost_usd, grade, topic, question_count, cache_hit, created_at, "
+                    f"{status_col} "
                     f"FROM usage_ledger {where} ORDER BY created_at DESC LIMIT ?",
                     tuple(params),
                 ).fetchall()
@@ -252,13 +303,19 @@ class UsageLedger:
             params.append(until_ts)
         try:
             with self._lock:
+                # Teslim edilmemiş (boşa giden) harcama AYRI gösterilir: toplam
+                # maliyete dahildir ama "kaç kağıt ürettik" sayımına DEĞİL.
+                # `status` yoksa iki alan 0 döner (kolona HİÇ dokunulmaz).
+                failed_sql = (
+                    f"COALESCE(SUM(CASE WHEN status='{STATUS_FAILED}' THEN cost_usd END),0), "
+                    f"COALESCE(SUM(CASE WHEN status='{STATUS_FAILED}' THEN 1 END),0)"
+                    if self._has_status
+                    else "0, 0"
+                )
                 total_row = self._db.execute(
                     f"SELECT COUNT(*), COALESCE(SUM(cost_usd),0), COALESCE(SUM(prompt_tokens),0), "
                     f"COALESCE(SUM(completion_tokens),0), COALESCE(SUM(cache_hit),0), "
-                    # Teslim edilmemiş (boşa giden) harcama AYRI gösterilir: toplam
-                    # maliyete dahildir ama "kaç kağıt ürettik" sayımına DEĞİL.
-                    f"COALESCE(SUM(CASE WHEN status='{STATUS_FAILED}' THEN cost_usd END),0), "
-                    f"COALESCE(SUM(CASE WHEN status='{STATUS_FAILED}' THEN 1 END),0) "
+                    f"{failed_sql} "
                     f"FROM usage_ledger {where}",
                     tuple(params),
                 ).fetchone()
