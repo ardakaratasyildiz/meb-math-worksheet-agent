@@ -606,6 +606,23 @@ export function assignQuiz(
   });
 }
 
+/**
+ * Sınıfa ÇALIŞMA KAĞIDI (PDF) ödevi ata — öğrenci indirir, site içi çözüm yok.
+ * Kağıdın tamamı gönderilir (geçmişteki kayıttan); yeniden üretim YOK.
+ * Web'deki `assignPdf` ile aynı uç (ClassroomDetailView).
+ */
+export function assignPdf(
+  classroomId: string,
+  tenantId: string,
+  worksheet: Worksheet,
+  dueDate?: string | null,
+): Promise<{ id: string; created_at: string }> {
+  return apiRequest(`/api/classrooms/${encodeURIComponent(classroomId)}/assignments/pdf`, {
+    method: "POST",
+    body: JSON.stringify({ tenant_id: tenantId, worksheet, due_date: dueDate ?? null }),
+  });
+}
+
 /** Öğretmenin ödev atamak için seçebileceği kendi quiz'leri (hafif meta). */
 export async function listMyQuizzes(tenantId: string): Promise<MyQuizItem[]> {
   const r = await apiRequest<{ items: MyQuizItem[] }>(
