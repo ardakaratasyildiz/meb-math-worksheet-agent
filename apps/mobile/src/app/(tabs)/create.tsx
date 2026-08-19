@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { GeneratorSetup, type GenMode, type GeneratorParams } from '@/components/generator-setup';
 import { IconDocSimple, IconSpark, IconWorksheet } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
+import { MebNotice } from '@/components/meb-notice';
 import { QuestionText } from '@/components/question-text';
 import { ShareSheet } from '@/components/share-sheet';
 import { GeneratingState } from '@/components/generating-state';
@@ -263,7 +264,11 @@ export default function CreateScreen() {
                   questionCount={params?.count ?? 10}
                   sober={sober}
                 />
-              ) : null}
+              ) : (
+                // MEB kazanım/ünite seçiminin yapıldığı ekran → künye burada durmalı
+                // (Play "Misleading Claims", bkz. lib/legal.ts).
+                <MebNotice />
+              )}
             </>
           )}
 
