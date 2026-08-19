@@ -68,7 +68,43 @@ export function Footer() {
             ]}
           />
         </div>
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs opacity-60 sm:flex-row">
+        {/*
+          Bağımsızlık bildirimi + müfredat bilgisinin resmî kaynakları.
+          Google Play "Misleading Claims" politikası bunu mağaza açıklamasında ve
+          uygulama içinde zorunlu tutuyor; web de aynı iddiayı ("MEB müfredatı")
+          kurduğu için künye burada da durur. Mobil karşılığı:
+          apps/mobile/src/lib/legal.ts + /about ekranı.
+        */}
+        <div className="mt-10 border-t border-white/10 pt-6 text-xs leading-relaxed opacity-60">
+          <p>
+            Soru Atölyesi bağımsız bir eğitim girişimidir. T.C. Millî Eğitim Bakanlığı
+            (MEB) ile bağlantılı, ortaklı veya MEB tarafından onaylı değildir; MEB&apos;i
+            temsil etmez. Ünite ve kazanım başlıkları MEB&apos;in kamuya açık öğretim
+            programlarına dayanır; sorular ve çözümler yapay zekâ ile üretilir, resmî MEB
+            yayını değildir.
+          </p>
+          <p className="mt-2">
+            Resmî kaynaklar:{" "}
+            {[
+              { label: "meb.gov.tr", href: "https://www.meb.gov.tr" },
+              { label: "tymm.meb.gov.tr", href: "https://tymm.meb.gov.tr" },
+              { label: "mufredat.meb.gov.tr", href: "https://mufredat.meb.gov.tr" },
+            ].map((s, i) => (
+              <span key={s.href}>
+                {i > 0 ? " · " : ""}
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="underline hover:opacity-100"
+                >
+                  {s.label}
+                </a>
+              </span>
+            ))}
+          </p>
+        </div>
+        <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs opacity-60 sm:flex-row">
           <p>© 2026 Soru Atölyesi · Eğitim amaçlı kullanım için tasarlanmıştır.</p>
           <p className="inline-flex items-center gap-1.5">
             <Check className="h-3 w-3" />

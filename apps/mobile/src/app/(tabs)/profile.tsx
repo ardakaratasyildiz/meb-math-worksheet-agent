@@ -10,6 +10,7 @@ import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { getGamification, getParentCode, type GamificationResponse } from '@/lib/api';
 import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
+import { MEB_DISCLAIMER_SHORT } from '@/lib/legal';
 import { DEFAULT_HOUR, getReminderPrefs, setReminder } from '@/lib/notifications';
 import { effectiveRole, isPlayfulRole, roleLabel } from '@/lib/roles';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/theme/tokens';
@@ -233,12 +234,17 @@ export default function ProfileScreen() {
             <View style={styles.divider} />
             <LinkRow label="Yardım & İletişim" onPress={open('/faq')} />
             <View style={styles.divider} />
+            <LinkRow label="Hakkında & Kaynaklar" onPress={() => router.push('/about')} />
+            <View style={styles.divider} />
             <LinkRow label="Hesabımı sil" onPress={() => router.push('/delete-account')} danger />
           </Card>
 
           <PrimaryButton label="Çıkış Yap" variant="soft" color={colors.danger} onPress={() => void signOut()} />
 
           <Text style={styles.version}>Soru Atölyesi · sürüm 1.0.0</Text>
+          {/* Play "Misleading Claims" politikası: MEB'i temsil etmediğimiz her
+              yerde görünür olmalı (ayrıntı + kaynaklar → /about). */}
+          <Text style={styles.disclaimer}>{MEB_DISCLAIMER_SHORT}</Text>
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -341,4 +347,11 @@ const styles = StyleSheet.create({
   linkLabelDanger: { color: colors.danger },
 
   version: { fontFamily: fonts.body, fontSize: fontSize.xs, color: colors.textFaint, textAlign: 'center', marginTop: spacing.sm },
+  disclaimer: {
+    fontFamily: fonts.body,
+    fontSize: fontSize.xs,
+    color: colors.textFaint,
+    textAlign: 'center',
+    lineHeight: 17,
+  },
 });
