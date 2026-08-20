@@ -111,10 +111,10 @@ Eksik olan yalnız **hesap/ürün kurulumu ve anahtarlar**.
 
 | Ürün kimliği | Tür | Fiyat (docs/MONETIZATION_PLAN.md) |
 |---|---|---|
-| `pro-aylik` | Abonelik (aylık) | ₺199 / 50 kağıt |
-| `proplus-aylik` | Abonelik (aylık) | ₺349 / 120 kağıt |
-| `topup-25` | Tek seferlik (tüketilebilir) | ₺89 / +25 kağıt, 30 gün |
-| `topup-75` | Tek seferlik (tüketilebilir) | ₺199 / +75 kağıt, 30 gün |
+| `com.soruatolyesi.app.pro_aylik` | Abonelik (aylık) | ₺199 / 50 kağıt |
+| `com.soruatolyesi.app.proplus_aylik` | Abonelik (aylık) | ₺349 / 120 kağıt |
+| `com.soruatolyesi.app.topup_25` | Tek seferlik (tüketilebilir) | ₺89 / +25 kağıt, 30 gün |
+| `com.soruatolyesi.app.topup_75` | Tek seferlik (tüketilebilir) | ₺199 / +75 kağıt, 30 gün |
 
 App Store Connect ve Play Console'da **aynı kimliklerle** oluştur.
 
@@ -126,7 +126,7 @@ App Store Connect ve Play Console'da **aynı kimliklerle** oluştur.
 ### 3.3 RevenueCat panosu
 1. Project oluştur → iOS ve Android app'lerini ekle (bundle/package: `com.soruatolyesi.app`).
 2. Products: yukarıdaki 4 ürünü içeri aktar.
-3. Entitlements: `pro` ve `pro-plus` oluştur; `pro-aylik → pro`, `proplus-aylik → pro-plus`.
+3. Entitlements: `pro` ve `pro-plus` oluştur; `com.soruatolyesi.app.pro_aylik → pro`, `com.soruatolyesi.app.proplus_aylik → pro-plus`.
 4. Offerings: bir `default` offering + paketleri bağla (paywall fiyatları buradan okur).
 5. API keys → **public SDK key**'leri kopyala (`appl_...` / `goog_...`).
 
@@ -149,7 +149,7 @@ Anahtar dolunca `purchasesSupported()` true olur ve paywall "yakında" modundan 
 | Render env | Değer |
 |---|---|
 | `REVENUECAT_WEBHOOK_AUTH` | Rastgele uzun sır — RevenueCat webhook ayarındaki `Authorization` başlığıyla **birebir aynı** |
-| `REVENUECAT_PRODUCT_MAP` | `pro-aylik:pro,proplus-aylik:pro-plus` |
+| `REVENUECAT_PRODUCT_MAP` | `com.soruatolyesi.app.pro_aylik:pro,com.soruatolyesi.app.proplus_aylik:pro-plus` |
 | `REVENUECAT_ALLOW_SANDBOX` | Test döneminde `true` (varsayılan), **canlıya çıkarken `false`** |
 
 > **Sandbox kapısı.** RevenueCat sandbox satın almaları için de webhook gönderir ve olay
@@ -188,7 +188,7 @@ bunu `tenant_id` ile eşler → abonelik iyzico ile ortak depoya yazılır.
 - [ ] `eas build --profile preview --platform android` → kurulan APK'da **giriş çalışıyor**
       (beyaz ekran yok = Clerk anahtarı build'e girmiş) ve kağıt üretiliyor (API key doğru).
 - [ ] Cihazda ikon **maskot** (Expo default "A" değil), açılış ekranı marka renginde.
-- [ ] Sandbox hesabıyla `pro-aylik` satın alınıyor → RevenueCat panosunda olay görünüyor →
+- [ ] Sandbox hesabıyla `com.soruatolyesi.app.pro_aylik` satın alınıyor → RevenueCat panosunda olay görünüyor →
       `/api/me/entitlements` `plan: pro` dönüyor.
 - [ ] `REVENUECAT_WEBHOOK_AUTH` set (yanlış header ile istek 401 alıyor).
 - [ ] **Yayın günü:** `REVENUECAT_ALLOW_SANDBOX=false` (test hesapları bedava Pro yazmasın).

@@ -191,33 +191,33 @@ def test_topup_does_not_touch_subscription() -> None:
     Pro abonesinin aboneliğini kaybetmesi demekti (kredi de eklenmiyordu).
     """
     print("test_topup_does_not_touch_subscription")
-    settings.revenuecat_product_map = "pro-aylik:pro,proplus-aylik:pro-plus"
-    settings.topup_products = "topup-25:25,topup-75:75"
+    settings.revenuecat_product_map = "com.soruatolyesi.app.pro_aylik:pro,com.soruatolyesi.app.proplus_aylik:pro-plus"
+    settings.topup_products = "com.soruatolyesi.app.topup_25:25,com.soruatolyesi.app.topup_75:75"
     u = "u_topup_rc"
 
     revenuecat.process_webhook(
-        _ev("INITIAL_PURCHASE", user=u, product="pro-aylik", eid="evt_sub_topup")
+        _ev("INITIAL_PURCHASE", user=u, product="com.soruatolyesi.app.pro_aylik", eid="evt_sub_topup")
     )
     check(STORE.get_active(u) is not None, "önce: Pro aboneliği aktif")
 
     r = revenuecat.process_webhook(
-        _ev("NON_RENEWING_PURCHASE", user=u, product="topup-25", eid="evt_topup_1")
+        _ev("NON_RENEWING_PURCHASE", user=u, product="com.soruatolyesi.app.topup_25", eid="evt_topup_1")
     )
-    check(r["status"] == "ok" and r.get("credited") == 25, "topup-25 → +25 kağıt kredi")
+    check(r["status"] == "ok" and r.get("credited") == 25, "com.soruatolyesi.app.topup_25 → +25 kağıt kredi")
     check(STORE.get_active(u) is not None, "ek paket aboneliği BOZMADI")
     check(entitlements.plan_of(u) == "pro", "plan hâlâ pro (satır ezilmedi)")
     check(TOPUP.balance(u) == 25, "kredi bakiyeye yazıldı")
 
     # Aynı olay tekrar gelirse (RevenueCat retry) kredi iki kez eklenmemeli
     r2 = revenuecat.process_webhook(
-        _ev("NON_RENEWING_PURCHASE", user=u, product="topup-25", eid="evt_topup_1")
+        _ev("NON_RENEWING_PURCHASE", user=u, product="com.soruatolyesi.app.topup_25", eid="evt_topup_1")
     )
     check(r2["status"] == "duplicate" and TOPUP.balance(u) == 25,
           "aynı olay tekrar → duplicate, bakiye 25'te kaldı")
 
     # Aboneliği olmayan kullanıcı: kredi yazılır ama abonelik satırı AÇILMAZ
     r3 = revenuecat.process_webhook(
-        _ev("NON_RENEWING_PURCHASE", user="u_topup_solo", product="topup-75", eid="evt_topup_2")
+        _ev("NON_RENEWING_PURCHASE", user="u_topup_solo", product="com.soruatolyesi.app.topup_75", eid="evt_topup_2")
     )
     check(r3.get("credited") == 75, "abonesiz kullanıcı → 75 kredi")
     check(STORE.get("u_topup_solo") is None, "abonesiz kullanıcıda abonelik satırı AÇILMADI")
@@ -233,10 +233,10 @@ def test_topup_does_not_touch_subscription() -> None:
 def test_sandbox_gate() -> None:
     """Sandbox (test) satın alması: test döneminde işlenir, canlıda reddedilir."""
     print("test_sandbox_gate")
-    settings.revenuecat_product_map = "pro-aylik:pro"
-    settings.topup_products = "topup-25:25,topup-75:75"
+    settings.revenuecat_product_map = "com.soruatolyesi.app.pro_aylik:pro"
+    settings.topup_products = "com.soruatolyesi.app.topup_25:25,com.soruatolyesi.app.topup_75:75"
 
-    def _sandbox_ev(eid: str, user: str, product: str = "pro-aylik") -> dict:
+    def _sandbox_ev(eid: str, user: str, product: str = "com.soruatolyesi.app.pro_aylik") -> dict:
         ev = _ev("INITIAL_PURCHASE", user=user, product=product, eid=eid)
         ev["event"]["environment"] = "SANDBOX"
         return ev
@@ -249,7 +249,7 @@ def test_sandbox_gate() -> None:
     check(STORE.get("u_sbx_block") is None, "reddedilen sandbox → abonelik satırı açılmadı")
 
     # Sandbox ek paket de kredi yazmamalı
-    tu = _sandbox_ev("evt_sbx_topup", "u_sbx_topup", product="topup-25")
+    tu = _sandbox_ev("evt_sbx_topup", "u_sbx_topup", product="com.soruatolyesi.app.topup_25")
     tu["event"]["type"] = "NON_RENEWING_PURCHASE"
     revenuecat.process_webhook(tu)
     check(TOPUP.balance("u_sbx_topup") == 0, "reddedilen sandbox ek paket → kredi yazılmadı")
@@ -266,6 +266,42 @@ def test_sandbox_gate() -> None:
           "allow_sandbox=True → sandbox satın alma uçtan uca işlenir (test için)")
 
 
+def test_store_product_ids_are_valid() -> None:
+    """Ürün kimlikleri mağazaların kabul ettiği karakter kümesinde olmalı.
+
+    App Store Connect ve Play, ürün kimliğinde YALNIZ harf/rakam, nokta ve alt çizgi
+    kabul ediyor — TİRE reddediliyor ("Only alphanumeric characters, periods, and
+    underscores are allowed"). Kimlikler `pro-aylik` / `topup-25` biçimindeydi, yani
+    hiçbir mağazada oluşturulamazdı; hata ancak ürün açılmaya çalışılınca ortaya çıktı
+    (2026-08-20). Kimlikler kalıcıdır (değiştirilemez, silinip yeniden kullanılamaz) →
+    yanlış kimliğin build'e girmesi pahalı. Bu test kapıyı kapatıyor.
+
+    Mobil paywall SKU'ları ile backend top-up eşlemesi AYNI kimlikleri kullanmak
+    zorunda; ikisi de burada taranıyor.
+    """
+    import re  # noqa: PLC0415
+
+    print("mağaza ürün kimlikleri geçerli mi")
+    valid = re.compile(r"^[A-Za-z0-9._]+$")
+
+    # 1) Backend: top-up ürün → kağıt eşlemesi
+    for pid in settings.topup_product_credits:
+        check(bool(valid.match(pid)), f"backend top-up kimliği geçerli: {pid}")
+
+    # 2) Mobil paywall: TIERS + TOPUPS içindeki sku'lar
+    paywall = (
+        Path(__file__).resolve().parent.parent
+        / "apps" / "mobile" / "src" / "app" / "paywall.tsx"
+    )
+    if not paywall.exists():
+        print("  not  paywall.tsx yok → mobil tarama atlandı")
+        return
+    skus = re.findall(r"sku:\s*'([^']+)'", paywall.read_text(encoding="utf-8"))
+    check(len(skus) >= 4, f"paywall'da en az 4 sku bulundu ({len(skus)})")
+    for sku in skus:
+        check(bool(valid.match(sku)), f"mobil sku geçerli: {sku}")
+
+
 def _run() -> int:
     for fn in [
         test_plan_for, test_initial_purchase, test_trial_period,
@@ -273,6 +309,7 @@ def _run() -> int:
         test_billing_issue, test_idempotency, test_anonymous_skipped,
         test_ignored_and_unmapped, test_malformed,
         test_topup_does_not_touch_subscription, test_sandbox_gate,
+        test_store_product_ids_are_valid,
     ]:
         fn()
     print()

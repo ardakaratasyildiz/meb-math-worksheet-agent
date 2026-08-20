@@ -11,8 +11,8 @@ Sabitler (kodda tanımlı, değiştirilmez):
 | Ne | Değer | Nerede |
 |---|---|---|
 | Paket adı | `com.soruatolyesi.app` | `apps/mobile/app.json` |
-| Abonelik SKU'ları | `pro-aylik` (₺199) · `proplus-aylik` (₺349) | `src/app/paywall.tsx` |
-| Ek paket SKU'ları | `topup-25` (₺89) · `topup-75` (₺199) | **ilk turda AÇILMAZ** |
+| Abonelik SKU'ları | `com.soruatolyesi.app.pro_aylik` (₺199) · `com.soruatolyesi.app.proplus_aylik` (₺349) | `src/app/paywall.tsx` |
+| Ek paket SKU'ları | `com.soruatolyesi.app.topup_25` (₺89) · `com.soruatolyesi.app.topup_75` (₺199) | **ilk turda AÇILMAZ** |
 
 ---
 
@@ -284,7 +284,7 @@ Play'in modeli iOS'tan farklı, üç katmanlı: **Abonelik → Temel plan → Te
 
 ### 6.1 Pro
 
-1. Abonelik oluştur → **Ürün kimliği: `pro-aylik`** (bir daha değiştirilemez).
+1. Abonelik oluştur → **Ürün kimliği: `com.soruatolyesi.app.pro_aylik`** (bir daha değiştirilemez).
 2. Ad: "Pro", açıklama: aylık 50 çalışma kağıdı.
 3. **Temel plan ekle** → kimlik ör. `aylik` → tür: **Otomatik yenilenen** → süre: 1 ay.
 4. Fiyat: Türkiye ₺199 (KDV dahil gösterim).
@@ -292,13 +292,13 @@ Play'in modeli iOS'tan farklı, üç katmanlı: **Abonelik → Temel plan → Te
 
 ### 6.2 Pro+
 
-Aynısı: **`proplus-aylik`**, temel plan aylık, ₺349.
+Aynısı: **`com.soruatolyesi.app.proplus_aylik`**, temel plan aylık, ₺349.
 
 ### 6.3 Yapılmayacaklar
 
 - **Ücretsiz deneme teklifi ekleme.** Deneme bizim tarafımızda, kartsız çalışıyor
   (7 gün / 20 kağıt). Mağaza denemesi kart ister ve iptal/iade sürtünmesi getirir.
-- **Ek paketleri (`topup-25`, `topup-75`) ilk turda açma.** Önce iki abonelikle
+- **Ek paketleri (`com.soruatolyesi.app.topup_25`, `com.soruatolyesi.app.topup_75`) ilk turda açma.** Önce iki abonelikle
   tek değişkenli test edelim.
 
 ---
@@ -391,7 +391,7 @@ Sırayla hepsi geçmeli:
 - [ ] Çalışma kağıdı üretiliyor (API anahtarı doğru).
 - [ ] Paywall'da fiyatlar **mağazadan** geliyor (kodda yazan ₺199 değil, Play'in
       döndürdüğü yerelleştirilmiş fiyat).
-- [ ] Lisans testçisi hesabıyla `pro-aylik` satın alınıyor.
+- [ ] Lisans testçisi hesabıyla `com.soruatolyesi.app.pro_aylik` satın alınıyor.
 - [ ] **RevenueCat panosunda olay görünüyor** (Customer History).
 - [ ] `GET /api/me/entitlements` → `plan: "pro"` dönüyor.
 - [ ] Backend logunda webhook işlendi (`RevenueCat senkron: ... plan=pro status=active`).
@@ -403,7 +403,7 @@ Sırayla hepsi geçmeli:
 | Env | Değer |
 |---|---|
 | `REVENUECAT_WEBHOOK_AUTH` | RevenueCat webhook başlığıyla birebir aynı sır |
-| `REVENUECAT_PRODUCT_MAP` | `pro-aylik:pro,proplus-aylik:pro-plus` |
+| `REVENUECAT_PRODUCT_MAP` | `com.soruatolyesi.app.pro_aylik:pro,com.soruatolyesi.app.proplus_aylik:pro-plus` |
 | `REVENUECAT_ALLOW_SANDBOX` | Test boyunca `true`, **yayın günü `false`** |
 | `CLERK_SECRET_KEY` | Hesap silme ucu için (yoksa 503 → mağaza reddi) |
 
@@ -412,7 +412,7 @@ Sırayla hepsi geçmeli:
 ## 12) Sırası gelmemiş işler
 
 - `eas.json` → `submit.production.android`: servis hesabı JSON yolu (§8'den sonra).
-- Ek paket ürünleri (`topup-25`, `topup-75`) — kod düzeltmesi canlıda, ürünler
+- Ek paket ürünleri (`com.soruatolyesi.app.topup_25`, `com.soruatolyesi.app.topup_75`) — kod düzeltmesi canlıda, ürünler
   abonelik testi geçtikten sonra açılır.
 - Uzaktan push bildirimleri: FCM projesi + `google-services.json`
   ([MOBIL_BILDIRIM_PLANI.md](./MOBIL_BILDIRIM_PLANI.md) Faz 2).

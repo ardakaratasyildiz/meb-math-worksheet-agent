@@ -116,7 +116,7 @@ Aile senaryosu = veli Pro/Pro+ alır, çocuk kullanır. Model = **bağlı hesapl
 - **Pro ₺199/ay** (50 kağıt) · **Pro+ ₺349/ay** (120 kağıt) · ek paket **+25 ₺89 / +75 ₺199**
   (tüketilebilir, 30 gün, aboneye). Fiyatlar **KDV DAHİL** (B2C).
 - **7 gün kartsız reverse trial.** Ayrı intro-indirim YOK (trial zaten kanca).
-- Lansmanda **yalnız aylık** (SKU: `pro-aylik`, `proplus-aylik` + consumable `topup-25`, `topup-75`).
+- Lansmanda **yalnız aylık** (SKU: `com.soruatolyesi.app.pro_aylik`, `com.soruatolyesi.app.proplus_aylik` + consumable `com.soruatolyesi.app.topup_25`, `com.soruatolyesi.app.topup_75`).
   Yıllık ("ayda ₺X gibi") sonra — MEA aylık-ağırlıklı.
 - Fiyatlar başlangıç çıpası; RevenueCat/mağazada WTP verisiyle ayarlanır.
 
@@ -150,7 +150,7 @@ banka stopajı −%15; hepsi nihai). Örn:
 | Abonelik durumu | yok | Turso/libSQL `subscriptions` tablosu: tenant_id, plan, status, period_end, provider_ref, trial_end |
 | Kota ölçümü | `USAGE_LEDGER` her üretimi tenant bazında kaydediyor (cache-hit hariç) | Aylık **çalışma-kağıdı** sayacı (soru değil) → plan kotasını generate uçlarında uygula (402/paywall). **Aile: veli+bağlı çocuklar TEK havuz.** |
 | Ek paket kredisi (top-up) | yok | `top_up_credits` tablosu (tenant, amount, remaining, purchased_at, expires_at+30g). Tüketim: önce abonelik kotası, sonra en-erken-biten kredi. |
-| Ödeme | yok | **RevenueCat** (mobil IAP): auto-renewable (Pro/Pro+) + **consumable** (topup-25/75) webhook → billing_store upsert. |
+| Ödeme | yok | **RevenueCat** (mobil IAP): auto-renewable (Pro/Pro+) + **consumable** (com.soruatolyesi.app.topup_25/75) webhook → billing_store upsert. |
 | Reverse trial | yok | İlk girişte `trialing` sub (trial_end +7g), sunucu-otoriter |
 | Paywall UI | yok | Pro/Pro+ 2-kademe kartı (persona-farkında mesaj) + ek-paket CTA (kota dolunca) + "7 gün ücretsiz" + "istediğin an iptal"; güven-önce yerleşim |
 | Kimlik | Clerk (userId = tenant_id) | değişmez |

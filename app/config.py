@@ -291,7 +291,7 @@ class Settings(BaseSettings):
     topup_expiry_days: int = 30
     # RevenueCat consumable product id → eklenecek kağıt sayısı. Webhook consumable olayında
     # TOP_UP_STORE'a bu haritadan kredi eklenir (ürünler 28 Tem sonrası mağazada tanımlanır).
-    topup_products: str = "topup-25:25,topup-75:75"
+    topup_products: str = "com.soruatolyesi.app.topup_25:25,com.soruatolyesi.app.topup_75:75"
 
     # --- RevenueCat (mobil IAP webhook → subscriptions senkronu) ---
     # Mobil uygulama IAP'yi RevenueCat üzerinden yapar; RevenueCat bize webhook
@@ -371,7 +371,7 @@ class Settings(BaseSettings):
 
     @property
     def topup_product_credits(self) -> dict[str, int]:
-        """RevenueCat consumable product id → kağıt sayısı ('topup-25:25,topup-75:75')."""
+        """RevenueCat consumable product id → kağıt sayısı ('com.soruatolyesi.app.topup_25:25,com.soruatolyesi.app.topup_75:75')."""
         out: dict[str, int] = {}
         for part in self.topup_products.split(","):
             part = part.strip()
