@@ -6,6 +6,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { AuthScreen } from "@/components/auth-screen";
 import { RoleGate } from "@/components/role-gate";
 import { TabBar } from "@/components/tab-bar";
+import { needsDisplayName } from "@/lib/display-name";
 import { effectiveRole, type Role } from "@/lib/roles";
 import { colors, fonts } from "@/theme/tokens";
 
@@ -14,7 +15,7 @@ import { colors, fonts } from "@/theme/tokens";
  *
  * GATE (sekme kabuğunun tek giriş kapısı):
  *   yüklenmedi → spinner · giriş yok → SignInForm (tam ekran) ·
- *   rol yok → RoleGate (zorunlu onboarding) · aksi → <Tabs>.
+ *   adı yok VEYA rolü yok → RoleGate (zorunlu onboarding: ad + rol) · aksi → <Tabs>.
  * ClerkProvider kökte (_layout.tsx) olduğu için hook'lar burada güvenle kullanılır.
  *
  * ROLE-AWARE: her sekmenin bir `roles` izin listesi var. Role dahil değilse `href: null`
@@ -70,7 +71,9 @@ export default function TabsLayout() {
   if (!isSignedIn) return <AuthScreen />;
 
   const role = effectiveRole(user);
-  if (role === null) return <RoleGate />;
+  // Ad eksikse de aynı kapı: e-posta ile kaydolanlarda Clerk firstName boş gelir ve
+  // ekranlar selamlayacak bir şey bulamaz (bkz. lib/display-name.ts).
+  if (role === null || needsDisplayName(user)) return <RoleGate />;
 
   return (
     <Tabs

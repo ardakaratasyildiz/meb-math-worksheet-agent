@@ -25,6 +25,7 @@ import { Mascot } from "@/components/mascot";
 import { Card, ProgressBar, SpeechBubble, StatChip } from "@/components/ui";
 import { getGamification, getProgress, pingHealth, type GamificationResponse } from "@/lib/api";
 import { badgeGlyph, badgeVariant, computeBadges, tierLabel } from "@/lib/badges";
+import { displayName } from "@/lib/display-name";
 import { requestGenEntry } from "@/lib/gen-entry";
 import { getReminderPrefs, syncReminderOnLaunch } from "@/lib/notifications";
 import { effectiveRole } from "@/lib/roles";
@@ -104,7 +105,9 @@ export default function HomeScreen() {
   );
 
   const g = game ?? DEMO;
-  const firstName = user?.firstName ?? "Arda";
+  // Onboarding adı zorunlu kılıyor (bkz. components/role-gate.tsx) ama yine de
+  // savunmacı: ad yoksa isimsiz selamla — sabit bir yer tutucu ismi ASLA basma.
+  const name = displayName(user);
   const go = (path: string) => () => router.push(path as Href);
 
   // Gerçek verilerden türet: bugün çözülen / devam et (en zayıf kazanım) / rozetler.
@@ -117,7 +120,7 @@ export default function HomeScreen() {
   // Öğretmen/veli → sade "yetişkin" ana ekran (oyunlaşma yok). Öğrenci → aşağıdaki oyunsu hub.
   const role = effectiveRole(user);
   if (role === "teacher" || role === "parent") {
-    return <AdultHome role={role} name={firstName} />;
+    return <AdultHome role={role} name={name} />;
   }
 
   return (
@@ -130,7 +133,7 @@ export default function HomeScreen() {
           {/* ── Üst: selamlama + maskot + çan ─────────────────────────────── */}
           <View style={styles.headerRow}>
             <View style={styles.headerText}>
-              <Text style={styles.hello}>Merhaba, {firstName} 👋</Text>
+              <Text style={styles.hello}>{name ? `Merhaba, ${name} 👋` : "Merhaba 👋"}</Text>
               <Text style={styles.subtitle}>Bugün yeni şeyler öğrenme zamanı!</Text>
             </View>
             {/*
