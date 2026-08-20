@@ -208,11 +208,62 @@ def test_open_ended_text_match() -> None:
     check(score == 2 and total == 3, f"worksheet agregasyon 2/3: {score}/{total}")
 
 
+def test_latex_and_exponent_answers() -> None:
+    """Saha bildirimi 2026-08-20: LaTeX'li cevap anahtarı + `^` ile yazılan üs.
+
+    Cevap anahtarı "$100 \\times 2^6$" gibi LaTeX taşıyor; öğrenci klavyeden
+    "6400" ya da "100x2^6" yazıyordu. Sınırlayıcı/komutlar temizlenmediği için
+    SymPy parse edemiyor, ham string karşılaştırmaya düşülüyor ve DOĞRU cevap
+    yanlış sayılıyordu. Ayrıca NFKC "13⁶" ifadesini "136"ya çöktürdüğü için
+    "136" yazan öğrenci DOĞRU sayılıyordu.
+    """
+    print("LaTeX / üslü / köklü cevap eşleşmesi")
+    q = _q(1, QuestionType.SALT_ISLEM, r"$100 \times 2^6$")
+    for typed in ("6400", "100x2^6", "100 x 2^6", "100*2^6"):
+        check(grade_question(q, _a(1, texts=[typed])) is True, f"üslü anahtar ≡ '{typed}'")
+    check(grade_question(q, _a(1, texts=["6,4x10^2"])) is False, "gerçekten yanlış cevap yanlış")
+
+    kok = _q(2, QuestionType.SOZEL_PROBLEM, r"$\sqrt{18}$")
+    for typed in ("3√2", "√18", "sqrt(18)"):
+        check(grade_question(kok, _a(2, texts=[typed])) is True, f"köklü anahtar ≡ '{typed}'")
+
+    # Üst simge ≠ düz rakam (NFKC çökmesi regresyonu)
+    us = _q(3, QuestionType.SALT_ISLEM, "13⁶")
+    check(grade_question(us, _a(3, texts=["13^6"])) is True, "13⁶ ≡ '13^6'")
+    check(grade_question(us, _a(3, texts=["136"])) is False, "13⁶ ≢ '136' (NFKC çökmesi)")
+
+    kesir = _q(4, QuestionType.BOSLUK_DOLDURMA, "1/2", blanks=[r"$\frac{1}{2}$"])
+    check(grade_question(kesir, _a(4, texts=["0,5"])) is True, "LaTeX kesir boşluğu ≡ '0,5'")
+
+    # Sözel cevap bozulmasın (LaTeX temizliği düz metinde etkisiz)
+    sozel = _q(5, QuestionType.SOZEL_PROBLEM, "8 ile 9")
+    check(grade_question(sozel, _a(5, texts=["8 ile 9"])) is True, "sözel cevap korunur")
+    check(grade_question(sozel, _a(5, texts=["9 ile 10"])) is False, "yanlış sözel cevap yanlış")
+
+
+def test_blank_display_answer() -> None:
+    """Boşluk doldurmada gösterilen "doğru cevap" puanlanan anahtarla aynı olmalı.
+
+    Model answer alanına yalnız ilk boşluğu yazdığında ekranda "Doğru cevap: 13"
+    görünüp 4 boşluklu soru yanlış sayılıyordu.
+    """
+    print("boşluk doldurma — gösterilen doğru cevap")
+    q = _q(1, QuestionType.BOSLUK_DOLDURMA, "13", blanks=["13", "5", "8", "16"])
+    results, _, _, _ = grade_quiz([q], [_a(1, texts=["13", "5", "8", "13"])])
+    check(
+        results[0].correct_answer == "13; 5; 8; 16",
+        f"tüm boşluklar gösterilir: {results[0].correct_answer!r}",
+    )
+    check(results[0].is_correct is False, "son boşluk yanlış → soru yanlış")
+
+
 def main() -> int:
     for fn in (
         test_grade_question_per_type,
         test_grade_quiz_aggregate,
         test_open_ended_text_match,
+        test_latex_and_exponent_answers,
+        test_blank_display_answer,
         test_attempt_and_mastery_persistence,
     ):
         fn()
