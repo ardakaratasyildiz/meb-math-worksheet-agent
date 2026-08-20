@@ -29,7 +29,7 @@ const headerOpts = {
 /** Abonelik kademeleri — fiyat/kota docs/MONETIZATION_PLAN.md §2 (KESİN 2026-07-24). */
 const TIERS = [
   {
-    sku: 'pro-aylik',
+    sku: 'com.soruatolyesi.app.pro_aylik',
     plan: 'pro',
     name: 'Pro',
     price: '₺199',
@@ -39,7 +39,7 @@ const TIERS = [
     popular: false,
   },
   {
-    sku: 'proplus-aylik',
+    sku: 'com.soruatolyesi.app.proplus_aylik',
     plan: 'pro-plus',
     name: 'Pro+',
     price: '₺349',
@@ -92,8 +92,8 @@ const DIFFERENCES = [
 
 /** Ek kağıt paketleri (tüketilebilir; yalnız aktif aboneye) — top-up. */
 const TOPUPS = [
-  { sku: 'topup-25', papers: 25, price: '₺89' },
-  { sku: 'topup-75', papers: 75, price: '₺199' },
+  { sku: 'com.soruatolyesi.app.topup_25', papers: 25, price: '₺89' },
+  { sku: 'com.soruatolyesi.app.topup_75', papers: 75, price: '₺199' },
 ] as const;
 
 export default function PaywallScreen() {

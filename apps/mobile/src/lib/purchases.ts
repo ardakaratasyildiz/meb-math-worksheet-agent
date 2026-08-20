@@ -8,8 +8,8 @@
  * çalışır (paywall "yakında" durumu gösterir); gerçek satın-alma yalnız EAS dev/prod build'de
  * (native + EXPO_PUBLIC_REVENUECAT_* anahtarı + App Store/Play ürünleri) devreye girer.
  *
- * Faz 5b (28 Tem dev build): anahtarları .env/EAS'e koy + store ürünlerini (pro-aylik,
- * proplus-aylik, topup-25, topup-75) tanımla → bu sarmalayıcı otomatik "ready" olur.
+ * Faz 5b (28 Tem dev build): anahtarları .env/EAS'e koy + store ürünlerini (com.soruatolyesi.app.pro_aylik,
+ * com.soruatolyesi.app.proplus_aylik, com.soruatolyesi.app.topup_25, com.soruatolyesi.app.topup_75) tanımla → bu sarmalayıcı otomatik "ready" olur.
  */
 import { Platform } from "react-native";
 

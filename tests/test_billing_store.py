@@ -486,7 +486,7 @@ def test_topup() -> None:
     settings.premium_tenant_ids = ""
     settings.billing_enabled = True
     settings.pro_monthly_worksheets = 2
-    settings.topup_products = "topup-25:25,topup-75:75"
+    settings.topup_products = "com.soruatolyesi.app.topup_25:25,com.soruatolyesi.app.topup_75:75"
     t = "u_topup"
     STORE.upsert(tenant_id=t, plan_code="pro", status="active", current_period_end=_iso_in(20))
 
@@ -504,8 +504,8 @@ def test_topup() -> None:
 
     # credit_topup: bilinmeyen ürün → 0; +25 ekle; aynı tx idempotent
     check(entitlements.credit_topup(t, "yok_urun") == 0, "bilinmeyen ürün → 0 kredi")
-    check(entitlements.credit_topup(t, "topup-25", provider_ref="tx_1") == 25, "topup-25 → 25 kredi")
-    check(entitlements.credit_topup(t, "topup-25", provider_ref="tx_1") == 0, "aynı tx → idempotent 0")
+    check(entitlements.credit_topup(t, "com.soruatolyesi.app.topup_25", provider_ref="tx_1") == 25, "com.soruatolyesi.app.topup_25 → 25 kredi")
+    check(entitlements.credit_topup(t, "com.soruatolyesi.app.topup_25", provider_ref="tx_1") == 0, "aynı tx → idempotent 0")
 
     q = entitlements.check_quota(t)
     check(q["plan_remaining"] == 0 and q["topup_balance"] == 25 and q["allowed"] is True,
