@@ -5,6 +5,7 @@ import { Check, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { MarkdownQuestion } from "@/components/MarkdownQuestion";
+import { MathInline } from "@/components/MathInline";
 import type {
   QuestionType,
   SolutionStep,
@@ -41,15 +42,19 @@ export function SolutionView({ steps }: { steps: string | SolutionStep[] }) {
     );
   }
   if (!steps.length) return null;
+  // Adım metni ve hesap alanı LaTeX taşır ("$\sqrt{75}$", "$8^2 = 64$"); düz
+  // basılınca ham komut görünüyordu → köklü/üslü çözümler okunamıyordu.
   return (
     <ol className="mt-2 space-y-1 rounded-md bg-muted/50 p-3 text-xs">
       {steps.map((s) => (
         <li key={s.step_no} className="flex gap-2">
           <span className="font-medium text-muted-foreground">{s.step_no}.</span>
           <span>
-            {s.description}
+            <MathInline text={s.description} />
             {s.computation ? (
-              <span className="ml-1 font-mono text-primary">{s.computation}</span>
+              <span className="ml-1 font-mono text-primary">
+                <MathInline text={s.computation} />
+              </span>
             ) : null}
           </span>
         </li>
@@ -146,7 +151,7 @@ export function QuestionReview({
           </span>
         </p>
         <Badge variant={isCorrect ? "secondary" : "outline"}>
-          Doğru cevap: {correctAnswer}
+          Doğru cevap: <MathInline text={correctAnswer} />
         </Badge>
         <SolutionView steps={solutionSteps} />
       </div>

@@ -187,9 +187,69 @@ def test_footer_promo_gated_by_paid() -> None:
         print("  not  pypdf yok → metin doğrulaması atlandı (boyut kontrolü yapıldı)")
 
 
+def test_footer_promo_does_not_touch_page_number() -> None:
+    """Tanıtım yazısı sayfa numarasının üstüne binmemeli (saha bildirimi 2026-08-20).
+
+    Eskiden ikisi de dipten 1.0 cm'deydi: sola yaslı yazı ~10.1 cm'de bitiyor,
+    ortalı sayfa no ~10.3 cm'de başlıyordu. 2 mm'lik boşluk, Türkçe karakterli
+    gömülü fontta metin uzayınca kapanıp yazı sayfa numarasını eziyordu.
+    """
+    print("PDF alt bilgisi — yazı sayfa numarasını ezmiyor")
+    try:
+        import pdfplumber  # noqa: PLC0415
+    except ImportError:
+        print("  not  pdfplumber yok → yerleşim doğrulaması atlandı")
+        return
+
+    import io  # noqa: PLC0415
+
+    from app.models.enums import Difficulty, QuestionType  # noqa: PLC0415
+    from app.services.pdf_renderer import render_worksheet_pdf  # noqa: PLC0415
+
+    q = Question(
+        number=1,
+        question="2+2 kaç eder?",
+        question_type=QuestionType.SALT_ISLEM,
+        answer="4",
+        kazanim_kod="MAT.5.1.1",
+        difficulty=Difficulty.KOLAY,
+        solution_steps="2+2=4",
+    )
+    w = Worksheet(
+        title="Test", grade=5, topic="Sayılar", difficulty=Difficulty.KOLAY,
+        question_count=1, questions=[q], answer_key=[],
+    )
+    pdf = render_worksheet_pdf(w, show_footer_promo=True)
+
+    with pdfplumber.open(io.BytesIO(pdf)) as doc:
+        page = doc.pages[0]
+        height = page.height
+        # Sayfa no satırı ile tanıtım satırının dikey aralığı (nokta cinsinden).
+        rows: dict[int, list[dict]] = {}
+        for word in page.extract_words():
+            baseline = round(height - word["bottom"])
+            rows.setdefault(baseline, []).append(word)
+
+        page_no_rows = [y for y, ws in rows.items() if any(x["text"] == "-" for x in ws)]
+        promo_rows = [
+            y for y, ws in rows.items() if any("soruatolyesi.com" in x["text"] for x in ws)
+        ]
+        check(bool(page_no_rows) and bool(promo_rows), "sayfa no + tanıtım yazısı basıldı")
+        if page_no_rows and promo_rows:
+            check(
+                promo_rows[0] > page_no_rows[0],
+                f"tanıtım yazısı sayfa no'nun ÜSTÜNDE (promo={promo_rows[0]}pt, no={page_no_rows[0]}pt)",
+            )
+            check(
+                promo_rows[0] != page_no_rows[0],
+                "iki metin aynı satırda değil (yatay çakışma imkânsız)",
+            )
+
+
 def _run() -> int:
     test_svg_ssrf_external_href_blocked()
     test_footer_promo_gated_by_paid()
+    test_footer_promo_does_not_touch_page_number()
     test_worksheet_question_count_capped()
     test_question_field_length_capped()
     test_render_endpoint_registered_and_limited()

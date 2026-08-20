@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { hasMathNotation } from "@/components/MathInline";
 import { MarkdownQuestion } from "@/components/MarkdownQuestion";
 import { ScoreRing } from "@/components/ScoreRing";
 import { ShareQuizButton } from "@/components/ShareQuizButton";
@@ -52,6 +53,29 @@ interface AnswerState {
  *  - Ödev (assignmentId): /practice/assignments altında, login zorunlu; sınıf
  *    ödevini çözer, kendi ilerlemesine + ödeve işlenir.
  */
+// Öğrenci klavyeden üst simge (2⁶) yazamıyor; üslü/köklü soru soranlarda "^ ile
+// yazabilirsin" ipucunu gösteriyoruz. Sunucu artık "2^6" ≡ "2⁶" ≡ "64" kabul ediyor
+// (saha bildirimi, 2026-08-20). İpucu yalnız matematik notasyonlu sorularda çıkar —
+// sözel derslerde gürültü olmasın.
+function needsMathHint(questionText: string): boolean {
+  return (
+    hasMathNotation(questionText) ||
+    /üslü|üsl|kök|karekök|kuvvet|üs\s/i.test(questionText)
+  );
+}
+
+function MathInputHint({ questionText }: { questionText: string }) {
+  if (!needsMathHint(questionText)) return null;
+  return (
+    <p className="mt-1 text-xs text-muted-foreground">
+      Üs için <code className="font-mono">^</code> kullan (ör.{" "}
+      <code className="font-mono">2^6</code>), kök için{" "}
+      <code className="font-mono">√</code> ya da{" "}
+      <code className="font-mono">sqrt(18)</code> yazabilirsin.
+    </p>
+  );
+}
+
 export function QuizSolver({
   quizId,
   shareCode,
@@ -341,6 +365,9 @@ export function QuizSolver({
                       }}
                     />
                   ))}
+                  <div className="sm:col-span-2">
+                    <MathInputHint questionText={q.question} />
+                  </div>
                 </div>
               ) : null}
 
@@ -348,12 +375,13 @@ export function QuizSolver({
               {q.question_type === "salt_islem" ? (
                 <div className="pl-8 sm:max-w-xs">
                   <Input
-                    placeholder="Sonuç (ör. 3/4 veya 0,75)"
+                    placeholder="Sonuç (ör. 3/4, 0,75 veya 2^6)"
                     value={a.texts?.[0] ?? ""}
                     onChange={(e) =>
                       setAnswer(q.number, { texts: [e.target.value] })
                     }
                   />
+                  <MathInputHint questionText={q.question} />
                 </div>
               ) : null}
 
@@ -372,6 +400,7 @@ export function QuizSolver({
                       setAnswer(q.number, { texts: [e.target.value] })
                     }
                   />
+                  <MathInputHint questionText={q.question} />
                 </div>
               ) : null}
 
@@ -387,6 +416,7 @@ export function QuizSolver({
                       setAnswer(q.number, { texts: [e.target.value] })
                     }
                   />
+                  <MathInputHint questionText={q.question} />
                 </div>
               ) : null}
             </Card>

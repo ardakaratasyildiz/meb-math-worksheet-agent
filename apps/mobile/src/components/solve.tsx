@@ -8,7 +8,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { IconSpark } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
-import { QuestionText } from '@/components/question-text';
+import { hasMathNotation, QuestionText } from '@/components/question-text';
 import { Card, PrimaryButton, ProgressBar } from '@/components/ui';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
@@ -126,9 +126,7 @@ export function ResultView({
                 </View>
                 <View style={styles.wrongBody}>
                   <Text style={styles.wrongLabel}>Doğru cevap</Text>
-                  <Text style={styles.wrongAnswer} numberOfLines={3}>
-                    {correctAnswerText(r)}
-                  </Text>
+                  <WrongAnswerText value={correctAnswerText(r)} />
                 </View>
               </View>
             ))}
@@ -148,6 +146,19 @@ export function ResultView({
   );
 }
 
+/** Özet kartındaki doğru cevap: LaTeX taşıyorsa render edilir, yoksa düz metin.
+ * Ham "$100 \times 2^6$" kullanıcıya gösteriliyordu (saha bildirimi, 2026-08-20). */
+function WrongAnswerText({ value }: { value: string }) {
+  if (hasMathNotation(value)) {
+    return <QuestionText text={value} width={240} />;
+  }
+  return (
+    <Text style={styles.wrongAnswer} numberOfLines={3}>
+      {value}
+    </Text>
+  );
+}
+
 /** Doğru cevabı okunur metne çevirir (çoktan seçmelide harf + şık metni). */
 function correctAnswerText(r: QuestionResult): string {
   if (r.options?.length && r.correct_index != null && r.correct_index >= 0) {
@@ -160,6 +171,21 @@ function correctAnswerText(r: QuestionResult): string {
     if (a === 'false' || a === 'yanlış') return 'Yanlış';
   }
   return r.correct_answer || '—';
+}
+
+/** Soru üslü/köklü ifade istiyor mu? Öğrenci klavyeden üst simge yazamadığı için
+ * "^ ile yazabilirsin" ipucunu YALNIZ bu sorularda gösteririz (aksi halde sözel
+ * derslerde gürültü olur). Sunucu artık "2^6" ≡ "2⁶" ≡ "64" kabul ediyor. */
+function needsMathHint(q: QuizQuestionPublic): boolean {
+  return hasMathNotation(q.question) || /üslü|üsl|kök|karekök|kuvvet|üs\s/i.test(q.question);
+}
+
+function MathInputHint() {
+  return (
+    <Text style={styles.inputHint}>
+      Üs için ^ kullan (örn. 2^6), kök için √ ya da sqrt(18) yazabilirsin.
+    </Text>
+  );
 }
 
 // ── Çözülebilir soru kartı (çoktan seçmeli / doğru-yanlış / boşluk / metin) ────
@@ -246,18 +272,22 @@ export function QuestionCard({
               }}
             />
           ))}
+          {needsMathHint(q) ? <MathInputHint /> : null}
         </View>
       ) : (
         // Açık uçlu dahil tüm serbest cevaplar: öğrenci YAZAR, sunucu cevap anahtarına
         // eşleştirir (sayısal denklik + aksan/boşluk/büyük-küçük toleransı + cümle
         // içindeki kısa cevap). Öz-değerlendirme akışı kaldırıldı (kullanıcı kararı).
-        <TextInput
-          style={styles.input}
-          placeholder="Cevabın"
-          placeholderTextColor={colors.textFaint}
-          value={answer?.texts?.[0] ?? ''}
-          onChangeText={(t) => onChange({ texts: [t] })}
-        />
+        <View style={styles.optList}>
+          <TextInput
+            style={styles.input}
+            placeholder="Cevabın"
+            placeholderTextColor={colors.textFaint}
+            value={answer?.texts?.[0] ?? ''}
+            onChangeText={(t) => onChange({ texts: [t] })}
+          />
+          {needsMathHint(q) ? <MathInputHint /> : null}
+        </View>
       )}
     </Card>
   );
@@ -317,6 +347,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgTint,
     borderWidth: 2,
     borderColor: 'transparent',
+  },
+  inputHint: {
+    fontFamily: fonts.body,
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    paddingHorizontal: spacing.xs,
   },
   input: {
     borderRadius: radius.lg,

@@ -655,6 +655,10 @@ def _solutions_section(questions: Iterable[Question], styles: dict[str, Paragrap
 # paylaşılan kağıt bir reklam. Alt bilgiye marka + QR koyarak döngüyü kapatırız:
 # QR'ı tarayan yeni kullanıcı siteye gelir. UTM ile GA4'te kaynak ölçülür.
 _SITE_LABEL = "soruatolyesi.com"
+# Alt bilgi dikey yerleşimi (sayfa dibinden). Sayfa no en altta ve YALNIZ BAŞINA;
+# tanıtım yazısı onun bir satır üstünde → çakışma yok, sayfa no her zaman okunur.
+_PAGE_NO_Y = 0.95 * cm
+_PROMO_Y = 1.5 * cm
 _QR_TARGET = "https://soruatolyesi.com/?utm_source=pdf&utm_medium=qr&utm_campaign=worksheet_footer"
 
 
@@ -742,12 +746,16 @@ def _page_furniture(
         # --- Alt bilgi: sayfa no her zaman; site etiketi + QR yalnız ücretsizde ---
         canvas.setFont(_BODY_FONT, 7)
         canvas.setFillColor(colors.grey)
-        canvas.drawCentredString(A4[0] / 2.0, 1.0 * cm, f"- {doc.page} -")
+        canvas.drawCentredString(A4[0] / 2.0, _PAGE_NO_Y, f"- {doc.page} -")
         if not show_footer_promo:
             canvas.restoreState()
             return
+        # Tanıtım yazısı sayfa no ile AYNI satırdaydı: sola yaslı metin ~10.1 cm'de
+        # bitiyor, ortalı sayfa no ~10.3 cm'de başlıyordu → 2 mm boşluk. Türkçe
+        # karakterli gömülü fontta metin uzayınca sayfa numarasının üstüne biniyordu
+        # (saha bildirimi, 2026-08-20). Yazı kendi satırına, sayfa no'nun ÜSTÜNE alındı.
         canvas.drawString(
-            2 * cm, 1.0 * cm,
+            2 * cm, _PROMO_Y,
             f"{_SITE_LABEL} ile üretildi — ücretsiz MEB matematik çalışma kağıdı",
         )
         qr_size = 1.1 * cm

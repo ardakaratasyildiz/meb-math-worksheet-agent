@@ -42,8 +42,12 @@ function simplifyMath(expr: string): string {
 }
 
 function latexLite(s: string): string {
-  if (!s.includes("$")) return s;
-  return s.replace(/\${1,2}([^$]+)\${1,2}/g, (_m, e: string) => simplifyMath(e));
+  if (s.includes("$")) {
+    return s.replace(/\${1,2}([^$]+)\${1,2}/g, (_m, e: string) => simplifyMath(e));
+  }
+  // Sınırlayıcısız kalan LaTeX komutları ("\sqrt{75}", "\frac{1}{2}") de sadeleşsin —
+  // aksi halde çözüm adımlarında ham komut olarak görünüyordu.
+  return /\\[a-zA-Z]+/.test(s) ? simplifyMath(s) : s;
 }
 
 type Seg = { kind: "text"; value: string } | { kind: "svg"; value: string };
@@ -100,7 +104,7 @@ function MathText({ text, color }: { text: string; color: string }) {
   }, [text, hasMath, key]);
 
   if (!hasMath) {
-    return <Text style={[styles.text, { color }]}>{text}</Text>;
+    return <Text style={[styles.text, { color }]}>{latexLite(text)}</Text>;
   }
   if (segs) {
     return (
@@ -265,3 +269,12 @@ const styles = StyleSheet.create({
   cellText: { fontFamily: fonts.body, fontSize: fontSize.sm, lineHeight: 18 },
   cellHeadText: { fontFamily: fonts.bodyBold },
 });
+
+/**
+ * Metin matematik notasyonu taşıyor mu? (`$…$` sınırlayıcı ya da çıplak LaTeX
+ * komutu). Cevap/çözüm gibi kısa alanlarda "düz Text mi, QuestionText mi"
+ * kararını verir — ham `$\sqrt{18}$` kullanıcıya gösterilmesin diye.
+ */
+export function hasMathNotation(text: string | null | undefined): boolean {
+  return !!text && (text.includes("$") || /\\[a-zA-Z]+/.test(text));
+}

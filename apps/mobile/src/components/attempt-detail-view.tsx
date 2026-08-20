@@ -1,7 +1,7 @@
 import type { SolutionStep, SubmittedAnswer } from '@soruatolyesi/shared';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { QuestionText } from '@/components/question-text';
+import { hasMathNotation, QuestionText } from '@/components/question-text';
 import type { AttemptDetail, AttemptReviewItem } from '@/lib/api';
 import { formatDate, scorePct, scoreTone } from '@/lib/format';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
@@ -126,7 +126,14 @@ function ReviewCard({ item, answerLabel }: { item: AttemptReviewItem; answerLabe
       {solution ? (
         <View style={styles.solutionBox}>
           <Text style={styles.solutionLabel}>Çözüm</Text>
-          <Text style={styles.solutionText}>{solution}</Text>
+          {/* Çözüm adımları da soru gövdesi gibi matematik taşır ("$\sqrt{75}$",
+              "$2^6$"). Düz <Text> ile basılınca ham LaTeX görünüyordu — köklü/üslü
+              ifadeler okunamıyordu (saha bildirimi, 2026-08-20). */}
+          {hasMathNotation(solution) ? (
+            <QuestionText text={solution} width={280} />
+          ) : (
+            <Text style={styles.solutionText}>{solution}</Text>
+          )}
         </View>
       ) : null}
     </View>
@@ -135,7 +142,7 @@ function ReviewCard({ item, answerLabel }: { item: AttemptReviewItem; answerLabe
 
 function AnswerVal({ value, tone }: { value: string; tone: 'wrong' | 'ok' | 'plain' }) {
   const color = tone === 'wrong' ? colors.danger : tone === 'ok' ? colors.success : colors.text;
-  if (value.includes('$')) {
+  if (hasMathNotation(value)) {
     return <QuestionText text={value} color={color} width={260} />;
   }
   return (

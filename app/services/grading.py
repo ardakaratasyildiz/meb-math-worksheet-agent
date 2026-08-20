@@ -23,7 +23,7 @@ from app.models.schemas import (
     QuestionResult,
     SubmittedAnswer,
 )
-from app.services.math_verifier import numeric_equivalent
+from app.services.math_verifier import numeric_equivalent, strip_latex_math
 
 
 # Şapkalı (circumflex) ünlüler önceden-birleşik karakterlerdir; casefold/NFKC bunları
@@ -31,11 +31,35 @@ from app.services.math_verifier import numeric_equivalent
 # "beşerî" cevabı, kullanıcının "beşeri" girişiyle eşleşmiyordu — WS-5.2).
 _CIRCUMFLEX_FOLD = str.maketrans("âîûÂÎÛ", "aiuaiu")
 
+# Üst simgeler → `^n`. NFKC bunları SESSİZCE düz rakama çöktürüyordu: "13⁶" → "136".
+# Sonuç: öğrencinin yazdığı "13^6" cevap anahtarıyla eşleşmiyor (haksız yanlış) ve
+# tersine "136" yazan öğrenci DOĞRU sayılıyordu. NFKC'den ÖNCE `^`'lı forma çevirip
+# bilgiyi koruyoruz (saha bildirimi, 2026-08-20).
+_SUPERSCRIPT_TO_CARET = {
+    "⁰": "^0", "¹": "^1", "²": "^2", "³": "^3", "⁴": "^4",
+    "⁵": "^5", "⁶": "^6", "⁷": "^7", "⁸": "^8", "⁹": "^9",
+}
+_SUPERSCRIPT_RUN_RE = re.compile(r"[⁰¹²³⁴⁵⁶⁷⁸⁹]+")
+
+
+def _fold_superscripts(s: str) -> str:
+    """Bitişik üst simge dizisini tek üsse toplar: "10²³" → "10^23"."""
+    return _SUPERSCRIPT_RUN_RE.sub(
+        lambda m: "^" + "".join(_SUPERSCRIPT_TO_CARET[c][1] for c in m.group(0)), s
+    )
+
 
 def _normalize_text(s: str) -> str:
-    """Boşluk/büyük-küçük/aksan toleranslı normalize (string-eşleşme için)."""
+    """Boşluk/büyük-küçük/aksan toleranslı normalize (string-eşleşme için).
+
+    Matematik notasyonu da tek bir yazıma indirgenir: LaTeX sınırlayıcı/komutları
+    temizlenir ve üst simgeler `^n` olur → "$13^6$" ≡ "13⁶" ≡ "13^6",
+    "$\\sqrt{18}$" ≡ "√18" ≡ "sqrt(18)".
+    """
     if not s:
         return ""
+    s = _fold_superscripts(s)  # NFKC'den ÖNCE — üs bilgisi kaybolmasın
+    s = strip_latex_math(s)  # $…$, \times, \frac, \sqrt, √ → sade metin
     s = s.strip().casefold()
     # Aksan/diakritik sadeleştir (Türkçe ı/İ casefold ile zaten ele alınır).
     s = unicodedata.normalize("NFKC", s)
@@ -149,6 +173,21 @@ def grade_question(
     return _match_free_text(submitted, stored.answer)
 
 
+def _display_answer(q: Question) -> str:
+    """Sonuç ekranında gösterilecek "doğru cevap" metni.
+
+    Boşluk doldurmada PUANLAMA `q.blanks`'e bakar ama gösterim `q.answer`'a
+    bakıyordu; model bazen answer alanına yalnız İLK boşluğu yazdığı için ekranda
+    "Doğru cevap: 13" görünüp 4 boşluklu soru yanlış sayılıyordu (öğrenci "ben 13
+    yazdım" diyor). Gösterimi puanlanan anahtarla aynı kaynağa bağlıyoruz.
+    """
+    if q.question_type == QuestionType.BOSLUK_DOLDURMA and q.blanks:
+        if len(q.blanks) > 1:
+            return "; ".join(b.strip() for b in q.blanks)
+        return q.blanks[0].strip() or q.answer
+    return q.answer
+
+
 def grade_quiz(
     stored_questions: list[Question],
     submitted: list[SubmittedAnswer],
@@ -185,7 +224,7 @@ def grade_quiz(
                 is_correct=is_correct,
                 kazanim_kod=q.kazanim_kod,
                 question_type=q.question_type,
-                correct_answer=q.answer,
+                correct_answer=_display_answer(q),
                 solution_steps=q.solution_steps,
                 options=q.options if q.question_type == QuestionType.COKTAN_SECMELI else None,
                 correct_index=q.correct_index

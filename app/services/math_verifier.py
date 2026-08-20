@@ -55,10 +55,68 @@ _SUPERSCRIPT_MAP = str.maketrans({
 })
 
 
+# ─── LaTeX → sade matematik metni (puanlama için) ────────────────────────────
+# Cevap anahtarı sık sık LaTeX taşır: "$100 \times 2^6$", "$\sqrt{18}$",
+# "$\frac{1}{2}$". Öğrenci bunları klavyeden yazamaz; "6400", "100x2^6",
+# "3√2", "1/2" yazar. Sınırlayıcılar/komutlar temizlenmezse SymPy parse
+# edemiyordu → sayısal denklik atlanıp ham string karşılaştırmaya düşüyor ve
+# DOĞRU cevap yanlış sayılıyordu (saha bildirimi, 2026-08-20).
+_LATEX_DELIM_RE = re.compile(r"\${1,2}")
+_LATEX_FRAC_RE = re.compile(r"\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}")
+_LATEX_SQRT_N_RE = re.compile(r"\\sqrt\s*\[\s*([^\[\]]*?)\s*\]\s*\{([^{}]*)\}")
+_LATEX_SQRT_RE = re.compile(r"\\sqrt\s*\{([^{}]*)\}")
+# "√18", "√(2)", "√ 3" → sqrt(...) ; kök işaretini öğrenci de yazabiliyor.
+_ROOT_SIGN_GROUP_RE = re.compile(r"√\s*\(([^()]*)\)")
+_ROOT_SIGN_RE = re.compile(r"√\s*(\d+(?:[.,]\d+)?)")
+_LATEX_POWER_RE = re.compile(r"\^\s*\{([^{}]*)\}")
+_LATEX_CMD_RE = re.compile(r"\\[a-zA-Z]+")
+# "6,4x10^2" / "3 X 4" → çarpma. Yalnız iki SAYI arasında; "2x" (değişken) bozulmasın.
+_IMPLICIT_TIMES_RE = re.compile(r"(?<=\d)\s*[xX]\s*(?=\d)")
+# "3√2" → "3*sqrt(2)" (örtük çarpım)
+_IMPLICIT_SQRT_MUL_RE = re.compile(r"(?<=\d)\s*(?=sqrt\()")
+
+_LATEX_OPERATORS = {
+    r"\times": "*", r"\cdot": "*", r"\ast": "*", r"\div": "/",
+    r"\left": "", r"\right": "", r"\,": " ", r"\;": " ", r"\!": "",
+}
+
+
+def strip_latex_math(text: str) -> str:
+    """LaTeX süslerini sade matematik metnine indirger (puanlama ön-işlemi).
+
+    `$100 \\times 2^6$` → `100 * 2^6`, `$\\sqrt{18}$` → `sqrt(18)`,
+    `$\\frac{1}{2}$` → `(1)/(2)`, `√75` → `sqrt(75)`, `6,4x10^2` → `6,4*10^2`.
+
+    Düz metinde (LaTeX içermeyen Türkçe cevaplarda) etkisizdir — "x" yalnız iki
+    rakam arasındayken çarpmaya çevrilir, "2x + 1" gibi cebirsel ifadeler korunur.
+    """
+    if not text:
+        return text
+    s = _LATEX_DELIM_RE.sub(" ", text)
+    for _ in range(6):  # iç içe \frac
+        new = _LATEX_FRAC_RE.sub(r"((\1)/(\2))", s)
+        if new == s:
+            break
+        s = new
+    s = _LATEX_SQRT_N_RE.sub(r"((\2)**(1/(\1)))", s)
+    s = _LATEX_SQRT_RE.sub(r"sqrt(\1)", s)
+    s = _ROOT_SIGN_GROUP_RE.sub(r"sqrt(\1)", s)
+    s = _ROOT_SIGN_RE.sub(r"sqrt(\1)", s)
+    s = _LATEX_POWER_RE.sub(r"**(\1)", s)
+    for cmd, sym in _LATEX_OPERATORS.items():
+        s = s.replace(cmd, sym)
+    s = _LATEX_CMD_RE.sub(" ", s)  # kalan \komut'lar
+    s = s.replace("{", " ").replace("}", " ")
+    s = _IMPLICIT_TIMES_RE.sub("*", s)
+    s = _IMPLICIT_SQRT_MUL_RE.sub("*", s)
+    return re.sub(r"[ \t]+", " ", s).strip()
+
+
 def _normalize_number_text(text: str) -> str:
     """Türkçe sayı ifadelerini SymPy'ın anlayabileceği formata getirir."""
     if not text:
         return text
+    text = strip_latex_math(text)
     text = text.translate(_SUPERSCRIPT_MAP)
     # Karışık kesirler: "3 tam 1/4" → "(3 + 1/4)"
     text = _MIXED_FRACTION_RE.sub(r"(\1 + \2/\3)", text)
@@ -143,20 +201,14 @@ _NUMERIC_TOKEN_RE = re.compile(
 )
 
 
-def _parse_numeric_answer(answer: str) -> sympy.Expr | None:
-    """Cevabı ondalık/kesir destekli SymPy ifadesine çevirir. Başarısızsa None.
+# Tüm ifadenin sayısal olduğu durum: rakam/operatör/parantez + `sqrt`. LaTeX
+# temizliğinden sonra "100 * 2^6", "sqrt(18)", "3*sqrt(2)", "((1)/(2))" hep buraya
+# düşer → tek token yerine ifadenin TAMAMI değerlendirilir.
+_FULL_NUMERIC_RE = re.compile(r"^(?:sqrt|[0-9.\s+\-*/()^])+$")
 
-    Yalnız baştaki sayısal token alınır ("12 elma" → 12). Sözel cevap ("yedi")
-    None döner — sympify harf dizisini sessizce Symbol'e çevirdiği için sonucta
-    serbest sembol kalırsa reddedilir (aksi halde "yedi" ≡ "yedi" yanlış pozitif).
-    """
-    if not answer:
-        return None
-    text = _normalize_number_text(answer)  # Türkçe ondalık virgül → nokta, vs.
-    m = _NUMERIC_TOKEN_RE.match(text)
-    if not m:
-        return None
-    candidate = m.group(0).strip()
+
+def _sympify_numeric(candidate: str) -> sympy.Expr | None:
+    """Adayı SymPy ile sayıya indirger; sayı değilse/parse edilemezse None."""
     if not candidate or not any(c.isdigit() for c in candidate):
         return None
     try:
@@ -166,7 +218,31 @@ def _parse_numeric_answer(answer: str) -> sympy.Expr | None:
     # Saf sayı olmalı — içinde değişken kalmışsa (ör. "2x") sayısal değildir.
     if getattr(expr, "free_symbols", set()):
         return None
+    if not getattr(expr, "is_number", False):
+        return None
     return expr
+
+
+def _parse_numeric_answer(answer: str) -> sympy.Expr | None:
+    """Cevabı ondalık/kesir/kök/üs destekli SymPy ifadesine çevirir. Başarısızsa None.
+
+    Önce ifadenin TAMAMI sayısal mı diye bakılır ("100 × 2^6" → 6400,
+    "√18" → sqrt(18)); değilse baştaki sayısal token alınır ("12 elma" → 12).
+    Sözel cevap ("yedi") None döner — sympify harf dizisini sessizce Symbol'e
+    çevirdiği için sonucta serbest sembol kalırsa reddedilir (aksi halde
+    "yedi" ≡ "yedi" yanlış pozitif).
+    """
+    if not answer:
+        return None
+    text = _normalize_number_text(answer)  # LaTeX temizliği + Türkçe ondalık, vs.
+    if _FULL_NUMERIC_RE.match(text):
+        expr = _sympify_numeric(text.strip())
+        if expr is not None:
+            return expr
+    m = _NUMERIC_TOKEN_RE.match(text)
+    if not m:
+        return None
+    return _sympify_numeric(m.group(0).strip())
 
 
 def numeric_equivalent(expected: str, actual: str) -> bool | None:
