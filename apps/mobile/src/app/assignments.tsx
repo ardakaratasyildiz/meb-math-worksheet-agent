@@ -23,6 +23,7 @@ import {
   type ClassroomSummary,
   type MyAssignmentItem,
 } from '@/lib/api';
+import { displayName } from '@/lib/display-name';
 import { shareWorksheetPdf } from '@/lib/pdf';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
@@ -46,7 +47,7 @@ export default function AssignmentsScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const [code, setCode] = useState('');
-  const [name, setName] = useState(user?.firstName ?? '');
+  const [name, setName] = useState(displayName(user) ?? '');
   const [joining, setJoining] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
   const [sharing, setSharing] = useState<string | null>(null);

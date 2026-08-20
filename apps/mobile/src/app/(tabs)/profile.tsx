@@ -9,6 +9,7 @@ import { Mascot } from '@/components/mascot';
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { getGamification, getParentCode, type GamificationResponse } from '@/lib/api';
+import { displayName } from '@/lib/display-name';
 import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
 import { MEB_DISCLAIMER_SHORT } from '@/lib/legal';
 import { DEFAULT_HOUR, getReminderPrefs, setReminder } from '@/lib/notifications';
@@ -67,7 +68,7 @@ export default function ProfileScreen() {
   const trialLeft = entitlements.plan === 'trial' ? trialDaysLeft(entitlements.trial_end) : null;
   const role = effectiveRole(user);
   const playful = isPlayfulRole(role);
-  const name = user?.firstName ?? user?.username ?? 'Kullanıcı';
+  const name = displayName(user) ?? user?.username ?? 'Kullanıcı';
   const email = user?.primaryEmailAddress?.emailAddress ?? '';
   const initial = name.charAt(0).toUpperCase();
 

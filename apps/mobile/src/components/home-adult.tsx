@@ -14,7 +14,7 @@ import { colors, fonts, fontSize, radius, shadow, spacing } from '@/theme/tokens
  * Öğretmen: birincil "Çalışma Kağıdı Oluştur" + Sınıflarım/Gelişim.
  * Veli: birincil "Çocuğum" (bağla + ilerleme izle) + Oluştur/Gelişim.
  */
-export function AdultHome({ role, name }: { role: 'teacher' | 'parent'; name: string }) {
+export function AdultHome({ role, name }: { role: 'teacher' | 'parent'; name: string | null }) {
   const router = useRouter();
   const go = (path: string) => () => router.push(path as Href);
   const teacher = role === 'teacher';
@@ -25,7 +25,7 @@ export function AdultHome({ role, name }: { role: 'teacher' | 'parent'; name: st
       <SafeAreaView edges={['top']} style={styles.safe}>
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <View>
-            <Text style={styles.hello}>Merhaba, {name}</Text>
+            <Text style={styles.hello}>{name ? `Merhaba, ${name}` : 'Merhaba'}</Text>
             <Text style={styles.sub}>
               {teacher ? 'Bugün ne hazırlayalım?' : 'Çocuğunun gelişimini buradan takip et'}
             </Text>
