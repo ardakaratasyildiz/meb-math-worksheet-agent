@@ -245,7 +245,7 @@ function SolveAndGrow() {
     <section className="py-20">
       <div className="container">
         {/* Öğrenciler için — gradyan vitrin + oyunlaştırma önizlemesi (alıcıya
-            çocuğun eğleneceği deneyimi gösteren köprü). Statik temsilî veri. */}
+            çocuğun eğleneceği deneyimi gösteren köprü). Statik temsili veri. */}
         <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-sky-500 p-8 text-primary-foreground shadow-pop sm:p-10">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             <div>

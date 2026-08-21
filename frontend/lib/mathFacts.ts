@@ -11,7 +11,7 @@ export const MATH_FACTS: string[] = [
   "Bal arıları peteklerini altıgen yapar — çünkü altıgen, eşit alan için en az malzeme kullanan şekildir.",
   "Sonsuzluk simgesi ∞, John Wallis tarafından 1655'te icat edildi — Roma rakamı M (1000) şeklinin değişimi olabilir.",
   "Pi günü 14 Mart'tır (3.14) ve Albert Einstein'ın doğum günüyle aynı tarih.",
-  "Bir A4 kâğıdı insan gücüyle en fazla 7 kez katlanabilir; 8.'sinde fizik durdurur.",
+  "Bir A4 kağıdı insan gücüyle en fazla 7 kez katlanabilir; 8.'sinde fizik durdurur.",
   "2 hariç tüm asal sayılar tektir — çünkü çift sayı zaten 2'ye bölünür.",
   "Fibonacci dizisi (1, 1, 2, 3, 5, 8...) ayçiçeği tohumlarında, deniz kabuğunda, kelebek kanadında doğal olarak çıkar.",
   "Sıfır sayısını matematiksel olarak ilk tanımlayan kişi Hint matematikçi Brahmagupta'dır (7. yüzyıl).",

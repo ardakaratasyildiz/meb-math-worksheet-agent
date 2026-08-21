@@ -31,7 +31,7 @@ export default function AboutScreen() {
           </Card>
 
           <Card>
-            <Text style={styles.cardTitle}>Resmî kaynaklar</Text>
+            <Text style={styles.cardTitle}>Resmi kaynaklar</Text>
             <Text style={styles.body}>
               Uygulamada geçen sınıf, ünite ve kazanım başlıklarının kaynağı MEB’in kamuya açık
               öğretim programlarıdır:
@@ -46,7 +46,7 @@ export default function AboutScreen() {
           <Card>
             <Text style={styles.cardTitle}>İçerik nasıl üretiliyor?</Text>
             <Text style={styles.body}>
-              Sorular, cevap anahtarları ve çözümler yapay zekâ ile üretilir; seçtiğin kazanımla
+              Sorular, cevap anahtarları ve çözümler yapay zeka ile üretilir; seçtiğin kazanımla
               hizalanması için otomatik denetimlerden geçer. Buna rağmen hata içerebilir —
               üretilen içerik MEB’in resmi yayını, ders kitabı ya da sınav materyali değildir.
               Kullanmadan önce kontrol etmeni öneririz.

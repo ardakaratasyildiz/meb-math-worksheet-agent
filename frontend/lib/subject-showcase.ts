@@ -1,5 +1,5 @@
 /**
- * Ana sayfa "ders vitrini" (sekmeli showroom) için ders başına TEMSİLÎ örnek sorular.
+ * Ana sayfa "ders vitrini" (sekmeli showroom) için ders başına TEMSİLİ örnek sorular.
  *
  * Neden statik: ana sayfa hızlı ve backend cold-start'a bağımsız açılmalı; örnek
  * sorular pazarlama içeriği (üretim hattının GERÇEK çıktısını temsil eden, MEB
@@ -131,7 +131,7 @@ export const SUBJECT_SHOWCASE: Record<Subject, ShowcaseQ[]> = {
     },
     {
       gradeLabel: "8. sınıf · İnkılap",
-      topic: "Millî Bir Destan",
+      topic: "Milli Bir Destan",
       kazanim: "SB.8.3.2",
       question: "Türkiye Büyük Millet Meclisi (TBMM) hangi tarihte açılmıştır?",
       options: ["A) 19 Mayıs 1919", "B) 23 Nisan 1920", "C) 29 Ekim 1923", "D) 30 Ağustos 1922"],

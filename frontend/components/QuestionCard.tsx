@@ -200,7 +200,7 @@ function QuestionBody({ q }: { q: Question }) {
       </div>
     );
   }
-  // Geriye dönük: bazı tipler şıkları hâlâ metne gömülü gönderebilir → tespit et.
+  // Geriye dönük: bazı tipler şıkları hala metne gömülü gönderebilir → tespit et.
   const split = splitInlineOptions(q.question);
   if (split) {
     return (

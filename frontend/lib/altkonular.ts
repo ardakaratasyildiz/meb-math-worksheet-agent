@@ -1293,7 +1293,7 @@ export const ALTKONU_PAGES: AltKonu[] = [
     slug: "yuzde-problemleri",
     title: "Yüzde Problemleri",
     description:
-      "6. sınıf yüzde problemleri çalışma kağıdı: indirim, zam, kâr-zarar ve yüzde-kesir-ondalık ilişkisi. PDF, cevap anahtarı ve çözüm ile ücretsiz.",
+      "6. sınıf yüzde problemleri çalışma kağıdı: indirim, zam, kar-zarar ve yüzde-kesir-ondalık ilişkisi. PDF, cevap anahtarı ve çözüm ile ücretsiz.",
     intro:
       "Bu çalışma kağıdı yüzde ile ilgili problemleri (bir miktarın yüzdesi, yüzde artış/azalış, indirim-zam) çözmeyi ve yüzdeyi kesir/ondalık ile ilişkilendirmeyi pekiştirir.",
     skills: [
@@ -1301,7 +1301,7 @@ export const ALTKONU_PAGES: AltKonu[] = [
       "Yüzde artış ve azalış (zam, indirim) bulma",
       "Yüzdeyi kesir ve ondalık ile ilişkilendirme",
       "Verilen yüzdeden bütünü bulma",
-      "Kâr-zarar ve indirim problemleri",
+      "Kar-zarar ve indirim problemleri",
     ],
     difficulty: [
       "Bir sayının yüzdesini bulma.",

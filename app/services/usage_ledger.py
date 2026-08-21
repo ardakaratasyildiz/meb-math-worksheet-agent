@@ -161,10 +161,16 @@ class UsageLedger:
             return 0
 
     def worksheets_used_since(self, tenant_ids, since_ts: float) -> int:
-        """Bir/birden çok tenant'ın `since_ts`'ten beri ürettiği ÇALIŞMA KAĞIDI sayısı
-        (cache-hit HARİÇ). Kota birimi = kağıt (soru değil): her generate() bir satır =
-        bir kağıt. **Aile paylaşımlı havuzu** için tenant LİSTESİ alır (veli + bağlı
-        çocuklar TEK havuzdan çeker). Tek tenant str de kabul eder. Fail-open → 0.
+        """Bir/birden çok tenant'ın `since_ts`'ten beri ürettiği ÇALIŞMA KAĞIDI sayısı.
+        Kota birimi = kağıt (soru değil): her generate() bir satır = bir kağıt.
+        **Aile paylaşımlı havuzu** için tenant LİSTESİ alır (veli + bağlı çocuklar TEK
+        havuzdan çeker). Tek tenant str de kabul eder. Fail-open → 0.
+
+        CACHE-HIT DE SAYILIR (KULLANICI KARARI 2026-08-21). Eskiden `cache_hit=0`
+        filtresi vardı: gerekçe maliyetti — bize para yakmayan kağıdı kullanıcıya
+        yazmamak. Ama kota bir ÜRÜN limiti, maliyet aktarımı değil: "aynı kullanıcı
+        aynı koşulda kağıt üretse bile saymamız lazım, kağıt kağıttır". Filtre
+        kalkmadan aynı üniteyi tekrar üreten kullanıcı sınırsız kağıt alabiliyordu.
 
         `status='failed'` satırlar SAYILMAZ — teslim edilmeyen kağıt kotadan düşmez.
 
@@ -185,7 +191,7 @@ class UsageLedger:
             with self._lock:
                 row = self._db.execute(
                     f"SELECT COUNT(*) FROM usage_ledger "
-                    f"WHERE tenant_id IN ({placeholders}) AND cache_hit=0 "
+                    f"WHERE tenant_id IN ({placeholders}) "
                     f"AND status=? AND question_count>0 AND created_at>=?",
                     (*ids, STATUS_OK, since_ts),
                 ).fetchone()
