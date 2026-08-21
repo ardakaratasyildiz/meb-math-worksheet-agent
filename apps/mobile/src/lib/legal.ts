@@ -1,8 +1,8 @@
 /**
- * MEB kaynak künyesi + "resmî kurum değiliz" uyarısı.
+ * MEB kaynak künyesi + "resmi kurum değiliz" uyarısı.
  *
  * Google Play "Misleading Claims" politikası, devlet kaynaklı bilgi gösteren
- * uygulamalardan iki şey istiyor: (1) bilginin resmî kaynağına açık ve çalışan
+ * uygulamalardan iki şey istiyor: (1) bilginin resmi kaynağına açık ve çalışan
  * bağlantı, (2) kurumu temsil etmediğine dair kolay görülen bir uyarı.
  * 18 Ağustos 2026'daki Play reddinin gerekçesi tam olarak buydu
  * (bkz. docs/PLAY_POLICY_FIX.md) — aynı metinler mağaza açıklamasında da geçer.
@@ -16,11 +16,11 @@ export const MEB_DISCLAIMER_SHORT =
 /** Uzun sürüm — Hakkında ekranı ve mağaza açıklaması için. */
 export const MEB_DISCLAIMER_LONG =
   'Soru Atölyesi bağımsız bir eğitim uygulamasıdır. T.C. Millî Eğitim Bakanlığı (MEB), ' +
-  'Talim ve Terbiye Kurulu Başkanlığı ya da başka bir resmî kurumla bağlantılı, ortaklı veya ' +
-  'bu kurumlarca onaylı değildir; hiçbirini temsil etmez ve resmî bir hizmet sunmaz.\n\n' +
+  'Talim ve Terbiye Kurulu Başkanlığı ya da başka bir resmi kurumla bağlantılı, ortaklı veya ' +
+  'bu kurumlarca onaylı değildir; hiçbirini temsil etmez ve resmi bir hizmet sunmaz.\n\n' +
   'Uygulamadaki ünite, konu ve kazanım başlıkları MEB’in kamuya açık öğretim programlarına ' +
-  'dayanır; sorular ve çözümler yapay zekâ ile üretilir, MEB’in resmî yayını veya sınav ' +
-  'materyali değildir. Güncel ve bağlayıcı bilgi için aşağıdaki resmî kaynaklara başvurun.';
+  'dayanır; sorular ve çözümler yapay zekâ ile üretilir, MEB’in resmi yayını veya sınav ' +
+  'materyali değildir. Güncel ve bağlayıcı bilgi için aşağıdaki resmi kaynaklara başvurun.';
 
 export type SourceLink = {
   label: string;
@@ -29,12 +29,12 @@ export type SourceLink = {
   note: string;
 };
 
-/** Uygulamada gösterilen müfredat bilgisinin resmî kaynakları (.gov.tr). */
+/** Uygulamada gösterilen müfredat bilgisinin resmi kaynakları (.gov.tr). */
 export const MEB_SOURCES: SourceLink[] = [
   {
     label: 'meb.gov.tr',
     url: 'https://www.meb.gov.tr',
-    note: 'T.C. Millî Eğitim Bakanlığı resmî sitesi',
+    note: 'T.C. Millî Eğitim Bakanlığı resmi sitesi',
   },
   {
     label: 'tymm.meb.gov.tr',

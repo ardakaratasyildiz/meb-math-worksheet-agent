@@ -22,6 +22,7 @@ import {
 
 import { IconChevron, IconPencil, IconWorksheet } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
+import { MebNotice } from '@/components/meb-notice';
 import { Chip } from '@/components/pickers';
 import { PrimaryButton } from '@/components/ui';
 import { useUnits } from '@/hooks/useUnits';
@@ -482,6 +483,12 @@ export function GeneratorSetup({
           />
         </View>
       )}
+
+      {/* MEB künyesi YALNIZ ilk adımda. Eskiden bu bileşenin DIŞINDA, create.tsx'te
+          duruyordu → beş adımın hepsinde tekrar tekrar görünüyordu. Play politikası
+          (Misleading Claims, bkz. lib/legal.ts) uyarının akışta kolayca görülmesini
+          istiyor, her ekranda yinelenmesini değil — akışın giriş ekranı yeterli. */}
+      {stepIdx === 0 ? <MebNotice /> : null}
     </View>
   );
 }

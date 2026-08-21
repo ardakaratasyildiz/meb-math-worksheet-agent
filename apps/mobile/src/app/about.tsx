@@ -16,7 +16,7 @@ const headerOpts = {
 } as const;
 
 /**
- * Bağımsızlık uyarısı + müfredat bilgisinin resmî kaynakları.
+ * Bağımsızlık uyarısı + müfredat bilgisinin resmi kaynakları.
  * Google Play "Misleading Claims" politikasının uygulama içi ayağı (lib/legal.ts).
  */
 export default function AboutScreen() {
@@ -48,7 +48,7 @@ export default function AboutScreen() {
             <Text style={styles.body}>
               Sorular, cevap anahtarları ve çözümler yapay zekâ ile üretilir; seçtiğin kazanımla
               hizalanması için otomatik denetimlerden geçer. Buna rağmen hata içerebilir —
-              üretilen içerik MEB’in resmî yayını, ders kitabı ya da sınav materyali değildir.
+              üretilen içerik MEB’in resmi yayını, ders kitabı ya da sınav materyali değildir.
               Kullanmadan önce kontrol etmeni öneririz.
             </Text>
           </Card>
