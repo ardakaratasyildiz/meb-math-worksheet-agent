@@ -82,12 +82,33 @@ const DIFFERENCES = [
     sub: 'Kağıdın altındaki “Soru Atölyesi ile üretildi” etiketi ve QR kalkar.',
   },
   {
-    title: 'Aile paylaşımı',
-    sub: 'Çocukların senin planını devralır; kota tek havuzdan paylaşılır (3 çocuğa kadar).',
-  },
-  {
     title: 'Ek kağıt paketi alabilme',
     sub: 'Kotan biterse +25 veya +75 kağıtlık paket ekleyebilirsin.',
+  },
+] as const;
+
+/**
+ * Pro+'a ÖZEL farklar — Pro'da kapalı, sunucuda enforce edilir.
+ * (`entitlements.classroom_limit` / `family_children_limit`; sınırlar
+ * `classrooms.create_classroom` ve `me.link_child` uçlarında 402 döner.)
+ *
+ * Kağıt sayısı tek fark olduğu sürece Pro+ cezbedici değildi. Seçim ölçütü
+ * MARJİNAL MALİYET: Pro+ kağıt başına daha ince marjlı (₺349/120 = ₺2,91 ·
+ * Pro ₺199/50 = ₺3,98), o yüzden ayrıcalıklar üretim maliyetini artırmayan
+ * şeyler — kaç kişi/sınıf havuzu paylaşıyor.
+ */
+const PLUS_ONLY = [
+  {
+    title: 'Aile paylaşımı',
+    sub: 'Çocukların planını devralır; kota tek havuzdan paylaşılır (3 çocuğa kadar).',
+  },
+  {
+    title: 'Çoklu sınıf yönetimi',
+    sub: '5 sınıf açabilir, ödev verip sonuç panosundan takip edebilirsin (Pro’da 1 sınıf).',
+  },
+  {
+    title: 'Öncelikli destek',
+    sub: 'Sorunların sıranın önünde yanıtlanır.',
   },
 ] as const;
 
@@ -284,8 +305,14 @@ export default function PaywallScreen() {
             "Ücretsizden farkı ne?" — kullanıcı neye para verdiğini görmeden karar
             veremiyordu. YALNIZ sunucuda gerçekten uygulanan farklar listeleniyor
             (kota/günlük tavan: entitlements.daily_limit · yeni nesil kalite:
-            wants_yeni_nesil · aile havuzu: _family_tenants · ek paket: yalnız abone).
-            Filigransız PDF gibi doğrulanamayan vaatler BİLİNÇLİ olarak yok.
+            wants_yeni_nesil · filigran: render.pdf show_footer_promo ·
+            ek paket: yalnız abone).
+
+            Bu kural bir denetimde işe yaradı (2026-08-21): plan sayfasına yazılan
+            "sistemde öncelikli soru üretimi" maddesi ÇIKARILDI — öyle bir kuyruk
+            mekanizması yok. "Sınırsız pratik" de düzeltildi: Çöz&Geliş quiz'i
+            `quizzes.enforce_quota` ile AYNI kağıt havuzundan harcıyor.
+            Doğrulanamayan vaat eklenmez; ekleneni buradan çıkarırız.
           */}
           <Card style={styles.diffCard}>
             <Text style={styles.diffTitle}>Ücretsiz plandan farkı</Text>
@@ -303,6 +330,24 @@ export default function PaywallScreen() {
             <Text style={styles.diffFree}>
               Ücretsiz plan: ayda 10 çalışma kağıdı, günde en çok 2.
             </Text>
+          </Card>
+
+          {/* Pro+ farkı — kağıt sayısı tek ayrım olduğu sürece Pro+ cezbedici
+              değildi. Buradaki maddeler Pro'da KAPALI ve sunucuda enforce ediliyor
+              (classroom_limit / family_children_limit → 402). */}
+          <Card style={[styles.diffCard, styles.plusCard]}>
+            <Text style={styles.diffTitle}>Pro+ ile ayrıca</Text>
+            {PLUS_ONLY.map((d) => (
+              <View key={d.title} style={styles.diffRow}>
+                <View style={[styles.diffCheck, styles.plusCheck]}>
+                  <Text style={[styles.diffCheckText, styles.plusCheckText]}>★</Text>
+                </View>
+                <View style={styles.diffBody}>
+                  <Text style={styles.diffRowTitle}>{d.title}</Text>
+                  <Text style={styles.diffRowSub}>{d.sub}</Text>
+                </View>
+              </View>
+            ))}
           </Card>
 
           {/* Ek paket — yalnız GERÇEK abone (dark-launch premium'a gösterilmez:
@@ -454,6 +499,11 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   diffCheckText: { fontFamily: fonts.bodyBold, fontSize: fontSize.sm, color: colors.success },
+  // Pro+ kartı: "en popüler" kademenin rengiyle (magic) hizalı → hangi planın
+  // ayrıcalığı olduğu okumadan anlaşılsın.
+  plusCard: { borderWidth: 1, borderColor: colors.magic },
+  plusCheck: { backgroundColor: colors.tintPurple },
+  plusCheckText: { color: colors.magic },
   diffBody: { flex: 1, gap: 1 },
   diffRowTitle: { fontFamily: fonts.bodyBold, fontSize: fontSize.md, color: colors.text },
   diffRowSub: { fontFamily: fonts.body, fontSize: fontSize.sm, color: colors.textMuted, lineHeight: 19 },

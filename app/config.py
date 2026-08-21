@@ -276,6 +276,23 @@ class Settings(BaseSettings):
     free_monthly_worksheets: int = 10
     pro_monthly_worksheets: int = 50
     pro_plus_monthly_worksheets: int = 120
+
+    # ── Pro / Pro+ ayrımı (kağıt sayısı DIŞINDAKİ farklar) ───────────────────
+    # Pro+ kağıt başına daha ince marjlı (₺349/120 = ₺2,91 · Pro ₺199/50 = ₺3,98;
+    # kağıt maliyeti ~₺1,50) → Pro+ ayrıcalıkları MARJİNAL MALİYETİ SIFIR olanlar
+    # arasından seçildi: kaç kişi/sınıf havuzu paylaşıyor, üretim başına maliyet değil.
+    #
+    # Sınırlar OLUŞTURMA anında uygulanır (bkz. classrooms.create_classroom,
+    # me.link_child) — mevcut kayıtlar geriye dönük kırılmaz. Ücretsiz kademeden
+    # ÇALIŞAN bir özellik geri alınmaz: free_classrooms=1 bilinçli (bugünkü davranış).
+    free_classrooms: int = 1
+    pro_classrooms: int = 1
+    pro_plus_classrooms: int = 5
+    # Aile paylaşımı Pro+ ayrıcalığı (paywall'da böyle duyuruluyor). Ücretsiz ve Pro'da
+    # kapalı; deneme Pro+'ı tattırdığı için açık.
+    free_family_children: int = 0
+    pro_family_children: int = 0
+    pro_plus_family_children: int = 3
     # Ücretsiz kademede GÜNLÜK tavan (kağıt/gün, Türkiye günü). Aylık 10 hakkın ilk iki
     # günde tüketilip kullanıcının 28 gün boş kalmasını engeller; aynı zamanda ücretsiz
     # trafiğin günlük maliyet tavanını belirler. 0 → günlük tavan kapalı.

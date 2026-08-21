@@ -233,6 +233,27 @@ def link_child(
 ) -> dict:
     """Veli, öğrencinin kodunu girerek bağlanır. Geçersiz/kendi kodu → 404."""
     tenant_id = _require_tenant(verified, req.tenant_id)
+    # Plan sınırı — "Aile paylaşımı: 3 çocuğa kadar" Pro+ ayrıcalığı. Bu sayı
+    # paywall'da duyuruluyordu ama KODDA UYGULANMIYORDU (2026-08-21 denetimi):
+    # `_family_tenants` bağlı tüm çocukları havuza alıyor, yani sözden fazlasını
+    # veriyorduk. Sınır BAĞLAMA anında uygulanır → mevcut bağlar kırılmaz.
+    limit = entitlements.family_children_limit(entitlements.plan_of(tenant_id))
+    linked = len(PARENT_LINK_STORE.list_children(tenant_id))
+    if linked >= limit:
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "error": "family_limit_reached",
+                "message": (
+                    "Aile paylaşımı Pro+ planına dahildir (tek kota havuzu, 3 çocuğa "
+                    "kadar). Pro+'a geçerek çocuk hesabı bağlayabilirsin."
+                    if limit == 0
+                    else f"Planında {limit} çocuk hesabı bağlayabilirsin."
+                ),
+                "limit": limit,
+                "linked": linked,
+            },
+        )
     student = PARENT_LINK_STORE.link(tenant_id, req.code, req.child_label)
     if student is None:
         raise HTTPException(status_code=404, detail="Kod geçersiz veya kendi kodun.")
