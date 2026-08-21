@@ -16,7 +16,6 @@ import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { createQuiz, generateWorksheet, submitAttempt } from '@/lib/api';
 import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
-import { EMPTY_BRANDING, type Branding } from '@/lib/branding';
 import { consumeGenEntry, subscribeGenEntry, type GenPrefill } from '@/lib/gen-entry';
 import { previewWorksheetPdf, shareWorksheetPdf } from '@/lib/pdf';
 import { effectiveRole, isPlayfulRole } from '@/lib/roles';
@@ -90,8 +89,6 @@ export default function CreateScreen() {
   const [sharing, setSharing] = useState(false);
   const [previewing, setPreviewing] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  /** PDF ust bilgisine basilacak kurum/ogretmen markasi (cihazda saklanir). */
-  const [brand, setBrand] = useState<Branding>(EMPTY_BRANDING);
 
   const setAnswer = useCallback((n: number, patch: Partial<SubmittedAnswer>) => {
     setAnswers((prev) => ({ ...prev, [n]: { ...prev[n], ...patch, number: n } }));
@@ -183,13 +180,8 @@ export default function CreateScreen() {
     () => ({
       includeAnswerKey: params?.includeAnswerKey ?? true,
       includeSolutions: params?.includeSolutions ?? true,
-      // White-label üst bilgi. Sunucu ücretsiz planda bu alanları YOK SAYAR
-      // (worksheets.py → has_paid_access), yani kapı burada değil orada.
-      brandName: brand.name,
-      brandSubtitle: brand.subtitle,
-      brandLogo: brand.logo,
     }),
-    [params, brand],
+    [params],
   );
 
   const onPreviewPdf = useCallback(async () => {
@@ -262,8 +254,6 @@ export default function CreateScreen() {
                 pdfOnly={sober}
                 initialMode={presetMode}
                 prefill={entry.prefill}
-                paid={entitlements.is_premium}
-                onBrandChange={setBrand}
               />
               {/* Boş iskelet 60 sn boyunca "takıldı mı?" hissi veriyordu → web'deki
                   "Bunu biliyor muydun?" bekleme ekranının mobil karşılığı. */}

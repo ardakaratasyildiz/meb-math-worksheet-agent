@@ -10,8 +10,7 @@
     "ios": {
       "bundleIdentifier": "com.soruatolyesi.app",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false,
-        "NSPhotoLibraryUsageDescription": "Çalışma kağıtlarının üstünde görünecek kurum/öğretmen logonuzu seçmek için galeriye erişim izni gerekiyor."
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

@@ -20,7 +20,6 @@ import {
   View,
 } from 'react-native';
 
-import { BrandSettings } from '@/components/brand-settings';
 import { IconChevron, IconPencil, IconWorksheet } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
 import { MebNotice } from '@/components/meb-notice';
@@ -28,7 +27,6 @@ import { Chip } from '@/components/pickers';
 import { PrimaryButton } from '@/components/ui';
 import { useUnits } from '@/hooks/useUnits';
 import { listKazanimlarByUnit } from '@/lib/api';
-import type { Branding } from '@/lib/branding';
 import type { GenPrefill } from '@/lib/gen-entry';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/theme/tokens';
 
@@ -121,8 +119,6 @@ export function GeneratorSetup({
   pdfOnly = false,
   initialMode,
   prefill,
-  paid = false,
-  onBrandChange,
 }: {
   onSubmit: (p: GeneratorParams) => void;
   busy: boolean;
@@ -144,13 +140,6 @@ export function GeneratorSetup({
    * atlanır. Kullanıcı önerilen konuyu tekrar tıklamak zorunda kalmasın.
    */
   prefill?: GenPrefill;
-  /** Ücretli plan mı — PDF markası bölümünün bilgilendirme metni için. */
-  paid?: boolean;
-  /**
-   * White-label marka değişince üst bileşeni bilgilendir (PDF isteğine geçsin).
-   * Verilmezse marka bölümü HİÇ gösterilmez — çözme akışında anlamı yok.
-   */
-  onBrandChange?: (b: Branding) => void;
 }) {
   // Mod dışarıdan geldiyse (initialMode) ya da pdfOnly ise mod adımı listeden çıkar.
   // DONDURULUR: prop akış ortasında değişirse stepKeys uzunluğu kayar ve stepIdx
@@ -483,11 +472,14 @@ export function GeneratorSetup({
                 </View>
               ) : null}
 
-              {/* White-label marka (yalnız PDF modu) — ayarlar cihazda saklanır,
-                  ücretli plan kapısı SUNUCUDA. Bkz. components/brand-settings.tsx */}
-              {mode === 'pdf' && onBrandChange ? (
-                <BrandSettings paid={paid} onChange={onBrandChange} />
-              ) : null}
+              {/* PDF markası (kendi logon) buradaydı — GERİ ÇEKİLDİ 2026-08-21.
+                  Backend `render.pdf` white-label'ı destekliyor ve web'de arayüz var,
+                  ama mobil logo seçici `expo-image-picker` gerektiriyor ve o paket
+                  eklenince iOS build'i 3 kez üst üste düştü: pod'lar kuruluyor ama
+                  Pods projesi workspace'e girmiyor → `no such module 'Expo'`.
+                  Yayını bloke etmemek için paket çıkarıldı. Tercih edilen dönüş yolu:
+                  markayı SUNUCUDA saklamak (web'de bir kez yüklenir, mobil PDF de
+                  kullanır) → native modül hiç gerekmez, cihazdan cihaza taşınır. */}
             </View>
           ) : null}
 
