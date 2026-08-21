@@ -69,7 +69,7 @@ export function Footer() {
           />
         </div>
         {/*
-          Bağımsızlık bildirimi + müfredat bilgisinin resmî kaynakları.
+          Bağımsızlık bildirimi + müfredat bilgisinin resmi kaynakları.
           Google Play "Misleading Claims" politikası bunu mağaza açıklamasında ve
           uygulama içinde zorunlu tutuyor; web de aynı iddiayı ("MEB müfredatı")
           kurduğu için künye burada da durur. Mobil karşılığı:
@@ -80,7 +80,7 @@ export function Footer() {
             Soru Atölyesi bağımsız bir eğitim girişimidir. T.C. Millî Eğitim Bakanlığı
             (MEB) ile bağlantılı, ortaklı veya MEB tarafından onaylı değildir; MEB&apos;i
             temsil etmez. Ünite ve kazanım başlıkları MEB&apos;in kamuya açık öğretim
-            programlarına dayanır; sorular ve çözümler yapay zekâ ile üretilir, resmî MEB
+            programlarına dayanır; sorular ve çözümler yapay zekâ ile üretilir, resmi MEB
             yayını değildir.
           </p>
           <p className="mt-2">

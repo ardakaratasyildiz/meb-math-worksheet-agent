@@ -6,7 +6,7 @@ import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
 /**
  * Müfredat bilgisinin göründüğü ekranların altına konan kısa künye:
- * "MEB'i temsil etmiyoruz" + resmî kaynaklara giden Hakkında ekranı.
+ * "MEB'i temsil etmiyoruz" + resmi kaynaklara giden Hakkında ekranı.
  * Gerekçe: lib/legal.ts başlığı.
  */
 export function MebNotice() {
