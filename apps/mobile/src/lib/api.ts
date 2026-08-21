@@ -214,7 +214,15 @@ function blobToBase64(blob: Blob): Promise<string> {
  */
 export async function fetchWorksheetPdfBase64(
   worksheet: Worksheet,
-  opts: { includeAnswerKey?: boolean; includeSolutions?: boolean } = {},
+  opts: {
+    includeAnswerKey?: boolean;
+    includeSolutions?: boolean;
+    /** White-label üst bilgi — ücretli plan kapısı SUNUCUDA (has_paid_access). */
+    brandName?: string;
+    brandSubtitle?: string;
+    /** `data:image/...;base64,...` */
+    brandLogo?: string;
+  } = {},
 ): Promise<string> {
   const auth = await authHeader();
   const res = await fetch(`${ENV.apiUrl}/api/worksheets/render.pdf`, {
@@ -224,6 +232,11 @@ export async function fetchWorksheetPdfBase64(
       worksheet,
       include_answer_key: opts.includeAnswerKey ?? true,
       include_solutions: opts.includeSolutions ?? true,
+      // Boş alan GÖNDERİLMEZ: sunucu None bekliyor, boş string üst bilgiyi
+      // gereksiz yere çizdirir.
+      ...(opts.brandName?.trim() ? { brand_name: opts.brandName.trim() } : {}),
+      ...(opts.brandSubtitle?.trim() ? { brand_subtitle: opts.brandSubtitle.trim() } : {}),
+      ...(opts.brandLogo ? { brand_logo: opts.brandLogo } : {}),
     }),
   });
   if (!res.ok) throw new Error(`PDF oluşturulamadı: ${res.status}`);

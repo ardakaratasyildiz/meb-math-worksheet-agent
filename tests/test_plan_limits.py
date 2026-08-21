@@ -11,10 +11,12 @@ değildi. 2026-08-21 denetiminde iki şey çıktı:
   2. "Çoklu sınıf yönetimi" Pro+ ayrıcalığı olarak duyurulacaktı ama sınıf
      sayısına hiç sınır uygulanmıyordu.
 
-Bu test merdiveni kilitler. Seçim ölçütü MARJİNAL MALİYET: Pro+ kağıt başına daha
-ince marjlı (₺349/120 = ₺2,91 · Pro ₺199/50 = ₺3,98; kağıt ~₺1,50) → Pro+
-ayrıcalıkları üretim maliyetini artırmayan şeyler olmalı (kaç kişi/sınıf havuzu
-paylaşıyor), model kalitesi gibi maliyetli şeyler DEĞİL.
+Bu test merdiveni kilitler. Seçim ölçütü MARJİNAL MALİYET ve hesap NET gelirle
+yapılır, etiket fiyatıyla DEĞİL (docs/MONETIZATION_PLAN.md §2.1: etiketten cebe
+≈%60 kalıyor — KDV %20, mağaza komisyonu %15, GVK Mük.20/B stopajı %15).
+Pro ₺2,40/kağıt · Pro+ ₺1,75/kağıt · maliyet ~₺1,50 → TAM kullanımda Pro ~%37,
+Pro+ ~%14 marj. Pro+'ta kağıt başına yalnız ~₺0,25 kalıyor, yani üretim maliyetini
+artıran bir ayrıcalık (güçlü model gibi) Pro+ marjını sıfırlar.
 """
 from __future__ import annotations
 
@@ -61,7 +63,8 @@ def test_family_children_ladder() -> None:
     print("aile paylaşımı merdiveni")
     free, trial, pro, plus = (entitlements.family_children_limit(p) for p in PLANS)
     check(plus == 3, f"Pro+ 3 çocuk — paywall'da duyurulan sayı ({plus})")
-    check(pro == 0, f"Pro'da aile paylaşımı kapalı ({pro}) — Pro+ ayrıcalığı")
+    check(pro == 1, f"Pro tek çocuk ({pro}) — tek çocuklu aile Pro'da çalışır")
+    check(plus > pro, f"Pro+ daha fazla çocuk ({plus} > {pro}) — çok çocuklu aile upsell'i")
     check(free == 0, f"ücretsizde kapalı ({free})")
     check(trial == plus, f"deneme Pro+'ı tattırır ({trial} == {plus})")
 

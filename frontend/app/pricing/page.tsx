@@ -61,6 +61,7 @@ const PLANS: Plan[] = [
       "Yeni nesil (senaryo bazlı) soru kalitesi",
       "Filigransız PDF — kendi logonuzu ekleyin",
       "Çöz & Geliş: oyunlaştırma + kazanım analitiği",
+      "Aile paylaşımı: 1 çocuk hesabı bağlayın",
       "Kotan biterse ek kağıt paketi alabilme",
     ],
   },
@@ -76,7 +77,7 @@ const PLANS: Plan[] = [
     features: [
       "Pro planındaki her şeye ek olarak:",
       "Ayda 120 çalışma kağıdı — Pro'nun 2,4 katı",
-      "Aile paylaşımı: tek havuz, 3 çocuğa kadar",
+      "Aile paylaşımı: 3 çocuğa kadar (Pro'da 1)",
       "5 sınıf yönetimi, ödev verme ve sonuç panosu",
       "Çocuklarının ilerlemesini tek panodan takip",
       "Öncelikli müşteri desteği",
