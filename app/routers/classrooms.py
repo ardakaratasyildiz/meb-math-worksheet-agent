@@ -30,6 +30,7 @@ from app.models.schemas import (
     JoinClassroomResponse,
 )
 from app.security import limiter, require_api_key
+from app.services import entitlements
 from app.services.classroom_store import CLASSROOM_STORE
 from app.services.clerk_auth import require_tenant, verified_tenant_id
 from app.services.clerk_roles import enforce_role
@@ -62,6 +63,23 @@ def create_classroom(
     """Yeni sınıf oluştur (sahip = öğretmen). Katılma kodu döner."""
     tenant_id = require_tenant(verified, req.tenant_id)
     enforce_role(tenant_id, {"teacher", "admin"})  # sınıf açma öğretmene özel
+    # Plan sınırı — "Çoklu sınıf yönetimi" Pro+ ayrıcalığı. Sınır OLUŞTURMA anında
+    # uygulanır: mevcut sınıflar geriye dönük kırılmaz, yalnız yenisi engellenir.
+    limit = entitlements.classroom_limit(entitlements.plan_of(tenant_id))
+    owned = len(CLASSROOM_STORE.list_owned(tenant_id))
+    if owned >= limit:
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "error": "classroom_limit_reached",
+                "message": (
+                    f"Planında {limit} sınıf açabilirsin. Daha fazla sınıf yönetmek "
+                    "için Pro+'a geçebilirsin."
+                ),
+                "limit": limit,
+                "owned": owned,
+            },
+        )
     rec = CLASSROOM_STORE.create_classroom(owner_tenant_id=tenant_id, name=req.name)
     logger.info("sınıf oluşturuldu: owner=%s id=%s", tenant_id, rec["id"])
     detail = CLASSROOM_STORE.get_classroom(rec["id"], tenant_id)

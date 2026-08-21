@@ -59,9 +59,9 @@ const PLANS: Plan[] = [
     features: [
       "Ayda 50 çalışma kağıdı · günlük sınır yok",
       "Yeni nesil (senaryo bazlı) soru kalitesi",
-      "Filigransız PDF — Kendi logonuzu ekleyin",
-      "Çöz & Geliş: Sınırsız pratik ve oyunlaştırma",
-      "Sistemde öncelikli soru üretimi",
+      "Filigransız PDF — kendi logonuzu ekleyin",
+      "Çöz & Geliş: oyunlaştırma + kazanım analitiği",
+      "Kotan biterse ek kağıt paketi alabilme",
     ],
   },
   {
@@ -75,10 +75,10 @@ const PLANS: Plan[] = [
     cta: "interest",
     features: [
       "Pro planındaki her şeye ek olarak:",
-      "Ayda 120 çalışma kağıdı",
+      "Ayda 120 çalışma kağıdı — Pro'nun 2,4 katı",
       "Aile paylaşımı: tek havuz, 3 çocuğa kadar",
-      "Çoklu sınıf yönetimi, ödev verme ve sonuç panosu",
-      "Detaylı kazanım analitiği ile tam takip",
+      "5 sınıf yönetimi, ödev verme ve sonuç panosu",
+      "Çocuklarının ilerlemesini tek panodan takip",
       "Öncelikli müşteri desteği",
     ],
   },

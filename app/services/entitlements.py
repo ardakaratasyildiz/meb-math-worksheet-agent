@@ -176,6 +176,38 @@ def quota_limit(plan: str) -> int:
     return settings.pro_plus_monthly_worksheets
 
 
+def classroom_limit(plan: str) -> int:
+    """Plana göre kullanıcının SAHİBİ olabileceği sınıf sayısı.
+
+    Pro+ ayrıcalığı ("Çoklu sınıf yönetimi"). Ücretsizde 1 sınıf BİLİNÇLİ olarak
+    açık kalır — bugünkü davranış bu ve çalışan bir özelliği geri almıyoruz;
+    fark Pro ile Pro+ arasında kurulur. Deneme Pro+'ı tattırır.
+    """
+    if plan == PLAN_FREE:
+        return settings.free_classrooms
+    if plan == PLAN_TRIAL:
+        return settings.pro_plus_classrooms
+    if plan == PLAN_PRO:
+        return settings.pro_classrooms
+    return settings.pro_plus_classrooms
+
+
+def family_children_limit(plan: str) -> int:
+    """Plana göre kaç çocuk hesabı aynı kota havuzuna bağlanabilir.
+
+    Pro+ ayrıcalığı ("Aile paylaşımı: tek havuz, 3 çocuğa kadar"). Bu sayı paywall'da
+    duyuruluyordu ama KODDA HİÇ UYGULANMIYORDU — `_family_tenants` bağlı tüm çocukları
+    döndürüyor, yani verdiğimiz sözden fazlasını veriyorduk (2026-08-21 denetimi).
+    """
+    if plan == PLAN_FREE:
+        return settings.free_family_children
+    if plan == PLAN_TRIAL:
+        return settings.pro_plus_family_children
+    if plan == PLAN_PRO:
+        return settings.pro_family_children
+    return settings.pro_plus_family_children
+
+
 def daily_limit(plan: str) -> int | None:
     """Plana göre GÜNLÜK kağıt tavanı; tavansız planlarda None.
 
