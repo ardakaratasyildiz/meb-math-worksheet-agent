@@ -11,6 +11,7 @@ import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
 import {
   PurchasesUnavailableError,
   fetchProducts,
+  lastPurchasesError,
   purchaseSku,
   purchasesSupported,
   restorePurchases,
@@ -115,11 +116,22 @@ export default function PaywallScreen() {
   const hasRealSubscription = !!entitlements.status;
   const trialLeft = currentPlan === 'trial' ? trialDaysLeft(entitlements.trial_end) : null;
 
+  /**
+   * Mağaza ürünleri çekilemediyse sebebi. Fiyatlar sessizce koda gömülü yedeğe
+   * düşüyordu → "her şey normal" görünüp satın almaya basınca patlıyordu. Kurulum
+   * ayıklamasını körlemesine yapmak zorunda kaldığımız için sebep artık ekranda.
+   */
+  const [storeIssue, setStoreIssue] = useState<string | null>(null);
+
   useEffect(() => {
     if (!supported) return;
     const skus = [...TIERS.map((t) => t.sku), ...TOPUPS.map((t) => t.sku)];
     void fetchProducts(skus).then((ps) => {
-      if (!ps.length) return;
+      if (!ps.length) {
+        setStoreIssue(lastPurchasesError() ?? "mağaza ürünleri okunamadı");
+        return;
+      }
+      setStoreIssue(null);
       setStorePrice(Object.fromEntries(ps.map((p) => [p.productId, p.priceString])));
     });
   }, [supported]);
@@ -257,6 +269,16 @@ export default function PaywallScreen() {
           <Text style={styles.allNote}>
             Tüm özellikler her iki kademede de açık — fark yalnız aylık kağıt sayısı.
           </Text>
+
+          {/* Mağaza ürünleri okunamadıysa sebebini GÖSTER. Fiyatlar sessizce yedeğe
+              düşüp her şey normal görünüyordu; kullanıcı ancak satın almaya basınca
+              hata alıyordu ve sebep hiçbir yere yazılmıyordu. */}
+          {storeIssue ? (
+            <Text style={styles.storeIssue}>
+              Mağaza bağlantısı hazır değil: {storeIssue}. Fiyatlar geçici olarak
+              gösterim amaçlıdır, satın alma şu an tamamlanamaz.
+            </Text>
+          ) : null}
 
           {/*
             "Ücretsizden farkı ne?" — kullanıcı neye para verdiğini görmeden karar
@@ -410,6 +432,14 @@ const styles = StyleSheet.create({
   tierPeriod: { fontFamily: fonts.body, fontSize: fontSize.sm, color: colors.textMuted, marginLeft: 2 },
 
   allNote: { fontFamily: fonts.body, fontSize: fontSize.sm, color: colors.textMuted, textAlign: 'center' },
+  storeIssue: {
+    fontFamily: fonts.body,
+    fontSize: fontSize.xs,
+    color: colors.danger,
+    textAlign: 'center',
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.xs,
+  },
 
   diffCard: { gap: spacing.md },
   diffTitle: { fontFamily: fonts.heading, fontSize: fontSize.lg, color: colors.text },
