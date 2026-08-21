@@ -246,11 +246,21 @@ class Settings(BaseSettings):
     #   - premium_all: herkesi premium say → herkes yeni nesil alır
     #   - premium_tenant_ids: premium Clerk userId'leri (virgülle) allowlist
     # Karar HER ZAMAN sunucuda verilir; client bir bayrak gönderemez.
-    # ŞİMDİLİK premium_all=True → ücretsiz dahil herkes yeni nesil (harman) alıyor.
-    # Abonelik/billing canlı olunca: premium_all=False yap + premium_tenant_ids doldur
-    # → o an ücretsiz=normal, premium=yeni nesil FARKI devreye girer.
+    #
+    # premium_all KAPATILDI (2026-08-21, kullanıcı kararı: "ciddi aktif kullanıcımız
+    # yok, direkt devreye alalım ki bunları da test edelim"). Açıkken giriş yapmış
+    # HERKES pro-plus sayılıyordu → ücretsiz kullanıcı 10 yerine 120 kağıt, günlük
+    # tavan yok, 5 sınıf, 3 çocuk. Yani Pro/Pro+ ayrımı görünmezdi ve kimse abonelik
+    # satın almazdı. Bayrak KAPALI iken plan gerçek abonelik kaydından çözülür.
+    #
+    # NOT: bu bayrak tek başına yetmez — `billing_enabled` de True olmalı, yoksa
+    # `enforce_quota` no-op kalır (aşağıya bak). İkisi BİRLİKTE değişir.
+    #
+    # Bayrağın ZATEN etkilemediği iki şey (bilinçli): model seçimi
+    # (`is_premium_for_model`) ve filigran/white-label (`has_paid_access`) — ikisi de
+    # premium_all'ı yok sayıp gerçek aboneliğe bakıyor.
     premium_yeni_nesil: bool = True
-    premium_all: bool = True
+    premium_all: bool = False
     premium_tenant_ids: str = ""
     # yeni_nesil TEASER (ücretsiz): premium full yeni_nesil alır; ücretsiz yalnız
     # BİR zorluk bucket'ında yeni_nesil görür (tadımlık, fiyatlandırma kaldıracı).
@@ -309,7 +319,17 @@ class Settings(BaseSettings):
     # Değer göstermeye 20 kağıt yeter (KARAR 2026-08-12).
     trial_days: int = 7
     trial_worksheets: int = 20
-    billing_enabled: bool = False
+    # AÇILDI (2026-08-21, `premium_all=False` ile BİRLİKTE). Kapalıyken
+    # `enforce_quota` no-op'tu → kota hiç uygulanmıyordu, yani premium_all'ı tek
+    # başına kapatmak hiçbir şeyi değiştirmezdi. İkisi ayrı ayrı anlamsız.
+    #
+    # Açılınca devreye giren zincir:
+    #   - Ücretsiz: 10 kağıt/ay + 2 kağıt/gün, aşımda 402 (istemciler paywall'a yönlendirir)
+    #   - İlk üretimde `ensure_trial` → 7 gün / 20 kağıt kartsız deneme (abonelik
+    #     kaydı olmayan HERKESE bir kez). Mevcut kullanıcılar için bu yumuşak iniş
+    #     sağlıyor: 120'den 10'a düşmüyorlar, önce 7 günlük deneme alıyorlar.
+    #   - Kota aşımı ek paket kredisinden karşılanır (varsa)
+    billing_enabled: bool = True
     # Ek kağıt paketi (top-up) — tüketilebilir IAP; abonelik üstü, süreli (MONETIZATION_PLAN §2).
     topup_expiry_days: int = 30
     # RevenueCat consumable product id → eklenecek kağıt sayısı. Webhook consumable olayında
