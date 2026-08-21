@@ -106,13 +106,23 @@ def test_failed_cost_is_still_visible(ledger):
     assert s["total"]["failed_cost_usd"] == pytest.approx(0.25), "boşa giden ayrı görünür"
 
 
-def test_cache_hit_and_failed_are_independent(ledger):
-    """Cache-hit ve failed ayrı eksenler; ikisi de kotadan düşmez."""
+def test_cache_hit_counts_but_failed_does_not(ledger):
+    """Cache-hit ve failed ayrı eksenler — AMA artık farklı davranıyorlar.
+
+    KULLANICI KARARI 2026-08-21: cache'ten servis edilen kağıt da kotadan düşer
+    ("aynı kullanıcı aynı koşulda kağıt üretse bile saymamız lazım, kağıt kağıttır").
+    Eski davranışta `cache_hit=0` filtresi vardı ve gerekçesi maliyetti; ama kota bir
+    ÜRÜN limiti, maliyet aktarımı değil — filtre dururken aynı üniteyi tekrar üreten
+    kullanıcı sınırsız kağıt alabiliyordu.
+
+    `status='failed'` DEĞİŞMEDİ: teslim edilmeyen kağıt hâlâ kotadan düşmez, ama
+    maliyeti görünür kalır.
+    """
     ledger.record(tenant_id="u", model="cache", cost_usd=0.0, question_count=10,
                   prompt_tokens=0, completion_tokens=0, cache_hit=True, status=STATUS_OK)
     ledger.record(tenant_id="u", model="gemini-2.5-flash", cost_usd=0.2, question_count=0,
                   prompt_tokens=100, completion_tokens=50, status=STATUS_FAILED)
-    assert ledger.worksheets_used_since("u", 0) == 0
+    assert ledger.worksheets_used_since("u", 0) == 1, "cache-hit kağıt kotadan düşer"
     assert ledger.summary()["total"]["failed_cost_usd"] == pytest.approx(0.2)
 
 
@@ -250,3 +260,37 @@ def test_happy_path_writes_exactly_one_ok_row(monkeypatch, ledger):
 
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-v"]))
+
+
+def test_verified_tenant_binding_prevents_orphan_ledger_rows():
+    """SAHA BUG'I 2026-08-21: kota sayacı abonelikte bile "0/120" duruyordu.
+
+    Kök neden bir KİMLİK AYRIŞMASI: kota OKUMASI token'dan doğrulanmış tenant'ı
+    kullanıyor (`enforce_quota(verified)`, `/api/me/entitlements` →
+    `_require_tenant(verified, ...)`), defter YAZMASI ise istek gövdesindeki
+    `req.tenant_id`'yi kullanıyordu. Gövde boş/farklı geldiğinde satır `'anon'`
+    altına düşüyor ve kullanıcının sayacı sonsuza dek 0 kalıyordu — hata da vermez.
+
+    Fix: `worksheets._bind_verified_tenant()` doğrulanmış oturum varsa gövdedeki
+    tenant'ı EZER. Bu test o sözleşmeyi kilitler.
+    """
+    from app.models.schemas import GenerateWorksheetRequest
+    from app.routers.worksheets import _bind_verified_tenant
+
+    def _req(tenant):
+        return GenerateWorksheetRequest(grade=5, topic_id="kesirler", tenant_id=tenant)
+
+    # 1) Gövde boş → doğrulanmış kimlik yazılır (yoksa satır 'anon' olurdu)
+    r = _req(None)
+    _bind_verified_tenant(r, "user_real")
+    assert r.tenant_id == "user_real", "boş gövde doğrulanmış kimlikle dolmalı"
+
+    # 2) Gövde BAŞKASININ kimliğini iddia ediyor → ezilir (güvenlik + tutarlılık)
+    r = _req("user_baskasi")
+    _bind_verified_tenant(r, "user_real")
+    assert r.tenant_id == "user_real", "istemci beyanı doğrulanmış kimliği ezemez"
+
+    # 3) Anonim üretim (oturum yok) → dokunulmaz, SEO/landing akışı bozulmasın
+    r = _req(None)
+    _bind_verified_tenant(r, None)
+    assert r.tenant_id is None, "anonim akış korunmalı"

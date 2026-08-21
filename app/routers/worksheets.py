@@ -463,6 +463,27 @@ def _build_worksheet(
     return worksheet, metadata
 
 
+def _bind_verified_tenant(req: GenerateWorksheetRequest, verified: str | None) -> None:
+    """İstek gövdesindeki `tenant_id`'yi DOĞRULANMIŞ kimlikle değiştirir.
+
+    Kota OKUMASI token'dan gelen kimliği kullanıyordu (`enforce_quota(verified)`,
+    `/api/me/entitlements` → `_require_tenant(verified, …)`), ama defter YAZMASI
+    gövdeden gelen `req.tenant_id`'yi kullanıyordu (`_build_worksheet` → usage_ledger,
+    worksheet_history, premium model kararı). İkisi ayrışırsa üretilen kağıt
+    kullanıcının kotasında hiç görünmez: `usage_ledger.record` boş tenant'ı
+    `'anon'` yazar ve sayaç sonsuza dek 0 kalır (saha bildirimi 2026-08-21 —
+    abonelikte bile "0/120" duruyordu).
+
+    Ayrıca güvenlik: gövdedeki tenant istemci beyanıydı. Başka bir kullanıcının
+    kimliğini yazarak premium model kalitesi almak ya da onun geçmişine kayıt
+    düşürmek mümkündü. Doğrulanmış oturum varsa artık O geçerli.
+
+    Anonim üretim (verified=None) dokunulmadan geçer — SEO/landing akışı bozulmasın.
+    """
+    if verified:
+        req.tenant_id = verified
+
+
 @router.post("/generate", response_model=GenerateWorksheetResponse)
 @limiter.limit(rate_limit_string())
 def generate_worksheet(
@@ -471,6 +492,7 @@ def generate_worksheet(
     verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> GenerateWorksheetResponse:
+    _bind_verified_tenant(req, verified)
     entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
     worksheet, metadata = _build_worksheet(req, variation_key=anon_variation_key(request))
     return GenerateWorksheetResponse(worksheet=worksheet, metadata=metadata)
@@ -541,6 +563,7 @@ def generate_worksheet_pdf(
     _api_key: str = Depends(require_api_key),
 ) -> Response:
     """Üretim + PDF render tek call'da. Rate limit + auth uygulanır (LLM çağrısı yapar)."""
+    _bind_verified_tenant(req, verified)
     entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
     worksheet, _ = _build_worksheet(req, variation_key=anon_variation_key(request))
     return _pdf_response(

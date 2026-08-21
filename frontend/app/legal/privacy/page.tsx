@@ -58,7 +58,7 @@ const SECTIONS: LegalSection[] = [
   {
     heading: "Veri Saklama Süresi",
     paragraphs: [
-      "Hesap verileri, hesabınız aktif olduğu sürece saklanır. Üretim geçmişi, hesap başına sınırlı sayıda (en yeni kayıtlar) tutulur. Hesabınızı kapatmanız hâlinde verileriniz makul bir süre içinde silinir.",
+      "Hesap verileri, hesabınız aktif olduğu sürece saklanır. Üretim geçmişi, hesap başına sınırlı sayıda (en yeni kayıtlar) tutulur. Hesabınızı kapatmanız halinde verileriniz makul bir süre içinde silinir.",
     ],
   },
   {
@@ -70,7 +70,7 @@ const SECTIONS: LegalSection[] = [
   {
     heading: "Haklarınız",
     paragraphs: [
-      "Kişisel verilerinize erişme, düzeltilmesini veya silinmesini isteme dâhil tüm haklarınız ve başvuru yöntemi, KVKK Aydınlatma Metni sayfasında ayrıntılı olarak açıklanmıştır.",
+      "Kişisel verilerinize erişme, düzeltilmesini veya silinmesini isteme dahil tüm haklarınız ve başvuru yöntemi, KVKK Aydınlatma Metni sayfasında ayrıntılı olarak açıklanmıştır.",
     ],
   },
   {

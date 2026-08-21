@@ -77,14 +77,14 @@ export function Footer() {
         */}
         <div className="mt-10 border-t border-white/10 pt-6 text-xs leading-relaxed opacity-60">
           <p>
-            Soru Atölyesi bağımsız bir eğitim girişimidir. T.C. Millî Eğitim Bakanlığı
+            Soru Atölyesi bağımsız bir eğitim girişimidir. T.C. Milli Eğitim Bakanlığı
             (MEB) ile bağlantılı, ortaklı veya MEB tarafından onaylı değildir; MEB&apos;i
             temsil etmez. Ünite ve kazanım başlıkları MEB&apos;in kamuya açık öğretim
-            programlarına dayanır; sorular ve çözümler yapay zekâ ile üretilir, resmi MEB
+            programlarına dayanır; sorular ve çözümler yapay zeka ile üretilir, resmi MEB
             yayını değildir.
           </p>
           <p className="mt-2">
-            Resmî kaynaklar:{" "}
+            Resmi kaynaklar:{" "}
             {[
               { label: "meb.gov.tr", href: "https://www.meb.gov.tr" },
               { label: "tymm.meb.gov.tr", href: "https://tymm.meb.gov.tr" },

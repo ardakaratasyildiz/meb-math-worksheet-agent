@@ -10,16 +10,16 @@
 
 /** Tek satırlık uyarı (ekran altı, profil dipnotu). */
 export const MEB_DISCLAIMER_SHORT =
-  'Soru Atölyesi bağımsız bir eğitim uygulamasıdır. T.C. Millî Eğitim Bakanlığı (MEB) ile ' +
+  'Soru Atölyesi bağımsız bir eğitim uygulamasıdır. T.C. Milli Eğitim Bakanlığı (MEB) ile ' +
   'bağlantılı, ortaklı veya MEB tarafından onaylı değildir; MEB’i temsil etmez.';
 
 /** Uzun sürüm — Hakkında ekranı ve mağaza açıklaması için. */
 export const MEB_DISCLAIMER_LONG =
-  'Soru Atölyesi bağımsız bir eğitim uygulamasıdır. T.C. Millî Eğitim Bakanlığı (MEB), ' +
+  'Soru Atölyesi bağımsız bir eğitim uygulamasıdır. T.C. Milli Eğitim Bakanlığı (MEB), ' +
   'Talim ve Terbiye Kurulu Başkanlığı ya da başka bir resmi kurumla bağlantılı, ortaklı veya ' +
   'bu kurumlarca onaylı değildir; hiçbirini temsil etmez ve resmi bir hizmet sunmaz.\n\n' +
   'Uygulamadaki ünite, konu ve kazanım başlıkları MEB’in kamuya açık öğretim programlarına ' +
-  'dayanır; sorular ve çözümler yapay zekâ ile üretilir, MEB’in resmi yayını veya sınav ' +
+  'dayanır; sorular ve çözümler yapay zeka ile üretilir, MEB’in resmi yayını veya sınav ' +
   'materyali değildir. Güncel ve bağlayıcı bilgi için aşağıdaki resmi kaynaklara başvurun.';
 
 export type SourceLink = {
@@ -34,7 +34,7 @@ export const MEB_SOURCES: SourceLink[] = [
   {
     label: 'meb.gov.tr',
     url: 'https://www.meb.gov.tr',
-    note: 'T.C. Millî Eğitim Bakanlığı resmi sitesi',
+    note: 'T.C. Milli Eğitim Bakanlığı resmi sitesi',
   },
   {
     label: 'tymm.meb.gov.tr',

@@ -68,7 +68,7 @@ const SECTIONS: LegalSection[] = [
   {
     heading: "Hesabın Askıya Alınması ve Fesih",
     paragraphs: [
-      "Kullanıcı hesabını dilediği zaman kapatabilir. Veri Sorumlusu, bu koşulların ihlali hâlinde hesabı askıya alma veya kapatma hakkını saklı tutar.",
+      "Kullanıcı hesabını dilediği zaman kapatabilir. Veri Sorumlusu, bu koşulların ihlali halinde hesabı askıya alma veya kapatma hakkını saklı tutar.",
     ],
   },
   {

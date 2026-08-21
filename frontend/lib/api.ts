@@ -294,7 +294,7 @@ export interface GenerateStreamCallbacks {
  * Neden: bloklayan tek HTTP isteği ~30-90 sn sürebiliyor; bu sürede hiç byte
  * akmadığı için araya giren proxy / tarayıcı bağlantıyı koparabiliyor → kullanıcı
  * "hata" görüyor ama backend üretimi bitirip geçmişe yazıyor ("hata aldım ama
- * geçmişte var" şikâyetinin kök sebebi). Streaming endpoint her soruyu ayrı event
+ * geçmişte var" şikayetinin kök sebebi). Streaming endpoint her soruyu ayrı event
  * olarak yolladığı için bağlantı canlı kalır, idle-timeout tetiklenmez.
  *
  * Native EventSource yalnızca GET + header'sız çalışır; bu endpoint POST + body +

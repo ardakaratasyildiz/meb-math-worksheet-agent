@@ -8,7 +8,7 @@ const FEN_FACTS: string[] = [
   "Bal arısı bir kilo bal üretmek için yaklaşık 4 milyon çiçek ziyaret eder.",
   "Işık, Güneş’ten Dünya’ya yaklaşık 8 dakika 20 saniyede ulaşır.",
   "İnsan vücudundaki en güçlü kas, boyutuna göre çene kasıdır (masseter).",
-  "Su, katı hâlde (buz) sıvı hâlinden daha hafiftir — bu yüzden buz suda yüzer.",
+  "Su, katı halde (buz) sıvı halinden daha hafiftir — bu yüzden buz suda yüzer.",
   "Ay’da KÜTLEN değişmez (hep aynı maddesin); değişen AĞIRLIKTIR. Ay’ın çekimi Dünya’nın ~1/6’sı olduğu için orada yaklaşık 6 kat daha hafif tartılırsın.",
   "Şimşek, sesten çok daha hızlı olan ışıkla görünür; gök gürültüsünü sonra duyarız.",
   "Bir yıldırımın sıcaklığı Güneş’in yüzeyinden yaklaşık 5 kat daha sıcaktır.",
@@ -19,7 +19,7 @@ const FEN_FACTS: string[] = [
 
 const TURKCE_FACTS: string[] = [
   "Türkçede en uzun sözcüklerden biri “muvaffakiyetsizleştiricileştiriveremeyebileceklerimizdenmişsinizcesine”dir.",
-  "“de/da” bağlacı ayrı yazılır; hâl eki olan “-de/-da” ise bitişik. (evde ↔ ev de geldi)",
+  "“de/da” bağlacı ayrı yazılır; hal eki olan “-de/-da” ise bitişik. (evde ↔ ev de geldi)",
   "Türk alfabesi 1928’de kabul edildi ve 29 harften oluşur.",
   "“Bir” sözcüğü hem sayı hem belirsizlik bildirir: “bir elma” ↔ “bir gün gelir”.",
   "Noktalı virgül (;), anlamca bağlı iki cümleyi ayırmak için kullanılır.",
@@ -36,8 +36,8 @@ const SOSYAL_FACTS: string[] = [
   "İlk Türk kadın milletvekilleri 1935 seçimlerinde Meclis’e girdi.",
   "Anadolu, tarih boyunca Hititler, Frigler, Lidyalılar gibi pek çok uygarlığa ev sahipliği yaptı.",
   "Dünya’nın en uzun nehri Nil, en büyük okyanusu ise Büyük Okyanus’tur.",
-  "Haritalarda ölçek, gerçek uzaklığın kâğıda ne kadar küçültüldüğünü gösterir.",
-  "Ekvator, Dünya’yı Kuzey ve Güney yarım küre olarak ikiye ayıran hayalî çizgidir.",
+  "Haritalarda ölçek, gerçek uzaklığın kağıda ne kadar küçültüldüğünü gösterir.",
+  "Ekvator, Dünya’yı Kuzey ve Güney yarım küre olarak ikiye ayıran hayali çizgidir.",
   "Cumhuriyet, egemenliğin millete ait olduğu yönetim biçimidir.",
   "İlk yazı MÖ 3500’lerde Sümerler tarafından geliştirildi (çivi yazısı).",
   "Bir toplumda haklar kadar sorumluluklar da vardır; ikisi birlikte yürür.",

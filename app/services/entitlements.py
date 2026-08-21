@@ -271,8 +271,8 @@ def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
 def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
     """Aylık kota durumu. Enforcement değil — saf sorgu (çağıran 402 kararını verir).
 
-    Anonim üretim kotasızdır (SEO motoru) → daima allowed. Cache-hit üretimler
-    kotadan düşmez (usage_ledger.questions_used_since cache_hit=0 filtreler).
+    Anonim üretim kotasızdır (SEO motoru) → daima allowed. Teslim edilen HER kağıt
+    kotadan düşer — cache'ten servis edilenler dahil (kullanıcı kararı 2026-08-21).
 
     Dönen: {plan, limit, used, remaining, allowed}
       allowed = kalan kota `requested` (en az 1) soruya yetiyor mu. requested=0 →
@@ -283,7 +283,7 @@ def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
     owner, plan = _billing_owner(tenant_id)          # aile mirası → havuz sahibi + plan
     limit = quota_limit(plan)                        # kağıt/ay
     family = _family_tenants(owner)                  # veli + bağlı çocuklar = TEK havuz
-    used = USAGE_LEDGER.worksheets_used_since(family, _month_start_ts())  # kağıt, cache-hit hariç
+    used = USAGE_LEDGER.worksheets_used_since(family, _month_start_ts())  # kağıt (cache dahil)
     plan_remaining = max(0, limit - used)
     topup = TOP_UP_STORE.balance(owner)              # ek paket kredisi (havuz sahibinde, süreli)
     remaining = plan_remaining + topup

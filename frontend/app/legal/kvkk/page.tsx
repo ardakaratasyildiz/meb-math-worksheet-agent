@@ -36,7 +36,7 @@ const SECTIONS: LegalSection[] = [
     bullets: [
       "Üyelik hesabının oluşturulması ve yönetilmesi,",
       "Çalışma kağıdı üretim hizmetinin sunulması,",
-      "Üretim geçmişinin saklanması ve tekrar erişim imkânı tanınması,",
+      "Üretim geçmişinin saklanması ve tekrar erişim imkanı tanınması,",
       "Hizmet güvenliğinin sağlanması ve kötüye kullanımın önlenmesi,",
       "Yürürlükteki mevzuattan doğan yasal yükümlülüklerin yerine getirilmesi.",
     ],
@@ -83,7 +83,7 @@ const SECTIONS: LegalSection[] = [
       "Mevzuatta öngörülen şartlarla verilerin silinmesini veya yok edilmesini isteme,",
       "Düzeltme/silme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme,",
       "Münhasıran otomatik sistemlerle yapılan analiz sonucu aleyhinize bir sonuç çıkmasına itiraz etme,",
-      "Kanuna aykırı işleme nedeniyle zarara uğramanız hâlinde zararın giderilmesini talep etme.",
+      "Kanuna aykırı işleme nedeniyle zarara uğramanız halinde zararın giderilmesini talep etme.",
     ],
   },
   {

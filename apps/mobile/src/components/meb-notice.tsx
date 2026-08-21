@@ -18,7 +18,7 @@ export function MebNotice() {
         onPress={() => router.push('/about' as Href)}
         style={({ pressed }) => pressed && styles.pressed}
       >
-        <Text style={styles.link}>Resmî MEB kaynakları ve künye →</Text>
+        <Text style={styles.link}>Resmi MEB kaynakları ve künye →</Text>
       </Pressable>
     </View>
   );

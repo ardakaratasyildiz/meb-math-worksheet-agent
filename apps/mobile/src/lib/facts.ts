@@ -16,7 +16,7 @@ const MATH_FACTS: string[] = [
   "\"Algoritma\" kelimesi, 9. yüzyıl matematikçisi El-Harezmi'nin Latince adı \"Algoritmi\"den gelir.",
   "Bal arıları peteklerini altıgen yapar — altıgen, eşit alan için en az malzeme kullanan şekildir.",
   "Pi günü 14 Mart'tır (3.14) ve Albert Einstein'ın doğum günüyle aynı tarih.",
-  "Bir A4 kâğıdı insan gücüyle en fazla 7 kez katlanabilir; 8.'sinde fizik durdurur.",
+  "Bir A4 kağıdı insan gücüyle en fazla 7 kez katlanabilir; 8.'sinde fizik durdurur.",
   "2 hariç tüm asal sayılar tektir — çünkü çift sayı zaten 2'ye bölünür.",
   "Fibonacci dizisi (1, 1, 2, 3, 5, 8...) ayçiçeğinde, deniz kabuğunda, kelebek kanadında çıkar.",
   "Sıfır sayısını matematiksel olarak ilk tanımlayan Hint matematikçi Brahmagupta'dır (7. yüzyıl).",
@@ -35,7 +35,7 @@ const FEN_FACTS: string[] = [
   "Bal arısı bir kilo bal üretmek için yaklaşık 4 milyon çiçek ziyaret eder.",
   "Işık, Güneş'ten Dünya'ya yaklaşık 8 dakika 20 saniyede ulaşır.",
   "İnsan vücudundaki en güçlü kas, boyutuna göre çene kasıdır.",
-  "Su, katı hâlde (buz) sıvı hâlinden daha hafiftir — bu yüzden buz suda yüzer.",
+  "Su, katı halde (buz) sıvı halinden daha hafiftir — bu yüzden buz suda yüzer.",
   "Ay'da kütlen değişmez, ağırlığın değişir: Ay'ın çekimi Dünya'nın ~1/6'sı kadardır.",
   "Şimşek ışıkla görünür, gök gürültüsünü sonra duyarız — ışık sesten çok daha hızlıdır.",
   "Bir yıldırımın sıcaklığı Güneş'in yüzeyinden yaklaşık 5 kat daha sıcaktır.",
@@ -45,7 +45,7 @@ const FEN_FACTS: string[] = [
 ];
 
 const TURKCE_FACTS: string[] = [
-  "\"de/da\" bağlacı ayrı yazılır; hâl eki olan \"-de/-da\" ise bitişik. (evde ↔ ev de geldi)",
+  "\"de/da\" bağlacı ayrı yazılır; hal eki olan \"-de/-da\" ise bitişik. (evde ↔ ev de geldi)",
   "Türk alfabesi 1928'de kabul edildi ve 29 harften oluşur.",
   "\"Bir\" sözcüğü hem sayı hem belirsizlik bildirir: \"bir elma\" ↔ \"bir gün gelir\".",
   "Noktalı virgül (;), anlamca bağlı iki cümleyi ayırmak için kullanılır.",
@@ -62,8 +62,8 @@ const SOSYAL_FACTS: string[] = [
   "İlk Türk kadın milletvekilleri 1935 seçimlerinde Meclis'e girdi.",
   "Anadolu; Hititler, Frigler, Lidyalılar gibi pek çok uygarlığa ev sahipliği yaptı.",
   "Dünya'nın en uzun nehri Nil, en büyük okyanusu Büyük Okyanus'tur.",
-  "Haritalarda ölçek, gerçek uzaklığın kâğıda ne kadar küçültüldüğünü gösterir.",
-  "Ekvator, Dünya'yı Kuzey ve Güney yarım küre olarak ikiye ayıran hayalî çizgidir.",
+  "Haritalarda ölçek, gerçek uzaklığın kağıda ne kadar küçültüldüğünü gösterir.",
+  "Ekvator, Dünya'yı Kuzey ve Güney yarım küre olarak ikiye ayıran hayali çizgidir.",
   "Cumhuriyet, egemenliğin millete ait olduğu yönetim biçimidir.",
   "İlk yazı MÖ 3500'lerde Sümerler tarafından geliştirildi (çivi yazısı).",
 ];

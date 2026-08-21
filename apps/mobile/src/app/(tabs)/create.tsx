@@ -245,7 +245,7 @@ export default function CreateScreen() {
               ) : null}
               {/* key: giriş modu değişince sihirbaz SIFIRDAN kurulsun. Aksi halde
                   ekran zaten bağlı olduğu için eski adım/mod korunuyor ve kullanıcı
-                  "Çalışma Kağıdı"na basınca hâlâ çöz akışında kalıyordu. */}
+                  "Çalışma Kağıdı"na basınca hala çöz akışında kalıyordu. */}
               <GeneratorSetup
                 key={entry.nonce}
                 busy={busy}

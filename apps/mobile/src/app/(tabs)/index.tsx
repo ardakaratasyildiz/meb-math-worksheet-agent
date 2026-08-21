@@ -295,7 +295,7 @@ export default function HomeScreen() {
               bg={colors.brand}
               icon={<IconWorksheet size={44} tone="#FFFFFF" />}
               title={"Çalışma\nKağıdı"}
-              sub="Yapay zekâ ile kendi kağıdını üret"
+              sub="Yapay zeka ile kendi kağıdını üret"
               onPress={() => {
                 requestGenEntry("pdf");
                 router.push("/create");
