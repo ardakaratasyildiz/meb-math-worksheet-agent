@@ -5,7 +5,14 @@ import * as Sharing from "expo-sharing";
 
 import { fetchWorksheetPdfBase64 } from "./api";
 
-type PdfOpts = { includeAnswerKey?: boolean; includeSolutions?: boolean };
+type PdfOpts = {
+  includeAnswerKey?: boolean;
+  includeSolutions?: boolean;
+  /** White-label ust bilgi (kurum/ogretmen markasi) — bkz. lib/branding.ts. */
+  brandName?: string;
+  brandSubtitle?: string;
+  brandLogo?: string;
+};
 
 /** Worksheet'i backend'de PDF'e çevirir, cihaza (cache) yazar → dosya URI'si döner. */
 async function buildWorksheetPdfFile(worksheet: Worksheet, opts: PdfOpts): Promise<string> {

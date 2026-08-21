@@ -93,14 +93,15 @@ const DIFFERENCES = [
  * `classrooms.create_classroom` ve `me.link_child` uçlarında 402 döner.)
  *
  * Kağıt sayısı tek fark olduğu sürece Pro+ cezbedici değildi. Seçim ölçütü
- * MARJİNAL MALİYET: Pro+ kağıt başına daha ince marjlı (₺349/120 = ₺2,91 ·
- * Pro ₺199/50 = ₺3,98), o yüzden ayrıcalıklar üretim maliyetini artırmayan
- * şeyler — kaç kişi/sınıf havuzu paylaşıyor.
+ * MARJİNAL MALİYET — hesap NET gelirle yapılır, etiket fiyatıyla değil
+ * (docs/MONETIZATION_PLAN.md §2.1: etiketten cebe ≈%60 kalıyor). Pro ₺2,40/kağıt ·
+ * Pro+ ₺1,75/kağıt · maliyet ~₺1,50 → Pro+'ta kağıt başına yalnız ~₺0,25. O yüzden
+ * ayrıcalıklar üretim maliyetini artırmayanlardan: kaç kişi/sınıf havuzu paylaşıyor.
  */
 const PLUS_ONLY = [
   {
-    title: 'Aile paylaşımı',
-    sub: 'Çocukların planını devralır; kota tek havuzdan paylaşılır (3 çocuğa kadar).',
+    title: 'Aile paylaşımı: 3 çocuk',
+    sub: 'Çocukların planını devralır, kota tek havuzdan paylaşılır (Pro’da 1 çocuk).',
   },
   {
     title: 'Çoklu sınıf yönetimi',

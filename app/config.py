@@ -278,9 +278,13 @@ class Settings(BaseSettings):
     pro_plus_monthly_worksheets: int = 120
 
     # ── Pro / Pro+ ayrımı (kağıt sayısı DIŞINDAKİ farklar) ───────────────────
-    # Pro+ kağıt başına daha ince marjlı (₺349/120 = ₺2,91 · Pro ₺199/50 = ₺3,98;
-    # kağıt maliyeti ~₺1,50) → Pro+ ayrıcalıkları MARJİNAL MALİYETİ SIFIR olanlar
-    # arasından seçildi: kaç kişi/sınıf havuzu paylaşıyor, üretim başına maliyet değil.
+    # NET gelirle hesapla, etiket fiyatıyla DEĞİL (docs/MONETIZATION_PLAN.md §2.1):
+    # etiketten cebe kalan ≈ %60 (KDV −%20 → mağaza komisyonu −%15 → GVK Mük.20/B
+    # banka stopajı −%15). Pro ₺199 → net ₺120 → ₺2,40/kağıt · Pro+ ₺349 → net ₺210
+    # → ₺1,75/kağıt. Kağıt maliyeti ~₺1,50 → tam kullanımda Pro ~%37, Pro+ ~%14 marj.
+    # Yani Pro+'ta kağıt başına yalnız ~₺0,25 kalıyor; maliyet %17 artarsa marj sıfır.
+    # BU YÜZDEN Pro+ ayrıcalıkları MARJİNAL MALİYETİ SIFIR olanlardan seçildi (kaç
+    # kişi/sınıf havuzu paylaşıyor), üretim başına maliyeti artıranlardan değil.
     #
     # Sınırlar OLUŞTURMA anında uygulanır (bkz. classrooms.create_classroom,
     # me.link_child) — mevcut kayıtlar geriye dönük kırılmaz. Ücretsiz kademeden
@@ -291,7 +295,9 @@ class Settings(BaseSettings):
     # Aile paylaşımı Pro+ ayrıcalığı (paywall'da böyle duyuruluyor). Ücretsiz ve Pro'da
     # kapalı; deneme Pro+'ı tattırdığı için açık.
     free_family_children: int = 0
-    pro_family_children: int = 0
+    # Pro'nun personası "veli ve öğrenciler" → tek çocuklu aile Pro'da çalışmalı,
+    # çok çocuklu aile Pro+'a geçsin (kullanıcı kararı 2026-08-21).
+    pro_family_children: int = 1
     pro_plus_family_children: int = 3
     # Ücretsiz kademede GÜNLÜK tavan (kağıt/gün, Türkiye günü). Aylık 10 hakkın ilk iki
     # günde tüketilip kullanıcının 28 gün boş kalmasını engeller; aynı zamanda ücretsiz
