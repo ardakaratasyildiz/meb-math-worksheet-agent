@@ -10,7 +10,8 @@
     "ios": {
       "bundleIdentifier": "com.soruatolyesi.app",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "Çalışma kağıtlarının üstünde görünecek kurum/öğretmen logonuzu seçmek için galeriye erişim izni gerekiyor."
       }
     },
     "android": {
@@ -46,15 +47,7 @@
       ],
       "expo-secure-store",
       "expo-font",
-      "expo-web-browser",
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Çalışma kağıtlarının üstünde görünecek kurum/öğretmen logonuzu seçmek için galeriye erişim izni gerekiyor.",
-          "cameraPermission": false,
-          "microphonePermission": false
-        }
-      ]
+      "expo-web-browser"
     ],
     "updates": {
       "url": "https://u.expo.dev/828bc4d0-0368-47fa-ae1b-017cc3ed5b72"
