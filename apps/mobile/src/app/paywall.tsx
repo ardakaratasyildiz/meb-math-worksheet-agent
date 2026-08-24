@@ -248,6 +248,14 @@ export default function PaywallScreen() {
                 planlardan biriyle hemen devam edebilirsin (günlük sınır yok).
               </Text>
             </View>
+          ) : reason === 'family' ? (
+            <View style={styles.quotaBanner}>
+              <Text style={styles.quotaText}>
+                Çocuk hesabı bağlamak için ücretli bir plan gerekiyor: Pro'da 1 çocuk,
+                Pro+'ta 3 çocuk aynı kota havuzunu paylaşır. Çocuk kendi hesabıyla
+                girer, planı senden devralır.
+              </Text>
+            </View>
           ) : null}
 
           {/* Kademeler */}
