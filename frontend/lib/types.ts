@@ -19,7 +19,17 @@ export type QuestionType =
   | "bosluk_doldurma"
   | "dogru_yanlis"
   | "eslestirme"
-  | "siralama";
+  | "siralama"
+  // Sözel dersler (Türkçe / Sosyal / İngilizce) — backend enum'unda vardı,
+  // istemci tipinde yoktu (bkz. SUBJECT_SUPPORTED_TYPES).
+  | "okuma_pasaji"
+  | "diyalog_tamamlama"
+  | "kelime_bilgisi"
+  | "harita_yorumlama"
+  | "kaynak_metin"
+  | "dil_bilgisi"
+  | "yazim_noktalama"
+  | "gorsel_yorumlama";
 
 export type DifficultyMode = "single" | "mixed" | "progressive";
 
@@ -54,6 +64,58 @@ export const QUESTION_TYPE_GROUPS = {
     "siralama",
   ] satisfies QuestionType[],
 } as const;
+
+// ── Ders ↔ soru tipi uyumu (2026-08-24 saha bulgusu) ────────────────────────
+// QUESTION_TYPE_GROUPS listeleri MATEMATİĞE göre sabit. Ders seçici geldiğinde bu
+// listeler her derse aynen gönderilmeye devam etti → Türkçe kağıdında `islem`,
+// `salt_islem`, `gorsel_geometri` istenmiş oluyor ve model Türkçe kazanım koduyla
+// ETİKETLİ matematik soruları üretiyordu (canlıda doğrulandı). Backend'de de kapı
+// var (app/subjects.filter_types_for_subject); burada da süzüyoruz ki istek hiç
+// yanlış çıkmasın. Kaynak-of-truth backend; bu tablo onun aynası.
+const NEUTRAL_TYPES: QuestionType[] = [
+  "coktan_secmeli",
+  "dogru_yanlis",
+  "bosluk_doldurma",
+  "eslestirme",
+  "siralama",
+];
+
+export const SUBJECT_SUPPORTED_TYPES: Record<string, QuestionType[]> = {
+  turkce: [
+    "okuma_pasaji",
+    "kelime_bilgisi",
+    "dil_bilgisi",
+    "yazim_noktalama",
+    ...NEUTRAL_TYPES,
+  ],
+  fen: ["tablo_sorusu", "grafik_okuma", ...NEUTRAL_TYPES],
+  sosyal: ["kaynak_metin", "tablo_sorusu", ...NEUTRAL_TYPES],
+  ingilizce: [
+    "okuma_pasaji",
+    "diyalog_tamamlama",
+    "kelime_bilgisi",
+    ...NEUTRAL_TYPES,
+  ],
+};
+
+/**
+ * İstenen tipleri derse göre süzer. `null` = kısıt yok (dersin varsayılan dağılımı).
+ * Kalan istenenin yarısından azsa filtre TÜMDEN bırakılır: böyle bir istek
+ * ders-farkında olmayan bir gruptan gelmiştir ve kırpıntıya uymak kağıdı tek tipe
+ * düşürürdü (ör. Sosyal'de yalnız `tablo_sorusu`). Backend ile AYNI kural.
+ */
+export function filterTypesForSubject(
+  subject: string,
+  requested: QuestionType[] | null,
+): QuestionType[] | null {
+  if (!requested || requested.length === 0) return null;
+  const allowed = SUBJECT_SUPPORTED_TYPES[subject];
+  if (!allowed) return requested; // matematik (ve tanımsız ders) → dokunma
+  const kept = requested.filter((t) => allowed.includes(t));
+  if (kept.length === 0) return null;
+  if (kept.length * 2 < requested.length) return null;
+  return kept;
+}
 
 export type EducationLevel = "İlkokul" | "Ortaokul";
 

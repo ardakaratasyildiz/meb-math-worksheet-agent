@@ -44,32 +44,117 @@ const DIFFICULTY_MODES: { value: DifficultyMode; label: string }[] = [
   { value: 'progressive', label: 'Progresyon' },
 ];
 
-// Web QUESTION_TYPE_GROUPS ile birebir. "visual" grubu kullanıcıya gösterilmez —
-// sunucu konuya göre otomatik ekler; kısıtlama yapılınca havuzda hep bulunur.
-const TYPE_GROUPS = {
-  open_ended: ['islem', 'sozel_problem', 'kavram_sorusu', 'akil_yurutme', 'modelleme', 'gunluk_hayat'],
-  visual: ['salt_islem', 'tablo_sorusu', 'gorsel_geometri', 'grafik_okuma', 'oruntu_sekil'],
-  multiple_choice: ['coktan_secmeli'],
-  other_format: ['bosluk_doldurma', 'dogru_yanlis', 'eslestirme', 'siralama'],
-} as const satisfies Record<string, QuestionType[]>;
-
-type UserGroupKey = 'open_ended' | 'multiple_choice' | 'other_format';
-const USER_GROUPS: { key: UserGroupKey; label: string }[] = [
-  { key: 'open_ended', label: 'Açık uçlu' },
-  { key: 'multiple_choice', label: 'Çoktan seçmeli' },
-  { key: 'other_format', label: 'Diğer tipler' },
+// Soru tipi grupları DERSE GÖRE (2026-08-24 saha bulgusu). Eskiden tek bir
+// MATEMATİK listesi vardı ve her ders için aynen gönderiliyordu → Türkçe kağıdında
+// `islem`/`salt_islem`/`gorsel_geometri` istenmiş oluyor, model de Türkçe kazanım
+// koduyla etiketli MATEMATİK soruları üretiyordu (canlıda doğrulandı). Sunucuda da
+// kapı var (app/subjects.filter_types_for_subject) ama doğru yer ARAYÜZ: kullanıcı
+// dersin gerçekten desteklediği tipleri görsün.
+// Matematiğin "visual" tipleri kullanıcıya gösterilmez — açık uçlu seçilirse eklenir.
+const MATH_VISUAL_TYPES: QuestionType[] = [
+  'salt_islem',
+  'tablo_sorusu',
+  'gorsel_geometri',
+  'grafik_okuma',
+  'oruntu_sekil',
 ];
 
+interface TypeGroup {
+  key: string;
+  label: string;
+  types: QuestionType[];
+}
+
+const SUBJECT_TYPE_GROUPS: Record<SubjectSlug, TypeGroup[]> = {
+  matematik: [
+    {
+      key: 'open_ended',
+      label: 'Açık uçlu',
+      types: ['islem', 'sozel_problem', 'kavram_sorusu', 'akil_yurutme', 'modelleme', 'gunluk_hayat'],
+    },
+    { key: 'multiple_choice', label: 'Çoktan seçmeli', types: ['coktan_secmeli'] },
+    {
+      key: 'other_format',
+      label: 'Diğer tipler',
+      types: ['bosluk_doldurma', 'dogru_yanlis', 'eslestirme', 'siralama'],
+    },
+  ],
+  turkce: [
+    { key: 'reading', label: 'Okuma & anlama', types: ['okuma_pasaji'] },
+    {
+      key: 'language',
+      label: 'Dil bilgisi & yazım',
+      types: ['dil_bilgisi', 'yazim_noktalama', 'kelime_bilgisi'],
+    },
+    {
+      key: 'other_format',
+      label: 'Diğer tipler',
+      types: ['coktan_secmeli', 'eslestirme', 'siralama', 'bosluk_doldurma'],
+    },
+  ],
+  fen: [
+    { key: 'concept', label: 'Kavram & doğru-yanlış', types: ['coktan_secmeli', 'dogru_yanlis'] },
+    { key: 'data', label: 'Tablo & grafik', types: ['tablo_sorusu', 'grafik_okuma'] },
+    { key: 'other_format', label: 'Diğer tipler', types: ['bosluk_doldurma', 'eslestirme'] },
+  ],
+  sosyal: [
+    { key: 'source', label: 'Kaynak metin', types: ['kaynak_metin'] },
+    { key: 'data', label: 'Tablo & veri', types: ['tablo_sorusu'] },
+    {
+      key: 'other_format',
+      label: 'Diğer tipler',
+      types: ['coktan_secmeli', 'dogru_yanlis', 'bosluk_doldurma', 'eslestirme', 'siralama'],
+    },
+  ],
+  ingilizce: [
+    { key: 'reading', label: 'Okuma & diyalog', types: ['okuma_pasaji', 'diyalog_tamamlama'] },
+    { key: 'vocab', label: 'Kelime bilgisi', types: ['kelime_bilgisi'] },
+    {
+      key: 'other_format',
+      label: 'Diğer tipler',
+      types: ['coktan_secmeli', 'bosluk_doldurma', 'eslestirme'],
+    },
+  ],
+};
+
+// Çöz modunda otomatik puanlanabilen tipler — backend `_SOLVABLE_TYPES` aynası
+// (app/routers/quizzes.py). Türkçe'nin `okuma_pasaji`/`dil_bilgisi` tipleri şıklı
+// olsa da puanlama tarafı henüz yalnız `coktan_secmeli` biliyor → o gruplar Çöz
+// modunda GÖSTERİLMEZ, yoksa kullanıcı seçer ve sunucu 400 döner.
+const SOLVABLE_TYPES: QuestionType[] = [
+  'coktan_secmeli',
+  'dogru_yanlis',
+  'bosluk_doldurma',
+  'sozel_problem',
+];
+
+function groupsFor(subject: SubjectSlug, mode: GenMode = 'pdf'): TypeGroup[] {
+  const all = SUBJECT_TYPE_GROUPS[subject] ?? SUBJECT_TYPE_GROUPS.matematik;
+  if (mode !== 'solve') return all;
+  const solvable = all.filter((g) => g.types.some((t) => SOLVABLE_TYPES.includes(t)));
+  return solvable.length ? solvable : all;
+}
+
+function allGroupsOn(subject: SubjectSlug, mode: GenMode = 'pdf'): Record<string, boolean> {
+  return Object.fromEntries(groupsFor(subject, mode).map((g) => [g.key, true]));
+}
+
 /** Seçili gruplardan backend question_types listesi (tümü açıksa null = kısıt yok). */
-function flattenTypes(groups: Record<UserGroupKey, boolean>): QuestionType[] | null {
-  const on = USER_GROUPS.map((g) => g.key).filter((k) => groups[k]);
-  if (on.length === USER_GROUPS.length) return null;
-  // Görsel tipler (salt_islem/tablo/grafik/örüntü) cevap formatı olarak AÇIK UÇLUDUR,
-  // şıkları yoktur. Eskiden kullanıcı ne seçerse seçsin havuza ekleniyorlardı →
-  // "Çoktan seçmeli" seçen kullanıcıya şıksız sorular geliyordu (canlı ölçüm: 6
-  // sorunun 3'ü şıksız). Artık yalnız açık uçlu da isteniyorsa ekleniyorlar.
-  const out: QuestionType[] = groups.open_ended ? [...TYPE_GROUPS.visual] : [];
-  for (const k of on) out.push(...TYPE_GROUPS[k]);
+function flattenTypes(
+  subject: SubjectSlug,
+  groups: Record<string, boolean>,
+  mode: GenMode = 'pdf',
+): QuestionType[] | null {
+  const all = groupsFor(subject, mode);
+  const on = all.filter((g) => groups[g.key]);
+  if (on.length === all.length) return null;
+  // Matematiğin görsel tipleri (salt_islem/tablo/grafik/örüntü) cevap formatı olarak
+  // AÇIK UÇLUDUR, şıkları yoktur. Eskiden kullanıcı ne seçerse seçsin havuza
+  // ekleniyorlardı → "Çoktan seçmeli" seçen kullanıcıya şıksız sorular geliyordu
+  // (canlı ölçüm: 6 sorunun 3'ü şıksız). Yalnız açık uçlu da isteniyorsa eklenir.
+  const out: QuestionType[] =
+    subject === 'matematik' && groups.open_ended ? [...MATH_VISUAL_TYPES] : [];
+  for (const g of on) out.push(...g.types);
   return out.length ? out : null;
 }
 
@@ -166,11 +251,10 @@ export function GeneratorSetup({
   const [difficulty, setDifficulty] = useState<Difficulty>('orta');
   const [difficultyMode, setDifficultyMode] = useState<DifficultyMode>('single');
   const [count, setCount] = useState(counts[Math.min(1, counts.length - 1)]);
-  const [groups, setGroups] = useState<Record<UserGroupKey, boolean>>({
-    open_ended: true,
-    multiple_choice: true,
-    other_format: true,
-  });
+  // Gruplar derse göre değişir (anahtarlar da) → ders seçilince sıfırlanır.
+  const [groups, setGroups] = useState<Record<string, boolean>>(() =>
+    allGroupsOn((prefill?.subject as SubjectSlug) || 'matematik'),
+  );
   const [includeAnswerKey, setIncludeAnswerKey] = useState(true);
   const [includeSolutions, setIncludeSolutions] = useState(true);
   const [advanced, setAdvanced] = useState(false);
@@ -211,18 +295,21 @@ export function GeneratorSetup({
     };
   }, [grade, unitId, subject]);
 
-  const anyGroupOn = groups.open_ended || groups.multiple_choice || groups.other_format;
+  const typeGroups = groupsFor(subject, mode);
+  const anyGroupOn = typeGroups.some((g) => groups[g.key]);
   const next = () => setStepIdx((i) => Math.min(i + 1, stepKeys.length - 1));
 
   function pickMode(m: GenMode) {
     setMode(m);
     setModeChosen(true);
+    setGroups(allGroupsOn(subject, m)); // Çöz modunda grup listesi daralır
     next();
   }
   function pickSubject(s: SubjectSlug) {
     setSubject(s);
     setUnitId(null);
     setKazanimKod(null);
+    setGroups(allGroupsOn(s, mode)); // grup anahtarları derse özel → eski seçim taşınmaz
     next();
   }
   function pickGrade(g: number) {
@@ -237,10 +324,10 @@ export function GeneratorSetup({
     setKazanimKod(null);
     next();
   }
-  function toggleGroup(k: UserGroupKey) {
+  function toggleGroup(k: string) {
     setGroups((g) => {
       const nextG = { ...g, [k]: !g[k] };
-      if (!nextG.open_ended && !nextG.multiple_choice && !nextG.other_format) return g;
+      if (!typeGroups.some((grp) => nextG[grp.key])) return g; // en az biri açık kalsın
       return nextG;
     });
   }
@@ -257,7 +344,7 @@ export function GeneratorSetup({
       difficulty,
       difficultyMode,
       count,
-      questionTypes: flattenTypes(groups),
+      questionTypes: flattenTypes(subject, groups, mode),
       includeAnswerKey,
       includeSolutions,
     });
@@ -456,8 +543,8 @@ export function GeneratorSetup({
               <View style={styles.field}>
                 <Text style={styles.fieldLabel}>Soru tipleri</Text>
                 <View style={styles.chipRow}>
-                  {USER_GROUPS.map((g) => (
-                    <Chip key={g.key} label={g.label} selected={groups[g.key]} onPress={() => toggleGroup(g.key)} />
+                  {typeGroups.map((g) => (
+                    <Chip key={g.key} label={g.label} selected={!!groups[g.key]} onPress={() => toggleGroup(g.key)} />
                   ))}
                 </View>
                 {!anyGroupOn ? <Text style={styles.warn}>En az bir tip açık olmalı.</Text> : null}

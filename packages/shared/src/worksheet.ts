@@ -23,7 +23,18 @@ export type QuestionType =
   | "bosluk_doldurma"
   | "dogru_yanlis"
   | "eslestirme"
-  | "siralama";
+  | "siralama"
+  // Sözel dersler (Türkçe / Sosyal / İngilizce) — backend enum'unda vardı,
+  // istemci tipinde YOKTU: bu yüzden mobil/web soru-tipi filtreleri yalnız
+  // matematik tiplerini gönderebiliyordu (bkz. SUBJECT_TYPE_GROUPS).
+  | "okuma_pasaji"
+  | "diyalog_tamamlama"
+  | "kelime_bilgisi"
+  | "harita_yorumlama"
+  | "kaynak_metin"
+  | "dil_bilgisi"
+  | "yazim_noktalama"
+  | "gorsel_yorumlama";
 
 export type EducationLevel = "İlkokul" | "Ortaokul";
 

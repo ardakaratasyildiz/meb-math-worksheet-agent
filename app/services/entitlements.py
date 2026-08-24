@@ -18,6 +18,7 @@ Kademeli açılış:
 """
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timedelta, timezone
 
 from app.config import settings
@@ -25,6 +26,8 @@ from app.services.billing_store import BILLING_STORE, STATUS_TRIALING
 from app.services.parent_link_store import PARENT_LINK_STORE
 from app.services.top_up_store import TOP_UP_STORE
 from app.services.usage_ledger import USAGE_LEDGER
+
+logger = logging.getLogger(__name__)
 
 _IST = timezone(timedelta(hours=3))  # Türkiye — aylık reset takvim ayına göre
 
@@ -86,6 +89,20 @@ def _family_tenants(owner_tenant: str) -> list[str]:
     return [owner_tenant, *kids]
 
 
+def _safe(fn, default, what: str):
+    """Billing deposu okumasını sarar: hata → `default` + ERROR log (üretim sürsün).
+
+    Model seçimi / filigran / plan gösterimi bir DB hıçkırığı yüzünden HTTP 500'e
+    dönmemeli (bkz. enforce_quota FAIL-OPEN notu). Varsayılan her zaman GÜVENLİ
+    yöndedir: premium DEĞİL / free.
+    """
+    try:
+        return fn()
+    except Exception as exc:  # noqa: BLE001
+        logger.error("Billing okuması başarısız (%s): %s", what, exc, exc_info=True)
+        return default
+
+
 def plan_of(tenant_id: str | None) -> str:
     """Kullanıcının EFEKTİF planı (AİLE MİRASI dahil): free | trial | pro | pro-plus.
 
@@ -94,7 +111,7 @@ def plan_of(tenant_id: str | None) -> str:
     """
     if not tenant_id:
         return PLAN_FREE
-    return _billing_owner(tenant_id)[1]
+    return _safe(lambda: _billing_owner(tenant_id)[1], PLAN_FREE, "plan_of")
 
 
 def is_premium(tenant_id: str | None) -> bool:
@@ -113,6 +130,12 @@ def is_premium_for_model(tenant_id: str | None) -> bool:
     """
     if not tenant_id:
         return False
+    return _safe(
+        lambda: _is_premium_for_model_inner(tenant_id), False, "is_premium_for_model"
+    )
+
+
+def _is_premium_for_model_inner(tenant_id: str) -> bool:
     if BILLING_STORE.get_active(tenant_id) is not None:
         return True
     if tenant_id in settings.premium_tenant_id_set:
@@ -256,9 +279,35 @@ def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
     - Yalnız DOĞRULANMIŞ tenant'a uygulanır → anonim (tenant None) kotasız kalır
       (SEO motoru bozulmasın). Client-supplied tenant'a GÜVENİLMEZ (bkz. clerk_auth).
     - İlk üretimde reverse trial'ı otomatik başlatır (ensure_trial).
+
+    FAIL-OPEN (2026-08-24): 402 dışındaki HER hata yutulur ve üretim GEÇER.
+    Neden: bu kapı 2026-08-21'de açıldı (`billing_enabled=True` + `premium_all=False`)
+    ve o günden beri giriş yapmış HER üretim buradan geçiyor. Zinciri (billing_store /
+    parent_link_store / top_up_store / usage_ledger — prod'da Turso) korumasızdı:
+    tek bir DB hıçkırığı `enforce_quota`'da istisnaya, istisna da HTTP 500'e dönüyor
+    ve kullanıcı HİÇ soru üretemiyordu — üstelik anonim istekler (kapıya girmediği
+    için) çalışmaya devam ettiğinden hata "mobil bozuk" gibi görünüyordu.
+    Bir KOTA kapısının doğru arıza yönü de budur: sayaç okunamıyorsa hizmet
+    durdurulmaz, olay ERROR olarak loglanır (maliyeti biz üstlenir, körlemesine
+    hizmet kesmeyiz).
     """
     if not settings.billing_enabled or not tenant_id:
         return
+    from fastapi import HTTPException  # local import — entitlements'ı saf tut
+
+    try:
+        _enforce_quota_inner(tenant_id, requested)
+    except HTTPException:
+        raise  # 402 (kota doldu) GERÇEK karardır — yutulmaz
+    except Exception as exc:  # noqa: BLE001 — kota altyapısı üretimi düşürmesin
+        logger.error(
+            "Kota kapısı hata verdi, üretim FAIL-OPEN geçirildi (tenant=%s): %s",
+            tenant_id, exc, exc_info=True,
+        )
+
+
+def _enforce_quota_inner(tenant_id: str, requested: int) -> None:
+    """`enforce_quota`'nın gerçek gövdesi — 402 fırlatır, diğer hataları çağıran yutar."""
     # Trial YALNIZ solo + kapsamsız kullanıcıya: aile mirası varsa (premium veli) çocuğa
     # KENDİ trial'ını açma — yoksa havuz parent yerine çocuğun trial'ına kayardı.
     owner, plan = _billing_owner(tenant_id)
