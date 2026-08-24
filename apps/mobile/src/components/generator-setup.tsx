@@ -117,20 +117,35 @@ const SUBJECT_TYPE_GROUPS: Record<SubjectSlug, TypeGroup[]> = {
   ],
 };
 
-function groupsFor(subject: SubjectSlug): TypeGroup[] {
-  return SUBJECT_TYPE_GROUPS[subject] ?? SUBJECT_TYPE_GROUPS.matematik;
+// Çöz modunda otomatik puanlanabilen tipler — backend `_SOLVABLE_TYPES` aynası
+// (app/routers/quizzes.py). Türkçe'nin `okuma_pasaji`/`dil_bilgisi` tipleri şıklı
+// olsa da puanlama tarafı henüz yalnız `coktan_secmeli` biliyor → o gruplar Çöz
+// modunda GÖSTERİLMEZ, yoksa kullanıcı seçer ve sunucu 400 döner.
+const SOLVABLE_TYPES: QuestionType[] = [
+  'coktan_secmeli',
+  'dogru_yanlis',
+  'bosluk_doldurma',
+  'sozel_problem',
+];
+
+function groupsFor(subject: SubjectSlug, mode: GenMode = 'pdf'): TypeGroup[] {
+  const all = SUBJECT_TYPE_GROUPS[subject] ?? SUBJECT_TYPE_GROUPS.matematik;
+  if (mode !== 'solve') return all;
+  const solvable = all.filter((g) => g.types.some((t) => SOLVABLE_TYPES.includes(t)));
+  return solvable.length ? solvable : all;
 }
 
-function allGroupsOn(subject: SubjectSlug): Record<string, boolean> {
-  return Object.fromEntries(groupsFor(subject).map((g) => [g.key, true]));
+function allGroupsOn(subject: SubjectSlug, mode: GenMode = 'pdf'): Record<string, boolean> {
+  return Object.fromEntries(groupsFor(subject, mode).map((g) => [g.key, true]));
 }
 
 /** Seçili gruplardan backend question_types listesi (tümü açıksa null = kısıt yok). */
 function flattenTypes(
   subject: SubjectSlug,
   groups: Record<string, boolean>,
+  mode: GenMode = 'pdf',
 ): QuestionType[] | null {
-  const all = groupsFor(subject);
+  const all = groupsFor(subject, mode);
   const on = all.filter((g) => groups[g.key]);
   if (on.length === all.length) return null;
   // Matematiğin görsel tipleri (salt_islem/tablo/grafik/örüntü) cevap formatı olarak
@@ -280,20 +295,21 @@ export function GeneratorSetup({
     };
   }, [grade, unitId, subject]);
 
-  const typeGroups = groupsFor(subject);
+  const typeGroups = groupsFor(subject, mode);
   const anyGroupOn = typeGroups.some((g) => groups[g.key]);
   const next = () => setStepIdx((i) => Math.min(i + 1, stepKeys.length - 1));
 
   function pickMode(m: GenMode) {
     setMode(m);
     setModeChosen(true);
+    setGroups(allGroupsOn(subject, m)); // Çöz modunda grup listesi daralır
     next();
   }
   function pickSubject(s: SubjectSlug) {
     setSubject(s);
     setUnitId(null);
     setKazanimKod(null);
-    setGroups(allGroupsOn(s)); // grup anahtarları derse özel → eski seçim taşınmaz
+    setGroups(allGroupsOn(s, mode)); // grup anahtarları derse özel → eski seçim taşınmaz
     next();
   }
   function pickGrade(g: number) {
@@ -328,7 +344,7 @@ export function GeneratorSetup({
       difficulty,
       difficultyMode,
       count,
-      questionTypes: flattenTypes(subject, groups),
+      questionTypes: flattenTypes(subject, groups, mode),
       includeAnswerKey,
       includeSolutions,
     });

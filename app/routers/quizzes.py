@@ -125,17 +125,32 @@ def _resolve_solvable_types(
     `sozel_problem` (matematik sözel problemi) var ve istemciler soru-tipi gruplarını
     matematiğe göre sabit gönderiyordu → Türkçe quiz'inde matematik sorusu çıkıyordu.
     Ders süzgecinden hiçbir tip geçmezse dersin ÇÖZÜLEBİLİR varsayılanına düşülür
-    (istek reddedilmez; kullanıcı yine quiz alır, ama doğru dersten)."""
-    from app.subjects import supported_types
-    solvable = set(_SOLVABLE_TYPES)
-    if subject is not None:
-        solvable &= supported_types(subject)
-    if not solvable:  # ders hiçbir çözülebilir tip desteklemiyorsa (beklenmez)
-        solvable = set(_SOLVABLE_TYPES)
+    (istek reddedilmez; kullanıcı yine quiz alır, ama doğru dersten).
+
+    DİKKAT — iki farklı durum, iki farklı sonuç (CI regresyonu 2026-08-24):
+      * Kullanıcı GEÇERLİ ama çözülebilir OLMAYAN bir tip seçtiyse (ör. matematikte
+        yalnız `salt_islem`) sonuç BOŞTUR → router 400 döner ve kullanıcıya "bu
+        tipler çözülemez" der. Bu sözleşme korunur.
+      * İstek ders-farkında OLMAYAN bir istemciden geliyorsa (matematik grupları
+        Türkçe'ye gönderilmiş) kısıt tümden bırakılır → dersin varsayılanı. Burada
+        kullanıcıyı hataya düşürmek yanlış olur, çünkü seçimi arayüzde yaptı.
+    """
+    from app.subjects import filter_types_for_subject, supported_types
+
+    # Dersin destekleyip AYNI ZAMANDA çözülebilir olan tipleri (varsayılan havuz).
+    subject_solvable = [
+        t for t in _SOLVABLE_TYPES
+        if subject is None or t in supported_types(subject)
+    ] or list(_SOLVABLE_TYPES)
     if not requested:
-        return [t for t in _SOLVABLE_TYPES if t in solvable]
-    kept = [t for t in requested if t in solvable]
-    return kept or [t for t in _SOLVABLE_TYPES if t in solvable]
+        return subject_solvable
+    if subject is not None:
+        kept, dropped = filter_types_for_subject(subject, requested)
+        if dropped:
+            if kept is None:  # ders-farkında olmayan istek → kısıt yok
+                return subject_solvable
+            requested = kept
+    return [t for t in requested if t in subject_solvable]
 
 
 def _split_buckets(total: int) -> dict[Difficulty, int]:
