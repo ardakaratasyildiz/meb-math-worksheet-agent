@@ -125,9 +125,22 @@ def get_my_entitlements(
     oturum gerekir (client-supplied tenant'a güvenilmez).
     """
     tid = _require_tenant(verified, tenant_id)
+    # GÖSTERİM ucu — billing deposu hıçkırırsa 500 yerine "ücretsiz" göster.
+    # 2026-08-24 canlı arıza: bayat Hrana oturumu (bkz. db_connection docstring)
+    # bu ucu 500'e düşürüyordu ve mobil ana ekran/paywall hiç açılmıyordu.
+    # Kapılar zaten SUNUCUDA enforce ediliyor (enforce_quota) → burada iyimser
+    # göstermek bir hak vermiyor, yalnız arayüzü ayakta tutuyor.
     plan = entitlements.plan_of(tid)
-    q = entitlements.check_quota(tid)
-    sub = BILLING_STORE.get(tid)
+    try:
+        q = entitlements.check_quota(tid)
+    except Exception as exc:  # noqa: BLE001
+        logger.error("check_quota okunamadı (gösterim), boş kota: %s", exc, exc_info=True)
+        q = {"limit": None, "used": 0, "remaining": None}
+    try:
+        sub = BILLING_STORE.get(tid)
+    except Exception as exc:  # noqa: BLE001
+        logger.error("abonelik satırı okunamadı (gösterim): %s", exc, exc_info=True)
+        sub = None
     return EntitlementsResponse(
         plan=plan,
         is_premium=(plan != entitlements.PLAN_FREE),
