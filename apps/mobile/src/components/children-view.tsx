@@ -14,7 +14,7 @@ import {
 import { IconChevron } from '@/components/icons';
 import { Mascot } from '@/components/mascot';
 import { Card, PrimaryButton } from '@/components/ui';
-import { listChildren, linkChild, type ChildItem } from '@/lib/api';
+import { ApiError, listChildren, linkChild, type ChildItem } from '@/lib/api';
 import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
 
 /**
@@ -35,6 +35,9 @@ export function ChildrenView({ header }: { header?: React.ReactNode }) {
   const [label, setLabel] = useState('');
   const [linking, setLinking] = useState(false);
   const [linkError, setLinkError] = useState<string | null>(null);
+  // Plan sınırı (402 family_limit_reached) normal bir hata değil — kullanıcıya
+  // yol gösterilir (paywall), kırmızı bir uyarıyla bırakılmaz.
+  const [planBlocked, setPlanBlocked] = useState(false);
 
   const load = useCallback(async () => {
     if (!userId) return;
@@ -61,6 +64,7 @@ export function ChildrenView({ header }: { header?: React.ReactNode }) {
     if (!userId || linking || code.trim().length < 4) return;
     setLinking(true);
     setLinkError(null);
+    setPlanBlocked(false);
     try {
       await linkChild(userId, code.trim(), label.trim() || undefined);
       setCode('');
@@ -68,6 +72,7 @@ export function ChildrenView({ header }: { header?: React.ReactNode }) {
       await load();
     } catch (e) {
       setLinkError((e as Error).message);
+      if (e instanceof ApiError && e.status === 402) setPlanBlocked(true);
     } finally {
       setLinking(false);
     }
@@ -99,6 +104,14 @@ export function ChildrenView({ header }: { header?: React.ReactNode }) {
           onChangeText={setLabel}
         />
         {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
+        {planBlocked ? (
+          <PrimaryButton
+            label="Planları gör"
+            variant="soft"
+            color={colors.parent}
+            onPress={() => router.push({ pathname: '/paywall', params: { reason: 'family' } })}
+          />
+        ) : null}
         <PrimaryButton
           label="Bağla"
           color={colors.parent}

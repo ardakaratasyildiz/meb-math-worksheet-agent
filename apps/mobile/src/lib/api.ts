@@ -29,6 +29,63 @@ function baseHeaders(extra: Record<string, string> = {}): Record<string, string>
   return h;
 }
 
+/**
+ * Backend hatası — mesajın YANINDA durum kodu ve `detail` gövdesi taşır.
+ *
+ * NEDEN (2026-08-24): eskiden yalnız `typeof detail === "string"` okunuyordu.
+ * Ama para/kota ile ilgili hatalarımız (402) `detail`i SÖZLÜK gönderiyor
+ * ({error, message, limit, ...}) → kullanıcı ekranda anlamlı metin yerine
+ * "402 " görüyordu. En görünür yeri: veli çocuk bağlarken plan sınırına
+ * takıldığında "Aile paylaşımı Pro+ planına dahildir" yazması gerekirken
+ * "402" yazıyordu. `Error` alt sınıfı olduğu için mevcut
+ * `(e as Error).message` kullanımları aynen çalışır.
+ */
+export class ApiError extends Error {
+  status: number;
+  /** FastAPI `detail` gövdesi (string | sözlük | 422 dizisi). */
+  detail: unknown;
+  /** Sözlük gövdelerdeki makine-okunur kod (ör. "quota_exceeded"). */
+  code?: string;
+
+  constructor(status: number, message: string, detail: unknown, code?: string) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.detail = detail;
+    this.code = code;
+  }
+}
+
+/** FastAPI hata gövdesinden okunabilir mesaj + kod çıkarır. */
+function parseErrorBody(
+  body: unknown,
+  fallback: string,
+): { message: string; detail: unknown; code?: string } {
+  const detail = (body as { detail?: unknown } | null)?.detail;
+  if (typeof detail === "string" && detail) return { message: detail, detail };
+  // 402 / özel hatalar: {error, message, ...}
+  if (detail && typeof detail === "object" && !Array.isArray(detail)) {
+    const d = detail as { message?: unknown; error?: unknown };
+    const msg = typeof d.message === "string" && d.message ? d.message : fallback;
+    const code = typeof d.error === "string" ? d.error : undefined;
+    return { message: msg, detail, code };
+  }
+  // 422 doğrulama: [{loc, msg}] — düz string'e atanınca "[object Object]" olurdu.
+  if (Array.isArray(detail)) {
+    const parts = detail
+      .map((e) => {
+        const loc = Array.isArray((e as { loc?: unknown[] })?.loc)
+          ? (e as { loc: unknown[] }).loc.filter((x) => x !== "body").join(".")
+          : "";
+        const msg = (e as { msg?: string })?.msg ?? "";
+        return loc ? `${loc}: ${msg}` : msg;
+      })
+      .filter(Boolean);
+    if (parts.length) return { message: parts.join(" · "), detail };
+  }
+  return { message: fallback, detail };
+}
+
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const auth = await authHeader();
   let res: Response;
@@ -42,14 +99,22 @@ async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
     throw new Error("İnternet bağlantısı yok. Bağlantını kontrol edip tekrar dene.");
   }
   if (!res.ok) {
-    let detail = `${res.status} ${res.statusText}`;
+    // statusText HTTP/2'de çoğu zaman BOŞ gelir → yalnız koda düşmek "402 " gibi
+    // anlamsız bir metin bırakıyordu; sunucu hatalarında insanca bir metin ver.
+    const fallback =
+      res.status >= 500
+        ? "Sunucuda bir sorun oldu. Birazdan tekrar dene."
+        : `İstek başarısız (${res.status}${res.statusText ? " " + res.statusText : ""}).`;
+    let parsed: { message: string; detail: unknown; code?: string } = {
+      message: fallback,
+      detail: undefined,
+    };
     try {
-      const j = (await res.json()) as { detail?: unknown };
-      if (typeof j?.detail === "string" && j.detail) detail = j.detail;
+      parsed = parseErrorBody(await res.json(), fallback);
     } catch {
-      // gövde JSON değil — status metni kalır
+      // gövde JSON değil — fallback metni kalır
     }
-    throw new Error(detail);
+    throw new ApiError(res.status, parsed.message, parsed.detail, parsed.code);
   }
   // 204 No Content: gövde YOK → res.json() burada patlardı (silme uçları 204 döner).
   if (res.status === 204) return undefined as T;

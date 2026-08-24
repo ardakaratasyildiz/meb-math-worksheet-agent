@@ -270,7 +270,11 @@ def link_child(
     student = PARENT_LINK_STORE.link(tenant_id, req.code, req.child_label)
     if student is None:
         raise HTTPException(status_code=404, detail="Kod geçersiz veya kendi kodun.")
-    return {"student_id": student, "ok": True}
+    # Çocuğu velinin planına HEMEN dahil et: kendi otomatik denemesi varsa kapatılır.
+    # Aksi halde miras (`_billing_owner`) çocuğun kendi trial satırını velinin ücretli
+    # planına tercih ediyor ve bağ 7 gün fiilen işlemiyordu (kullanıcı kararı 2026-08-24).
+    absorbed = entitlements.absorb_into_family(student, tenant_id)
+    return {"student_id": student, "ok": True, "joined_family_plan": absorbed}
 
 
 @router.get("/children", response_model=ChildrenResponse)

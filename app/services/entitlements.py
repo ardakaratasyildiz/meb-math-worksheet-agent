@@ -255,6 +255,33 @@ def ensure_trial(tenant_id: str | None) -> None:
         BILLING_STORE.start_trial(tenant_id)
 
 
+def absorb_into_family(child_tenant_id: str, parent_tenant_id: str) -> bool:
+    """Çocuğu velinin planına DAHİL eder: kendi denemesi varsa hemen kapatır.
+
+    Veli↔çocuk bağı kurulduğunda çağrılır (app/routers/me.py::link_child).
+    Miras (`_billing_owner`) çocuğun KENDİ aktif satırını velinin planına tercih
+    ettiği için, çocuğun otomatik açılmış denemesi bağı fiilen 7 gün geçersiz
+    kılıyordu: veli Pro aldığı hâlde çocuk aile havuzuna girmiyordu.
+
+    Yalnız `trialing` kapatılır (bkz. BILLING_STORE.end_trial_now) ve yalnız veli
+    GERÇEKTEN erişim veren bir plandaysa — aksi halde çocuğun denemesini kapatıp
+    yerine hiçbir şey vermiş olurduk. True = deneme kapatıldı (çocuk artık velinin
+    planında). Best-effort: hata üretimi/bağı bozmaz.
+    """
+    if not child_tenant_id or not parent_tenant_id:
+        return False
+    try:
+        if _own_active_plan(parent_tenant_id) is None:
+            return False  # velinin verecek planı yok → çocuğun denemesine dokunma
+        return BILLING_STORE.end_trial_now(child_tenant_id)
+    except Exception as exc:  # noqa: BLE001 — bağ kurulmasını engellemesin
+        logger.error(
+            "Çocuk aile planına dahil edilemedi (deneme kapatma): child=%s parent=%s — %s",
+            child_tenant_id, parent_tenant_id, exc, exc_info=True,
+        )
+        return False
+
+
 def credit_topup(tenant_id: str | None, product_id: str, *, provider_ref: str | None = None) -> int:
     """RevenueCat consumable satın alımı → ek kağıt kredisi ekle (webhook girişi).
 

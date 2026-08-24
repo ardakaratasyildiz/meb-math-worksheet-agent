@@ -209,6 +209,37 @@ class BillingStore:
             trial_end=trial_end,
         )
 
+    def end_trial_now(self, tenant_id: str) -> bool:
+        """Aktif DENEMEyi hemen bitirir (status=expired). Bitirdiyse True.
+
+        NEDEN (2026-08-24): ilk üretimde herkese otomatik 7 günlük deneme açılıyor
+        (`start_trial`). Çocuk hesabı uygulamayı veliden ÖNCE kullandıysa kendi
+        deneme satırı oluyor ve `_billing_owner` bu satırı velinin ÜCRETLİ planına
+        tercih ediyordu → veli Pro aldığı hâlde çocuk 7 gün aile havuzuna girmiyor,
+        ekranda "deneme" görüyordu. Veliye bağlanma anında bu deneme kapatılır
+        (bkz. app/routers/me.py::link_child).
+
+        ÜCRETLİ/aktif aboneliğe ASLA dokunmaz — yalnız `trialing` satırı bitirilir
+        (çocuğun kendi ödediği bir abonelik varsa parayı çöpe atmayız).
+
+        Satır SİLİNMEZ, `expired`e çekilir: `start_trial` yalnız satırı OLMAYANA
+        deneme açtığı için bu, "deneme hakkı kullanıldı" bilgisini korur → veli
+        aboneliği bitince çocuk ikinci bir deneme kazanmaz.
+        """
+        sub = self.get(tenant_id)
+        if sub is None or sub["status"] != STATUS_TRIALING:
+            return False
+        now = _now_iso()
+        with self._lock:
+            self._db.execute(
+                "UPDATE subscriptions SET status=?, trial_end=?, updated_at=? "
+                "WHERE tenant_id=? AND status=?",
+                (STATUS_EXPIRED, now, now, tenant_id, STATUS_TRIALING),
+            )
+            self._db.commit()
+        logger.info("Deneme bitirildi (aile planına dahil edildi): tenant=%s", tenant_id)
+        return True
+
     def set_cancel_at_period_end(self, tenant_id: str, value: bool = True) -> None:
         """Dönem sonu iptal işaretle (erişim period_end'e kadar sürer)."""
         with self._lock:
