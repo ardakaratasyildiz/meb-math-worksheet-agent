@@ -200,8 +200,22 @@ def _build_worksheet(
     """
     from app.models.enums import Difficulty as _Diff
     from app.models.enums import SubjectId
-    from app.subjects import get_content_module
+    from app.subjects import filter_types_for_subject, get_content_module
     _validate_request(req)
+    # Ders-tip kapısı (2026-08-24): istemciler soru-tipi gruplarını MATEMATİĞE göre
+    # sabit gönderiyordu → Türkçe/Sosyal kağıdında matematik soruları çıkıyordu
+    # (canlıda doğrulandı). Derse uymayan tipler burada düşer; hepsi düşerse dersin
+    # kendi varsayılan dağılımı kullanılır (bkz. app/subjects.filter_types_for_subject).
+    _kept_types, _dropped_types = filter_types_for_subject(req.subject, req.question_types)
+    if _dropped_types:
+        logger.warning(
+            "Ders-tip uyumsuzluğu: subject=%s istenen=%s DÜŞEN=%s → kullanılan=%s",
+            req.subject.value,
+            [t.value for t in (req.question_types or [])],
+            [t.value for t in _dropped_types],
+            [t.value for t in (_kept_types or [])] or "ders varsayılanı",
+        )
+        req.question_types = _kept_types
     # Görünen ad: ders/akışa göre tema/konu adı (başlık/geçmiş/defter).
     if req.subject != SubjectId.MATEMATIK:
         _u = get_content_module(req.subject).get_unit(req.grade, req.unit_id)
@@ -725,7 +739,17 @@ def regenerate_question(
     tenant geçmişine göre dedup'lanır (mevcut sorulardan farklı gelir).
     """
     from app.models.enums import SubjectId
-    from app.subjects import get_content_module, subject_enabled
+    from app.subjects import get_content_module, subject_enabled, supported_types
+    # Ders-tip kapısı: kağıttaki soru matematik tipinde etiketliyse (eski/bozuk kayıt)
+    # aynı tipte yeniden üretmek Türkçe kağıda yine matematik sorusu koyardı.
+    if req.question_type not in supported_types(req.subject):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"'{req.question_type.value}' tipi '{req.subject.value}' dersinde "
+                "üretilmiyor; soruyu farklı bir tipte yeniden üretin."
+            ),
+        )
     topic_id: str | None = None
     unit_id: str | None = None
     if req.subject != SubjectId.MATEMATIK:

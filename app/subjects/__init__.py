@@ -21,7 +21,7 @@ from __future__ import annotations
 from types import ModuleType
 
 from app.config import settings
-from app.models.enums import SubjectId
+from app.models.enums import QuestionType, SubjectId
 from app.subjects import fen as _fen_mod
 from app.subjects import ingilizce as _ing_mod
 from app.subjects import sosyal as _sos_mod
@@ -58,6 +58,94 @@ _CONTENT: dict[SubjectId, ModuleType] = {
     SubjectId.SOSYAL: _sos_mod,
     SubjectId.TURKCE: _tr_mod,
 }
+
+
+# ── Ders ↔ soru tipi uyumu (2026-08-24 saha bulgusu) ─────────────────────────
+# ÖLÇÜLDÜ (canlı, api.soruatolyesi.com): Türkçe bir isteğe `question_types`
+# ["islem","salt_islem","sozel_problem","gunluk_hayat",...] gönderildiğinde backend
+# bunu OLDUĞU GİBİ kabul ediyor, prompt'a "salt_islem: 2 adet" yazıyor ve model
+# Türkçe kazanım koduyla (TR.5.OKA.1) ETİKETLİ MATEMATİK soruları üretiyordu
+# ("Bir kütüphanede 5 katlı rafın her katında 12 kitap…"). Kaynak: istemcilerdeki
+# soru-tipi grupları MATEMATİĞE GÖRE sabit yazılmış ve her ders için aynı liste
+# gönderiliyordu (apps/mobile generator-setup.tsx, frontend/lib/types.ts).
+#
+# Kapı SUNUCUDA: istemci ne gönderirse göndersin, bir dersin desteklemediği tip
+# üretime GİRMEZ. Eski/başka istemciler kırılmasın diye hata değil FİLTRE uygulanır;
+# hepsi düşerse dersin kendi varsayılan dağılımına dönülür (bkz. filter_types_for_subject).
+
+# Sözel derslere özgü tipler — matematikte anlamsız (matematik prompt'u tanımlamaz).
+_VERBAL_ONLY_TYPES: frozenset[QuestionType] = frozenset({
+    QuestionType.OKUMA_PASAJI,
+    QuestionType.DIYALOG_TAMAMLAMA,
+    QuestionType.KELIME_BILGISI,
+    QuestionType.HARITA_YORUMLAMA,
+    QuestionType.KAYNAK_METIN,
+    QuestionType.DIL_BILGISI,
+    QuestionType.YAZIM_NOKTALAMA,
+    QuestionType.GORSEL_YORUMLAMA,
+})
+
+# Ders-NÖTR format tipleri: cevap biçimini belirler, içeriği DEĞİL → her derste
+# anlamlı (dersin DEFAULT_TYPES'ında olmasa da kullanıcı açıkça isteyebilir).
+_NEUTRAL_TYPES: frozenset[QuestionType] = frozenset({
+    QuestionType.COKTAN_SECMELI,
+    QuestionType.DOGRU_YANLIS,
+    QuestionType.BOSLUK_DOLDURMA,
+    QuestionType.ESLESTIRME,
+    QuestionType.SIRALAMA,
+})
+# NOT: `kavram_sorusu` bilinçli olarak NÖTR sayılmadı. İstemcilerin "Açık uçlu"
+# grubu matematik tiplerinden oluşuyor ve içinde kavram_sorusu da var; nötr sayılsaydı
+# Türkçe için o grubun TEK hayatta kalanı olur ve kağıt %100 kavram sorusuna düşerdi.
+# Düşsün: hepsi düşünce dersin KENDİ varsayılan dağılımı devreye girer (daha iyi kağıt).
+
+# Matematik: sözel-ders tipleri hariç HEPSİ (islem/salt_islem/gorsel_geometri/…).
+_MATH_SUPPORTED_TYPES: frozenset[QuestionType] = (
+    frozenset(QuestionType) - _VERBAL_ONLY_TYPES
+)
+
+
+def supported_types(subject_id: SubjectId) -> frozenset[QuestionType]:
+    """Dersin ÜRETEBİLECEĞİ soru tipleri (istemciden gelen filtrenin üst sınırı).
+
+    Non-math derste = dersin `DEFAULT_TYPES`'ı + ders-nötr format tipleri.
+    Matematikte = sözel-ders tipleri dışındaki her şey.
+    """
+    if subject_id == SubjectId.MATEMATIK:
+        return _MATH_SUPPORTED_TYPES
+    content = _CONTENT.get(subject_id)
+    defaults = frozenset(getattr(content, "DEFAULT_TYPES", ()) or ())
+    if not defaults:  # tanımsız ders → kısıtlama uygulamayacak kadar bilgi yok
+        return frozenset(QuestionType)
+    return defaults | _NEUTRAL_TYPES
+
+
+def filter_types_for_subject(
+    subject_id: SubjectId, requested: list[QuestionType] | None
+) -> tuple[list[QuestionType] | None, list[QuestionType]]:
+    """İstenen tipleri derse göre süzer → (kalanlar, düşenler).
+
+    Dönen `kalanlar`:
+      - None  → kısıt YOK (istemci hiç tip göndermedi ya da HEPSİ düştü). Çağıran
+        bu durumda dersin varsayılan dağılımını kullanır — böylece "Türkçe istedim,
+        matematik geldi" yerine "Türkçe istedim, Türkçe geldi" olur.
+      - liste → derse uygun, sıra korunmuş tipler.
+    `düşenler` yalnız loglama/gözlemlenebilirlik için.
+    """
+    if not requested:
+        return None, []
+    allowed = supported_types(subject_id)
+    kept = [t for t in requested if t in allowed]
+    dropped = [t for t in requested if t not in allowed]
+    # Kalan ARTIK KIRPINTI ise (istenenin yarısından azı) filtreyi tümden bırak:
+    # böyle bir istek ders-farkında OLMAYAN bir istemciden gelmiştir (matematik
+    # grupları her derse gönderiliyor). Kırpıntıya uymak kağıdı tek tipe düşürürdü
+    # (ör. Sosyal'de "yalnızca tablo_sorusu"); dersin varsayılan dağılımı daha iyi.
+    # Gerçekten dar ama GEÇERLİ seçimler (ör. yalnız `coktan_secmeli`) hiç düşmediği
+    # için bu eşiğe takılmaz.
+    if dropped and len(kept) * 2 < len(requested):
+        return None, dropped
+    return (kept or None), dropped
 
 
 def get_subject(subject_id: SubjectId = SubjectId.MATEMATIK) -> SubjectPlugin:
@@ -100,4 +188,6 @@ __all__ = [
     "is_enabled",
     "get_content_module",
     "available_subjects",
+    "supported_types",
+    "filter_types_for_subject",
 ]

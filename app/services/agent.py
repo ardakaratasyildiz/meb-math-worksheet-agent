@@ -570,6 +570,11 @@ class GeminiAgent:
             raise AgentError(f"Bilinmeyen/desteklenmeyen ders: {subject}")
         SUBJ_SYSTEM_PROMPT = SYSTEM_PROMPT if is_math else content.SYSTEM_PROMPT
         SUBJ_YN_BLOCK = None if is_math else content.YENI_NESIL_BLOCK
+        # Dersin genel zorluk kalibrasyonu (MEB TYMM kazanımları hint taşımaz).
+        # None → matematiğin kalibrasyonu (bkz. prompts/templates._format_kazanim_block).
+        SUBJ_GENERIC_HINTS = (
+            None if is_math else getattr(content, "GENERIC_DIFFICULTY_HINT", None)
+        )
 
         # Seçim akışı: non-math (ünite) / yeni MEB ünite (unit_id) / eski konu (topic_id).
         # Köprü: ünite yolunda RAG/tip-dağılımı için legacy topic türetilir; cache/history
@@ -1065,6 +1070,7 @@ class GeminiAgent:
             textbook_chunks=textbook_chunks,
             yeni_nesil=yeni_nesil,
             yeni_nesil_block=SUBJ_YN_BLOCK,
+            generic_difficulty_hints=SUBJ_GENERIC_HINTS,
         )
 
         dedup = BatchDeduplicator()

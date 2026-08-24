@@ -20,7 +20,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.data.curriculum import get_topic
 from app.data.units import find_unit_by_kazanim, get_unit, resolve_legacy_topic
-from app.models.enums import Difficulty, QuestionType
+from app.models.enums import Difficulty, QuestionType, SubjectId
 from app.models.schemas import (
     AttemptResult,
     CreateQuizRequest,
@@ -116,13 +116,26 @@ def _agent_for_model(model: str, thinking_budget: int | None = None) -> GeminiAg
 
 def _resolve_solvable_types(
     requested: list[QuestionType] | None,
+    subject: SubjectId | None = None,
 ) -> list[QuestionType]:
     """İstenen tipleri çözülebilir havuza indir. None → 4 tip. Filtre sonrası boş
-    olabilir (çağıran 400 döner)."""
-    if not requested:
-        return list(_SOLVABLE_TYPES)
+    olabilir (çağıran 400 döner).
+
+    `subject` verilirse DERS uyumu da uygulanır (2026-08-24): çözülebilir havuzda
+    `sozel_problem` (matematik sözel problemi) var ve istemciler soru-tipi gruplarını
+    matematiğe göre sabit gönderiyordu → Türkçe quiz'inde matematik sorusu çıkıyordu.
+    Ders süzgecinden hiçbir tip geçmezse dersin ÇÖZÜLEBİLİR varsayılanına düşülür
+    (istek reddedilmez; kullanıcı yine quiz alır, ama doğru dersten)."""
+    from app.subjects import supported_types
     solvable = set(_SOLVABLE_TYPES)
-    return [t for t in requested if t in solvable]
+    if subject is not None:
+        solvable &= supported_types(subject)
+    if not solvable:  # ders hiçbir çözülebilir tip desteklemiyorsa (beklenmez)
+        solvable = set(_SOLVABLE_TYPES)
+    if not requested:
+        return [t for t in _SOLVABLE_TYPES if t in solvable]
+    kept = [t for t in requested if t in solvable]
+    return kept or [t for t in _SOLVABLE_TYPES if t in solvable]
 
 
 def _split_buckets(total: int) -> dict[Difficulty, int]:
@@ -182,7 +195,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str, lis
                 detail=f"{req.grade}. sınıfta '{req.topic_id}' konusu bulunmuyor.",
             )
         display_name = topic["name"]
-    allowed = _resolve_solvable_types(req.question_types)
+    allowed = _resolve_solvable_types(req.question_types, req.subject)
     if not allowed:
         raise HTTPException(
             status_code=400,
@@ -448,6 +461,11 @@ def _regenerate_one_question(
     from app.subjects import get_content_module, subject_enabled
 
     subject, _, _ = resolve_kazanim(kazanim_kod)
+    # Ders-tip kapısı: eski/bozuk kayıtta soru matematik tipinde etiketli olabilir;
+    # aynı tipte yeniden üretmek Türkçe quiz'ine yine matematik sorusu koyardı.
+    # Derse uygun DEĞİLSE dersin çözülebilir varsayılanına düşülür.
+    if question_type not in set(_resolve_solvable_types(None, subject)):
+        question_type = _resolve_solvable_types(None, subject)[0]
     topic_id: str | None = None
     unit_id: str | None = None
     if subject != SubjectId.MATEMATIK:

@@ -37,6 +37,7 @@ import { addHistory, type HistoryItem } from "@/lib/history";
 import { useGenerateStore, type FormState, type TypeGroupKey } from "@/lib/store";
 import {
   QUESTION_TYPE_GROUPS,
+  filterTypesForSubject,
   type Difficulty,
   type DifficultyMode,
   type GenerateWorksheetResponse,
@@ -139,6 +140,7 @@ const KAZANIM_AUTO = "__AUTO__";
 
 function flattenTypeGroups(
   groups: Record<TypeGroupKey, boolean>,
+  subject: string = "matematik",
 ): QuestionType[] | null {
   // Görsel tipler (salt_islem/tablo/grafik/örüntü) cevap formatı olarak AÇIK UÇLUDUR,
   // şıkları yoktur. Eskiden `visual: true` sabitti → "Çoktan seçmeli" seçen kullanıcıya
@@ -151,7 +153,12 @@ function flattenTypeGroups(
   // Tüm gruplar açıksa (görsel dahil) kısıtlama yok → null (backend tüm tipleri kullanır).
   if (enabledKeys.length === Object.keys(QUESTION_TYPE_GROUPS).length)
     return null;
-  return enabledKeys.flatMap((k) => QUESTION_TYPE_GROUPS[k] as QuestionType[]);
+  // Ders süzgeci: gruplar matematik tiplerinden oluşuyor; başka bir derste
+  // desteklenmeyenler düşer (hepsi düşerse null = dersin varsayılan dağılımı).
+  return filterTypesForSubject(
+    subject,
+    enabledKeys.flatMap((k) => QUESTION_TYPE_GROUPS[k] as QuestionType[]),
+  );
 }
 
 // Küçük yardımcı — section başlık + ince ayraç. Kart içinde gruplar arası
@@ -403,7 +410,7 @@ export function GenerateForm({
     });
     const t0 = performance.now();
     try {
-      const question_types = flattenTypeGroups(typeGroups);
+      const question_types = flattenTypeGroups(typeGroups, subject);
       // SSE streaming: bağlantı her soru event'iyle canlı kalır → uzun üretimde
       // proxy/tarayıcı idle-timeout'u tetiklenmez ("hata aldım ama geçmişte var"
       // sorununun kök sebebi). `complete` event'i bloklayan endpoint ile aynı

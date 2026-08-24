@@ -118,9 +118,21 @@ _GENERIC_DIFFICULTY_HINT: dict[str, str] = {
 }
 
 
-def _format_kazanim_block(kazanimlar: list[Kazanim], difficulty: Difficulty) -> str:
+def _format_kazanim_block(
+    kazanimlar: list[Kazanim],
+    difficulty: Difficulty,
+    generic_hints: dict[str, str] | None = None,
+) -> str:
+    """`generic_hints`: DERSİN genel zorluk kalibrasyonu (ders modülünden gelir).
+
+    Verilmezse matematiğin kalibrasyonu kullanılır. NEDEN AYRI (2026-08-24): MEB TYMM
+    kazanımları kazanım-bazlı `difficulty_hints` TAŞIMAZ → sözel derslerde (Türkçe/
+    Sosyal/İngilizce) her prompt'a matematiğin metni giriyordu ("sade sayılar",
+    "işlemi seçmeyi gerektirir") ve modeli sayısal/işlem sorusuna itiyordu. Ders
+    modülleri kendi `GENERIC_DIFFICULTY_HINT`'ini zaten tanımlıyordu ama HİÇBİR YERDE
+    KULLANILMIYORDU (ölü kod) — bu parametre onu bağlar."""
     level = difficulty.value
-    generic = _GENERIC_DIFFICULTY_HINT.get(level, "")
+    generic = (generic_hints or _GENERIC_DIFFICULTY_HINT).get(level, "")
     if len(kazanimlar) == 1:
         k = kazanimlar[0]
         hint = k.get("difficulty_hints", {}).get(level, "") or generic
@@ -299,13 +311,14 @@ def build_user_prompt(
     textbook_chunks: list[dict] | None = None,
     yeni_nesil: bool = False,
     yeni_nesil_block: str | None = None,
+    generic_difficulty_hints: dict[str, str] | None = None,
 ) -> str:
     # Ders-özel yeni nesil bloğu (default: matematik). Fen kendi bloğunu geçer.
     _block = yeni_nesil_block or _YENI_NESIL_BLOCK
     parts = [
         f"Sınıf: {grade}. sınıf",
         f"Konu: {topic_name}",
-        _format_kazanim_block(kazanimlar, difficulty),
+        _format_kazanim_block(kazanimlar, difficulty, generic_difficulty_hints),
         f"Zorluk: {difficulty.value}",
         f"Üretilecek Soru Sayısı: {question_count}",
         "",
