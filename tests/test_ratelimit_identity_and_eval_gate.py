@@ -3,13 +3,25 @@
 Pytest gerektirmez — `python tests/test_ratelimit_identity_and_eval_gate.py`.
 Ağ/LLM çağrısı yok.
 
-A) RATE LIMIT: `_identifier` kimliği soket peer'ından türetiyor. Render uygulamaya
-   kendi iç IP'siyle (10.x) bağlandığı ve uvicorn varsayılan olarak yalnız
-   127.0.0.1'e güvendiği için `X-Forwarded-For` HİÇ okunmuyordu → anonim
-   ziyaretçilerin TAMAMI aynı kovayı paylaşıyordu (5/dk + 30/saat). Kanıt: prod
-   log'unda istemci `10.24.184.2`. Düzeltme `start.sh`'de bir başlatma bayrağı
-   (`--forwarded-allow-ips 10.0.0.0/8`) olduğu için KODDAN GÖRÜNMEZ; bu test o
-   bayrağın kaybolmasını ve yanlış (`*`) değere kaymasını engeller.
+A) RATE LIMIT: `_identifier` kimliği soket peer'ından türetiyor; proxy arkasında bu
+   değer ziyaretçi DEĞİL ara hop olur ve tüm anonim trafik aynı kovayı paylaşır
+   (5/dk + 30/saat birbirinden yenir).
+
+   CANLIDA ÖLÇÜLEN ZİNCİR (GET /diag/client, 2026-08-25):
+       x_forwarded_for = "5.46.235.101, 172.69.150.209, 10.25.117.71"
+       client_host     = 127.0.0.1
+   yani [ziyaretçi] -> [Cloudflare edge] -> [Render iç ağı] -> (loopback) -> app.
+
+   İlk deneme YANLIŞTI: eski access log'unda `10.24.184.2` göründüğü için peer'ın
+   10.x olduğu varsayıldı, oysa o değer middleware'in ZATEN yazdığı sonuçtu; peer
+   loopback. `--forwarded-allow-ips 10.0.0.0/8` verilince peer güvenilmez oldu,
+   middleware hiç çalışmadı ve kimlik `ip:127.0.0.1`e düştü (tek kova — daha kötü).
+   `/diag/client` bunu tek istekte gösterdi.
+
+   Doğru yapılandırma: ARADAKİ TÜM hop'lar güvenilen listede (loopback + Render özel
+   ağı + Cloudflare egress aralıkları). uvicorn listeyi SAĞDAN tarar; biri eksik
+   kalırsa tarama orada durur ve kimlik ziyaretçi yerine o hop olur. Düzeltme bir
+   başlatma bayrağı olduğu için KODDAN GÖRÜNMEZ → bu test onu kilitler.
 
    "*" NEDEN YANLIŞ: uvicorn `always_trust` modunda XFF'in EN SOLUNDAKİ girdiyi
    alır — o girdi tamamen istemcinin yazdığı değerdir → saldırgan her istekte
@@ -57,11 +69,26 @@ def check(cond: bool, msg: str) -> None:
 
 
 # ── A) Rate limit kimliği ───────────────────────────────────────────────────
+def _trusted_from_start_sh() -> str:
+    """start.sh'deki varsayılan güvenilen-hop listesi (tek doğruluk kaynağı)."""
+    import re
+
+    sh = io.open(ROOT / "start.sh", encoding="utf-8").read()
+    m = re.search(r'--forwarded-allow-ips "\$\{FORWARDED_ALLOW_IPS:-([^}]+)\}"', sh)
+    assert m, "start.sh'de --forwarded-allow-ips varsayılanı bulunamadı"
+    return m.group(1)
+
+
 def test_start_command_trusts_render_network() -> None:
     print("\n[A1] start.sh gerçek ziyaretçi IP'sini çözecek şekilde başlatıyor")
     sh = io.open(ROOT / "start.sh", encoding="utf-8").read()
     check("--forwarded-allow-ips" in sh, "uvicorn --forwarded-allow-ips bayrağı var")
-    check("10.0.0.0/8" in sh, "Render iç ağı (10.0.0.0/8) varsayılan güvenilen ağ")
+    trusted = _trusted_from_start_sh()
+    # Peer LOOPBACK (canlıda ölçüldü) — bu eksikse middleware HİÇ çalışmaz ve
+    # kimlik ip:127.0.0.1'e düşer (tek kova). İlk denemede tam bu oldu.
+    check("127.0.0.1" in trusted, "loopback güvenilen (gerçek peer)")
+    check("10.0.0.0/8" in trusted, "Render iç ağı güvenilen")
+    check("172.64.0.0/13" in trusted, "Cloudflare egress aralığı güvenilen")
     check(
         '--forwarded-allow-ips "*"' not in sh and "--forwarded-allow-ips *" not in sh,
         "wildcard '*' KULLANILMIYOR (spoof edilebilir kimlik)",
@@ -70,20 +97,34 @@ def test_start_command_trusts_render_network() -> None:
     check("FORWARDED_ALLOW_IPS" in rj, "render.yaml'da env olarak da görünür")
 
 
+# Canlıda ölçülen gerçek zincir (GET /diag/client, 2026-08-25).
+LIVE_CHAIN = "5.46.235.101, 172.69.150.209, 10.25.117.71"
+LIVE_VISITOR = "5.46.235.101"
+
+
 def test_cidr_trust_resolves_real_client_and_blocks_spoof() -> None:
-    print("\n[A2] CIDR güveni: gerçek IP çözülür, soldan uydurma yok sayılır")
-    cidr = _TrustedHosts("10.0.0.0/8")
-    check("10.24.184.2" in cidr, "Render iç IP'si güvenilir sayılıyor")
-    check("85.100.1.1" not in cidr, "ziyaretçi IP'si güvenilir DEĞİL (doğru)")
-    real = cidr.get_trusted_client_host("85.100.1.1, 10.24.184.2")
-    check(real == "85.100.1.1", f"gerçek ziyaretçi çözüldü ({real})")
-    spoofed = cidr.get_trusted_client_host("1.2.3.4, 85.100.1.1, 10.24.184.2")
-    check(spoofed == "85.100.1.1", f"soldan uydurma IP yok sayıldı ({spoofed})")
+    print("\n[A2] canlı zincir gerçek ziyaretçiye çözülür, spoof yok sayılır")
+    th = _TrustedHosts(_trusted_from_start_sh())
+    check("127.0.0.1" in th, "loopback peer güvenilir")
+    check("10.25.117.71" in th, "Render iç hop'u güvenilir")
+    check("172.69.150.209" in th, "Cloudflare hop'u güvenilir")
+    check(LIVE_VISITOR not in th, "ziyaretçi güvenilir DEĞİL (doğru — kimlik o olacak)")
+    real = th.get_trusted_client_host(LIVE_CHAIN)
+    check(real == LIVE_VISITOR, f"canlı zincir → gerçek ziyaretçi ({real})")
+    spoofed = th.get_trusted_client_host("1.2.3.4, " + LIVE_CHAIN)
+    check(spoofed == LIVE_VISITOR, f"soldan uydurma IP yok sayıldı ({spoofed})")
     # Wildcard'ın NEDEN reddedildiğinin kanıtı (regresyon belgesi):
     star = _TrustedHosts("*")
     check(
-        star.get_trusted_client_host("1.2.3.4, 85.100.1.1, 10.24.184.2") == "1.2.3.4",
+        star.get_trusted_client_host("1.2.3.4, " + LIVE_CHAIN) == "1.2.3.4",
         "'*' saldırganın yazdığı değeri alırdı → bu yüzden kullanılmıyor",
+    )
+    # Eksik hop senaryosu: Cloudflare aralığı listede olmasaydı tarama orada durur
+    # ve TÜM ziyaretçiler o CF edge'inin kovasına düşerdi (ilk denemedeki hata sınıfı).
+    partial = _TrustedHosts("127.0.0.1,10.0.0.0/8")
+    check(
+        partial.get_trusted_client_host(LIVE_CHAIN) == "172.69.150.209",
+        "eksik hop → kimlik ziyaretçi yerine ara hop olur (regresyon belgesi)",
     )
 
 
