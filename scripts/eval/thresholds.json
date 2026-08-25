@@ -47,7 +47,8 @@
     "_observed_alignment": 0.6803,
     "_observed_delivered": 1.0,
     "_observed_critic_pass": 1.0,
-    "_doc_alignment_drift": "ÖLÇÜLEN SAPMA (2026-08-25, ayrı bir iş olarak not edildi): baseline 0.6803 (2026-05-19, güçlü model dönemi) → bugün quick modda ~0.596-0.60. Eşik düşürülmedi, YALNIZ PR gate'i için profil override'ı eklendi — böylece sapma gece koşusunda görünür kalır. Sapmanın gerçek sebebi (model/prompt/maliyet optimizasyonları) ayrı bir kalite turunda incelenmeli; buradaki değişiklik onu gizlemez."
+    "_doc_alignment_drift": "SAPMA YOK — SORUN ÖRNEKLEMDİ (2026-08-25, PR #182 ile ölçüldü). Önce şöyle göründü: baseline 0.6803 (2026-05-19, 18 koşu) → quick modda 0.5960 / 0.5969 ve 'kalite düşmüş' şüphesi. Quick örneklem 3 sorudan 8 soruya çıkarılınca AYNI kod 0.6757 verdi, yani baseline'la aynı seviye. Yani 0.596 değerleri gerçek bir düşüş değil, 3 soruluk ortalamanın ±0.08 salınımıydı. Ders: bu metriği tek üretimin 3 sorusuyla ölçmek anlamsız; PR gate'i profiles.quick ile katastrofik kapıya çevrildi, gece koşusu (18 koşu) hassas kaldı.",
+    "_observed_alignment_quick8": 0.6757
   },
   "stability": {
     "successful_runs_ratio_min": 0.95,
@@ -70,7 +71,7 @@
       "_doc": "PR gate override'ları. Yalnız BÜYÜK kırılmaları yakalar (üretim hiç çalışmıyor, kağıt boş geliyor, alignment çöktü). İnce kalite hareketleri gece koşusunun (full) işi.",
       "quality": {
         "avg_kazanim_alignment_min": 0.5,
-        "_doc_alignment": "0.60 → 0.50. Gözlenen quick değerler: 0.5960 (2026-08-24), 0.5969 (2026-08-25) ve eşiği geçen bir koşu. 3-8 soruluk tek üretimde ±0.05 salınım normal; 0.50 katastrofik çöküşü (ör. yanlış ders/konu üretimi) yine yakalar."
+        "_doc_alignment": "0.60 → 0.50. 3 soruluk örneklemde gözlenen: 0.5960 / 0.5969 (iki PR haksız bloklandı); 8 soruya çıkarıldığında 0.6757 (baseline seviyesi). Eşik yine de geniş bırakıldı: n=8'de bile salınım anlamlı, PR gate'inin işi ince kalite hareketi değil ÇÖKÜŞ yakalamak (ör. yanlış ders/konu üretimi)."
       },
       "performance": {
         "avg_duration_seconds_max": 120.0,
