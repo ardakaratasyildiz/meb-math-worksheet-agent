@@ -102,8 +102,17 @@ def diag_client(
         "rate_limit_identity": _identifier(request),
         # Proxy arkasındayken client_host bir ÖZEL ağ adresi kalıyorsa XFF
         # okunmuyor demektir (bayrak eksik/yanlış).
-        "xff_honored": bool(xff) and client_host is not None
-        and not client_host.startswith(("10.", "127.", "172.16.", "192.168.")),
+        # client_host hâlâ bir ARA HOP ise (loopback/özel ağ) XFF çözülmemiş demektir:
+        # ya bayrak eksik ya zincirdeki bir hop güvenilen listede değil.
+        "xff_honored": bool(xff)
+        and client_host is not None
+        and not client_host.startswith(
+            ("10.", "127.", "192.168.", "172.16.", "172.17.", "172.18.", "172.19.",
+             "172.2", "172.30.", "172.31.", "::1")
+        ),
+        # Zincirin en solu = ziyaretçinin kendisi (Cloudflare'in gördüğü). Kimlik
+        # bununla AYNI olmalı; değilse tarama bir hop'ta durmuş.
+        "xff_leftmost": (xff or "").split(",")[0].strip() or None,
     }
 
 

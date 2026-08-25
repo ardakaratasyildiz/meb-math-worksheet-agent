@@ -24,14 +24,16 @@ services:
       # BOŞ → doğrudan Google. Örn: https://gemini-proxy.<hesap>.workers.dev
       - key: GEMINI_BASE_URL
         sync: false
-      # Render uygulamaya kendi ic aginin IP'siyle (10.x) baglanir; uvicorn
-      # varsayilan olarak yalniz 127.0.0.1'e guvendigi icin X-Forwarded-For HIC
-      # okunmuyordu -> anonim ziyaretcilerin TAMAMI tek rate-limit kovasini
-      # paylasiyordu (5/dk, 30/saat). CIDR verildiginde uvicorn XFF'i SAGDAN
-      # tarar (spoof'a kapali); "*" verilseydi EN SOLDAKI (istemcinin yazdigi)
-      # girdi alinir ve sinir bypass edilebilirdi. bkz. start.sh
+      # Rate-limit kimligi gercek ziyaretci IP'sine baglanabilsin diye guvenilen
+      # proxy hop'lari. CANLIDA OLCULEN zincir (GET /diag/client, 2026-08-25):
+      #   XFF = "5.46.235.101, 172.69.150.209, 10.25.117.71" · peer = 127.0.0.1
+      #   [ziyaretci] -> [Cloudflare] -> [Render ic agi] -> (loopback) -> app
+      # uvicorn SAGDAN tarar; aradaki TUM hop'lar burada olmali (biri eksikse kimlik
+      # ziyaretci yerine o hop olur). "*" KULLANILMAZ: o modda XFF'in EN SOLUNDAKI
+      # (istemcinin yazdigi) girdi alinir → sinir spoof edilebilir. bkz. start.sh
+      # Bos birakilirsa start.sh icindeki varsayilan liste gecerlidir.
       - key: FORWARDED_ALLOW_IPS
-        value: 10.0.0.0/8
+        value: 127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32
       - key: GEMINI_PROXY_SECRET
         sync: false # worker'daki PROXY_SECRET ile AYNI olmalı
       - key: ENABLE_ANTHROPIC_FALLBACK
