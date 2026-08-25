@@ -8,7 +8,7 @@ client'ları kırmamak için saklı tutuldu.
 """
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 
 from app.config import settings
 from app.security import require_api_key
@@ -72,6 +72,41 @@ def readyz(response: Response) -> dict[str, object]:
 # sürümü, key şekli (sır değil — uzunluk/prefix/whitespace), ve ham vs strip'li
 # key ile canlı Gemini çağrısı. "IP bloğu mu, whitespace mı, sürüm mü" sorusunu
 # tek istekle kesin ayırır. Public API-key ile gate'li (sır döndürmez).
+@router.get("/diag/client", tags=["system"])
+def diag_client(
+    request: Request, _api_key: str = Depends(require_api_key)
+) -> dict[str, object]:
+    """Sunucunun BU isteği kimin gönderdiğini nasıl gördüğü — rate-limit teşhisi.
+
+    NEDEN VAR (2026-08-25): rate-limit kimliği soket peer'ından türetiliyor
+    (`app/security.py::_identifier`). Render uygulamaya kendi iç IP'siyle (10.x)
+    bağlandığı ve uvicorn varsayılan olarak yalnız 127.0.0.1'e güvendiği için
+    `X-Forwarded-For` hiç okunmuyordu → anonim ziyaretçilerin TAMAMI tek kovayı
+    paylaşıyordu (5/dk, 30/saat). Düzeltme bir başlatma bayrağı
+    (`--forwarded-allow-ips`) olduğu için koddan görünmez; bu uç sayesinde
+    canlıda tek istekle doğrulanabilir:
+
+      client_host, xff'in sağdaki girdisiyle AYNI ise düzeltme çalışıyor;
+      hâlâ 10.x görünüyorsa bayrak kaybolmuş demektir.
+
+    Sır döndürmez: yalnız çağıranın kendi adresi + türetilen kova kimliği.
+    """
+    from app.security import _identifier
+
+    xff = request.headers.get("x-forwarded-for")
+    client = getattr(request, "client", None)
+    client_host = getattr(client, "host", None)
+    return {
+        "client_host": client_host,          # uvicorn'un çözdüğü istemci
+        "x_forwarded_for": xff,              # ham başlık
+        "rate_limit_identity": _identifier(request),
+        # Proxy arkasındayken client_host bir ÖZEL ağ adresi kalıyorsa XFF
+        # okunmuyor demektir (bayrak eksik/yanlış).
+        "xff_honored": bool(xff) and client_host is not None
+        and not client_host.startswith(("10.", "127.", "172.16.", "192.168.")),
+    }
+
+
 @router.get("/diag/gemini", tags=["system"])
 def diag_gemini(_api_key: str = Depends(require_api_key)) -> dict[str, object]:
     import importlib.metadata

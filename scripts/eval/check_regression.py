@@ -4,7 +4,15 @@ Her metric için pass/fail/warn sonucu üretir. Kritik fail varsa exit 1 → CI 
 
 Kullanım:
     python scripts/eval/check_regression.py --raw knowledge_base/eval/ab_raw_<ts>.json \\
-        [--config sprint2_full] [--thresholds scripts/eval/thresholds.json]
+        [--config sprint2_full] [--thresholds scripts/eval/thresholds.json] \\
+        [--profile quick]
+
+`--profile quick`: PR gate profili (thresholds.json → profiles.quick) taban
+eşiklerin ÜZERİNE bindirilir. Neden gerekli: quick mod TEK üretimin soruları
+üzerinden ortalama alıyor (ab_runner --quick), taban eşikler ise 18 koşuluk full
+run'dan türetildi → aynı eşik quick'te yazı-tura oluyordu (ölçülen: 0.5960 /
+0.5969 / bir geçen koşu; prompt'a dokunmayan PR'lar bloklandı). Profil PR gate'ini
+katastrofik-regresyon kapısına çevirir, gece koşusu hassas kalır.
 """
 from __future__ import annotations
 
@@ -39,6 +47,29 @@ def _check(
         marker = FAIL if is_critical else WARN
         return marker, f"{marker} {label}: {value:.4f} > max {max_v:.4f}"
     return PASS, f"{PASS} {label}: {value:.4f} (min={min_v}, max={max_v})"
+
+
+def apply_profile(thresholds: dict, profile: str | None) -> dict:
+    """`profiles.<profile>` bloğunu taban eşiklerin üzerine bindirir (derin merge).
+
+    `_` ile başlayan anahtarlar (dokümantasyon) atlanır. Profil yoksa taban aynen
+    döner — yani eski çağrılar (profilsiz) davranış değiştirmez.
+    """
+    if not profile:
+        return thresholds
+    prof = (thresholds.get("profiles") or {}).get(profile)
+    if not prof:
+        print(f"{WARN} '{profile}' profili thresholds dosyasında yok — taban eşikler kullanılıyor.")
+        return thresholds
+    merged = json.loads(json.dumps(thresholds))  # derin kopya
+    for group, values in prof.items():
+        if group.startswith("_") or not isinstance(values, dict):
+            continue
+        merged.setdefault(group, {})
+        for key, val in values.items():
+            merged[group][key] = val
+    print(f"Profil uygulandı: {profile}")
+    return merged
 
 
 def evaluate(
@@ -147,10 +178,16 @@ def main() -> None:
         default="sprint2_full",
         help="Hangi config'in metriklerini kıyaslayalım",
     )
+    parser.add_argument(
+        "--profile",
+        default=None,
+        help="Eşik profili (thresholds.json → profiles.<ad>). PR gate için: quick",
+    )
     args = parser.parse_args()
 
     raw = json.loads(Path(args.raw).read_text(encoding="utf-8"))
     thresholds = json.loads(Path(args.thresholds).read_text(encoding="utf-8"))
+    thresholds = apply_profile(thresholds, args.profile)
 
     print(f"Eşik dosyası: {args.thresholds}")
     print(f"Karşılaştırılan config: {args.config}")

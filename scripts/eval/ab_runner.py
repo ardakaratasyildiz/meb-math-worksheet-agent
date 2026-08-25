@@ -337,16 +337,20 @@ def main() -> None:
     parser.add_argument(
         "--quick",
         action="store_true",
-        help="PR gate için hızlı mod: sprint2_full × g5_cebir_orta × 1 iter × 3 soru (~1-2 dk).",
+        help="PR gate için hızlı mod: sprint2_full × g5_cebir_orta × 1 iter × 8 soru (~1-2 dk).",
     )
     args = parser.parse_args()
 
     if args.quick:
         args.configs = "sprint2_full"
         args.iterations = 1
-        args.question_count = 3
+        # 3 → 8 (2026-08-25): kazanım_alignment 3 sorunun ORTALAMASI olduğu için tek
+        # şanssız soru ortalamayı ~0.05 kaydırıyordu ve gate yazı-tura oluyordu.
+        # 8 soru tek üretim çağrısında geliyor → maliyet/süre farkı marjinal, salınım
+        # belirgin şekilde düşüyor. (Eşik profili ayrıca gevşetildi: profiles.quick.)
+        args.question_count = 8
         args.scenarios = "g5_cebir_orta"
-        logger.info("Quick mode aktif: 1 config × 1 senaryo × 1 iter × 3 soru")
+        logger.info("Quick mode aktif: 1 config × 1 senaryo × 1 iter × 8 soru")
 
     selected_configs = [c.strip() for c in args.configs.split(",") if c.strip()]
     invalid = [c for c in selected_configs if c not in CONFIG_MATRIX]
