@@ -299,13 +299,18 @@ def credit_topup(tenant_id: str | None, product_id: str, *, provider_ref: str | 
     return credits if ok else 0
 
 
-def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
+def enforce_quota(tenant_id: str | None, requested: int = 1) -> bool:
     """Generate uçları için kota kapısı. Aşımda HTTP 402 + paywall sinyali fırlatır.
 
     - `settings.billing_enabled` KAPALIYKEN no-op (bugünkü davranış; kademeli açılış).
     - Yalnız DOĞRULANMIŞ tenant'a uygulanır → anonim (tenant None) kotasız kalır
       (SEO motoru bozulmasın). Client-supplied tenant'a GÜVENİLMEZ (bkz. clerk_auth).
     - İlk üretimde reverse trial'ı otomatik başlatır (ensure_trial).
+
+    DÖNÜŞ: bu üretim EK PAKETTEN mi karşılandı (True = kredi düşüldü). Çağıran,
+    üretim teslim EDİLEMEZSE `refund_topup()` ile krediyi geri vermelidir — kredi
+    üretimden önce düşülmek zorunda (yoksa aynı krediyle iki kağıt üretilebilirdi),
+    ama teslim edilmeyen kağıdın parasını kullanıcı ödememeli.
 
     FAIL-OPEN (2026-08-24): 402 dışındaki HER hata yutulur ve üretim GEÇER.
     Neden: bu kapı 2026-08-21'de açıldı (`billing_enabled=True` + `premium_all=False`)
@@ -319,11 +324,11 @@ def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
     hizmet kesmeyiz).
     """
     if not settings.billing_enabled or not tenant_id:
-        return
+        return False
     from fastapi import HTTPException  # local import — entitlements'ı saf tut
 
     try:
-        _enforce_quota_inner(tenant_id, requested)
+        return _enforce_quota_inner(tenant_id, requested)
     except HTTPException:
         raise  # 402 (kota doldu) GERÇEK karardır — yutulmaz
     except Exception as exc:  # noqa: BLE001 — kota altyapısı üretimi düşürmesin
@@ -331,10 +336,13 @@ def enforce_quota(tenant_id: str | None, requested: int = 1) -> None:
             "Kota kapısı hata verdi, üretim FAIL-OPEN geçirildi (tenant=%s): %s",
             tenant_id, exc, exc_info=True,
         )
+        return False
 
 
-def _enforce_quota_inner(tenant_id: str, requested: int) -> None:
-    """`enforce_quota`'nın gerçek gövdesi — 402 fırlatır, diğer hataları çağıran yutar."""
+def _enforce_quota_inner(tenant_id: str, requested: int) -> bool:
+    """`enforce_quota`'nın gerçek gövdesi — 402 fırlatır, diğer hataları çağıran yutar.
+
+    Dönüş: ek paket kredisi düşüldü mü (bkz. enforce_quota DÖNÜŞ notu)."""
     # Trial YALNIZ solo + kapsamsız kullanıcıya: aile mirası varsa (premium veli) çocuğa
     # KENDİ trial'ını açma — yoksa havuz parent yerine çocuğun trial'ına kayardı.
     owner, plan = _billing_owner(tenant_id)
@@ -373,7 +381,27 @@ def _enforce_quota_inner(tenant_id: str, requested: int) -> None:
     # Plan kotası bittiyse bu üretim EK PAKETTEN karşılanır → 1 kredi düş (havuz sahibinde,
     # en erken biten önce). Plan içindeyse dokunma (kullanım usage_ledger'dan sayılır).
     if q.get("plan_remaining", 1) <= 0 and q.get("topup_balance", 0) > 0:
-        TOP_UP_STORE.consume(q.get("owner") or tenant_id, requested)
+        return TOP_UP_STORE.consume(q.get("owner") or tenant_id, requested) > 0
+    return False
+
+
+def refund_topup(tenant_id: str | None, requested: int = 1) -> int:
+    """Teslim EDİLEMEYEN üretim için ek paket kredisini geri verir. İade edileni döner.
+
+    `enforce_quota()` True döndüyse (kredi düşüldüyse) ve üretim hata verdiyse
+    çağrılır. Kredi havuz SAHİBİNE geri gider (aile paylaşımı: ödeyen veli).
+    Best-effort: iade hatası asıl hatayı gölgelemez.
+    """
+    if not tenant_id:
+        return 0
+    try:
+        owner, _ = _billing_owner(tenant_id)
+        return TOP_UP_STORE.refund(owner or tenant_id, requested)
+    except Exception as exc:  # noqa: BLE001
+        logger.error(
+            "Ek paket kredisi iade edilemedi (tenant=%s): %s", tenant_id, exc, exc_info=True
+        )
+        return 0
 
 
 def check_quota(tenant_id: str | None, requested: int = 0) -> dict:
