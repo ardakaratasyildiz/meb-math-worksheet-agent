@@ -4,8 +4,8 @@
   "_baseline_config": "baseline",
   "_sprint_history": {
     "2026-05-01_sprint2": {
-      "delivered": 0.80,
-      "critic_pass": 0.80,
+      "delivered": 0.8,
+      "critic_pass": 0.8,
       "alignment": 0.6697,
       "intra": 0.3289,
       "cross": 0.3175,
@@ -21,13 +21,13 @@
       "note": "Textbook ingest sonrası regresyon: -0.067 delivered, -0.042 critic_pass."
     },
     "2026-05-19_sprint12b": {
-      "delivered": 1.0000,
-      "critic_pass": 1.0000,
+      "delivered": 1.0,
+      "critic_pass": 1.0,
       "alignment": 0.6803,
       "intra": 0.3208,
       "cross": 0.3113,
       "duration_s": 29.26,
-      "math_verifier_rejection": 0.0110,
+      "math_verifier_rejection": 0.011,
       "note": "Sprint 12-A + 12-B: 5 yeni soru tipi, SVG/LaTeX render, 112 SVG/LaTeX few-shot + 734 yeni textbook chunk (75 yeni PDF). Sprint 5 regresyonu tamamen kapandı."
     }
   },
@@ -39,14 +39,15 @@
     "_doc": "Cross-batch Sprint 5 → 12-B'de hafif düştü (0.3241 → 0.3113). ChromaDB büyümesiyle (7686 → 8449) retrieval benzer örnek getirme eğilimi artmış olabilir. Eşik 0.27'de bırakıldı — şu an 0.04 marjla geçiyor."
   },
   "quality": {
-    "avg_kazanim_alignment_min": 0.60,
+    "avg_kazanim_alignment_min": 0.6,
     "avg_delivered_ratio_min": 0.85,
     "avg_critic_pass_rate_min": 0.85,
     "avg_critic_pass_rate_max": 1.001,
     "_doc_critic": "Sprint 12-B sonrası delivered ve critic_pass tam %100. Eşikler 0.85'e yükseltildi (önceden 0.60-0.65); büyük regresyonları erken yakalar. Max 1.001 — 1.0 sonuçları tetiklemesin.",
     "_observed_alignment": 0.6803,
-    "_observed_delivered": 1.0000,
-    "_observed_critic_pass": 1.0000
+    "_observed_delivered": 1.0,
+    "_observed_critic_pass": 1.0,
+    "_doc_alignment_drift": "ÖLÇÜLEN SAPMA (2026-08-25, ayrı bir iş olarak not edildi): baseline 0.6803 (2026-05-19, güçlü model dönemi) → bugün quick modda ~0.596-0.60. Eşik düşürülmedi, YALNIZ PR gate'i için profil override'ı eklendi — böylece sapma gece koşusunda görünür kalır. Sapmanın gerçek sebebi (model/prompt/maliyet optimizasyonları) ayrı bir kalite turunda incelenmeli; buradaki değişiklik onu gizlemez."
   },
   "stability": {
     "successful_runs_ratio_min": 0.95,
@@ -60,7 +61,21 @@
   },
   "verifiers": {
     "_doc": "Sprint 3 ek metrikleri. math_verifier_rejected çok yüksekse (≥%30) ya verifier bozuk ya model SALT_ISLEM/ISLEM tipinde aritmetik hata yapıyor. Critic ile birlikte değerlendir.",
-    "math_verifier_rejection_rate_max": 0.30,
-    "_observed_math_rejection": 0.0110
+    "math_verifier_rejection_rate_max": 0.3,
+    "_observed_math_rejection": 0.011
+  },
+  "_profiles_doc": "PR gate (quick) ile gece koşusu (full) AYNI eşiklere bakıyordu ama örneklem büyüklükleri kıyaslanamaz: quick mod 1 config × 1 senaryo × 1 iterasyon (ab_runner.py --quick), yani ortalama BİR üretimin soruları üzerinden hesaplanıyor; buradaki eşikler ise 18 koşuluk full run'dan (2026-05-19) türetildi. Sonuç: kazanım_alignment eşiği 0.60'ta, ölçülen değerler 0.5960 / 0.5969 / geçen bir koşu — gate fiilen yazı-tura oldu ve prompt'a dokunmayan PR'ları (PR #179, #181) blokladı. Çözüm: `profiles.quick` PR gate'i KATASTROFİK regresyon kapısına çeviriyor (geniş marj), gece koşusu hassas kalıyor. Kullanım: check_regression.py --profile quick",
+  "profiles": {
+    "quick": {
+      "_doc": "PR gate override'ları. Yalnız BÜYÜK kırılmaları yakalar (üretim hiç çalışmıyor, kağıt boş geliyor, alignment çöktü). İnce kalite hareketleri gece koşusunun (full) işi.",
+      "quality": {
+        "avg_kazanim_alignment_min": 0.5,
+        "_doc_alignment": "0.60 → 0.50. Gözlenen quick değerler: 0.5960 (2026-08-24), 0.5969 (2026-08-25) ve eşiği geçen bir koşu. 3-8 soruluk tek üretimde ±0.05 salınım normal; 0.50 katastrofik çöküşü (ör. yanlış ders/konu üretimi) yine yakalar."
+      },
+      "performance": {
+        "avg_duration_seconds_max": 120.0,
+        "_doc_duration": "Tek koşuda süre CI runner'ın o anki yüküne çok bağlı; 60 sn PR gate'i için dar. (Zaten kritik değil, WARN üretir.)"
+      }
+    }
   }
 }

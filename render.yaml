@@ -24,6 +24,14 @@ services:
       # BOŞ → doğrudan Google. Örn: https://gemini-proxy.<hesap>.workers.dev
       - key: GEMINI_BASE_URL
         sync: false
+      # Render uygulamaya kendi ic aginin IP'siyle (10.x) baglanir; uvicorn
+      # varsayilan olarak yalniz 127.0.0.1'e guvendigi icin X-Forwarded-For HIC
+      # okunmuyordu -> anonim ziyaretcilerin TAMAMI tek rate-limit kovasini
+      # paylasiyordu (5/dk, 30/saat). CIDR verildiginde uvicorn XFF'i SAGDAN
+      # tarar (spoof'a kapali); "*" verilseydi EN SOLDAKI (istemcinin yazdigi)
+      # girdi alinir ve sinir bypass edilebilirdi. bkz. start.sh
+      - key: FORWARDED_ALLOW_IPS
+        value: 10.0.0.0/8
       - key: GEMINI_PROXY_SECRET
         sync: false # worker'daki PROXY_SECRET ile AYNI olmalı
       - key: ENABLE_ANTHROPIC_FALLBACK

@@ -129,7 +129,9 @@ jobs:
           # En son üretilen ab_raw_*.json dosyasını bul
           latest=$(ls -t knowledge_base/eval/ab_raw_*.json | head -1)
           echo "Checking: $latest"
-          python scripts/eval/check_regression.py --raw "$latest" --config sprint2_full
+          # --profile quick: PR gate'i katastrofik-regresyon kapısı yapar (örneklem
+          # tek üretim; taban eşikler 18 koşuluk full run'dan). bkz. thresholds.json
+          python scripts/eval/check_regression.py --raw "$latest" --config sprint2_full --profile quick
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
