@@ -145,4 +145,54 @@ class TopUpStore:
         return consumed
 
 
+    def refund(self, tenant_id: str, n: int = 1, now: float | None = None) -> int:
+        """`consume()` ile düşülen `n` kağıtlık krediyi GERİ VERİR. İade edileni döner.
+
+        NEDEN (2026-08-24 denetimi): kredi üretimden ÖNCE düşülüyor
+        (`entitlements.enforce_quota`), üretim 502 verdiğinde ise geri verilmiyordu →
+        ödeyen kullanıcı almadığı kağıdın kredisini kaybediyordu. Plan kotasında bu
+        durum düşünülmüştü (`usage_ledger` status='failed' satırları saymaz), ek
+        pakette düşünülmemişti.
+
+        Kredi HAVADAN YARATILMAZ: her satır `amount`'unu aşamaz (cap). İade
+        `consume()` ile AYNI sırada (expires_at ASC) yapılır → "en erken biten önce
+        kullanılır" politikası korunur ve iade edilen kredi yine ilk harcanacak
+        olandır. Süresi GEÇMİŞ pakete iade edilmez (zaten kullanılamaz).
+        Best-effort: hata akışı bozmaz.
+        """
+        if not tenant_id or n <= 0:
+            return 0
+        now = now if now is not None else time.time()
+        refunded = 0
+        try:
+            with self._lock:
+                assert self._db is not None
+                rows = self._db.execute(
+                    "SELECT id, amount, remaining FROM top_up_credits "
+                    "WHERE tenant_id=? AND expires_at>? AND remaining < amount "
+                    "ORDER BY expires_at ASC",
+                    (tenant_id, now),
+                ).fetchall()
+                for cid, amount, rem in rows:
+                    if refunded >= n:
+                        break
+                    give = min(int(amount) - int(rem), n - refunded)
+                    if give <= 0:
+                        continue
+                    self._db.execute(
+                        "UPDATE top_up_credits SET remaining = remaining + ? WHERE id = ?",
+                        (give, cid),
+                    )
+                    refunded += give
+                self._db.commit()
+        except Exception as exc:  # noqa: BLE001 — iade akışı bozmasın
+            logger.warning("top_up refund başarısız (yutuldu): %s", exc)
+        if refunded:
+            logger.info(
+                "Ek paket kredisi iade edildi (teslim edilmeyen üretim): tenant=%s n=%d",
+                tenant_id, refunded,
+            )
+        return refunded
+
+
 TOP_UP_STORE = TopUpStore()

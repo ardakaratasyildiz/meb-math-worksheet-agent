@@ -14,7 +14,6 @@ from __future__ import annotations
 import logging
 import random
 from concurrent.futures import ThreadPoolExecutor
-from functools import lru_cache
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
@@ -105,12 +104,14 @@ _SOLVABLE_TYPES = [
 ]
 
 
-@lru_cache(maxsize=16)
 def _agent_for_model(model: str, thinking_budget: int | None = None) -> GeminiAgent:
-    """Model başına tekil (cache'li) agent. Model sınıfa göre seçilir
-    (model_for_grade): 1-4 → flash 2.5, 5-8 → Gemini 3 flash. thinking_budget
-    sınıf bandına göre gelir (cache anahtarına dahil). Paralel bucket modunda izole
-    GeminiAgent kullanılır (trace state yarışını önlemek için)."""
+    """İSTEK BAŞINA yeni agent. (Eskiden `@lru_cache` ile model başına TEKİLDİ.)
+
+    Bkz. app/routers/worksheets.py::_agent_for_model — üretim izleri (maliyet,
+    model, token, cache_hit) agent ÖRNEĞİNDE tutuluyor ve üretimden sonra
+    `build_last_trace()` ile okunuyor; paylaşılan örnek eşzamanlı isteklerde bu
+    izleri karıştırıp maliyeti yanlış tenant'a yazıyordu. Kurulum maliyeti
+    ihmal edilebilir (ağ I/O yok)."""
     return GeminiAgent(model=model, thinking_budget=thinking_budget)
 
 
@@ -221,12 +222,13 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str, lis
     # her bucket kendi zorluğuna göre model seçer (premium 5-7 zor→3.5).
     _is_premium = entitlements.is_premium_for_model(req.tenant_id)
 
-    def _agent_for_diff(diff: Difficulty, *, fresh: bool = False) -> GeminiAgent:
+    def _agent_for_diff(diff: Difficulty) -> GeminiAgent:
         model, tb = model_and_thinking_for(
             req.grade, subject=req.subject, topic_id=req.topic_id,
             unit_id=req.unit_id, difficulty=diff, is_premium=_is_premium,
         )
-        return GeminiAgent(model=model, thinking_budget=tb) if fresh else _agent_for_model(model, tb)
+        # Her çağrı İZOLE agent (trace state yarışı — bkz. _agent_for_model).
+        return _agent_for_model(model, tb)
 
     def _gen(agent: GeminiAgent, diff: Difficulty, count: int) -> list[Question]:
         return agent.generate(
@@ -261,7 +263,7 @@ def _generate_solvable(req: CreateQuizRequest) -> tuple[list[Question], str, lis
         def _gen_bucket(diff: Difficulty):
             # İzole (fresh) agent → paylaşılan trace/durum yarışı olmaz; modeli
             # kendi zorluğuna göre seçer (premium 5-7 zor→3.5).
-            local_agent = _agent_for_diff(diff, fresh=True)
+            local_agent = _agent_for_diff(diff)
             try:
                 qs = _gen(local_agent, diff, buckets[diff])
                 return diff, qs, local_agent.build_last_trace(), None
@@ -360,10 +362,18 @@ def create_quiz(
     _api_key: str = Depends(require_api_key),
 ) -> QuizPublic:
     """Çözülebilir quiz üret + kaydet → CEVAPSIZ döndür. LLM çağrısı (rate limitli)."""
-    entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
+    # Kota birimi = 1 çalışma kağıdı. Dönüş: ek paket kredisi düşüldü mü → quiz
+    # teslim edilemezse iade edilir (kredi kapıda düşülmek zorunda, ama alınmayan
+    # quiz'in parası kullanıcıda kalmalı — bkz. entitlements.refund_topup).
+    topup_charged = entitlements.enforce_quota(verified)
     # Sahiplik client-supplied tenant'a DEĞİL, doğrulanmış kimliğe bağlanır (IDOR/spoof).
     req.tenant_id = require_tenant(verified, req.tenant_id)
-    questions, topic_name, traces = _generate_solvable(req)
+    try:
+        questions, topic_name, traces = _generate_solvable(req)
+    except Exception:
+        if topup_charged:
+            entitlements.refund_topup(verified)
+        raise
     # Gemini maliyet defteri — quiz üretimi de gerçek token yakar (worksheet ile
     # aynı kaynak). question_count teslim edilen soru = quota tüketimi.
     # Boş sonuç = para harcandı, quiz teslim EDİLMEDİ → 'failed'. Bu satır zaten
@@ -379,6 +389,8 @@ def create_quiz(
     )
     if not questions:
         # Üretilenlerin hiçbiri yapısal doğrulamadan geçmedi (nadir) → tekrar deneyin.
+        if topup_charged:
+            entitlements.refund_topup(verified)
         raise HTTPException(
             status_code=502,
             detail="Çözülebilir soru üretilemedi; lütfen tekrar deneyin.",

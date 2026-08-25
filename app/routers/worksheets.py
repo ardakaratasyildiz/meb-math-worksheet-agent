@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 from datetime import datetime, timezone
-from functools import lru_cache, partial
+from functools import partial
 from typing import AsyncIterator
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -40,13 +40,21 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@lru_cache(maxsize=16)
 def _agent_for_model(model: str, thinking_budget: int | None = None) -> GeminiAgent:
-    """Model başına tekil (cache'li) agent. Model seçimi sınıfa göre yapılır
-    (model_for_grade); premium/yeni_nesil model değil prompt+dağılımı etkiler.
-    thinking_budget sınıf bandına göre gelir (cache anahtarına dahil).
-    DİKKAT: paralel bucket modunda paylaşılan agent kullanılamaz (trace state
-    yarışı) — orada her bucket kendi izole GeminiAgent'ını oluşturur."""
+    """İSTEK BAŞINA yeni agent. (Eskiden `@lru_cache` ile model başına TEKİLDİ.)
+
+    NEDEN DEĞİŞTİ (2026-08-24 denetimi): `GeminiAgent` üretim izlerini (74 adet
+    `_last_*` alanı: model, token, maliyet, cache_hit, seed…) ÖRNEK DURUMUNDA
+    tutuyor ve router üretimden sonra `build_last_trace()` ile okuyor. Paylaşılan
+    örnekte bu yarış zaten biliniyordu — ama yalnız paralel zorluk bucket'ları için
+    izole agent kullanılıyordu; VARSAYILAN tek-zorluk modu cache'li (paylaşılan)
+    örneği kullanıyordu. Üretim 30-90 sn sürdüğü için iki eşzamanlı isteğin
+    çakışması neredeyse kaçınılmazdı → maliyet/model/cache_hit YANLIŞ tenant'a
+    yazılabiliyordu (maliyet defteri ve cache-hit ölçümü bozulur; sorular
+    etkilenmez, onlar dönüş değeriyle taşınıyor).
+
+    Kurulum maliyeti ihmal edilebilir (ağ I/O yok: SDK istemcisi + provider nesnesi);
+    paralel bucket yolu bunu zaten her istekte 3 kez ödüyordu."""
     return GeminiAgent(model=model, thinking_budget=thinking_budget)
 
 
@@ -237,14 +245,15 @@ def _build_worksheet(
     # olduğu için her bucket kendi (model, thinking)'ini alır (premium 5-7 zor→3.5).
     _is_premium = entitlements.is_premium_for_model(req.tenant_id)
 
-    def _agent_for_diff(diff: _Diff, *, fresh: bool = False) -> GeminiAgent:
+    def _agent_for_diff(diff: _Diff) -> GeminiAgent:
         model, tb = model_and_thinking_for(
             req.grade, subject=req.subject, topic_id=req.topic_id,
             unit_id=req.unit_id, difficulty=diff, is_premium=_is_premium,
         )
-        # Paralel bucket'larda paylaşılan (lru_cache) agent trace state yarışı
-        # yaratır → izole (fresh) instance. Tek modda cache'li yeterli.
-        return GeminiAgent(model=model, thinking_budget=tb) if fresh else _agent_for_model(model, tb)
+        # Her çağrı İZOLE agent — trace state (maliyet/model/cache_hit) örnek
+        # durumunda tutulduğu için paylaşılan örnek eşzamanlı isteklerde karışır
+        # (bkz. _agent_for_model docstring'i).
+        return _agent_for_model(model, tb)
 
     # ── Boşa giden harcamanın deftere yazılması (ÖLÇÜLDÜ 2026-07-29) ──────────
     # Defter YALNIZ başarı yolunda yazıldığı için faturanın %25-40'ı hiçbir yere
@@ -328,10 +337,8 @@ def _build_worksheet(
 
         def _gen_bucket(diff: "_Diff"):
             """Tek bucket üretir; modeli/thinking'i KENDİ zorluğuna göre seçer
-            (premium 5-7 zor→3.5). Paralel modda izole (fresh) agent."""
-            local_agent = _agent_for_diff(
-                diff, fresh=settings.parallel_difficulty_buckets
-            )
+            (premium 5-7 zor→3.5). Agent her zaman izole (trace yarışı)."""
+            local_agent = _agent_for_diff(diff)
             try:
                 qs = _gen(local_agent, diff, buckets[diff])
                 return diff, qs, local_agent.build_last_trace(), None
@@ -507,8 +514,15 @@ def generate_worksheet(
     _api_key: str = Depends(require_api_key),
 ) -> GenerateWorksheetResponse:
     _bind_verified_tenant(req, verified)
-    entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
-    worksheet, metadata = _build_worksheet(req, variation_key=anon_variation_key(request))
+    # Kota birimi = 1 çalışma kağıdı (soru sayısı değil). Dönüş: ek paket kredisi
+    # düşüldü mü → teslim edilemezse iade edilir (bkz. entitlements.refund_topup).
+    topup_charged = entitlements.enforce_quota(verified)
+    try:
+        worksheet, metadata = _build_worksheet(req, variation_key=anon_variation_key(request))
+    except Exception:
+        if topup_charged:
+            entitlements.refund_topup(verified)
+        raise
     return GenerateWorksheetResponse(worksheet=worksheet, metadata=metadata)
 
 
@@ -578,8 +592,13 @@ def generate_worksheet_pdf(
 ) -> Response:
     """Üretim + PDF render tek call'da. Rate limit + auth uygulanır (LLM çağrısı yapar)."""
     _bind_verified_tenant(req, verified)
-    entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
-    worksheet, _ = _build_worksheet(req, variation_key=anon_variation_key(request))
+    topup_charged = entitlements.enforce_quota(verified)  # kota birimi = 1 kağıt
+    try:
+        worksheet, _ = _build_worksheet(req, variation_key=anon_variation_key(request))
+    except Exception:
+        if topup_charged:
+            entitlements.refund_topup(verified)
+        raise
     return _pdf_response(
         worksheet,
         include_answer_key=req.include_answer_key,
@@ -730,6 +749,7 @@ def _resolve_topic_id(grade: int, kazanim_kod: str) -> str | None:
 def regenerate_question(
     request: Request,
     req: RegenerateQuestionRequest,
+    verified: str | None = Depends(verified_tenant_id),
     _api_key: str = Depends(require_api_key),
 ) -> dict:
     """Tek bir soruyu, aynı kazanım + tip + zorlukta yeniden üretir.
@@ -737,7 +757,14 @@ def regenerate_question(
     Tüm kağıdı baştan üretmek yerine kullanıcı beğenmediği soruyu tek tek
     değiştirebilir. LLM çağrısı yapar → rate limit + auth uygulanır. Yeni soru
     tenant geçmişine göre dedup'lanır (mevcut sorulardan farklı gelir).
+
+    Kimlik: gövdedeki `tenant_id` istemci beyanıdır; doğrulanmış oturum varsa O
+    geçerlidir (2026-08-24 denetimi — bu uç diğer üretim uçlarındaki
+    `_bind_verified_tenant` adımını atlıyordu; etkisi başkasının "görülmüş soru"
+    kümesini kirletmekle sınırlıydı ama tutarsızdı).
     """
+    if verified:
+        req.tenant_id = verified
     from app.models.enums import SubjectId
     from app.subjects import get_content_module, subject_enabled, supported_types
     # Ders-tip kapısı: kağıttaki soru matematik tipinde etiketliyse (eski/bozuk kayıt)
@@ -816,6 +843,9 @@ def regenerate_question(
 async def _stream_worksheet_events(
     req: GenerateWorksheetRequest,
     variation_key: str | None = None,
+    *,
+    topup_charged: bool = False,
+    quota_tenant: str | None = None,
 ) -> AsyncIterator[str]:
     """SSE event akışı üretir. Format:
         event: meta        — başlangıç (request echo)
@@ -858,9 +888,15 @@ async def _stream_worksheet_events(
     try:
         worksheet, metadata = gen_task.result()
     except HTTPException as exc:
+        # Teslim edilmeyen üretim → ek paket kredisi geri verilir (kredi kapıda
+        # düşülüyor; bkz. entitlements.enforce_quota DÖNÜŞ notu).
+        if topup_charged:
+            entitlements.refund_topup(quota_tenant)
         yield sse("error", {"detail": exc.detail, "status": exc.status_code})
         return
     except Exception as exc:  # noqa: BLE001
+        if topup_charged:
+            entitlements.refund_topup(quota_tenant)
         yield sse("error", {"detail": str(exc)[:500], "status": 500})
         return
 
@@ -887,10 +923,23 @@ def generate_worksheet_stream(
     _api_key: str = Depends(require_api_key),
 ) -> StreamingResponse:
     """SSE streaming üretim. Frontend EventSource ile bağlanır."""
+    # DOĞRULANMIŞ KİMLİĞİ BAĞLA (2026-08-24 denetimi): bu satır burada EKSİKTİ.
+    # `/generate` ve `/generate.pdf`'e 2026-08-21'de eklenmişti ama web'in gerçekte
+    # kullandığı uç BU (frontend GenerateForm → generateWorksheetStream) ve
+    # atlanmıştı. İki sonucu vardı: (1) kota/defter yazması gövdeden gelen
+    # `tenant_id`'ye gidiyordu → oturum bir an için userId vermezse kağıt 'anon'a
+    # yazılıp kotadan düşmüyor ve geçmişte görünmüyordu (düzeltilen "sayaç artmıyor"
+    # hatasının aynısı); (2) gövdedeki tenant istemci beyanı olduğu için başka bir
+    # kullanıcının kimliğini yazan biri onun geçmişine kağıt yazdırabiliyor ve
+    # `is_premium_for_model` üzerinden ONUN premium model kalitesini alabiliyordu.
+    _bind_verified_tenant(req, verified)
     # Kota kapısı stream BAŞLAMADAN uygulanır (aşımda 402, akış hiç açılmaz).
-    entitlements.enforce_quota(verified)  # kota birimi = 1 çalışma kağıdı (soru sayısı değil)
+    topup_charged = entitlements.enforce_quota(verified)  # kota birimi = 1 kağıt
     return StreamingResponse(
-        _stream_worksheet_events(req, anon_variation_key(request)),
+        _stream_worksheet_events(
+            req, anon_variation_key(request),
+            topup_charged=topup_charged, quota_tenant=verified,
+        ),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache, no-transform",
