@@ -1,7 +1,16 @@
+import { HeaderHeightContext } from '@react-navigation/elements';
 import { useAuth } from '@clerk/expo';
 import { Stack, useRouter, type Href } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card, PrimaryButton } from '@/components/ui';
@@ -52,6 +61,10 @@ export default function DeleteAccountScreen() {
   const [confirmText, setConfirmText] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Onay alanı sayfanın en altında: klavye açılınca üstünü kapatmasın diye
+  // hem KeyboardAvoidingView ile yer açıyor hem de alana kaydırıyoruz.
+  const scrollRef = useRef<ScrollView>(null);
+  const headerHeight = useContext(HeaderHeightContext) ?? 0;
 
   const canSubmit = useMemo(
     () => confirmText.trim() === CONFIRM_PHRASE && !busy,
@@ -76,7 +89,17 @@ export default function DeleteAccountScreen() {
     <View style={styles.root}>
       <Stack.Screen options={headerOpts} />
       <SafeAreaView style={styles.safe} edges={['bottom']}>
-        <ScrollView contentContainerStyle={styles.content}>
+        <KeyboardAvoidingView
+          style={styles.safe}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={headerHeight}
+        >
+        <ScrollView
+          ref={scrollRef}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+        >
           <Card style={styles.warnCard}>
             <Text style={styles.warnTitle}>Bu işlem geri alınamaz</Text>
             <Text style={styles.warnText}>
@@ -116,6 +139,10 @@ export default function DeleteAccountScreen() {
               autoCorrect={false}
               editable={!busy}
               style={styles.input}
+              returnKeyType="done"
+              onFocus={() =>
+                setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 150)
+              }
             />
 
             {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -129,6 +156,7 @@ export default function DeleteAccountScreen() {
             />
           </Card>
         </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );

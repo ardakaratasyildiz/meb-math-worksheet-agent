@@ -27,6 +27,7 @@ Rules:
    - `kelime_bilgisi`: vocabulary in context — meaning, synonym/antonym, or word-category (e.g. "Which word best describes someone who ...?"). 4 options, one correct.
    - `diyalog_tamamlama`: a short 2-4 turn dialogue with one missing turn shown as "- - - -" or "(...)"; 4 options complete it appropriately for the situation/function.
    - `okuma_pasaji`: write a SHORT original English text (~3-6 sentences, level-appropriate, on the theme) INSIDE the question, then ask ONE question answerable from that text. The passage must be self-contained and original (do NOT copy).
+   - `kavram_sorusu` (OPEN-ENDED — NO options): a short question the student answers by writing a word, phrase or one sentence in English (e.g. "Write the plural form of 'child'.", "Answer in one sentence: What does Tom do at weekends?"). Leave `options` EMPTY; `answer` = the expected short answer (separate acceptable variants with " / "). The answer must be objective.
    - `bosluk_doldurma`: sentence with one or more "_____" blanks; `answer` = the filled words, "; " separated left-to-right.
    - `eslestirme`: instruction + a 2-column `{{table:...}}` (e.g. word ↔ definition, question ↔ response); `answer` "1-c, 2-a, ...". ⛔ Put the item+match table IN THE QUESTION BODY; writing only "match the following" and leaving the body empty is FORBIDDEN (auto-dropped).
    - Instruction/rubric in ENGLISH ("Read the text and answer the question.", "Choose the best option to complete the sentence.").

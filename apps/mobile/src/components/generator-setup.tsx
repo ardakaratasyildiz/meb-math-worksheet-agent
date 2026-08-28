@@ -50,6 +50,11 @@ const DIFFICULTY_MODES: { value: DifficultyMode; label: string }[] = [
 // koduyla etiketli MATEMATİK soruları üretiyordu (canlıda doğrulandı). Sunucuda da
 // kapı var (app/subjects.filter_types_for_subject) ama doğru yer ARAYÜZ: kullanıcı
 // dersin gerçekten desteklediği tipleri görsün.
+// 2026-08-28: HER derste "Açık uçlu" ve "Çoktan seçmeli" AYRI grup. Önce yalnız
+// matematikte vardı; sözel derslerde çoktan seçmeli "Diğer tipler"in içine gömülüydü,
+// açık uçlu ise hiç yoktu (kullanıcı şıksız soru isteyemiyordu). Açık uçlu tipler
+// sunucuda da açıldı: app/subjects/__init__.py::_OPEN_ENDED_ON_REQUEST + her dersin
+// prompt'unda tip tanımı. Dersin VARSAYILAN dağılımına girmezler; yalnız istenirse.
 // Matematiğin "visual" tipleri kullanıcıya gösterilmez — açık uçlu seçilirse eklenir.
 const MATH_VISUAL_TYPES: QuestionType[] = [
   'salt_islem',
@@ -86,33 +91,48 @@ const SUBJECT_TYPE_GROUPS: Record<SubjectSlug, TypeGroup[]> = {
       label: 'Dil bilgisi & yazım',
       types: ['dil_bilgisi', 'yazim_noktalama', 'kelime_bilgisi'],
     },
+    { key: 'open_ended', label: 'Açık uçlu', types: ['kavram_sorusu'] },
+    { key: 'multiple_choice', label: 'Çoktan seçmeli', types: ['coktan_secmeli'] },
     {
       key: 'other_format',
       label: 'Diğer tipler',
-      types: ['coktan_secmeli', 'eslestirme', 'siralama', 'bosluk_doldurma'],
+      types: ['eslestirme', 'siralama', 'bosluk_doldurma'],
     },
   ],
   fen: [
-    { key: 'concept', label: 'Kavram & doğru-yanlış', types: ['coktan_secmeli', 'dogru_yanlis'] },
+    {
+      key: 'open_ended',
+      label: 'Açık uçlu',
+      types: ['kavram_sorusu', 'sozel_problem', 'akil_yurutme', 'gunluk_hayat'],
+    },
+    { key: 'multiple_choice', label: 'Çoktan seçmeli', types: ['coktan_secmeli'] },
     { key: 'data', label: 'Tablo & grafik', types: ['tablo_sorusu', 'grafik_okuma'] },
-    { key: 'other_format', label: 'Diğer tipler', types: ['bosluk_doldurma', 'eslestirme'] },
+    {
+      key: 'other_format',
+      label: 'Diğer tipler',
+      types: ['dogru_yanlis', 'bosluk_doldurma', 'eslestirme'],
+    },
   ],
   sosyal: [
     { key: 'source', label: 'Kaynak metin', types: ['kaynak_metin'] },
     { key: 'data', label: 'Tablo & veri', types: ['tablo_sorusu'] },
+    { key: 'open_ended', label: 'Açık uçlu', types: ['kavram_sorusu', 'akil_yurutme'] },
+    { key: 'multiple_choice', label: 'Çoktan seçmeli', types: ['coktan_secmeli'] },
     {
       key: 'other_format',
       label: 'Diğer tipler',
-      types: ['coktan_secmeli', 'dogru_yanlis', 'bosluk_doldurma', 'eslestirme', 'siralama'],
+      types: ['dogru_yanlis', 'bosluk_doldurma', 'eslestirme', 'siralama'],
     },
   ],
   ingilizce: [
     { key: 'reading', label: 'Okuma & diyalog', types: ['okuma_pasaji', 'diyalog_tamamlama'] },
     { key: 'vocab', label: 'Kelime bilgisi', types: ['kelime_bilgisi'] },
+    { key: 'open_ended', label: 'Açık uçlu', types: ['kavram_sorusu'] },
+    { key: 'multiple_choice', label: 'Çoktan seçmeli', types: ['coktan_secmeli'] },
     {
       key: 'other_format',
       label: 'Diğer tipler',
-      types: ['coktan_secmeli', 'bosluk_doldurma', 'eslestirme'],
+      types: ['bosluk_doldurma', 'eslestirme'],
     },
   ],
 };

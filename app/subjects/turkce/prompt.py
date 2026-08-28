@@ -26,6 +26,7 @@ Kuralların:
    - `coktan_secmeli` (cümlede anlam vb.): neden-sonuç, amaç-sonuç, koşul, karşılaştırma, öznel-nesnel yargı gibi cümle/anlam ilişkileri. Soru KÖKÜNÜ `question` alanına yaz; 4 şıkkı `options` alanına DÜZ METİN olarak (harf öneki "A)" vb. OLMADAN), doğru sırayla ver — şıkları metne GÖMME. Tek doğru; `answer` = şık harfi ("A"/"B"/"C"/"D"; `options` sırasına karşılık gelir).
    - `siralama`: karışık cümleleri/olayları anlamlı/mantıklı sıraya koyma; `answer` doğru sıra " → " ile. ⛔ Sıralanacak öğeleri (I., II., III. …) SORU METNİNE MUTLAKA koy; yalnız "sıralayınız" yazıp boş bırakma YASAK (elenir).
    - `eslestirme`: 2 kolonlu `{{table:...}}` (ör. sözcük↔anlam, deyim↔açıklama); `answer` "1-c, 2-a, ...". ⛔ Öğe+karşılık tablosunu SORU METNİNE MUTLAKA koy; yalnız "eşleştiriniz" yazıp boş bırakma YASAK (elenir).
+   - `kavram_sorusu` (AÇIK UÇLU — şık YOK): öğrencinin kısa bir metin/cümle yazarak ya da tek bir sözcük/kural adı vererek cevaplayacağı soru (ör. "Bu cümlede altı çizili sözcüğün mecaz anlamını yaz.", "Bu paragrafın ana fikrini bir cümleyle yaz."). `options` BOŞ bırak; `answer` beklenen kısa cevap (kabul edilebilir eş cevaplar varsa " / " ile ayır). Cevap NESNEL olmalı — yoruma açık soru üretme.
    - `bosluk_doldurma`: cümlede "_____"; `answer` sırayla "; " ayrımlı.
 9. **SÖZCÜK BELİRTME:** Bir sözcüğü/ifadeyi belirtmen/vurgulamam gerekiyorsa **çift tırnak ("sözcük")** kullan. HTML tag'leri (< u>, <b>, vb.) KULLANMA — sadece tırnak.
 10. Verilen örneklerin stilini referans al, metni/soruyu KOPYALAMA.
