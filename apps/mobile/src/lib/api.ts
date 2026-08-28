@@ -11,6 +11,7 @@ import type {
   KazanimBreakdown,
   KazanimInfo,
   ProgressResponse,
+  Question,
   QuestionType,
   QuizPublic,
   SolutionStep,
@@ -19,6 +20,8 @@ import type {
   UnitInfo,
   Worksheet,
 } from "@soruatolyesi/shared";
+
+import { fetch as streamFetch } from "expo/fetch";
 
 import { ENV } from "./env";
 import { authHeader } from "./auth-token";
@@ -258,6 +261,166 @@ export function generateWorksheet(
     headers: body.tenant_id ? { "X-Tenant-Id": body.tenant_id } : {},
     body: JSON.stringify(body),
   });
+}
+
+/**
+ * Üretim akışı kullanıcı kaynaklı olmayan bir sebeple koptu (uygulama arka plana
+ * alındı, ağ değişti). ÖNEMLİ: sunucu üretimi sürdürür ve biten kağıdı geçmişe
+ * yazar → çağıran bunu "hata" diye göstermeden önce `recoverGeneratedWorksheet`
+ * ile kurtarmayı denemeli. Düz `Error` yerine ayrı sınıf olması, "İnternet yok"
+ * mesajını gerçek bağlantı hatalarına saklamamızı sağlıyor.
+ */
+export class GenerationInterruptedError extends Error {
+  constructor() {
+    super("Üretim akışı kesildi.");
+    this.name = "GenerationInterruptedError";
+  }
+}
+
+export interface GenerateStreamCallbacks {
+  /** Sunucu isteği kabul etti, üretim başladı. */
+  onMeta?: () => void;
+  /** Biten her soru (index 0'dan artar) — ilerleme çubuğunu bu besler. */
+  onQuestion?: (question: Question, index: number) => void;
+}
+
+/**
+ * SSE ile çalışma kağıdı üretimi — web'deki `generateWorksheetStream`in eşi
+ * (frontend/lib/api.ts). Neden akış: `/generate` 30-90 sn boyunca tek byte
+ * akıtmadığı için (a) ilerleme uydurmak zorunda kalıyorduk, (b) araya giren
+ * proxy bağlantıyı idle sanıp koparıyordu. Akışta sunucu 10 sn'de bir keepalive
+ * gönderir ve her soruyu ayrı event olarak yollar → ilerleme GERÇEK olur.
+ *
+ * `expo/fetch` kullanılır; RN'in yerleşik fetch'i gövde akışını (res.body)
+ * desteklemez.
+ */
+export async function generateWorksheetStream(
+  body: GenerateWorksheetRequest,
+  cb: GenerateStreamCallbacks = {},
+  signal?: AbortSignal,
+): Promise<GenerateWorksheetResponse> {
+  const auth = await authHeader();
+  let res: Awaited<ReturnType<typeof streamFetch>>;
+  try {
+    res = await streamFetch(`${ENV.apiUrl}/api/worksheets/generate.stream`, {
+      method: "POST",
+      headers: {
+        ...baseHeaders(body.tenant_id ? { "X-Tenant-Id": body.tenant_id } : {}),
+        ...auth,
+      },
+      body: JSON.stringify(body),
+      signal,
+    });
+  } catch {
+    throw new Error("İnternet bağlantısı yok. Bağlantını kontrol edip tekrar dene.");
+  }
+
+  // Akış BAŞLAMADAN önceki hatalar (402 kota, 429, 401, 422, 5xx) burada düşer.
+  if (!res.ok || !res.body) {
+    const fallback =
+      res.status >= 500
+        ? "Sunucuda bir sorun oldu. Birazdan tekrar dene."
+        : `İstek başarısız (${res.status}).`;
+    let parsed: { message: string; detail: unknown; code?: string } = {
+      message: fallback,
+      detail: undefined,
+    };
+    try {
+      parsed = parseErrorBody(await res.json(), fallback);
+    } catch {
+      // gövde JSON değil — fallback metni kalır
+    }
+    throw new ApiError(res.status, parsed.message, parsed.detail, parsed.code);
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let questionIndex = 0;
+  let final: GenerateWorksheetResponse | null = null;
+  let streamError: { message: string; status: number } | null = null;
+
+  const handleFrame = (frame: string) => {
+    let event = "message";
+    const dataLines: string[] = [];
+    for (const line of frame.split("\n")) {
+      if (line.startsWith("event:")) event = line.slice(6).trim();
+      else if (line.startsWith("data:")) dataLines.push(line.slice(5).replace(/^ /, ""));
+    }
+    if (dataLines.length === 0) return; // ": keepalive" yorumları buraya düşer
+    let data: unknown;
+    try {
+      data = JSON.parse(dataLines.join("\n"));
+    } catch {
+      return; // bozuk frame — atla
+    }
+    switch (event) {
+      case "meta":
+        cb.onMeta?.();
+        break;
+      case "question":
+        cb.onQuestion?.(data as Question, questionIndex++);
+        break;
+      case "complete":
+        final = data as GenerateWorksheetResponse;
+        break;
+      case "error": {
+        const d = data as { detail?: string; status?: number };
+        streamError = { message: d?.detail ?? "Üretim başarısız.", status: d?.status ?? 500 };
+        break;
+      }
+    }
+  };
+
+  try {
+    // SSE frame'leri boş satırla ayrılır ve chunk sınırlarına yayılabilir
+    // → tam frame oluşana kadar buffer'da beklet.
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      let sep: number;
+      while ((sep = buffer.indexOf("\n\n")) !== -1) {
+        handleFrame(buffer.slice(0, sep));
+        buffer = buffer.slice(sep + 2);
+      }
+    }
+  } catch {
+    // Okuma ortasında kopma: uygulama arka plana alındı / ağ değişti.
+    // Sunucu üretime DEVAM eder → kurtarılabilir.
+    throw new GenerationInterruptedError();
+  }
+
+  if (streamError) {
+    const err = streamError as { message: string; status: number };
+    throw new ApiError(err.status, err.message, err.message);
+  }
+  if (!final) throw new GenerationInterruptedError();
+  return final;
+}
+
+/**
+ * Kopan bir üretimi kurtarır: sunucu kağıdı bitirip geçmişe yazdıysa onu döner.
+ * `startedAt`ten SONRA kaydedilmiş ilk kayda bakar (kullanıcının eski kağıdını
+ * yanlışlıkla "yeni üretildi" diye göstermemek için tarih şartı zorunlu).
+ * Bulamazsa null — çağıran o zaman gerçek hata gösterir.
+ */
+export async function recoverGeneratedWorksheet(
+  tenantId: string,
+  startedAt: number,
+): Promise<Worksheet | null> {
+  try {
+    const items = await listWorksheetHistory(tenantId, 5);
+    for (const item of items) {
+      const savedAt = Date.parse(item.saved_at);
+      if (Number.isFinite(savedAt) && savedAt >= startedAt && item.response?.worksheet) {
+        return item.response.worksheet;
+      }
+    }
+  } catch {
+    // Kurtarma best-effort — başarısızsa çağıran normal hata akışına döner.
+  }
+  return null;
 }
 
 // ── PDF render ───────────────────────────────────────────────────────────────

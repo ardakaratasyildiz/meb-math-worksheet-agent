@@ -41,6 +41,45 @@ function humanError(e: unknown): string {
   return first.longMessage ?? first.message ?? 'Bir şeyler ters gitti. Tekrar dene.';
 }
 
+/** Tarayıcı akışını kullanıcı kapattı mı? (iptal = hata gösterme) */
+function ssoCancelled(res: unknown): boolean {
+  const t = (res as { authSessionResult?: { type?: string } })?.authSessionResult?.type;
+  return t === 'cancel' || t === 'dismiss';
+}
+
+/**
+ * SSO oturum açmadan döndüyse gerçek sebebi bul. Clerk bu durumda hata FIRLATMAZ;
+ * sebebi signUp.verifications.externalAccount.error / signIn.firstFactorVerification.error
+ * içine yazar. En sık vakası: aynı e-postayla zaten hesap var (external_account_exists).
+ */
+function ssoBlockedReason(res: unknown): string {
+  const r = (res ?? {}) as {
+    signUp?: {
+      status?: string | null;
+      missingFields?: string[];
+      unverifiedFields?: string[];
+      verifications?: { externalAccount?: { error?: ClerkErrLike } };
+    };
+    signIn?: { status?: string | null; firstFactorVerification?: { error?: ClerkErrLike } };
+  };
+  const su = r.signUp;
+  const err = su?.verifications?.externalAccount?.error ?? r.signIn?.firstFactorVerification?.error;
+  const code = err?.code ?? err?.errors?.[0]?.code;
+  if (code === 'external_account_exists' || code === 'identifier_already_exists') {
+    return 'Bu e-posta zaten kayıtlı. Önce e-posta ve şifrenle giriş yap, sonra profilinden Apple/Google hesabını bağla.';
+  }
+  if (err) return humanError(err);
+  // Hata yok ama oturum da yok: kayıt yarım kaldı. Clerk'in sağlayıcıdan
+  // alamadığı zorunlu alanları (missingFields) göstermek tek teşhis yolumuz.
+  if (su?.status === 'missing_requirements') {
+    const missing = [...(su.missingFields ?? []), ...(su.unverifiedFields ?? [])];
+    return missing.length
+      ? `Kaydolma tamamlanamadı — Apple şu bilgileri göndermedi: ${missing.join(', ')}.`
+      : 'Kaydolma tamamlanamadı (eksik bilgi bildirilmedi).';
+  }
+  return `Giriş tamamlanamadı (durum: ${su?.status ?? r.signIn?.status ?? '?'}). Tekrar dene.`;
+}
+
 /**
  * Birleşik kimlik ekranı: Giriş · Kayıt · Şifre sıfırlama + Google/Apple OAuth.
  * Tasarım sistemine (krem + maskot + Fredoka + PrimaryButton) çekilmiş hali.
@@ -208,14 +247,18 @@ export function AuthScreen() {
       setBusy(true);
       setError(null);
       try {
-        const { createdSessionId, setActive } = await startSSOFlow({
+        const res = await startSSOFlow({
           strategy,
           redirectUrl: Linking.createURL('/sso-callback'),
         });
+        const { createdSessionId, setActive } = res;
         if (createdSessionId && setActive) {
           await setActive({ session: createdSessionId });
+          return;
         }
-        // createdSessionId yoksa: kullanıcı iptal etti / ek adım gerekli — sessiz.
+        // Oturum açılmadı: ya kullanıcı tarayıcıyı kapattı (sessiz geç) ya da Clerk
+        // bir adımda takıldı — o sebebi kullanıcıya göster, sessizce yutma.
+        if (!ssoCancelled(res)) setError(ssoBlockedReason(res));
       } catch (e) {
         setError(humanError(e));
       } finally {

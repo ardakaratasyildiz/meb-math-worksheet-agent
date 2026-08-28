@@ -17,26 +17,33 @@ import { colors, fonts, fontSize, radius, spacing } from '@/theme/tokens';
  */
 
 const FACT_MS = 7000;
-/** Zaman-tabanlı ilerleme (gerçek streaming yok) — kullanıcı ilerlediğini görsün. */
-const PROGRESS_MS = 75_000;
 const TICK_MS = 500;
-
-const PHASES = [
-  'Kazanımlar seçiliyor…',
-  'Sorular yazılıyor…',
-  'Çözümler hazırlanıyor…',
-  'Son kontroller…',
-];
+/**
+ * Üretim bitmeden önceki bölüm için zaman-tabanlı TAHMİN tavanı. Bu aralıkta
+ * sunucudan gerçek ilerleme sinyali gelmez (üretim blocking, yalnız keepalive
+ * akar), o yüzden çubuk buranın ötesine GEÇMEZ — kalan %40 gerçek sorular
+ * geldikçe dolar. Eskiden çubuk 75 sn'ye lineer yayılıyordu; üretim 25 sn'de
+ * bittiğinde çubuk %30'dayken ekran birden sonuca atlıyordu ("orantısız" şikayeti).
+ */
+const ESTIMATE_CEILING = 0.6;
+/** Tahmin eğrisinin zaman sabiti — 35 sn'de tavanın ~%63'üne gelir, hiç durmaz. */
+const ESTIMATE_TAU_MS = 35_000;
 
 export function GeneratingState({
   subject,
   questionCount,
   sober = false,
+  connected = false,
+  produced = 0,
 }: {
   subject: string;
   questionCount: number;
   /** Yetişkin tonu: maskot gösterilmez. */
   sober?: boolean;
+  /** Sunucu isteği kabul etti (SSE `meta` event'i geldi). */
+  connected?: boolean;
+  /** Akıştan gelen soru sayısı — çubuğun GERÇEK ilerleme kısmını besler. */
+  produced?: number;
 }) {
   const facts = factsForSubject(subject);
   const [factIdx, setFactIdx] = useState(() => Math.floor(Math.random() * facts.length));
@@ -52,9 +59,19 @@ export function GeneratingState({
     return () => clearInterval(t);
   }, []);
 
-  // %95'te durur — iş bitmeden "tamamlandı" göstermek güveni bozar.
-  const progress = Math.min(0.95, elapsed / PROGRESS_MS);
-  const phase = PHASES[Math.min(PHASES.length - 1, Math.floor(progress * PHASES.length))];
+  // İki bölümlü ilerleme: (1) sorular gelmeden önce zaman-tabanlı TAHMİN, tavanı
+  // aşamaz; (2) sorular geldikçe GERÇEK oran. Böylece çubuk hiçbir zaman işin
+  // önüne geçmez, üretim erken biterse de anında dolar.
+  const estimate = ESTIMATE_CEILING * (1 - Math.exp(-elapsed / ESTIMATE_TAU_MS));
+  const real = questionCount > 0 ? Math.min(1, produced / questionCount) : 0;
+  const progress = produced > 0 ? Math.min(0.99, ESTIMATE_CEILING + (1 - ESTIMATE_CEILING) * real) : estimate;
+
+  const phase =
+    produced > 0
+      ? `Sorular geliyor (${Math.min(produced, questionCount)}/${questionCount})`
+      : connected
+        ? 'Sorular yazılıyor…'
+        : 'Sunucuya bağlanılıyor…';
 
   return (
     <View style={styles.wrap}>
@@ -67,7 +84,10 @@ export function GeneratingState({
       </View>
 
       <ProgressBar progress={progress} color={colors.brand} />
-      <Text style={styles.hint}>Bu işlem 30-90 saniye sürebilir, ekranda kalman yeterli.</Text>
+      <Text style={styles.hint}>
+        Bu işlem 30-90 saniye sürebilir. Uygulamadan çıkmazsan en hızlısı bu; çıkman
+        gerekirse üretim sunucuda sürer, geri döndüğünde kağıdını getiririz.
+      </Text>
 
       <Card style={styles.factCard}>
         <View style={styles.factHead}>

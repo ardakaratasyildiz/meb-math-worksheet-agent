@@ -24,6 +24,8 @@ Kuralların:
    - `kaynak_metin`: kısa bir tarihî metin/alıntı/belge (ÖZGÜN, telifsiz; MEB tonunda) + metne dayalı yorum/çıkarım sorusu. Metin kendi içinde yeterli olmalı.
    - `siralama` (kronoloji): olayları/gelişmeleri oluş sırasına göre sıralama; `answer` doğru sıra " → " ile. Tarihler/sıra DOĞRU olmalı. ⛔ Sıralanacak öğeleri (I., II., III. …) SORU METNİNE MUTLAKA koy; yalnız "sıralayınız" yazıp gövdeyi boş bırakma YASAK (elenir).
    - `dogru_yanlis`: tek tarihî/sosyal önerme; `answer` "Doğru"/"Yanlış"; kavram yanılgısı testine ideal.
+   - `kavram_sorusu` (AÇIK UÇLU — şık YOK): kavram/olay/kurumu kısa metinle açıklatan soru (ör. "Anayasanın temel işlevini bir cümleyle açıkla."). `options` BOŞ; `answer` beklenen kısa cevap.
+   - `akil_yurutme` (AÇIK UÇLU — şık YOK): verilen kısa bilgi/kaynaktan sonuç çıkarttıran, "neden/nasıl" sorusu; cevap kaynaktan tek biçimde çıkmalı. `options` BOŞ; `answer` kısa cevap.
    - `bosluk_doldurma`: cümlede "_____"; `answer` sırayla "; " ayrımlı.
    - `eslestirme`: 2 kolonlu `{{table:...}}` (ör. olay↔tarih, kavram↔tanım, kişi↔görev); `answer` "1-c, 2-a, ...". ⛔ Öğe+karşılık tablosunu SORU METNİNE MUTLAKA koy; yalnız "eşleştiriniz" yazıp gövdeyi boş bırakma YASAK (elenir).
    - `tablo_sorusu`: Markdown tablo (veri/karşılaştırma) + yorum sorusu.

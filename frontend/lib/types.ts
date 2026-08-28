@@ -80,20 +80,39 @@ const NEUTRAL_TYPES: QuestionType[] = [
   "siralama",
 ];
 
+// Açık uçlu (şıksız) tipler — dersin VARSAYILAN dağılımına girmez ama kullanıcı
+// "Açık uçlu" grubunu açtığında üretilir. Backend aynası:
+// app/subjects/__init__.py::_OPEN_ENDED_ON_REQUEST (2026-08-28).
 export const SUBJECT_SUPPORTED_TYPES: Record<string, QuestionType[]> = {
   turkce: [
     "okuma_pasaji",
     "kelime_bilgisi",
     "dil_bilgisi",
     "yazim_noktalama",
+    "kavram_sorusu",
     ...NEUTRAL_TYPES,
   ],
-  fen: ["tablo_sorusu", "grafik_okuma", ...NEUTRAL_TYPES],
-  sosyal: ["kaynak_metin", "tablo_sorusu", ...NEUTRAL_TYPES],
+  fen: [
+    "tablo_sorusu",
+    "grafik_okuma",
+    "kavram_sorusu",
+    "sozel_problem",
+    "akil_yurutme",
+    "gunluk_hayat",
+    ...NEUTRAL_TYPES,
+  ],
+  sosyal: [
+    "kaynak_metin",
+    "tablo_sorusu",
+    "kavram_sorusu",
+    "akil_yurutme",
+    ...NEUTRAL_TYPES,
+  ],
   ingilizce: [
     "okuma_pasaji",
     "diyalog_tamamlama",
     "kelime_bilgisi",
+    "kavram_sorusu",
     ...NEUTRAL_TYPES,
   ],
 };

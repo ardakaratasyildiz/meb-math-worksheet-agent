@@ -99,6 +99,26 @@ _NEUTRAL_TYPES: frozenset[QuestionType] = frozenset({
 # Türkçe için o grubun TEK hayatta kalanı olur ve kağıt %100 kavram sorusuna düşerdi.
 # Düşsün: hepsi düşünce dersin KENDİ varsayılan dağılımı devreye girer (daha iyi kağıt).
 
+# AÇIK UÇLU tipler — istenirse üretilir (2026-08-28). Sözel derslerin DEFAULT
+# dağılımı şıklı tiplerden oluşuyordu; arayüzde "Açık uçlu" seçeneği bu yüzden hiç
+# yoktu ve kullanıcı şıksız soru isteyemiyordu. Bu tipler dersin VARSAYILAN
+# dağılımına GİRMEZ (kağıdın karakteri değişmesin) ama kullanıcı açıkça seçerse
+# üretilir; her dersin prompt'unda tip-spesifik format tanımı vardır.
+_OPEN_ENDED_ON_REQUEST: dict[SubjectId, frozenset[QuestionType]] = {
+    SubjectId.FEN: frozenset({
+        QuestionType.KAVRAM_SORUSU,
+        QuestionType.SOZEL_PROBLEM,
+        QuestionType.AKIL_YURUTME,
+        QuestionType.GUNLUK_HAYAT,
+    }),
+    SubjectId.SOSYAL: frozenset({
+        QuestionType.KAVRAM_SORUSU,
+        QuestionType.AKIL_YURUTME,
+    }),
+    SubjectId.TURKCE: frozenset({QuestionType.KAVRAM_SORUSU}),
+    SubjectId.INGILIZCE: frozenset({QuestionType.KAVRAM_SORUSU}),
+}
+
 # Matematik: sözel-ders tipleri hariç HEPSİ (islem/salt_islem/gorsel_geometri/…).
 _MATH_SUPPORTED_TYPES: frozenset[QuestionType] = (
     frozenset(QuestionType) - _VERBAL_ONLY_TYPES
@@ -117,7 +137,7 @@ def supported_types(subject_id: SubjectId) -> frozenset[QuestionType]:
     defaults = frozenset(getattr(content, "DEFAULT_TYPES", ()) or ())
     if not defaults:  # tanımsız ders → kısıtlama uygulamayacak kadar bilgi yok
         return frozenset(QuestionType)
-    return defaults | _NEUTRAL_TYPES
+    return defaults | _NEUTRAL_TYPES | _OPEN_ENDED_ON_REQUEST.get(subject_id, frozenset())
 
 
 def filter_types_for_subject(

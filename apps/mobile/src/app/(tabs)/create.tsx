@@ -2,7 +2,7 @@ import { useAuth, useUser } from '@clerk/expo';
 import type { AttemptResult, QuizPublic, SubmittedAnswer, Worksheet } from '@soruatolyesi/shared';
 import { useRouter, type Href } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { AppState, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GeneratorSetup, type GenMode, type GeneratorParams } from '@/components/generator-setup';
@@ -14,7 +14,13 @@ import { GeneratingState } from '@/components/generating-state';
 import { QuestionCard, ResultView, stripInlineOptions } from '@/components/solve';
 import { Card, PrimaryButton, ScreenHeader } from '@/components/ui';
 import { useEntitlements } from '@/hooks/useEntitlements';
-import { createQuiz, generateWorksheet, submitAttempt } from '@/lib/api';
+import {
+  GenerationInterruptedError,
+  createQuiz,
+  generateWorksheetStream,
+  recoverGeneratedWorksheet,
+  submitAttempt,
+} from '@/lib/api';
 import { trialDaysLeft, trialLeftLabel } from '@/lib/format';
 import { consumeGenEntry, subscribeGenEntry, type GenPrefill } from '@/lib/gen-entry';
 import { previewWorksheetPdf, shareWorksheetPdf } from '@/lib/pdf';
@@ -86,9 +92,27 @@ export default function CreateScreen() {
   const [result, setResult] = useState<AttemptResult | null>(null);
 
   const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
+  /** Akış durumu — GeneratingState çubuğunu GERÇEK olaylar besler. */
+  const [genConnected, setGenConnected] = useState(false);
+  const [genProduced, setGenProduced] = useState(0);
+  /**
+   * Üretim sırasında uygulama arka plana alındı mı? iOS arka planda JS'i
+   * donduruyor ve açık bağlantıyı kopartıyor; bunu bilmeden hatayı "internet yok"
+   * diye gösteriyorduk. Sunucu üretime devam ettiği için doğru davranış:
+   * geri dönüldüğünde kağıdı geçmişten kurtarmak.
+   */
+  const backgroundedRef = useRef(false);
   const [sharing, setSharing] = useState(false);
   const [previewing, setPreviewing] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+
+  // Üretim boyunca arka plana geçişi izle (yalnız busy iken anlamlı).
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state !== 'active') backgroundedRef.current = true;
+    });
+    return () => sub.remove();
+  }, []);
 
   const setAnswer = useCallback((n: number, patch: Partial<SubmittedAnswer>) => {
     setAnswers((prev) => ({ ...prev, [n]: { ...prev[n], ...patch, number: n } }));
@@ -112,6 +136,10 @@ export default function CreateScreen() {
       setParams(p);
       setBusy(true);
       setError(null);
+      setGenConnected(false);
+      setGenProduced(0);
+      backgroundedRef.current = false;
+      const startedAt = Date.now();
       try {
         if (p.mode === 'solve') {
           const q = await createQuiz({
@@ -130,26 +158,51 @@ export default function CreateScreen() {
           startRef.current = Date.now();
           setPhase('solving');
         } else {
-          const res = await generateWorksheet({
-            grade: p.grade,
-            subject: p.subject,
-            unit_id: p.unitId,
-            kazanim_kod: p.kazanimKod,
-            difficulty: p.difficulty,
-            difficulty_mode: p.difficultyMode,
-            question_count: p.count,
-            question_types: p.questionTypes,
-            include_answer_key: p.includeAnswerKey,
-            include_solutions: p.includeSolutions,
-            tenant_id: userId ?? null,
-          });
+          const res = await generateWorksheetStream(
+            {
+              grade: p.grade,
+              subject: p.subject,
+              unit_id: p.unitId,
+              kazanim_kod: p.kazanimKod,
+              difficulty: p.difficulty,
+              difficulty_mode: p.difficultyMode,
+              question_count: p.count,
+              question_types: p.questionTypes,
+              include_answer_key: p.includeAnswerKey,
+              include_solutions: p.includeSolutions,
+              tenant_id: userId ?? null,
+            },
+            {
+              onMeta: () => setGenConnected(true),
+              onQuestion: (_q, i) => setGenProduced(i + 1),
+            },
+          );
           setWorksheet(res.worksheet);
           setPhase('sheet');
         }
       } catch (e) {
-        setError((e as Error).message);
+        // Akış koptuysa (arka plan/ağ değişimi) sunucu üretimi bitirip geçmişe
+        // yazmış olabilir → hata göstermeden önce kurtarmayı dene.
+        const recovered =
+          e instanceof GenerationInterruptedError && userId
+            ? await recoverGeneratedWorksheet(userId, startedAt)
+            : null;
+        if (recovered) {
+          setWorksheet(recovered);
+          setPhase('sheet');
+        } else if (e instanceof GenerationInterruptedError) {
+          setError(
+            backgroundedRef.current
+              ? 'Uygulama arka plana alınınca bağlantı koptu. Üretim sunucuda sürüyor olabilir — birkaç saniye sonra "Geçmiş"e bak ya da tekrar dene.'
+              : 'Bağlantı üretim sırasında koptu. Tekrar dener misin?',
+          );
+        } else {
+          setError((e as Error).message);
+        }
       } finally {
         setBusy(false);
+        setGenConnected(false);
+        setGenProduced(0);
         void refreshEntitlements(); // kota tüketildi → göstergeyi güncelle
       }
     },
@@ -262,6 +315,8 @@ export default function CreateScreen() {
                   subject={params?.subject ?? 'matematik'}
                   questionCount={params?.count ?? 10}
                   sober={sober}
+                  connected={genConnected}
+                  produced={genProduced}
                 />
               ) : null}
             </>
