@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Check } from "lucide-react";
 
+import { IOS_APP_URL } from "@/lib/app-links";
 import { hasMultipleSubjects } from "@/lib/subjects";
 
 export function Footer() {
@@ -31,6 +32,11 @@ export function Footer() {
               { label: "LGS Matematik Hazırlık", href: "/lgs-matematik" },
               { label: "Özellikler", href: "/features" },
               { label: "Fiyatlandırma", href: "/pricing" },
+              {
+                label: "iOS uygulaması",
+                href: IOS_APP_URL,
+                external: true,
+              },
               { label: "Sıkça Sorulanlar", href: "/faq" },
             ]}
           />
