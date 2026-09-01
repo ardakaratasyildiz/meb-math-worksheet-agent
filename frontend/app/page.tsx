@@ -18,6 +18,7 @@ import {
   Zap,
 } from "lucide-react";
 
+import { AppStoreButton } from "@/components/AppStoreButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
@@ -145,7 +146,21 @@ function Hero() {
                 Ücretsiz dene <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
+            {/*
+              Abonelik yalniz uygulama icinden (Apple IAP) satiliyor — webde
+              odeme akisi yok. iOS 1 Eyl 2026'da yayina girdi, bu yuzden magaza
+              kapisi hero'da duruyor. Android icin bkz. lib/app-links.ts.
+            */}
+            <AppStoreButton
+              plan="hero"
+              size="lg"
+              variant="outline"
+              className="gap-2 px-7"
+            />
           </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            iOS uygulaması yayında · Android sürümü yakında
+          </p>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
             <TrustBullet>Ayda 10 çalışma kağıdı ücretsiz</TrustBullet>
             <TrustBullet>Kayıt için yalnızca e-posta</TrustBullet>
@@ -744,10 +759,9 @@ function PricingTeaser() {
           Erken kullanım dönemi
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base opacity-90">
-          Soru Atölyesi şu anda erken kullanım dönemindedir. Tüm hesaplara
-          ayda 10 çalışma kağıdı ücretsiz verilir (günde en çok 2); kayıt
-          olanlara ayrıca 7 günlük kartsız deneme tanımlanır. Pro abonelik
-          seçenekleri ileriki aşamada duyurulacaktır.
+          Tüm hesaplara ayda 10 çalışma kağıdı ücretsiz verilir (günde en çok 2);
+          kayıt olanlara ayrıca 7 günlük kartsız deneme tanımlanır. Pro ve Pro+
+          abonelikleri iOS uygulamasında satın alınabilir; Android sürümü yakında.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button
@@ -760,6 +774,12 @@ function PricingTeaser() {
               Hesap aç <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
+          <AppStoreButton
+            plan="pricing-teaser"
+            size="lg"
+            variant="secondary"
+            className="gap-2 bg-white/15 text-white hover:bg-white/25"
+          />
           <Button
             asChild
             size="lg"

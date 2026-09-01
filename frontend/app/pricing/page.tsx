@@ -8,10 +8,12 @@ import {
   User,
 } from "lucide-react";
 
+import { AppStoreButton } from "@/components/AppStoreButton";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { PageHeader } from "@/components/PageHeader";
 import { PricingInterestButton } from "@/components/PricingInterestButton";
+import { ANDROID_LIVE } from "@/lib/app-links";
 
 export const metadata = {
   title: "Fiyatlandırma · Soru Atölyesi",
@@ -28,7 +30,7 @@ interface Plan {
   icon: React.ReactNode;
   features: string[];
   featured?: boolean;
-  cta: "signup" | "interest" | "quote";
+  cta: "signup" | "appstore" | "quote";
 }
 
 const PLANS: Plan[] = [
@@ -55,7 +57,7 @@ const PLANS: Plan[] = [
     price: "₺199",
     priceNote: "/ay · KDV dahil",
     icon: <User className="h-5 w-5" />,
-    cta: "interest",
+    cta: "appstore",
     features: [
       "Ayda 50 çalışma kağıdı · günlük sınır yok",
       "Yeni nesil (senaryo bazlı) soru kalitesi",
@@ -73,7 +75,7 @@ const PLANS: Plan[] = [
     priceNote: "/ay · KDV dahil",
     icon: <GraduationCap className="h-5 w-5" />,
     featured: true,
-    cta: "interest",
+    cta: "appstore",
     features: [
       "Pro planındaki her şeye ek olarak:",
       "Ayda 120 çalışma kağıdı — Pro'nun 2,4 katı",
@@ -107,7 +109,7 @@ export default function PricingPage() {
       <PageHeader
         eyebrow="Fiyatlandırma"
         title="Sana En Uygun Planı Seç"
-        body="Ücretsiz planımız yayında! Kayıt olan herkese anında 7 günlük kartsız deneme (20 çalışma kağıdı, Pro+ kalitesi) hediye ediyoruz. Pro ve Pro+ paketlerimiz çok yakında aktif olacak; aşağıdan ilgilendiğini belirt, açıldığında ilk senin haberin olsun."
+        body="Ücretsiz planımız yayında! Kayıt olan herkese anında 7 günlük kartsız deneme (20 çalışma kağıdı, Pro+ kalitesi) hediye ediyoruz. Pro ve Pro+ abonelikleri iOS uygulamasında satın alınabilir; Android sürümü yakında."
       />
 
       {/* Kampanya şeridi */}
@@ -115,6 +117,29 @@ export default function PricingPage() {
         <div className="mx-auto max-w-5xl rounded-xl border border-primary/20 bg-accent/40 px-5 py-3 text-center text-sm text-foreground">
           🎁 <span className="font-semibold">Üye olana 7 gün kartsız deneme — 20 kağıt, Pro+ kalitesi</span> ·
           <span className="font-semibold">İstediğin an iptal</span>
+        </div>
+      </div>
+
+      {/*
+        Magaza durumu — Pro/Pro+ SATIN ALMASI yalniz uygulama icinden yapiliyor
+        (Apple IAP), webde odeme akisi yok. iOS 1 Eyl 2026'da yayina girdi;
+        Android yayina girince ANDROID_LIVE true olur ve serit kendiliginden
+        guncellenir.
+      */}
+      <div className="container mt-4">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 rounded-xl border bg-card px-5 py-4 text-center shadow-sm sm:flex-row sm:text-left">
+          <div>
+            <p className="font-display text-base font-bold text-foreground">
+              Pro ve Pro+ artık iOS uygulamasında
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Abonelik ve ek kağıt paketleri uygulama içinden alınır.{" "}
+              {ANDROID_LIVE
+                ? "Android sürümü de yayında."
+                : "Android sürümü yakında — çıktığında buradan duyuracağız."}
+            </p>
+          </div>
+          <AppStoreButton plan="pricing-band" size="lg" className="shrink-0 gap-2" />
         </div>
       </div>
 
@@ -161,16 +186,13 @@ export default function PricingPage() {
                     </Link>
                   </Button>
                 )}
-                {p.cta === "interest" && (
-                  <PricingInterestButton
+                {p.cta === "appstore" && (
+                  <AppStoreButton
                     plan={p.slug}
-                    mailtoSubject={`${p.name} plan ilgi bildirimi`}
                     size="lg"
                     variant={p.featured ? "default" : "outline"}
                     className="w-full gap-2"
-                  >
-                    İlgileniyorum · Yakında
-                  </PricingInterestButton>
+                  />
                 )}
                 {p.cta === "quote" && (
                   <PricingInterestButton
@@ -190,9 +212,11 @@ export default function PricingPage() {
 
         <div className="mx-auto mt-10 max-w-3xl space-y-2 text-center text-xs text-muted-foreground">
           <p>
-            📌 Ücretsiz planımız şu an kullanıma açıktır. Pro ve Pro+ paketleri çok
-            yakında eklenecektir. Belirtilen fiyatlar lansman dönemine özel
-            planlanmıştır ve ileride güncellenebilir.
+            📌 Ücretsiz plan web ve mobilde açıktır. Pro ve Pro+ abonelikleri
+            yalnızca mobil uygulama içinden, App Store üzerinden satın alınır;
+            ödeme ve iptal Apple hesabınız üzerinden yürür. Android sürümü
+            yakında. Belirtilen fiyatlar lansman dönemine özeldir ve ileride
+            güncellenebilir.
           </p>
           <p>
             💡 İpucu: Aynı parametrelerle daha önce ürettiğiniz sorular önbellekten
