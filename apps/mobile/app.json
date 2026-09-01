@@ -2,13 +2,14 @@
   "expo": {
     "name": "Soru Atölyesi",
     "slug": "soru-atolyesi",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "soruatolyesi",
     "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.soruatolyesi.app",
+      "usesAppleSignIn": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -37,6 +38,7 @@
         }
       ],
       "@clerk/expo",
+      "expo-apple-authentication",
       [
         "expo-notifications",
         {

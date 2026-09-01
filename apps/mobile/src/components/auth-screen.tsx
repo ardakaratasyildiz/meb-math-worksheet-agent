@@ -1,4 +1,6 @@
 import { useSSO, useSignIn, useSignUp } from '@clerk/expo';
+import { useSignInWithApple } from '@clerk/expo/apple';
+import type { StartAppleAuthenticationFlowReturnType } from '@clerk/expo/apple';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import { useCallback, useState } from 'react';
@@ -48,6 +50,15 @@ function ssoCancelled(res: unknown): boolean {
 }
 
 /**
+ * Yerel Apple akışı iptalde de HATA FIRLATMAZ; Clerk hook'u ERR_REQUEST_CANCELED'ı
+ * yutup boş sonuç döner. Hiçbir adım başlamamışsa (signIn/signUp durumu yok)
+ * kullanıcı Apple sayfasını kapatmıştır — hata gösterme.
+ */
+function appleCancelled(res: StartAppleAuthenticationFlowReturnType): boolean {
+  return !res.signIn?.status && !res.signUp?.status;
+}
+
+/**
  * SSO oturum açmadan döndüyse gerçek sebebi bul. Clerk bu durumda hata FIRLATMAZ;
  * sebebi signUp.verifications.externalAccount.error / signIn.firstFactorVerification.error
  * içine yazar. En sık vakası: aynı e-postayla zaten hesap var (external_account_exists).
@@ -89,6 +100,7 @@ export function AuthScreen() {
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
   const { startSSOFlow } = useSSO();
+  const { startAppleAuthenticationFlow } = useSignInWithApple();
 
   const [mode, setMode] = useState<Mode>('signIn');
   const [phase, setPhase] = useState<Phase>('form');
@@ -242,7 +254,7 @@ export function AuthScreen() {
 
   // ── OAUTH ───────────────────────────────────────────────────────────────────
   const onOAuth = useCallback(
-    async (strategy: 'oauth_google' | 'oauth_apple') => {
+    async (strategy: 'oauth_google') => {
       if (busy) return;
       setBusy(true);
       setError(null);
@@ -267,6 +279,32 @@ export function AuthScreen() {
     },
     [busy, startSSOFlow],
   );
+
+  /**
+   * Apple — iOS'ta YEREL akış (`oauth_token_apple`). Eski tarayıcı akışı
+   * (`startSSOFlow({ strategy: 'oauth_apple' })`) Apple ad/e-postayı yalnız ilk
+   * yetkilendirmede gönderdiği için kaydı `missing_requirements` durumunda
+   * bırakıyor ve "Kaydolma tamamlanamadı" hatası veriyordu. Yerel akış kimlik
+   * jetonunu doğrudan Clerk'e verir; hook signIn↔signUp transferini kendi yapar.
+   */
+  const onApple = useCallback(async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await startAppleAuthenticationFlow();
+      const { createdSessionId, setActive } = res;
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        return;
+      }
+      if (!appleCancelled(res)) setError(ssoBlockedReason(res));
+    } catch (e) {
+      setError(humanError(e));
+    } finally {
+      setBusy(false);
+    }
+  }, [busy, startAppleAuthenticationFlow]);
 
   // ── Render yardımcıları ──────────────────────────────────────────────────────
   const title = mode === 'signUp' ? 'Aramıza katıl' : mode === 'forgot' ? 'Şifreni sıfırla' : 'Tekrar hoş geldin';
@@ -313,7 +351,7 @@ export function AuthScreen() {
             <View style={styles.oauthWrap}>
               <OAuthButton label="Google ile devam et" onPress={() => onOAuth('oauth_google')} disabled={busy} />
               {Platform.OS === 'ios' ? (
-                <OAuthButton label="Apple ile devam et" onPress={() => onOAuth('oauth_apple')} disabled={busy} dark />
+                <OAuthButton label="Apple ile devam et" onPress={onApple} disabled={busy} dark />
               ) : null}
               <View style={styles.divider}>
                 <View style={styles.line} />
